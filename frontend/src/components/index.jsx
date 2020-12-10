@@ -1,0 +1,1 @@
+export {GuildsComponent} from './GuildsComponent';
