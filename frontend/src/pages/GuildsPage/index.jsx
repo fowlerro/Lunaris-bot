@@ -1,20 +1,20 @@
 import React from 'react';
-import { GuildsComponent } from '../../components';
+import { GuildMenu, GuildInvite } from '../../components';
 import { getGuilds, getUserDetails } from '../../utils/api';
 
 export function GuildsPage({history, }) {
 
     const [user, setUser] = React.useState(null);
     const [loading, setLoading] = React.useState(true);
-    const [guilds, setGuilds] = React.useState([]);
+    const [guilds, setGuilds] = React.useState({});
 
     React.useEffect(() => {
         getUserDetails().then(({data}) => {
             setUser(data);
-            setLoading(false);
             return getGuilds();
         }).then(({data}) => {
             setGuilds(data);
+            setLoading(false);
         }).catch((err) => {
             history.push('/');
             setLoading(false);
@@ -24,7 +24,8 @@ export function GuildsPage({history, }) {
     return !loading && (
         <>
             <div>
-                <GuildsComponent guilds={guilds} />
+                <GuildMenu guilds={guilds.included} />
+                <GuildInvite guilds={guilds.excluded} />
             </div>
         </>
     ) 

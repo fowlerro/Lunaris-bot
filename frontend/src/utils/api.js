@@ -11,3 +11,17 @@ export function getGuilds() {
         withCredentials: true
     });
 }
+
+export function getGuildConfig(guildID) {
+    return axios.get(`http://localhost:3001/api/discord/guilds/${guildID}/config`, {
+        withCredentials: true
+    });
+}
+
+export function updateGuildConfig(guildID, config) {
+    return axios.put(`http://localhost:3001/api/discord/guilds/${guildID}/config`, {
+        config
+    }, {
+        withCredentials: true
+    })
+}

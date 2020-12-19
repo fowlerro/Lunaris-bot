@@ -1,7 +1,7 @@
 import { Button } from 'primereact/button';
 import React from 'react';
 
-export function GuildsComponent({guilds}) {
+export function GuildMenu({guilds}) {
 
     return (
         <>

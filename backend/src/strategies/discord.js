@@ -1,6 +1,8 @@
 const passport = require('passport');
 const DiscordStrategy = require('passport-discord');
+const OAuth2Credentials = require('../database/schemas/OAuth2Credentials');
 const User = require('../database/schemas/User');
+const { encrypt } = require('../utils/utils');
 const infoLog = 'PassportLOG -> ';
 
 passport.serializeUser((user, done) => {
@@ -23,6 +25,9 @@ passport.use(new DiscordStrategy({
     callbackURL: process.env.DASHBOARD_CALLBACK_URL,
     scope: ['identify', 'guilds'],
 }, async(accessToken, refreshToken, profile, done) => {
+
+    const encryptedAccessToken = encrypt(accessToken).toString();
+    const encryptedRefreshToken = encrypt(refreshToken).toString();
     const {id, username, discriminator, avatar, guilds} = profile;
     try {
         const findUser = await User.findOneAndUpdate({discordID: id}, {
@@ -30,8 +35,20 @@ passport.use(new DiscordStrategy({
             avatar,
             guilds,
         }, {new: true});
+
+        const findCredentials = await OAuth2Credentials.findOneAndUpdate({discordID: id}, {
+            accessToken: encryptedAccessToken,
+            refreshToken: encryptedRefreshToken,
+        });
     
         if(findUser) {
+            if(!findCredentials) {
+                const newCredentials = await OAuth2Credentials.create({
+                    accessToken: encryptedAccessToken,
+                    refreshToken: encryptedRefreshToken,
+                    discordID: id,
+                });
+            }
             return done(null, findUser);
         } else {
             const newUser = await User.create({
@@ -39,6 +56,11 @@ passport.use(new DiscordStrategy({
                 discordTag: `${username}#${discriminator}`,
                 avatar, 
                 guilds
+            });
+            const newCredentials = await OAuth2Credentials.create({
+                accessToken: encryptedAccessToken,
+                refreshToken: encryptedRefreshToken,
+                discordID: id,
             });
             return done(null, newUser);
         }

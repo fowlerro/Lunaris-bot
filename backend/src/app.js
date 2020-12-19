@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config(); // !!! OGARNĄĆ PORZĄDNE 'ENVIROMENT VARIABLES'
 require('./strategies/discord');
 const express = require('express');
 const passport = require('passport');
@@ -15,6 +15,9 @@ mongoose.connect('mongodb+srv://dbUser:JtwwkIEaZukU2SE6@cluster0.wsvos.mongodb.n
   useUnifiedTopology: true,
   useFindAndModify: false,
 });
+
+app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 
 app.use(cors({
   origin: ['http://localhost:3000'],
