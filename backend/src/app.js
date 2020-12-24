@@ -9,6 +9,8 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const cors = require('cors');
 const Store = require('connect-mongo')(session);
+const {graphqlHTTP} = require('express-graphql');
+const RootSchema = require('./graphql');
 
 mongoose.connect('mongodb+srv://dbUser:JtwwkIEaZukU2SE6@cluster0.wsvos.mongodb.net/Lunaris?retryWrites=true&w=majority', {
   useNewUrlParser: true,
@@ -36,6 +38,11 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use('/graphql', graphqlHTTP({
+  graphiql: true,
+  schema: RootSchema,
+}))
 
 app.use('/api', routes);
 

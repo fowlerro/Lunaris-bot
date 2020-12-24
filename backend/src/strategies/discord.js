@@ -33,7 +33,6 @@ passport.use(new DiscordStrategy({
         const findUser = await User.findOneAndUpdate({discordID: id}, {
             discordTag: `${username}#${discriminator}`,
             avatar,
-            guilds,
         }, {new: true});
 
         const findCredentials = await OAuth2Credentials.findOneAndUpdate({discordID: id}, {
@@ -54,8 +53,7 @@ passport.use(new DiscordStrategy({
             const newUser = await User.create({
                 discordID: id,
                 discordTag: `${username}#${discriminator}`,
-                avatar, 
-                guilds
+                avatar
             });
             const newCredentials = await OAuth2Credentials.create({
                 accessToken: encryptedAccessToken,

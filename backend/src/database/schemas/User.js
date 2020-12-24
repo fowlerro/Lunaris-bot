@@ -13,10 +13,6 @@ const UserSchema = new mongoose.Schema({
     avatar: {
         type: String,
         required: true,
-    },
-    guilds: {
-        type: Array,
-        required: true,
     }
 });
 

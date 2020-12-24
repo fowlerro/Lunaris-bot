@@ -25,3 +25,9 @@ export function updateGuildConfig(guildID, config) {
         withCredentials: true
     })
 }
+
+export function getGuildRoles(guildID) {
+    return axios.get(`http://localhost:3001/api/discord/guilds/${guildID}/roles`, {
+        withCredentials: true
+    });
+}

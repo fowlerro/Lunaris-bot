@@ -4,7 +4,7 @@ const passport = require('passport');
 router.get('/discord', passport.authenticate('discord'));
 
 router.get('/discord/redirect', passport.authenticate('discord'), (req, res) => {
-    res.redirect('http://localhost:3000/');
+    res.redirect('http://localhost:3001/');
 });
 
 router.get('/discord/invite', (req, res) => {

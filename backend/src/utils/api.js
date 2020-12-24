@@ -13,7 +13,17 @@ async function getBotGuilds() {
         }
     });
     return response.json();
-}
+};
+
+async function getGuildRoles(guildID) {
+    const response = await fetch(`${API}/guilds/${guildID}/roles`, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bot ${process.env.BOT_TOKEN}`
+        }
+    });
+    return response.json();
+};
 
 async function getUserGuilds(discordID) {
     const credentials = await OAuth2Credentials.findOne({discordID});
@@ -30,4 +40,4 @@ async function getUserGuilds(discordID) {
     return response.json();
 }
 
-module.exports = {getBotGuilds, getUserGuilds};
+module.exports = {getBotGuilds, getGuildRoles, getUserGuilds};
