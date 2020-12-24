@@ -1,32 +1,20 @@
+import { useQuery } from '@apollo/client';
 import React from 'react';
 import { GuildMenu, GuildInvite } from '../../components';
-import { getGuilds, getUserDetails } from '../../utils/api';
+import { guildsPageQuery } from '../../graphql/queries';
 
 export function GuildsPage({history, }) {
 
-    const [user, setUser] = React.useState(null);
-    const [loading, setLoading] = React.useState(true);
-    const [guilds, setGuilds] = React.useState({});
 
-    React.useEffect(() => {
-        getUserDetails().then(({data}) => {
-            setUser(data);
-            return getGuilds();
-        }).then(({data}) => {
-            setGuilds(data);
-            setLoading(false);
-        }).catch((err) => {
-            history.push('/');
-            setLoading(false);
-        });
-    }, [])
+    const {loading, error, data} = useQuery(guildsPageQuery);
 
-    return !loading && (
-        <>
+    if(!loading && !error) {
+        const {getMutualGuilds} = data;
+        return (
             <div>
-                <GuildMenu guilds={guilds.included} />
-                <GuildInvite guilds={guilds.excluded} />
+                <GuildMenu guilds={getMutualGuilds.included} />
+                <GuildInvite guilds={getMutualGuilds.excluded} />
             </div>
-        </>
-    ) 
+        )
+    } return <h1>Loading...</h1>
 }
