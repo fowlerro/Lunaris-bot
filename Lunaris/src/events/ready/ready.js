@@ -1,3 +1,4 @@
+const { Presence } = require('discord.js');
 const BaseEvent = require('../../utils/structures/BaseEvent');
 
 module.exports = class ReadyEvent extends BaseEvent {
@@ -6,5 +7,5 @@ module.exports = class ReadyEvent extends BaseEvent {
   }
   async run (client) {
     console.log(client.user.tag + ' has logged in.');
-  }
+    }
 }

@@ -5,16 +5,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {ApolloClient, createHttpLink, InMemoryCache, ApolloProvider} from '@apollo/client';
+import {ThemeSwitcherProvider} from 'react-css-theme-switcher';
 
 
-// * PrimeReact setup * \\
-import 'primeflex/primeflex.css';
-
-import 'primereact/resources/themes/arya-blue/theme.css';
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
-import PrimeReact from 'primereact/utils';
-PrimeReact.ripple = true;
+//!!! ENV VARIABLES PUBLIC FOLDER
+const themes = {
+  dark: `/dark-theme.css`,
+  light: `/light-theme.css`,
+};
 
 const link = createHttpLink({
   uri: 'http://localhost:3001/graphql',
@@ -30,9 +28,11 @@ const client = new ApolloClient({
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <ApolloProvider client={client}>
-        <App />
-      </ApolloProvider>
+      <ThemeSwitcherProvider themeMap={themes} defaultTheme="light">
+        <ApolloProvider client={client}>
+          <App />
+        </ApolloProvider>
+      </ThemeSwitcherProvider>
     </Router>
   </React.StrictMode>,
   document.getElementById('root')

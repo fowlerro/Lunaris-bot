@@ -11,14 +11,11 @@ async function registerCommands(client, dir = '') {
     const stat = await fs.lstat(path.join(filePath, file));
     if (stat.isDirectory()) registerCommands(client, path.join(dir, file));
     if (file.endsWith('.js')) {
-      const Command = require(path.join(filePath, file));
-      if (Command.prototype instanceof BaseCommand) {
-        const cmd = new Command();
-        client.commands.set(cmd.name, cmd);
-        cmd.aliases.forEach((alias) => {
-          client.commands.set(alias, cmd);
-        });
-      }
+      const cmd = require(path.join(filePath, file));
+      client.commands.set(cmd.name, cmd);
+      cmd.aliases.forEach((alias) => {
+        client.commands.set(alias, cmd);
+      });
     }
   }
 }

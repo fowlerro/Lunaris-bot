@@ -1,21 +1,21 @@
 const mongoose = require('mongoose');
 
-const GuildConfigSchema = new mongoose.Schema({
+const CooldownSchema = new mongoose.Schema({
     guildID: {
         type: mongoose.SchemaTypes.String,
         required: true,
-        unique: true,
     },
-    prefix: {
+    userID: {
         type: mongoose.SchemaTypes.String,
         required: true,
-        default: '$',
     },
-    language: {
+    cmdName: {
         type: mongoose.SchemaTypes.String,
-        required: true,
-        default: 'en',
+    },
+    cooldown: {
+        type: mongoose.SchemaTypes.Number,
+        default: null,
     }
 });
 
-module.exports = mongoose.model('GuildConfig', GuildConfigSchema);
+module.exports = mongoose.model('Cooldown', CooldownSchema);

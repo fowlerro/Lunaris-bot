@@ -3,10 +3,12 @@ const { Client } = require('discord.js');
 const { registerCommands, registerEvents } = require('./utils/registry');
 const client = new Client();
 const mongoose = require('mongoose');
+const botOwners = ["313346190995619841"];
 
 mongoose.connect('mongodb+srv://dbUser:JtwwkIEaZukU2SE6@cluster0.wsvos.mongodb.net/Lunaris?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useFindAndModify: false,
 });
 
 (async () => {
@@ -17,3 +19,4 @@ mongoose.connect('mongodb+srv://dbUser:JtwwkIEaZukU2SE6@cluster0.wsvos.mongodb.n
   await client.login(process.env.DISCORD_BOT_TOKEN);
 })();
 
+module.exports = {botOwners};
