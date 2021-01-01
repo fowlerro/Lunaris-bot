@@ -58,7 +58,7 @@ module.exports = class MessageEvent extends BaseEvent {
 
                 if(!command.status) return;
 
-                if(!checkPermissions(command.permissions, command.permissionsMessage, message.member)) return;
+                if(!checkPermissions(command.permissions, message.member)) return;
 
                 if(command.requiredChannels.length !== 0 && !command.requiredChannels.includes(message.channel.id)) return;
                 if(command.blockedChannels.length !== 0 && command.blockedChannels.includes(message.channel.id)) return;
@@ -67,9 +67,24 @@ module.exports = class MessageEvent extends BaseEvent {
                 if(!checkBlockRoles(command.blockedRoles, message.member)) return;
 
                 if(!checkArgs(command.minArgs, command.maxArgs, cmdArgs.length)) return;
-
                 
+
                 if(command.cooldownStatus && ms(command.cooldown) > 0) {
+                    if(checkcdPermissions(command.cooldownPermissions, message.member)) {
+                        runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
+                        console.log("Perm")
+                        return;
+                    }
+                    if(command.cooldownChannels.length !== 0 && command.cooldownChannels.includes(message.channel.id)) {
+                        runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
+                        console.log("Chann")
+                        return;
+                    }
+                    if(checkcdRoles(command.cooldownRoles, message.member)) {
+                        runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
+                        console.log("Role")
+                        return;
+                    }
                     const userCD = await Cooldowns.findOne({guildID: message.guild.id, userID: message.author.id, cmdName: command.name});
                     if(userCD) {
                         if(userCD.cooldown > Date.now()) return console.log("cd");
@@ -79,31 +94,39 @@ module.exports = class MessageEvent extends BaseEvent {
                         });
                     } else {
                         const cdTime = Date.now() + ms(command.cooldown);
-                        return Cooldowns.create({
+                        Cooldowns.create({
                             guildID: message.guild.id,
                             userID: message.author.id,
                             cmdName: command.name,
                             cooldown: cdTime,
                         });
                     }
-
-                }
-
-                await cmd.run(client, message, cmdArgs);
-                if(command.autoRemoveResponse) {
-                    client.user.lastMessage.delete({timeout: 5000})
                 }
             }
+
+            runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
+            // await cmd.run(client, message, cmdArgs);
+            // if(command.autoRemoveResponse) {
+            //     client.user.lastMessage.delete({timeout: 5000})
+            // }
         }
     }
 };
 
-const checkPermissions = (permissions, message, member) => {
+const checkPermissions = (permissions, member) => {
     if(permissions.length === 0) return true;
     for(i=0; i<permissions.length; i++) {
         if(member.hasPermission(permissions[i])) return true;
     }
     console.log(`Command Log -> Komenda nie została wykonana z powodu braku permisji`);
+    return false;
+};
+
+const checkcdPermissions = (permissions, member) => {
+    if(permissions.length === 0) return false;
+    for(i=0; i<permissions.length; i++) {
+        if(member.hasPermission(permissions[i])) return true;
+    }
     return false;
 };
 
@@ -122,10 +145,25 @@ const checkReqRoles = (requiredRoles, member) => {
     return false;
 }
 
+const checkcdRoles = (requiredRoles, member) => {
+    if(requiredRoles.length === 0) return false;
+    for(let i = 0; i<requiredRoles.length; i++) {
+        if(member.roles.cache.find(r => r.id === requiredRoles[i])) return true;
+    }
+    return false;
+}
+
 const checkBlockRoles = (blockedRoles, member) => {
     if(blockedRoles.length === 0) return true;
     for(let i = 0; i<blockedRoles.length; i++) {
         if(member.roles.cache.find(r => r.id === blockedRoles[i])) return false;
     }
     return true;
+}
+
+const runCmd = async (client, message, cmd, cmdArgs, autoRemoveResponse) => {
+    await cmd.run(client, message, cmdArgs);
+    if(autoRemoveResponse) {
+        client.user.lastMessage.delete({timeout: 5000})
+    }
 }

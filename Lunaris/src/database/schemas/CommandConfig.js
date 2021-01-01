@@ -48,10 +48,6 @@ const CommandConfigSchema = new mongoose.Schema({
     cooldown: {
         type: mongoose.SchemaTypes.String,
     },
-    cooldownTemp: {
-        type: mongoose.SchemaTypes.Number,
-        default: null,
-    },
     cooldownPermissions: {
         type: mongoose.SchemaTypes.Array,
     },
