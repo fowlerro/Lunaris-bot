@@ -9,7 +9,10 @@ module.exports = {
     globalStatus: true,
     status: true,
 
-    description: 'Testing command',
+    description: {
+        pl: "Komenda testowa",
+        en: "Testing command",
+    },
     category: 'testing',
 
     permissions: [],
@@ -25,6 +28,6 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
-        message.channel.send('Test command works');
+        return message.channel.send('Test command works');
     }
 }
