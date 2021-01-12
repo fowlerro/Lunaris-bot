@@ -5,6 +5,14 @@ const client = new Client();
 const mongoose = require('mongoose');
 const botOwners = ["313346190995619841"];
 
+const palette = {
+  primary: '#102693',
+  secondary: '',
+  success: '#7BDB27',
+  info: '#3C9FFC',
+  error: '#B71E13',
+}
+
 mongoose.connect('mongodb+srv://dbUser:JtwwkIEaZukU2SE6@cluster0.wsvos.mongodb.net/Lunaris?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -19,4 +27,4 @@ mongoose.connect('mongodb+srv://dbUser:JtwwkIEaZukU2SE6@cluster0.wsvos.mongodb.n
   await client.login(process.env.DISCORD_BOT_TOKEN);
 })();
 
-module.exports = {botOwners};
+module.exports = {botOwners, palette};

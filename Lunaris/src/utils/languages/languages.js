@@ -9,6 +9,20 @@ const messages = {
 
         prefixChange: "Prefix został pomyślnie zmieniony na %VAR%",
         languageChange: "Język został pomyślnie zmieniony na %VAR%",
+
+        memberLogCreatedAt: "Konto utworzone",
+        memberLogJoinedAt: "Dołączył",
+        memberJoinedLogTitle: "%VAR% dołączył",
+        memberLeavedLogTitle: "%VAR% opuścił serwer",
+
+        memberNicknameChangedLogTitle: "Nickname %VAR% został zmieniony",
+        memberNicknameCreatedLogTitle: "Nickname %VAR% został stworzony",
+        memberNicknameRemovedLogTitle: "Nickname %VAR% zostal usunięty",
+        memberNicknameChangedLogDesc: "%VAR% zmienił nick użytkownikowi %VAR%",
+        memberNicknameCreatedLogDesc: "%VAR% stworzył nick użytkownikowi %VAR%",
+        memberNicknameRemovedLogDesc: "%VAR% usunął nick użytkownikowi %VAR%",
+        memberNicknameLogOld: "Stary nickname",
+        memberNicknameLogNew: "Nowy nickname",
     },
     en: {
         cmdGlobalStatus: "Command is temporary turned off",
@@ -19,14 +33,29 @@ const messages = {
 
         prefixChange: "Prefix has been changed to %VAR%",
         languageChange: "Language has been changed to %VAR%",
+
+        memberLogCreatedAt: "Account created at",
+        memberLogJoinedAt: "Account joined at",
+        memberJoinedLogTitle: "%VAR% joined",
+        memberLeavedLogTitle: "%VAR% leaved",
+
+        memberNicknameChangedLogTitle: "Nickname %VAR% has been changed",
+        memberNicknameCreatedLogTitle: "Nickname %VAR% has been created",
+        memberNicknameRemovedLogTitle: "Nickname %VAR% has been removed",
+        memberNicknameChangedLogDesc: "%VAR% changed %VAR% nickname",
+        memberNicknameCreatedLogDesc: "%VAR% created %VAR% nickname",
+        memberNicknameRemovedLogDesc: "%VAR% removed %VAR% nickname",
+        memberNicknameLogOld: "Old nickname",
+        memberNicknameLogNew: "New nickname",
     }
 };
 
 const getLocale = (language, message, ...vars) => {
     let locale = messages[language][message];
 
-    let count = 0;
-    locale = locale.replace(/%VAR%/g, () => vars[count] !== null ? vars[count] : "%VAR%");
+    for(let count = 0; count<=vars.length; count++) {
+        locale = locale.replace(/%VAR%/, () => vars[count] !== null ? vars[count] : "%VAR%");
+    }
 
     return locale;
 }

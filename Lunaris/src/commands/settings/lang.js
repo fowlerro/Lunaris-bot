@@ -1,4 +1,5 @@
 const { MessageEmbed } = require("discord.js");
+const { palette } = require("../../bot");
 const GuildConfig = require("../../database/schemas/GuildConfig");
 const { getLocale, localeList } = require("../../utils/languages/languages");
 
@@ -38,7 +39,7 @@ module.exports = {
                 let langs = "";
                 langs = localeList().map(lang => langs + "`" + lang + "`");
                 const embed = new MessageEmbed()
-                    .setColor('#0000ff')
+                    .setColor(palette.info)
                     .addField(getLocale(guildConfig.get('language'), 'languageListMessage'), langs)
                     .setFooter(getLocale(guildConfig.get('language'), "languageListFooter", guildConfig.get('prefix')));
 
@@ -46,7 +47,7 @@ module.exports = {
             };
             if(!localeList().includes(args[0])) {
                 const embed = new MessageEmbed()
-                    .setColor('#ff0000')
+                    .setColor(palette.error)
                     .setDescription(getLocale(guildConfig.get('language'), "wrongLanguage", guildConfig.get('prefix')));
         
                 return message.channel.send(embed);
@@ -55,7 +56,7 @@ module.exports = {
                 language: args[0]
             }, {new: true});
             const embed = new MessageEmbed()
-                .setColor('#00ff00')
+                .setColor(palette.success)
                 .setDescription(getLocale(guildConfig.get('language'), "languageChange", "`" + guildConfig.get('language') + "`"));
     
             return message.channel.send(embed);

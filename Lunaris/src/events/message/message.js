@@ -1,5 +1,6 @@
 const BaseEvent = require('../../utils/structures/BaseEvent');
 const { commandHandle } = require('../../modules/commandHandler');
+const { memberJoinedLog } = require('../../modules/guildLogs');
 
 module.exports = class MessageEvent extends BaseEvent {
     constructor() {

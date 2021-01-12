@@ -1,4 +1,5 @@
 const { MessageEmbed } = require("discord.js");
+const { palette } = require("../../bot");
 const GuildConfig = require("../../database/schemas/GuildConfig");
 const { getLocale } = require("../../utils/languages/languages");
 
@@ -42,7 +43,7 @@ module.exports = {
                 if(!categories.includes(cmd.category)) categories.push(cmd.category)
             });
             const embed = new MessageEmbed()
-                .setColor('#0000ff')
+                .setColor(palette.info)
                 .addFields(categories.map(category => {
                     let cmds = Array.from(client.commands).filter(cmd => cmd[1].category === category && cmd[0] === cmd[1].name).map(cmd => cmd[1].name);
                     return {

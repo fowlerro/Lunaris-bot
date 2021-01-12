@@ -6,7 +6,6 @@ const fetchReactionMessages = async (client) => {
         const guild = await client.guilds.cache.find(guild => guild.id === msg.guildID);
         const channel = await guild.channels.cache.find(channel => channel.id === msg.channelID);
         const message = await channel.messages.fetch(msg.messageID);
-        message.react('Geode_Mastery:725788014420426813')
         const filter = (reaction, user) => (
             msg.reactions.some(element => reaction.emoji.identifier === element.reaction && !user.bot)
         );

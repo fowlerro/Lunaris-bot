@@ -1,4 +1,5 @@
 const { MessageEmbed } = require("discord.js");
+const { palette } = require("../../bot");
 const GuildConfig = require("../../database/schemas/GuildConfig");
 const { getLocale } = require("../../utils/languages/languages");
 
@@ -37,7 +38,7 @@ module.exports = {
                 prefix: args[0]
             }, {new: true});
             const embed = new MessageEmbed()
-                .setColor('#00ff00')
+                .setColor(palette.success)
                 .setDescription(getLocale(guildConfig.get('language'), "prefixChange", "`" + guildConfig.get('prefix') + "`"));
     
             return message.channel.send(embed);
