@@ -1,0 +1,105 @@
+{
+    "name": "English",
+    "general": {
+        "name": "Name",
+        "description": "Description",
+        "slowMode": "Slow mode",
+        "on": "Enabled",
+        "off": "Disabled",
+        "reason": "Reason",
+        "roles": "Roles",
+        "by": "By",
+        "createdAt": "Account created at",
+        "joinedAt": "Account joined at",
+        "channel": "Channel"
+    },
+    "cmd": {
+        "globalStatus": "Command is temporary turned off",
+        "prefixMessage": "Prefix for this server is set to: %VAR%",
+        "languageListMessage": "Supported languages",
+        "languageListFooter": "Type %VAR%language <language> to change it",
+        "wrongLanguage": "This language is not supported, type '%VAR%language' to see supported languages list",
+        "prefixChange": "Prefix has been changed to %VAR%",
+        "languageChange": "Language has been changed to %VAR%"
+    },
+    "logs": {
+        "general": {
+            "allowedPerms": "Added permissions",
+            "deniedPerms": "Revoked permissions",
+            "resetPerms": "Reset permissions"
+        },
+        "member": {
+            "joinedTitle": "%VAR% joined",
+            "leavedTitle": "%VAR% leaved",
+
+            "nicknameChangedTitle": "Nickname %VAR% has been changed",
+            "nicknameCreatedTitle": "Nickname %VAR% has been set",
+            "nicknameRemovedTitle": "Nickname %VAR% has been removed",
+            "nicknameChangedDesc": "%VAR% changed %VAR% nickname",
+            "nicknameCreatedDesc": "%VAR% created %VAR% nickname",
+            "nicknameRemovedDesc": "%VAR% removed %VAR% nickname",
+            "nicknameChangedBy": "Changed by",
+            "nicknameOld": "Old nickname",
+            "nicknameNew": "New nickname",
+
+            "kickedTitle": "%VAR% has been kicked",
+            "kickedDesc": "%VAR% has been kicked by %VAR%",
+            "kickedAt": "Kicked at",
+            "kickedTarget": "Target",
+
+            "bannedTitle": "%VAR% has been banned",
+            "bannedDesc": "%VAR% has been banned by %VAR%",
+            "bannedAt": "Banned at",
+            "bannedTarget": "Target",
+
+            "unbannedTitle": "%VAR% has been unbanned",
+            "unbannedDesc": "%VAR% has been unbanned by %VAR%",
+            "unbannedAt": "Unbanned at",
+            "unbannedTarget": "Target"
+        },
+        "channel": {
+            "createdTitle": "New channel has been created",
+            "createdAt": "Created at",
+            
+            "deletedTitle": "Channel #%VAR% has been deleted",
+            "deletedAt": "Deleted at",
+
+            "changedTitle": "Channel #%VAR% has been changed",
+            "changedOld": "Old",
+            "changedNew": "New"
+        }
+    },
+    "permissions": {
+        "CREATE_INSTANT_INVITE": "Create Invite",
+        "KICK_MEMBERS": "Kick Members",
+        "BAN_MEMBERS": "Ban Members",
+
+        "MANAGE_CHANNELS": "Manage Channels",
+        "MANAGE_GUILD": "Manage Server",
+        "ADD_REACTIONS": "Add Reactions",
+        "VIEW_AUDIT_LOG": "View Audit Log",
+        "PRIORITY_SPEAKER": "Priority Speaker",
+        "STREAM": "Video",
+        "VIEW_CHANNEL": "Read Messages",
+        "SEND_MESSAGES": "Send Messages",
+        "SEND_TTS_MESSAGES": "Send TTS Messages",
+        "MANAGE_MESSAGES": "Manage Messages",
+        "EMBED_LINKS": "Embed Links",
+        "ATTACH_FILES": "Attach Files",
+        "READ_MESSAGE_HISTORY": "Read Message History",
+        "MENTION_EVERYONE": "Mention @everyone, @here",
+        "USE_EXTERNAL_EMOJIS": "Use External Emojis",
+        "VIEW_GUILD_INSIGHTS": "View Server Insights",
+        "CONNECT": "Connect",
+        "SPEAK": "Speak",
+        "MUTE_MEMBERS": "Mute Members",
+        "DEAFEN_MEMBERS": "Deafen Members",
+        "MOVE_MEMBERS": "Move Members",
+        "USE_VAD": "Use Voice Activity",
+        "CHANGE_NICKNAME": "Change Nickname",
+        "MANAGE_NICKNAMES": "Manage Nicknames",
+        "MANAGE_ROLES": "Manage Roles",
+        "MANAGE_WEBHOOKS": "Manage Webhooks",
+        "MANAGE_EMOJIS": "Manage Emojis"
+    }
+}

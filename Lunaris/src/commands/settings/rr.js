@@ -2,7 +2,6 @@ const { MessageEmbed } = require("discord.js");
 const GuildConfig = require("../../database/schemas/GuildConfig");
 const ReactionRoles = require("../../database/schemas/ReactionRoles");
 const { createReactionMessage } = require("../../modules/reactionRoles");
-const { getLocale } = require("../../utils/languages/languages");
 
 module.exports = {
     name: 'rr',

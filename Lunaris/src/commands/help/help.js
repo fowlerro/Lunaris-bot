@@ -1,7 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { palette } = require("../../bot");
 const GuildConfig = require("../../database/schemas/GuildConfig");
-const { getLocale } = require("../../utils/languages/languages");
 
 module.exports = {
     name: 'help',

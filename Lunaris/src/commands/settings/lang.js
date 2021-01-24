@@ -1,7 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const { palette } = require("../../bot");
 const GuildConfig = require("../../database/schemas/GuildConfig");
-const { getLocale, localeList } = require("../../utils/languages/languages");
+const { localeList, translate } = require("../../utils/languages/languages");
 
 module.exports = {
     name: 'language',
@@ -9,8 +9,8 @@ module.exports = {
     ownerOnly: false,
     minArgs: 0,
     maxArgs: 1,
-    autoRemove: true,
-    autoRemoveResponse: true,
+    autoRemove: false,
+    autoRemoveResponse: false,
     globalStatus: true,
     status: true,
 
@@ -35,29 +35,31 @@ module.exports = {
     async run(client, message, args) {
         try {
             let guildConfig = await GuildConfig.findOne({guildID: message.guild.id});
+            let language = guildConfig.get('language');
             if(!args[0]) {
                 let langs = "";
                 langs = localeList().map(lang => langs + "`" + lang + "`");
                 const embed = new MessageEmbed()
                     .setColor(palette.info)
-                    .addField(getLocale(guildConfig.get('language'), 'languageListMessage'), langs)
-                    .setFooter(getLocale(guildConfig.get('language'), "languageListFooter", guildConfig.get('prefix')));
+                    .addField(translate(language, 'cmd.languageListMessage'), langs)
+                    .setFooter(translate(language, "cmd.languageListFooter", guildConfig.get('prefix')));
 
                 return message.channel.send(embed);
             };
             if(!localeList().includes(args[0])) {
                 const embed = new MessageEmbed()
                     .setColor(palette.error)
-                    .setDescription(getLocale(guildConfig.get('language'), "wrongLanguage", guildConfig.get('prefix')));
+                    .setDescription(translate(language, "cmd.wrongLanguage", guildConfig.get('prefix')));
         
                 return message.channel.send(embed);
             }
             guildConfig = await GuildConfig.findOneAndUpdate({guildID: message.guild.id}, {
                 language: args[0]
             }, {new: true});
+            language = guildConfig.get('language');
             const embed = new MessageEmbed()
                 .setColor(palette.success)
-                .setDescription(getLocale(guildConfig.get('language'), "languageChange", "`" + guildConfig.get('language') + "`"));
+                .setDescription(translate(language, "cmd.languageChange", "`" + guildConfig.get('language') + "`"));
     
             return message.channel.send(embed);
         } catch(err) {

@@ -1,7 +1,7 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildDelete
-const BaseEvent = require('../utils/structures/BaseEvent');
-const GuildConfig = require('../database/schemas/GuildConfig');
-const CommandConfig = require('../database/schemas/CommandConfig');
+const BaseEvent = require('../../utils/structures/BaseEvent');
+const GuildConfig = require('../../database/schemas/GuildConfig');
+const CommandConfig = require('../../database/schemas/CommandConfig');
 
 const infoLog = 'GuildLOG -> ';
 

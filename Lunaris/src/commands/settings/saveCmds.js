@@ -1,5 +1,4 @@
 const CommandConfig = require("../../database/schemas/CommandConfig");
-const { getLocale } = require("../../utils/languages/languages");
 
 module.exports = {
     name: 'savecmd',

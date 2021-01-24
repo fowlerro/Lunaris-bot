@@ -1,4 +1,3 @@
-const { Presence } = require('discord.js');
 const { fetchReactionMessages } = require('../../modules/reactionRoles');
 const BaseEvent = require('../../utils/structures/BaseEvent');
 

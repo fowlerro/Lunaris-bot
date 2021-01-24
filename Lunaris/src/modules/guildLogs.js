@@ -5,10 +5,11 @@ Member:
 
     ?nickname
 
-    kicked
-    banned
-    warned
+    ?kicked
+    ?banned
+    ?unbanned
     muted
+    warned
 
 Channel:
     created
@@ -47,14 +48,14 @@ Invites:
     invited user
 */
 
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, BitField } = require("discord.js");
 const { palette } = require("../bot");
 const GuildConfig = require("../database/schemas/GuildConfig");
-const { getLocale } = require("../utils/languages/languages");
+const { translate } = require("../utils/languages/languages");
+const { convertPerms } = require("../utils/utils");
+const ms = require('ms');
 
-let cachedProfiles = new Map();
-
-const memberJoinedLog = async (client, member) => {
+async function memberJoinedLog(client, member) {
     const guildConfig = await GuildConfig.findOne({guildID: member.guild.id}).catch();
     const logChannel = member.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     const language = guildConfig.get('language');
@@ -63,9 +64,9 @@ const memberJoinedLog = async (client, member) => {
     const createdAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(member.user.createdAt);
     const embed = new MessageEmbed()
         .setColor(palette.info)
-        .setAuthor(getLocale(language, 'memberJoinedLogTitle', member.user.tag), member.user.displayAvatarURL())
+        .setAuthor(translate(language, 'logs.member.joinedTitle', member.user.tag), member.user.displayAvatarURL())
         .setDescription(`<@${member.user.id}>`)
-        .addField(getLocale(language, 'memberLogCreatedAt'), createdAt, true)
+        .addField(translate(language, 'general.createdAt'), createdAt, true)
         .addField("ID", member.user.id, true)
         .setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
@@ -73,30 +74,25 @@ const memberJoinedLog = async (client, member) => {
     await logChannel.send(embed).catch();
 }
 
-const memberLeavedLog = async (client, member) => {
-    const guildConfig = await GuildConfig.findOne({guildID: member.guild.id}).catch();
-    const logChannel = member.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
-    const language = guildConfig.get('language');
-    if(!logChannel) return;
+function memberLeavedLog(client, member, logChannel, language) {
 
     const createdAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(member.user.createdAt);
-    const joinedAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(member.user.joinedTimestamp);
+    // const joinedAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(member.user.joinedTimestamp);
     const roles = member.roles.cache.map(role => role.name !== '@everyone' ? `<@&${role.id}>` : '').toString().replaceAll(",", " ");
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
-        .setAuthor(getLocale(language, 'memberLeavedLogTitle', member.user.tag), member.user.displayAvatarURL())
+        .setAuthor(translate(language, 'logs.member.leavedTitle', member.user.tag), member.user.displayAvatarURL())
         .setDescription(`<@${member.user.id}>`)
-        .addField(getLocale(language, 'memberLogCreatedAt'), createdAt, true)
-        .addField(getLocale(language, 'memberLogJoinedAt'), joinedAt, true)
+        .addField(translate(language, 'general.createdAt'), createdAt, true)
         .addField("ID", member.user.id, true)
 
-        member.nickname && embed.addField("Nickname", member.nickname, true);
-        roles && embed.addField('Roles', roles, true);
-        embed.setFooter(client.user.username, client.user.displayAvatarURL())
-            .setTimestamp();
+    member.nickname && embed.addField("Nickname", member.nickname, true);
+    roles && embed.addField(translate(language, 'general.roles'), roles);
+    embed.setFooter(client.user.username, client.user.displayAvatarURL())
+        .setTimestamp();
 
-    const msg = await logChannel.send(embed).catch();
+    logChannel.send(embed).catch();
     // msg.react('🔽');
     // cachedProfiles.set(msg.id, member);
 
@@ -114,10 +110,10 @@ const memberLeavedLog = async (client, member) => {
 
     //         const embedExpand = new MessageEmbed()
     //             .setColor(palette.info)
-    //             .setAuthor(getLocale(language, 'memberLeavedLogTitle', member.user.tag), member.user.displayAvatarURL())
+    //             .setAuthor(translate(language, 'logs.member.leavedTitle', member.user.tag), member.user.displayAvatarURL())
     //             .setDescription(`<@${member.user.id}>`)
-    //             .addField(getLocale(language, 'memberLogCreatedAt'), createdAt, true)
-    //             .addField(getLocale(language, 'memberLogJoinedAt'), joinedAt, true)
+    //             .addField(translate(language, 'general.createdAt'), createdAt, true)
+    //             .addField(translate(language, 'general.joinedAt'), joinedAt, true)
 
     //         member.nickname && embedExpand.addField("Nickname", member.nickname, true);
     //         embedExpand.addField("ID", member.user.id, true);
@@ -134,10 +130,10 @@ const memberLeavedLog = async (client, member) => {
             
     //         const embedContract = new MessageEmbed()
     //             .setColor(palette.info)
-    //             .setAuthor(getLocale(language, 'memberLeavedLogTitle', member.user.tag), member.user.displayAvatarURL())
+    //             .setAuthor(translate(language, 'logs.member.leavedTitle', member.user.tag), member.user.displayAvatarURL())
     //             .setDescription(`<@${member.user.id}>`)
-    //             .addField(getLocale(language, 'memberLogCreatedAt'), createdAt, true)
-    //             .addField(getLocale(language, 'memberLogJoinedAt'), joinedAt, true)
+    //             .addField(translate(language, 'general.createdAt'), createdAt, true)
+    //             .addField(translate(language, 'general.joinedAt'), joinedAt, true)
                 
     //         member.nickname && embedContract.addField("Nickname", member.nickname, true);
     //         embedContract.addField("ID", member.user.id, true)
@@ -151,7 +147,7 @@ const memberLeavedLog = async (client, member) => {
     // });
 }
 
-const memberNicknameLog = async (client, executor, target, oldNickname, newNickname, logChannel, language) => {
+async function memberNicknameLog(client, executor, target, oldNickname, newNickname, logChannel, language) {
 
     let variant;
     if(oldNickname && newNickname) {
@@ -160,18 +156,232 @@ const memberNicknameLog = async (client, executor, target, oldNickname, newNickn
         variant = 'Created'
     } else if(oldNickname && !newNickname) {
         variant = 'Removed'
-    } 
+    }
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
-        .setAuthor(getLocale(language, `memberNickname${variant}LogTitle`, target.tag), target.displayAvatarURL())
-        .setDescription(getLocale(language, `memberNickname${variant}LogDesc`, `<@${executor.id}>`, `<@${target.id}>`));
-    oldNickname && embed.addField(getLocale(language, 'memberNicknameLogOld'), oldNickname, true);
-    newNickname && embed.addField(getLocale(language, 'memberNicknameLogNew'), newNickname, true);
+        .setAuthor(translate(language, `logs.member.nickname${variant}Title`, target.tag), target.displayAvatarURL())
+        .addField(translate(language, 'logs.member.nicknameChangedBy'), `<@${executor.id}>\n${executor.id}`, true)
+    oldNickname && embed.addField(translate(language, 'logs.member.nicknameOld'), oldNickname, true);
+    newNickname && embed.addField(translate(language, 'logs.member.nicknameNew'), newNickname, true);
     embed.setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
 
     await logChannel.send(embed).catch();
 }
 
-module.exports = {memberJoinedLog, memberLeavedLog, memberNicknameLog};
+function memberKickedLog(client, executor, target, member, reason, logChannel, language) {
+
+    const roles = member.roles.cache.map(role => role.name !== '@everyone' ? `<@&${role.id}>` : '').toString().replaceAll(",", " ");
+    const kickedAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(new Date());
+    reason = reason ? reason : "-";
+    
+    const embed = new MessageEmbed()
+        .setColor(palette.info)
+        .setAuthor(translate(language, 'logs.member.kickedTitle', target.tag), target.displayAvatarURL())
+        .addField(translate(language, 'logs.member.kickedTarget'), `<@${target.id}>\n${target.id}`, true)
+        .addField(translate(language, 'general.by'), `<@${executor.id}>\n${executor.id}`, true)
+        .addField(translate(language, 'logs.member.kickedAt'), kickedAt, true)
+        .addField(translate(language, 'general.reason'), reason, true);
+    roles && embed.addField(translate(language, 'general.roles'), roles, true);
+    embed.setFooter(client.user.username, client.user.displayAvatarURL())
+        .setTimestamp();
+
+    logChannel.send(embed).catch();
+}
+
+function memberBannedLog (client, executor, target, member, reason, logChannel, language) {
+
+    const roles = member.roles.cache.map(role => role.name !== '@everyone' ? `<@&${role.id}>` : '').toString().replaceAll(",", " ");
+    const bannedAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(new Date());
+    reason = reason ? reason : "-";
+    
+    const embed = new MessageEmbed()
+        .setColor(palette.info)
+        .setAuthor(translate(language, 'logs.member.bannedTitle', target.tag), target.displayAvatarURL())
+        .addField(translate(language, 'logs.member.bannedTarget'), `<@${target.id}>\n${target.id}`, true)
+        .addField(translate(language, 'general.by'), `<@${executor.id}>\n${executor.id}`, true)
+        .addField(translate(language, 'logs.member.bannedAt'), bannedAt, true)
+        .addField(translate(language, 'general.reason'), reason, true);
+    roles && embed.addField(translate(language, 'general.roles'), roles, true);
+    embed.setFooter(client.user.username, client.user.displayAvatarURL())
+        .setTimestamp();
+
+    logChannel.send(embed).catch();
+}
+
+async function memberUnbannedLog(client, guild, user) {
+
+    const guildConfig = await GuildConfig.findOne({guildID: guild.id}).catch();
+    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
+    const language = guildConfig.get('language');
+    if(!logChannel) return;
+
+    const banLog = await guild.fetchAuditLogs({limit: 1, type: 'MEMBER_BAN_REMOVE'});
+    const updateBan = banLog.entries.first();
+    if(updateBan.target.id === user.id && Date.now() - updateBan.createdTimestamp < 5000) {
+        const unbannedAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(new Date());
+        
+        const embed = new MessageEmbed()
+            .setColor(palette.info)
+            .setAuthor(translate(language, 'logs.member.unbannedTitle', updateBan.target.tag), updateBan.target.displayAvatarURL())
+            .addField(translate(language, 'logs.member.unbannedTarget'), `<@${updateBan.target.id}>\n${updateBan.target.id}`, true)
+            .addField(translate(language, 'general.by'), `<@${updateBan.executor.id}>\n${updateBan.executor.id}`, true)
+            .addField(translate(language, 'logs.member.unbannedAt'), unbannedAt, true)
+            .setFooter(client.user.username, client.user.displayAvatarURL())
+            .setTimestamp();
+
+        logChannel.send(embed).catch();
+    }
+}
+
+
+
+async function channelCreatedLog(client, channel) {
+    const guildConfig = await GuildConfig.findOne({guildID: channel.guild.id}).catch();
+    const logChannel = channel.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.channel'));
+    const language = guildConfig.get('language');
+    if(!logChannel) return;
+
+    const auditLog = await channel.guild.fetchAuditLogs({limit: 1, type: 'CHANNEL_CREATE'});
+    const entry = auditLog.entries.first();
+    if(entry.target.id === channel.id && Date.now() - entry.createdTimestamp < 5000) {
+
+        const createdAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(entry.createdAt);
+        const embed = new MessageEmbed()
+            .setColor(palette.info)
+            .setAuthor(translate(language, 'logs.channel.createdTitle'), entry.executor.displayAvatarURL())
+            .addField(translate(language, 'general.channel'), `<#${channel.id}>\n${channel.id}`, true)
+            .addField(translate(language, 'general.by'), `<@${entry.executor.id}>\n${entry.executor.id}`, true)
+            .addField(translate(language, 'logs.channel.createdAt'), createdAt, true)
+            .setFooter(client.user.username, client.user.displayAvatarURL())
+            .setTimestamp();
+
+        await logChannel.send(embed).catch();
+    }
+}
+
+async function channelDeletedLog(client, channel) {
+    const guildConfig = await GuildConfig.findOne({guildID: channel.guild.id}).catch();
+    const logChannel = channel.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.channel'));
+    const language = guildConfig.get('language');
+    if(!logChannel) return;
+
+    const auditLog = await channel.guild.fetchAuditLogs({limit: 1, type: 'CHANNEL_DELETE'});
+    const entry = auditLog.entries.first();
+    if(entry.target.id === channel.id && Date.now() - entry.createdTimestamp < 5000) {
+
+        const deletedAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(entry.createdAt);
+        const embed = new MessageEmbed()
+            .setColor(palette.info)
+            .setAuthor(translate(language, 'logs.channel.deletedTitle', channel.name), entry.executor.displayAvatarURL())
+            .addField(translate(language, 'general.by'), `<@${entry.executor.id}>\n${entry.executor.id}`, true)
+            .addField(translate(language, 'logs.channel.deletedAt'), deletedAt, true)
+            .setFooter(client.user.username, client.user.displayAvatarURL())
+            .setTimestamp();
+
+        await logChannel.send(embed).catch();
+    }
+}
+
+async function channelUpdatedLog(client, oldChannel, newChannel) {
+    const guildConfig = await GuildConfig.findOne({guildID: newChannel.guild.id}).catch();
+    const logChannel = newChannel.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.channel'));
+    const language = guildConfig.get('language');
+    if(!logChannel) return;
+
+    let auditLog = await newChannel.guild.fetchAuditLogs({limit: 1, type: 'CHANNEL_UPDATE'});
+    let entry = auditLog.entries.first();
+    if(Date.now() - entry.createdTimestamp > 5000) {
+        auditLog = await newChannel.guild.fetchAuditLogs({limit: 1, type: 'CHANNEL_OVERWRITE_CREATE'});
+        entry = auditLog.entries.first(); 
+    }
+    if(Date.now() - entry.createdTimestamp > 5000) {
+        auditLog = await newChannel.guild.fetchAuditLogs({limit: 1, type: 'CHANNEL_OVERWRITE_UPDATE'});
+        entry = auditLog.entries.first(); 
+    }
+    if(Date.now() - entry.createdTimestamp > 5000) {
+        auditLog = await newChannel.guild.fetchAuditLogs({limit: 1, type: 'CHANNEL_OVERWRITE_DELETE'});
+        entry = auditLog.entries.first();
+    }
+    if(entry.target.id === newChannel.id && Date.now() - entry.createdTimestamp < 5000) {
+        const changes = entry.changes;
+        const name = changes.find(c => c.key === 'name') || undefined;
+        const topic = changes.find(c => c.key === 'topic') || undefined;
+        const rateLimit = changes.find(c => c.key === 'rate_limit_per_user') || undefined;
+        const nsfw = changes.find(c => c.key === 'nsfw') || undefined;
+        let allowedPerms = [];
+        let deniedPerms = [];
+        let resetPerms = [];
+        // console.log(changes)
+        let permsAllow = changes.find(c => c.key === 'allow');
+        if(permsAllow) {
+            const oldPerms = convertPerms('flags', permsAllow.old);
+            const newPerms = convertPerms('flags', permsAllow.new);
+            newPerms.forEach(element => {
+                if(!oldPerms.includes(element)) allowedPerms.push(element);
+            });
+            oldPerms.forEach(element => {
+                if(!newPerms.includes(element)) resetPerms.push(element);
+            });
+        }
+        let permsDeny = changes.find(key => key.key === 'deny');
+        if(permsDeny) {
+            const oldPerms = convertPerms('flags', permsDeny.old);
+            const newPerms = convertPerms('flags', permsDeny.new);
+            newPerms.forEach(element => {
+                if(!oldPerms.includes(element)) deniedPerms.push(element);
+            });
+            oldPerms.forEach(element => {
+                if(!newPerms.includes(element)) resetPerms.push(element);
+            });
+        }
+        resetPerms.forEach(element => {
+            if(allowedPerms.includes(element)) resetPerms = resetPerms.filter(e => e !== element);
+            if(deniedPerms.includes(element)) resetPerms = resetPerms.filter(e => e !== element);
+        })
+        
+        // console.log("Dodano uprawnienia", allowedPerms)
+        // console.log("Zabrano uprawnienia", deniedPerms)
+        // console.log("Zresetowano uprawnienia", resetPerms)
+        // name, topic, rate_limit_per_user, nsfw
+
+        const updatedAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(entry.createdAt);
+        const embed = new MessageEmbed()
+            .setColor(palette.info)
+            .setAuthor(translate(language, 'logs.channel.changedTitle', newChannel.name), entry.executor.displayAvatarURL())
+            .addField(translate(language, 'general.channel'), `<#${newChannel.id}>\n${newChannel.id}`, true)
+            .addField(translate(language, 'general.by'), `<@${entry.executor.id}>\n${entry.executor.id}`, true)
+            .setFooter(client.user.username, client.user.displayAvatarURL())
+            .setTimestamp();
+        name && embed.addField(translate(language, 'general.name'), "`" + name.old +"`->`"+ name.new + "`", true);
+        topic && embed.addField(translate(language, 'general.description'), 
+            `**${translate(language, 'logs.channel.changedOld')}**: ${topic.old}
+            **${translate(language, 'logs.channel.changedNew')}**: ${topic.new}`, true);
+        
+        rateLimit && embed.addField(translate(language, 'general.slowMode'), 
+            `**${translate(language, 'logs.channel.changedOld')}**: ${rateLimit.old ? ms(rateLimit.old*1000) : translate(language, 'general.off')}
+            **${translate(language, 'logs.channel.changedNew')}**: ${rateLimit.new ? ms(rateLimit.new*1000) : translate(language, 'general.off')}`, true);
+            
+        nsfw && embed.addField("NSFW", nsfw.new ? translate(language, 'general.on') : translate(language, 'general.off'), true);
+        
+        allowedPerms.length && embed.addField(translate(language, 'logs.general.allowedPerms'),
+            allowedPerms.map(perm => translate(language, `permissions.${perm}`)).toString().replaceAll(",", ", "), true);
+
+        deniedPerms.length && embed.addField(translate(language, 'logs.general.deniedPerms'),
+            deniedPerms.map(perm => translate(language, `permissions.${perm}`)).toString().replaceAll(",", ", "), true);
+
+        resetPerms.length && embed.addField(translate(language, 'logs.general.resetPerms'),
+            resetPerms.map(perm => translate(language, `permissions.${perm}`)).toString().replaceAll(",", ", "), true);
+        
+        
+        
+        
+
+        await logChannel.send(embed).catch();
+    }
+}
+
+
+module.exports = {memberJoinedLog, memberLeavedLog, memberNicknameLog, memberKickedLog, memberBannedLog, memberUnbannedLog,
+    channelCreatedLog, channelDeletedLog, channelUpdatedLog};

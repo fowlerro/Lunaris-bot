@@ -3,13 +3,13 @@ const { botOwners } = require("../bot");
 const CommandConfig = require("../database/schemas/CommandConfig");
 const Cooldowns = require("../database/schemas/Cooldowns");
 const GuildConfig = require("../database/schemas/GuildConfig");
-const { getLocale } = require("../utils/languages/languages");
+const { translate } = require("../utils/languages/languages");
 
 const commandHandle = async (client, message) => {
     const guildConfig = await GuildConfig.findOne({guildID: message.guild.id});
     const prefix = guildConfig.get('prefix');
     const language = guildConfig.get('language');
-    if(message.mentions.has(client.user)) return message.channel.send(getLocale(language, "prefixMessage", "`"+prefix+"`"));
+    if(message.mentions.has(client.user)) return message.channel.send(translate(language, "cmd.prefixMessage", "`"+prefix+"`"));
     if (message.content.startsWith(prefix)) {
         const [cmdName, ...cmdArgs] = message.content
         .slice(prefix.length)
@@ -18,7 +18,7 @@ const commandHandle = async (client, message) => {
         let command = client.commands.get(cmdName);
         let cmd = command;
         if (command) {
-            if(!command.globalStatus) return message.channel.send(getLocale(language, "cmdGlobalStatus"));
+            if(!command.globalStatus) return message.channel.send(translate(language, "cmd.globalStatus"));
             if(command.ownerOnly) {
                 if(!botOwners.includes(message.author.id)) return;
             } else {
@@ -76,7 +76,7 @@ const commandHandle = async (client, message) => {
                 }
                 const userCD = await Cooldowns.findOne({guildID: message.guild.id, userID: message.author.id, cmdName: command.name});
                 if(userCD) {
-                    if(userCD.cooldown > Date.now()) return console.log("cd");
+                    if(userCD.cooldown > Date.now()) return;
                     const cdTime = Date.now() + ms(command.cooldown);
                     await Cooldowns.findOneAndUpdate({guildID: message.guild.id, userID: message.author.id, cmdName: command.name}, {
                         cooldown: cdTime,

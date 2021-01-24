@@ -1,0 +1,105 @@
+{
+    "name": "Polski",
+    "general": {
+        "name": "Nazwa",
+        "description": "Opis",
+        "slowMode": "Tryb powolny",
+        "on": "Włączone",
+        "off": "Wyłączone",
+        "reason": "Powód",
+        "roles": "Role",
+        "by": "Przez",
+        "createdAt": "Konto utworzone",
+        "joinedAt": "Dołączył",
+        "channel": "Kanał"
+    },
+    "cmd": {
+        "globalStatus": "Komenda jest chwilowo wyłączona",
+        "prefixMessage": "Prefix dla tego serwera to: %VAR%",
+        "languageListMessage": "Wspierane języki",
+        "languageListFooter": "Wpisz %VAR%language <język>, aby zmienić język",
+        "wrongLanguage": "Ten język jest nieobsługiwany, wpisz '%VAR%language', aby sprawdzić listę wspieranych języków",
+        "prefixChange": "Prefix został pomyślnie zmieniony na %VAR%",
+        "languageChange": "Język został pomyślnie zmieniony na %VAR%"
+    },
+    "logs": {
+        "general": {
+            "allowedPerms": "Dodane permisje",
+            "deniedPerms": "Zabrane permisje",
+            "resetPerms": "Zresetowane permisje"
+        },
+        "member": {
+            "joinedTitle": "%VAR% dołączył",
+            "leavedTitle": "%VAR% opuścił serwer",
+
+            "nicknameChangedTitle": "Nickname %VAR% został zmieniony",
+            "nicknameCreatedTitle": "Nickname %VAR% został ustawiony",
+            "nicknameRemovedTitle": "Nickname %VAR% został usunięty",
+            "nicknameChangedDesc": "%VAR% zmienił nick użytkownikowi %VAR%",
+            "nicknameCreatedDesc": "%VAR% stworzył nick użytkownikowi %VAR%",
+            "nicknameRemovedDesc": "%VAR% usunął nick użytkownikowi %VAR%",
+            "nicknameChangedBy": "Zmieniony przez",
+            "nicknameOld": "Stary nickname",
+            "nicknameNew": "Nowy nickname",
+
+            "kickedTitle": "%VAR% został wyrzucony",
+            "kickedDesc": "%VAR% został wyrzucony przez %VAR%",
+            "kickedAt": "W czasie",
+            "kickedTarget": "Wyrzucony",
+
+            "bannedTitle": "%VAR% został zbanowany",
+            "bannedDesc": "%VAR% został zbanowany przez %VAR%",
+            "bannedAt": "W czasie",
+            "bannedTarget": "Zbanowany",
+
+            "unbannedTitle": "%VAR% został odbanowany",
+            "unbannedDesc": "%VAR% został odbanowany przez %VAR%",
+            "unbannedAt": "W czasie",
+            "unbannedTarget": "Odbanowany"
+        },
+        "channel": {
+            "createdTitle": "Nowy kanał został stworzony",
+            "createdAt": "W czasie",
+            
+            "deletedTitle": "Kanał #%VAR% został usunięty",
+            "deletedAt": "W czasie",
+
+            "changedTitle": "Kanał #%VAR% został zmodyfikowany",
+            "changedOld": "Stary",
+            "changedNew": "Nowy"
+        }
+    },
+    "permissions": {
+        "CREATE_INSTANT_INVITE": "Tworzenie zaproszenia",
+        "KICK_MEMBERS": "Wyrzucanie członków",
+        "BAN_MEMBERS": "Banowanie członków",
+        "ADMINISTRATOR": "Administrator",
+        "MANAGE_CHANNELS": "Zarządzanie kanałami",
+        "MANAGE_GUILD": "Zarządzanie serwerem",
+        "ADD_REACTIONS": "Dodawanie reakcji",
+        "VIEW_AUDIT_LOG": "Wyświetlanie dziennika zdarzeń",
+        "PRIORITY_SPEAKER": "Priorytetowy rozmówca",
+        "STREAM": "Wideo",
+        "VIEW_CHANNEL": "Czytanie wiadomości",
+        "SEND_MESSAGES": "Wysyłanie wiadomości",
+        "SEND_TTS_MESSAGES": "Wysyłanie wiadomości TTS",
+        "MANAGE_MESSAGES": "Zarządzanie wiadomościami",
+        "EMBED_LINKS": "Wyświetlanie podglądu linku",
+        "ATTACH_FILES": "Załączanie plików",
+        "READ_MESSAGE_HISTORY": "Czytanie historii czatu",
+        "MENTION_EVERYONE": "Zamieść wzmiankę @everyone, @here",
+        "USE_EXTERNAL_EMOJIS": "Używanie zewnętrznych emoji",
+        "VIEW_GUILD_INSIGHTS": "Pokaż przegląd serwera",
+        "CONNECT": "Łączenie",
+        "SPEAK": "Mówienie",
+        "MUTE_MEMBERS": "Wyciszanie członków",
+        "DEAFEN_MEMBERS": "Wyłączanie dźwięku członkom",
+        "MOVE_MEMBERS": "Przenoszenie członków",
+        "USE_VAD": "Używanie Aktywności Głosowej",
+        "CHANGE_NICKNAME": "Zmiana pseudonimu",
+        "MANAGE_NICKNAMES": "Zarządzanie pseudonimami",
+        "MANAGE_ROLES": "Zarządzanie rolami",
+        "MANAGE_WEBHOOKS": "Zarządzanie webhookami",
+        "MANAGE_EMOJIS": "Zarządzanie emoji"
+    }
+}
