@@ -11,7 +11,10 @@
         "by": "By",
         "createdAt": "Account created at",
         "joinedAt": "Account joined at",
-        "channel": "Channel"
+        "channel": "Channel",
+        "content": "Content",
+        "before": "Before",
+        "after": "After"
     },
     "cmd": {
         "globalStatus": "Command is temporary turned off",
@@ -67,6 +70,21 @@
             "changedTitle": "Channel #%VAR% has been changed",
             "changedOld": "Old",
             "changedNew": "New"
+        },
+        "message": {
+            "deletedTitle": "Message has been deleted",
+
+            "editedTitle": "Message has been edited",
+            "editedLink": "[Jump to message](%VAR%)",
+            "target": "Message author"
+        },
+        "invite": {
+            "createdTitle": "Invite has been created",
+            "deletedTitle": "Invite has been deleted",
+            "createdBy": "Created by",
+            "createdAt": "Created at",
+            "expiresAt": "Expires at",
+            "maxUses": "Uses"
         }
     },
     "permissions": {

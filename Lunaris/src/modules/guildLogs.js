@@ -11,15 +11,16 @@ Member:
     muted
     warned
 
-Channel:
-    created
-    deleted
-    changed
+?Channel:
+    ?created
+    ?deleted
+    ?changed
 
-Voice:
-    joined
-    leaved
-    moved
+* https://github.com/discord/discord-api-docs/issues/2280
+!Voice:
+    !joined
+    !leaved
+    !moved
 
 Roles:
     member:
@@ -33,19 +34,17 @@ Roles:
     position changed
     color changed
 
-Message:
-    edited
-    removed
-    ghost ping
+?Message:
+    ?edited
+    ?removed
 
 Commands:
     triggered
     tried to trigger
 
-Invites:
-    created
+?Invites:
+    ?created
     ?(expired)
-    invited user
 */
 
 const { MessageEmbed, BitField } = require("discord.js");
@@ -284,7 +283,7 @@ async function channelDeletedLog(client, channel) {
     }
 }
 
-async function channelUpdatedLog(client, oldChannel, newChannel) {
+async function channelUpdatedLog(client, newChannel) {
     const guildConfig = await GuildConfig.findOne({guildID: newChannel.guild.id}).catch();
     const logChannel = newChannel.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.channel'));
     const language = guildConfig.get('language');
@@ -346,7 +345,7 @@ async function channelUpdatedLog(client, oldChannel, newChannel) {
         // console.log("Zresetowano uprawnienia", resetPerms)
         // name, topic, rate_limit_per_user, nsfw
 
-        const updatedAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(entry.createdAt);
+        // const updatedAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(entry.createdAt);
         const embed = new MessageEmbed()
             .setColor(palette.info)
             .setAuthor(translate(language, 'logs.channel.changedTitle', newChannel.name), entry.executor.displayAvatarURL())
@@ -374,14 +373,80 @@ async function channelUpdatedLog(client, oldChannel, newChannel) {
         resetPerms.length && embed.addField(translate(language, 'logs.general.resetPerms'),
             resetPerms.map(perm => translate(language, `permissions.${perm}`)).toString().replaceAll(",", ", "), true);
         
-        
-        
-        
-
         await logChannel.send(embed).catch();
     }
 }
 
 
+
+function messageDeletedLog(client, content, channelID, target, executor, logChannel, language) {
+    
+    const embed = new MessageEmbed()
+        .setColor(palette.info)
+        .setAuthor(translate(language, 'logs.message.deletedTitle'), target.displayAvatarURL())
+        // .setDescription(translate(language, 'logs.message.deletedLink', `https://discord.com/channels/${guildID}/${channelID}/${messageID}`))
+        .addField(translate(language, 'logs.message.target'), `<@${target.id}>\n${target.id}`, true);
+    executor && embed.addField(translate(language, 'general.by'), `<@${executor.id}>\n${executor.id}`, true);
+    embed.addField(translate(language, 'general.channel'), `<#${channelID}>`, true)
+        .addField(translate(language, 'general.content'), content, true)
+        .setFooter(client.user.username, client.user.displayAvatarURL())
+        .setTimestamp();
+
+    logChannel.send(embed).catch();
+}
+
+function messageEditedLog(client, oldContent, newContent, messageID, channelID, guildID, target, logChannel, language) {
+    
+    const embed = new MessageEmbed()
+        .setColor(palette.info)
+        .setAuthor(translate(language, 'logs.message.editedTitle'), target.displayAvatarURL())
+        .setDescription(translate(language, 'logs.message.editedLink', `https://discord.com/channels/${guildID}/${channelID}/${messageID}`))
+        .addField(translate(language, 'logs.message.target'), `<@${target.id}>\n${target.id}`, true)
+        .addField(translate(language, 'general.channel'), `<#${channelID}>`, true)
+        .addField(translate(language, 'general.content'), 
+            `**${translate(language, 'general.before')}**: ${oldContent}
+            **${translate(language, 'general.after')}**: ${newContent}`, true)
+        .setFooter(client.user.username, client.user.displayAvatarURL())
+        .setTimestamp();
+
+    logChannel.send(embed).catch();
+}
+
+
+
+function inviteCreatedLog(client, url, expires, inviter, uses, channelID, logChannel, language) {
+
+    const expiresAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(expires);
+    
+    const embed = new MessageEmbed()
+        .setColor(palette.info)
+        .setAuthor(translate(language, 'logs.invite.createdTitle'), inviter.displayAvatarURL())
+        .addField(translate(language, 'logs.invite.createdBy'), `<@${inviter.id}>\n${inviter.id}`, true)
+        .addField(translate(language, 'general.channel'), `<#${channelID}>`, true)
+        .addField(translate(language, 'logs.invite.expiresAt'), expiresAt, true)
+        .addField('URL', url, true)
+        .addField(translate(language, 'logs.invite.maxUses'), uses, true)
+        .setFooter(client.user.username, client.user.displayAvatarURL())
+        .setTimestamp();
+
+    logChannel.send(embed).catch();
+}
+
+function inviteDeletedLog(client, code, channelID, logChannel, language) {
+
+    const embed = new MessageEmbed()
+        .setColor(palette.info)
+        .setAuthor(translate(language, 'logs.invite.deletedTitle'))
+        .addField(translate(language, 'general.channel'), `<#${channelID}>`, true)
+        .addField('URL', code, true)
+        .setFooter(client.user.username, client.user.displayAvatarURL())
+        .setTimestamp();
+
+    logChannel.send(embed).catch();
+}
+
+
 module.exports = {memberJoinedLog, memberLeavedLog, memberNicknameLog, memberKickedLog, memberBannedLog, memberUnbannedLog,
-    channelCreatedLog, channelDeletedLog, channelUpdatedLog};
+    channelCreatedLog, channelDeletedLog, channelUpdatedLog,
+    messageDeletedLog, messageEditedLog,
+    inviteCreatedLog, inviteDeletedLog};

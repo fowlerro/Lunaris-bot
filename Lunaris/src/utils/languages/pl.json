@@ -11,7 +11,10 @@
         "by": "Przez",
         "createdAt": "Konto utworzone",
         "joinedAt": "Dołączył",
-        "channel": "Kanał"
+        "channel": "Kanał",
+        "content": "Treść",
+        "before": "Przed",
+        "after": "Po"
     },
     "cmd": {
         "globalStatus": "Komenda jest chwilowo wyłączona",
@@ -67,6 +70,21 @@
             "changedTitle": "Kanał #%VAR% został zmodyfikowany",
             "changedOld": "Stary",
             "changedNew": "Nowy"
+        },
+        "message": {
+            "deletedTitle": "Wiadomość została usunięta",
+
+            "editedTitle": "Wiadomość została edytowana",
+            "editedLink": "[Skocz do wiadomości](%VAR%)",
+            "target": "Autor wiadomości"
+        },
+        "invite": {
+            "createdTitle": "Zaproszenie zostało utworzone",
+            "deletedTitle": "Zaproszenie zostało usunięte",
+            "createdBy": "Stworzone przez",
+            "createdAt": "Stworzone",
+            "expiresAt": "Straci ważność",
+            "maxUses": "Użyć"
         }
     },
     "permissions": {
