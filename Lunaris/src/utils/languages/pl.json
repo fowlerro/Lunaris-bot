@@ -7,6 +7,7 @@
         "on": "Włączone",
         "off": "Wyłączone",
         "reason": "Powód",
+        "role": "Rola",
         "roles": "Role",
         "by": "Przez",
         "createdAt": "Konto utworzone",
@@ -14,7 +15,17 @@
         "channel": "Kanał",
         "content": "Treść",
         "before": "Przed",
-        "after": "Po"
+        "after": "Po",
+        "code": "Kod",
+        "old": {
+            "a": "Stary",
+            "b": "Stara"
+        },
+        "new": {
+            "a": "Nowy",
+            "b": "Nowa"
+        },
+        "color": "Kolor"
     },
     "cmd": {
         "globalStatus": "Komenda jest chwilowo wyłączona",
@@ -58,7 +69,10 @@
             "unbannedTitle": "%VAR% został odbanowany",
             "unbannedDesc": "%VAR% został odbanowany przez %VAR%",
             "unbannedAt": "W czasie",
-            "unbannedTarget": "Odbanowany"
+            "unbannedTarget": "Odbanowany",
+
+            "addRoleTitle": "%VAR% otrzymał rolę",
+            "removeRoleTitle": "%VAR% stracił rolę"
         },
         "channel": {
             "createdTitle": "Nowy kanał został stworzony",
@@ -85,6 +99,17 @@
             "createdAt": "Stworzone",
             "expiresAt": "Straci ważność",
             "maxUses": "Użyć"
+        },
+        "cmd": {
+            "triggerTitle": "Komenda '%VAR%' została wykonana"
+        },
+        "role": {
+            "createdTitle": "Nowa rola została stworzona",
+            "deletedTitle": "Rola @%VAR% została usunięta",
+            "changedTitle": "Rola @%VAR% została zmodyfikowana",
+
+            "hoist": "Wyświetlanie osobno",
+            "mentionable": "Zezwolenie na wzmianki"
         }
     },
     "permissions": {

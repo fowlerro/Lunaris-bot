@@ -8,7 +8,7 @@ module.exports = class MessageUodateEvent extends BaseEvent {
   }
   
   async run(client, oldMessage, newMessage) {
-    if(!newMessage.guild) return;
+    if(!newMessage.guild || newMessage.author.bot) return;
     
     if(oldMessage.content !== newMessage.content) {
       const guildConfig = await GuildConfig.findOne({guildID: newMessage.guild.id}).catch();

@@ -22,24 +22,24 @@ Member:
     !leaved
     !moved
 
-Roles:
-    member:
-        added
-        removed
-    permissions:
-        added
-        removed
-    created
-    removed
+?Roles:
+    ?member:
+        ?added
+        ?removed
+    ?permissions:
+        ?added
+        ?removed
+    ?created
+    ?removed
     position changed
-    color changed
+    ?color changed
 
 ?Message:
     ?edited
     ?removed
 
 Commands:
-    triggered
+    ?triggered
     tried to trigger
 
 ?Invites:
@@ -47,7 +47,7 @@ Commands:
     ?(expired)
 */
 
-const { MessageEmbed, BitField } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const { palette } = require("../bot");
 const GuildConfig = require("../database/schemas/GuildConfig");
 const { translate } = require("../utils/languages/languages");
@@ -438,7 +438,7 @@ function inviteDeletedLog(client, code, channelID, logChannel, language) {
         .setColor(palette.info)
         .setAuthor(translate(language, 'logs.invite.deletedTitle'))
         .addField(translate(language, 'general.channel'), `<#${channelID}>`, true)
-        .addField('URL', code, true)
+        .addField(translate(language, 'general.code'), code, true)
         .setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
 
@@ -446,7 +446,156 @@ function inviteDeletedLog(client, code, channelID, logChannel, language) {
 }
 
 
+
+async function cmdTriggerLog(client, cmdName, guild, channelID, executor, content) {
+    const guildConfig = await GuildConfig.findOne({guildID: guild.id}).catch();
+    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.commands'));
+    const language = guildConfig.get('language');
+    if(!logChannel) return;
+
+    const embed = new MessageEmbed()
+        .setColor(palette.info)
+        .setAuthor(translate(language, 'logs.cmd.triggerTitle', guildConfig.get("prefix") + cmdName), executor.displayAvatarURL())
+        .addField(translate(language, 'general.by'), `<@${executor.id}>\n${executor.id}`, true)
+        .addField(translate(language, 'general.channel'), `<#${channelID}>\n${channelID}`, true)
+        .addField(translate(language, 'general.content'), content, true)
+        .setFooter(client.user.username, client.user.displayAvatarURL())
+        .setTimestamp();
+
+    await logChannel.send(embed).catch();
+}
+
+
+
+function memberRoleLog(client, executor, target, role, state, logChannel, language) {
+
+    const embed = new MessageEmbed()
+        .setColor(palette.info)
+        .setAuthor(translate(language, `logs.roles.${state}RoleTitle`, target.tag), target.displayAvatarURL())
+        .addField('Target', `<@${target.id}>\n${target.id}`, true)
+        .addField(translate(language, 'general.by'), `<@${executor.id}>\n${executor.id}`, true)
+        .addField(translate(language, 'general.role'), `<@&${role}>`, true)
+        .setFooter(client.user.username, client.user.displayAvatarURL())
+        .setTimestamp();
+
+    logChannel.send(embed).catch();
+}
+
+
+
+async function roleCreatedLog(client, role) {
+    const guildConfig = await GuildConfig.findOne({guildID: role.guild.id}).catch();
+    const logChannel = role.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.roles'));
+    const language = guildConfig.get('language');
+    if(!logChannel) return;
+
+    const auditLog = await role.guild.fetchAuditLogs({limit: 1, type: 'ROLE_CREATE'});
+    const entry = auditLog.entries.first();
+    if(entry.target.id === role.id && Date.now() - entry.createdTimestamp < 5000) {
+
+        const embed = new MessageEmbed()
+            .setColor(palette.info)
+            .setAuthor(translate(language, 'logs.role.createdTitle'), entry.executor.displayAvatarURL())
+            .addField(translate(language, 'general.role'), `<@&${role.id}>\n${role.id}`, true)
+            .addField(translate(language, 'general.by'), `<@${entry.executor.id}>\n${entry.executor.id}`, true)
+            .setFooter(client.user.username, client.user.displayAvatarURL())
+            .setTimestamp();
+
+        await logChannel.send(embed).catch();
+    }
+}
+
+async function roleDeletedLog(client, role) {
+    const guildConfig = await GuildConfig.findOne({guildID: role.guild.id}).catch();
+    const logChannel = role.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.roles'));
+    const language = guildConfig.get('language');
+    if(!logChannel) return;
+
+    const auditLog = await role.guild.fetchAuditLogs({limit: 1, type: 'ROLE_DELETE'});
+    const entry = auditLog.entries.first();
+    if(entry.target.id === role.id && Date.now() - entry.createdTimestamp < 5000) {
+
+        const embed = new MessageEmbed()
+            .setColor(palette.info)
+            .setAuthor(translate(language, 'logs.role.deletedTitle', role.name), entry.executor.displayAvatarURL())
+            .addField(translate(language, 'general.by'), `<@${entry.executor.id}>\n${entry.executor.id}`, true)
+            .setFooter(client.user.username, client.user.displayAvatarURL())
+            .setTimestamp();
+
+        await logChannel.send(embed).catch();
+    }
+}
+
+async function roleUpdatedLog(client, role) {
+    const guildConfig = await GuildConfig.findOne({guildID: role.guild.id}).catch();
+    const logChannel = role.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.roles'));
+    const language = guildConfig.get('language');
+    if(!logChannel) return;
+
+    const auditLog = await role.guild.fetchAuditLogs({limit: 1, type: 'ROLE_UPDATE'});
+    const entry = auditLog.entries.first();
+    if(entry.target.id === role.id && Date.now() - entry.createdTimestamp < 5000) {
+        // console.log(entry);
+        const changes = entry.changes;
+        const name = changes.find(c => c.key === 'name') || undefined;
+        const color = changes.find(c => c.key === 'color') || undefined;
+        const hoist = changes.find(c => c.key === 'hoist') || undefined;
+        const mentionable = changes.find(c => c.key === 'mentionable') || undefined;
+        let allowedPerms = [];
+        let deniedPerms = [];
+        // console.log(changes)
+        let perm = changes.find(c => c.key === 'permissions');
+        if(perm) {
+            const oldPerms = convertPerms('flags', perm.old);
+            const newPerms = convertPerms('flags', perm.new);
+            newPerms.forEach(element => {
+                if(!oldPerms.includes(element)) allowedPerms.push(element);
+            });
+            oldPerms.forEach(element => {
+                if(!newPerms.includes(element)) deniedPerms.push(element);
+            });
+        }
+        
+        // console.log("Dodano uprawnienia", allowedPerms)
+        // console.log("Zabrano uprawnienia", deniedPerms)
+        // console.log("Zresetowano uprawnienia", resetPerms)
+        // name, topic, rate_limit_per_user, nsfw
+
+        const embed = new MessageEmbed()
+            .setColor(palette.info)
+            .setAuthor(translate(language, 'logs.role.changedTitle', role.name), entry.executor.displayAvatarURL())
+            .addField(translate(language, 'general.role'), `<@&${role.id}>\n${role.id}`, true)
+            .addField(translate(language, 'general.by'), `<@${entry.executor.id}>\n${entry.executor.id}`, true)
+            .setFooter(client.user.username, client.user.displayAvatarURL())
+            .setTimestamp();
+        name && embed.addField(translate(language, 'general.name'), 
+            `**${translate(language, 'general.old.b')}**: ${name.old}
+            **${translate(language, 'general.new.b')}**: ${name.new}`, true);
+
+        color && embed.addField(translate(language, 'general.color'), 
+            `**${translate(language, 'general.old.a')}**: #${color.old.toString(16).toUpperCase()}
+            **${translate(language, 'general.new.a')}**: #${color.new.toString(16).toUpperCase()}`, true);
+        
+        hoist && embed.addField(translate(language, 'logs.role.hoist'), hoist.new ? translate(language, 'general.on') : translate(language, 'general.off'), true);
+            
+        mentionable && embed.addField(translate(language, 'logs.role.mentionable'), mentionable.new ? translate(language, 'general.on') : translate(language, 'general.off'), true);
+        
+        allowedPerms.length && embed.addField(translate(language, 'logs.general.allowedPerms'),
+        allowedPerms.map(perm => translate(language, `permissions.${perm}`)).toString().replaceAll(",", ", "), true);
+
+        deniedPerms.length && embed.addField(translate(language, 'logs.general.deniedPerms'),
+        deniedPerms.map(perm => translate(language, `permissions.${perm}`)).toString().replaceAll(",", ", "), true);
+
+        
+        await logChannel.send(embed).catch();
+    }
+}
+
+
 module.exports = {memberJoinedLog, memberLeavedLog, memberNicknameLog, memberKickedLog, memberBannedLog, memberUnbannedLog,
     channelCreatedLog, channelDeletedLog, channelUpdatedLog,
     messageDeletedLog, messageEditedLog,
-    inviteCreatedLog, inviteDeletedLog};
+    inviteCreatedLog, inviteDeletedLog,
+    cmdTriggerLog,
+    memberRoleLog,
+    roleCreatedLog, roleDeletedLog, roleUpdatedLog};

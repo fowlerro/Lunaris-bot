@@ -4,6 +4,7 @@ const CommandConfig = require("../database/schemas/CommandConfig");
 const Cooldowns = require("../database/schemas/Cooldowns");
 const GuildConfig = require("../database/schemas/GuildConfig");
 const { translate } = require("../utils/languages/languages");
+const { cmdTriggerLog } = require('./guildLogs');
 
 const commandHandle = async (client, message) => {
     const guildConfig = await GuildConfig.findOne({guildID: message.guild.id});
@@ -94,10 +95,6 @@ const commandHandle = async (client, message) => {
         }
 
         runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
-        // await cmd.run(client, message, cmdArgs);
-        // if(command.autoRemoveResponse) {
-        //     client.user.lastMessage.delete({timeout: 5000})
-        // }
     }
 }
 
@@ -160,6 +157,7 @@ const runCmd = async (client, message, cmd, cmdArgs, autoRemoveResponse) => {
     if(autoRemoveResponse) {
         client.user.lastMessage.delete({timeout: 5000});
     }
+    cmdTriggerLog(client, cmd.name, message.guild, message.channel.id, message.author, message.content);
 }
 
 module.exports = {commandHandle};

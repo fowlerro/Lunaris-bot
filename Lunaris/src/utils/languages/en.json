@@ -7,6 +7,7 @@
         "on": "Enabled",
         "off": "Disabled",
         "reason": "Reason",
+        "role": "Role",
         "roles": "Roles",
         "by": "By",
         "createdAt": "Account created at",
@@ -14,7 +15,17 @@
         "channel": "Channel",
         "content": "Content",
         "before": "Before",
-        "after": "After"
+        "after": "After",
+        "code": "Code",
+        "old": {
+            "a": "Old",
+            "b": "Old"
+        },
+        "new": {
+            "a": "New",
+            "b": "New"
+        },
+        "color": "Color"
     },
     "cmd": {
         "globalStatus": "Command is temporary turned off",
@@ -58,7 +69,10 @@
             "unbannedTitle": "%VAR% has been unbanned",
             "unbannedDesc": "%VAR% has been unbanned by %VAR%",
             "unbannedAt": "Unbanned at",
-            "unbannedTarget": "Target"
+            "unbannedTarget": "Target",
+
+            "addRoleTitle": "%VAR% was given a role",
+            "removeRoleTitle": "%VAR% was lost a role"
         },
         "channel": {
             "createdTitle": "New channel has been created",
@@ -85,6 +99,17 @@
             "createdAt": "Created at",
             "expiresAt": "Expires at",
             "maxUses": "Uses"
+        },
+        "cmd": {
+            "triggerTitle": "Command '%VAR%' has been triggered"
+        },
+        "role": {
+            "createdTitle": "New role has been created",
+            "deletedTitle":"Role @%VAR% has been deleted",
+            "changedTitle": "Role @%VAR% has been changed",
+
+            "hoist": "Hoist",
+            "mentionable": "Mention role"
         }
     },
     "permissions": {

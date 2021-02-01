@@ -9,7 +9,7 @@ module.exports = class MessageDeleteEvent extends BaseEvent {
   
   async run(client, message) {
     // console.log(message);
-    if(!message.guild) return;
+    if(!message.guild || message.author.bot) return;
     const guildConfig = await GuildConfig.findOne({guildID: message.guild.id}).catch();
     const logChannel = message.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.message'));
     const language = guildConfig.get('language');
