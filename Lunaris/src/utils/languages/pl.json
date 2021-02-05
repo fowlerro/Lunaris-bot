@@ -144,5 +144,16 @@
         "MANAGE_ROLES": "Zarządzanie rolami",
         "MANAGE_WEBHOOKS": "Zarządzanie webhookami",
         "MANAGE_EMOJIS": "Zarządzanie emoji"
+    },
+    "date": {
+        "days": {
+            "monday": "Poniedziałek",
+            "tuesday": "Wtorek",
+            "wednesday": "Środa",
+            "thursday": "Czwartek",
+            "friday": "Piątek",
+            "saturday": "Sobota",
+            "sunday": "Niedziela"
+        }
     }
 }

@@ -45,6 +45,12 @@ const GuildConfigSchema = new mongoose.Schema({
             type:mongoose.SchemaTypes.String,
             default: null,
         },
+    },
+    stats: {
+        channel: {
+            type: mongoose.SchemaTypes.String,
+            default: null,
+        }
     }
 });
 

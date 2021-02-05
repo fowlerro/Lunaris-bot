@@ -1,8 +1,10 @@
 
 const path = require('path');
 const fs = require('fs').promises;
-const BaseCommand = require('./structures/BaseCommand');
 const BaseEvent = require('./structures/BaseEvent');
+const { reviver, JSONToMap } = require('./utils');
+const mongoose = require('mongoose');
+const GuildConfig = require('../database/schemas/GuildConfig');
 
 async function registerCommands(client, dir = '') {
   const filePath = path.join(__dirname, dir);
@@ -37,7 +39,23 @@ async function registerEvents(client, dir = '') {
   }
 }
 
+async function registerMessagesCount(client) {
+  const pathFile = path.join(__dirname, './../database/statistics.json')
+  const json = await fs.readFile(pathFile);
+  JSONToMap(client.msgCount, json);
+}
+
+async function registerGuildConfigs(client) {
+  const configs = await GuildConfig.find({}).select('-_id -__v');
+  configs.forEach(element => {
+    const {guildID} = element;
+    client.guildConfigs.set(guildID, element)
+  });
+}
+
 module.exports = { 
   registerCommands, 
   registerEvents,
+  registerMessagesCount,
+  registerGuildConfigs,
 };

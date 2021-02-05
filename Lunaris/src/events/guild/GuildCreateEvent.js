@@ -12,11 +12,12 @@ module.exports = class GuildCreateEvent extends BaseEvent {
   
   async run(client, guild) {
     try {
-      const guildConfig = await GuildConfig.findOne({guildID: guild.id});
+      let guildConfig = client.guildConfigs.get(guild.id);
       if(!guildConfig) {
-        await GuildConfig.create({
+        guildConfig = await GuildConfig.create({
           guildID: guild.id,
-        });
+        }, {new: true});
+        client.guildConfigs.set(guild.id, {prefix: guildConfig.get('prefix'), language: guildConfig.get('language')})
       }
 
       // for(const [key, command] of client.commands) {

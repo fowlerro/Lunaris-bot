@@ -1,3 +1,5 @@
+const GuildConfig = require("../database/schemas/GuildConfig");
+
 const permissions = {
     CREATE_INSTANT_INVITE: 0x1,
     KICK_MEMBERS: 0x2,
@@ -44,6 +46,50 @@ function convertPerms(to, permission) {
     } else if(to==='bits') {
         return null
     }
-}  
+}
 
-module.exports = {convertPerms}
+function replacer(key, value) {
+    if(value instanceof Map) {
+        return {
+            "msg": value, // or with spread: value: [...value]
+        };
+    } else {
+        return value;
+    }
+}
+
+function mapToObject(map) {
+    const out = Object.create(null)
+    map.forEach((value, key) => {
+      if (value instanceof Map) {
+        out[key] = mapToObject(value)
+      }
+      else {
+        out[key] = value
+      }
+    })
+    return out
+}
+
+function JSONToMap(map, json) {
+    json = JSON.parse(json);
+    for(let v in json) {
+        map.set(v, json[v])
+    }
+}
+
+function daysInMonth(month, year) {
+    return new Date(year, month, 0).getDate();
+}
+
+async function setGuildConfig(client, guildID, toSet, value) {
+    await GuildConfig.findOneAndUpdate({guildID}, {
+        [toSet]: value
+    });
+    let config = client.guildConfigs.get(guildID);
+    config[toSet] = value;
+    client.guildConfigs.set(guildID, config);
+    return client.guildConfigs.get(guildID);
+}
+
+module.exports = {convertPerms, replacer, JSONToMap, mapToObject, daysInMonth, setGuildConfig}

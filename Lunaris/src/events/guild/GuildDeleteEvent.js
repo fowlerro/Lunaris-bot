@@ -13,6 +13,7 @@ module.exports = class GuildDeleteEvent extends BaseEvent {
   async run(client, guild) {
       try {
         await GuildConfig.deleteOne({guildID: guild.id});
+        client.guildConfigs.delete(guild.id);
         await CommandConfig.deleteMany({guildID: guild.id});
         console.log(infoLog + 'Bot opuścił serwer "' + guild.name + '" || "' + guild.id + '". Usunięto config.');
       } catch {

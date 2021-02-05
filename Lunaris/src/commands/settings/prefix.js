@@ -2,6 +2,7 @@ const { MessageEmbed } = require("discord.js");
 const { palette } = require("../../bot");
 const GuildConfig = require("../../database/schemas/GuildConfig");
 const { translate } = require("../../utils/languages/languages");
+const { setGuildConfig } = require("../../utils/utils");
 
 module.exports = {
     name: 'prefix',
@@ -34,9 +35,7 @@ module.exports = {
     cooldownReminder: true,
     async run(client, message, args) {
         try {
-            let guildConfig = await GuildConfig.findOneAndUpdate({guildID: message.guild.id}, {
-                prefix: args[0]
-            }, {new: true});
+            let guildConfig = await setGuildConfig(client, message.guild.id, 'prefix', args[0]);
             const language = guildConfig.get('language');
             const embed = new MessageEmbed()
                 .setColor(palette.success)

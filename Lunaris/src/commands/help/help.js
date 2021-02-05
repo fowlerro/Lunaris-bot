@@ -33,7 +33,7 @@ module.exports = {
     cooldownReminder: false,
     async run(client, message, args) {
         try {
-            const guildConfig = await GuildConfig.findOne({guildID: message.guild.id});
+            const guildConfig = client.guildConfigs.get(message.guild.id);
             const prefix = guildConfig.get('prefix');
             const language = guildConfig.get('language');
 

@@ -10,7 +10,8 @@ module.exports = class GuildMemberRemoveEvent extends BaseEvent {
   
   async run(client, member) {
 
-    const guildConfig = await GuildConfig.findOne({guildID: member.guild.id}).catch();
+    // const guildConfig = await GuildConfig.findOne({guildID: member.guild.id}).catch();
+    const guildConfig = client.guildConfigs.get(member.guild.id);
     const logChannel = member.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     const language = guildConfig.get('language');
     if(!logChannel) return;
