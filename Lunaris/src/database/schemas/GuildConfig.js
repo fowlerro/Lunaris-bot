@@ -46,11 +46,17 @@ const GuildConfigSchema = new mongoose.Schema({
             default: null,
         },
     },
-    stats: {
-        channel: {
-            type: mongoose.SchemaTypes.String,
-            default: null,
-        }
+    modules: {
+        autoRole: {
+            status: mongoose.SchemaTypes.Boolean,
+            default: false,
+        },
+        stats: {
+            channel: {
+                type: mongoose.SchemaTypes.String,
+                default: null,
+            }
+        },
     }
 });
 

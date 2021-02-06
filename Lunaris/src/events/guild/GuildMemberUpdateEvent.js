@@ -44,7 +44,7 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
 
     if(oldMember._roles.length > newMember._roles.length) {
       const guildConfig = await GuildConfig.findOne({guildID: newMember.guild.id}).catch();
-      const logChannel = newMember.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.roles'));
+      const logChannel = newMember.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
       const language = guildConfig.get('language');
       if(!logChannel) return;
 

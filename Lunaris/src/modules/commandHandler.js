@@ -154,7 +154,7 @@ const checkBlockRoles = (blockedRoles, member) => {
 
 const runCmd = async (client, message, cmd, cmdArgs, autoRemoveResponse) => {
     await cmd.run(client, message, cmdArgs);
-    if(autoRemoveResponse) {
+    if(autoRemoveResponse && client.user.lastMessage) {
         client.user.lastMessage.delete({timeout: 5000});
     }
     cmdTriggerLog(client, cmd.name, message.guild, message.channel.id, message.author, message.content);

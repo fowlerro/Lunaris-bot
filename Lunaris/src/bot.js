@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const botOwners = ["313346190995619841"];
 const fs = require('fs');
 const path = require('path');
+const { checkAutoRoles } = require('./modules/autoRole');
 
 const palette = {
   primary: '#102693',
@@ -32,6 +33,7 @@ mongoose.connect(`mongodb+srv://dbUser:${process.env.DB_PASS}@cluster0.wsvos.mon
   await registerGuildConfigs(client);
   await registerMessagesCount(client);
   await client.login(process.env.DISCORD_BOT_TOKEN);
+  await checkAutoRoles(client);
 })();
 
 function handle(signal) {

@@ -471,7 +471,7 @@ function memberRoleLog(client, executor, target, role, state, logChannel, langua
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
-        .setAuthor(translate(language, `logs.roles.${state}RoleTitle`, target.tag), target.displayAvatarURL())
+        .setAuthor(translate(language, `logs.member.${state}RoleTitle`, target.tag), target.displayAvatarURL())
         .addField('Target', `<@${target.id}>\n${target.id}`, true)
         .addField(translate(language, 'general.by'), `<@${executor.id}>\n${executor.id}`, true)
         .addField(translate(language, 'general.role'), `<@&${role}>`, true)
