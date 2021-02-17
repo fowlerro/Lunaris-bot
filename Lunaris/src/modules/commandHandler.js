@@ -92,9 +92,9 @@ const commandHandle = async (client, message) => {
                     });
                 }
             }
+            runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
         }
 
-        runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
     }
 }
 

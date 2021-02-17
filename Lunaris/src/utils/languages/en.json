@@ -112,6 +112,11 @@
             "mentionable": "Mention role"
         }
     },
+    "autoMod": {
+        "censor": {
+            "wordsListTitle": "Blocked words list"
+        }
+    },
     "permissions": {
         "CREATE_INSTANT_INVITE": "Create Invite",
         "KICK_MEMBERS": "Kick Members",

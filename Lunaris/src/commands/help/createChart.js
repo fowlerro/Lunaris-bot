@@ -1,6 +1,3 @@
-const { MessageEmbed } = require("discord.js");
-const { palette } = require("../../bot");
-const GuildConfig = require("../../database/schemas/GuildConfig");
 const { messageChart } = require("../../modules/guildStatistics");
 
 module.exports = {

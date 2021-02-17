@@ -3,8 +3,8 @@ const path = require('path');
 const fs = require('fs').promises;
 const BaseEvent = require('./structures/BaseEvent');
 const { reviver, JSONToMap } = require('./utils');
-const mongoose = require('mongoose');
 const GuildConfig = require('../database/schemas/GuildConfig');
+const AutoMod = require('../database/schemas/AutoMod');
 
 async function registerCommands(client, dir = '') {
   const filePath = path.join(__dirname, dir);
@@ -53,9 +53,18 @@ async function registerGuildConfigs(client) {
   });
 }
 
+async function registerAutoModConfigs(client) {
+  const configs = await AutoMod.find({}).select('-_id -__v');
+  configs.forEach(element => {
+    const {guildID} = element;
+    client.autoModConfigs.set(guildID, element);
+  });
+}
+
 module.exports = { 
   registerCommands, 
   registerEvents,
   registerMessagesCount,
   registerGuildConfigs,
+  registerAutoModConfigs,
 };

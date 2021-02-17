@@ -1,3 +1,4 @@
+const AutoMod = require("../database/schemas/AutoMod");
 const GuildConfig = require("../database/schemas/GuildConfig");
 
 const permissions = {
@@ -68,10 +69,12 @@ function mapToObject(map) {
         out[key] = value
       }
     })
+    if(!out) return {}
     return out
 }
 
 function JSONToMap(map, json) {
+    if(!json) json = {}
     json = JSON.parse(json);
     for(let v in json) {
         map.set(v, json[v])
@@ -92,4 +95,25 @@ async function setGuildConfig(client, guildID, toSet, value) {
     return client.guildConfigs.get(guildID);
 }
 
-module.exports = {convertPerms, replacer, JSONToMap, mapToObject, daysInMonth, setGuildConfig}
+async function setAutoModConfig(client, guildID, state, toSet, value) {
+
+    if(state === 'add') {
+        const config = await AutoMod.findOneAndUpdate({guildID}, {
+            $addToSet: {
+                [toSet]: value
+            }
+        }, {new: true, upsert: true});
+        client.autoModConfigs.set(guildID, config);
+        return client.autoModConfigs.get(guildID);
+    } else if(state === 'remove') {
+        const config = await AutoMod.findOneAndUpdate({guildID}, {
+            $pullAll: {
+                [toSet]: value
+            }
+        }, {new: true, upsert: true});
+        client.autoModConfigs.set(guildID, config);
+        return client.autoModConfigs.get(guildID);
+    }
+}
+
+module.exports = {convertPerms, replacer, JSONToMap, mapToObject, daysInMonth, setGuildConfig, setAutoModConfig}

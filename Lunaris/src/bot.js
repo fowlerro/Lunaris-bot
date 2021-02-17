@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { Client } = require('discord.js');
-const { registerCommands, registerEvents, registerMessagesCount, registerGuildConfigs } = require('./utils/registry');
-const { replacer, mapToObject } = require('./utils/utils');
+const { registerCommands, registerEvents, registerMessagesCount, registerGuildConfigs, registerAutoModConfigs } = require('./utils/registry');
+const { mapToObject } = require('./utils/utils');
 const client = new Client();
 const mongoose = require('mongoose');
 const botOwners = ["313346190995619841"];
@@ -27,10 +27,13 @@ mongoose.connect(`mongodb+srv://dbUser:${process.env.DB_PASS}@cluster0.wsvos.mon
   client.commands = new Map();
   client.events = new Map();
   client.guildConfigs = new Map();
+  client.autoModConfigs = new Map();
+  client.autoModUsers = new Map();
   client.msgCount = new Map();
   await registerCommands(client, '../commands');
   await registerEvents(client, '../events');
   await registerGuildConfigs(client);
+  await registerAutoModConfigs(client);
   await registerMessagesCount(client);
   await client.login(process.env.DISCORD_BOT_TOKEN);
   await checkAutoRoles(client);
