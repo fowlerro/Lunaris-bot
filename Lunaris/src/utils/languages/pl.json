@@ -25,7 +25,8 @@
             "a": "Nowy",
             "b": "Nowa"
         },
-        "color": "Kolor"
+        "color": "Kolor",
+        "none": "Brak"
     },
     "cmd": {
         "globalStatus": "Komenda jest chwilowo wyłączona",
@@ -115,6 +116,13 @@
     "autoMod": {
         "censor": {
             "wordsListTitle": "Lista blokowanych słów"
+        },
+        "warn": {
+            "addWarn": "%VAR% został ostrzeżony przez %VAR% %VAR%",
+            "removeWarn": "%VAR% zdjął ostrzeżenie z użytkownika %VAR% %VAR%",
+            "warnList": "Lista ostrzeżeń użytkownika %VAR%",
+            "guildWarnList": "Lista ostrzeżeń na serwerze",
+            "error": "Wystąpił problem z usunięciem ostrzeżenia, sprawdź poprawność danych"
         }
     },
     "permissions": {

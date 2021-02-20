@@ -1,6 +1,5 @@
 const { MessageEmbed } = require("discord.js");
 const { palette } = require("../../bot");
-const GuildConfig = require("../../database/schemas/GuildConfig");
 const { localeList, translate } = require("../../utils/languages/languages");
 const { setGuildConfig } = require("../../utils/utils");
 
@@ -55,7 +54,6 @@ module.exports = {
                 return message.channel.send(embed);
             }
             guildConfig = await setGuildConfig(client, message.guild.id, 'language', args[0]);
-            console.log(guildConfig);
             language = guildConfig.get('language');
             const embed = new MessageEmbed()
                 .setColor(palette.success)

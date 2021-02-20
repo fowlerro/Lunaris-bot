@@ -1,6 +1,5 @@
 const { MessageEmbed } = require("discord.js");
 const { palette } = require("../../bot");
-const GuildConfig = require("../../database/schemas/GuildConfig");
 const { translate } = require("../../utils/languages/languages");
 const { setGuildConfig } = require("../../utils/utils");
 

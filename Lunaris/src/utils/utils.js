@@ -1,5 +1,9 @@
 const AutoMod = require("../database/schemas/AutoMod");
 const GuildConfig = require("../database/schemas/GuildConfig");
+const GuildMembers = require("../database/schemas/GuildMembers");
+const ms = require('ms');
+const { translate } = require("./languages/languages");
+const { generateId } = require("../database/utils");
 
 const permissions = {
     CREATE_INSTANT_INVITE: 0x1,
@@ -116,4 +120,61 @@ async function setAutoModConfig(client, guildID, state, toSet, value) {
     }
 }
 
-module.exports = {convertPerms, replacer, JSONToMap, mapToObject, daysInMonth, setGuildConfig, setAutoModConfig}
+const Warn = {
+    add: async (guildID, userID, reason, by, time = null) => {
+        try {
+            if(time) {
+                time = ms(time) + Date.now();
+            }
+            await GuildMembers.findOneAndUpdate({guildID, userID}, {
+                $push: {
+                    warns: {reason, time, by, id: await generateId()}
+                }
+            }, {upsert: true});
+            return true;
+        } catch(err) {
+            console.log(err);
+            return false;
+        }
+    },
+    remove: async (guildID, id) => {
+        try {
+            const result = await GuildMembers.findOneAndUpdate({'warns.id': id}, {
+                $pull: {
+                    warns: {id}
+                }
+            });
+            return result;
+        } catch(err) {
+            console.log(err);
+            return false;
+        }
+    },
+    list: async (client, guildID, userID) => {
+        try {
+            const guildConfig = client.guildConfigs.get(guildID);
+            const language = guildConfig.get('language');
+            let result;
+            if(userID) {
+                result = await GuildMembers.findOne({guildID, userID});
+                if(!result.warns.length) return translate(language, 'general.none');
+                return result.warns.map((v, i) => `${i+1}. ${translate(language, 'general.reason')}: ${v.reason ? v.reason : translate(language, 'general.none')} | ${translate(language, 'general.by').toLowerCase()}: <@${v.by}> | id: ` + "`" + v.id + "` | " + new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'short'}).format(v.date));
+            } else {
+                result = await GuildMembers.find({guildID});
+                if(!result.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return translate(language, 'general.none');
+                let index = 0;
+                return result.map((vv, ii) => {
+                    return vv.warns.map((v, i) => {
+                        index++;
+                        return `${index}. <@${vv.userID}> ${translate(language, 'general.by').toLowerCase()} <@${v.by}> ${translate(language, 'general.reason').toLowerCase()}: ${v.reason ? `| ${v.reason}` : translate(language, 'general.none')} | id: ` + "`" + v.id + "` | " + new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'short'}).format(v.date) + `\n`;
+                    }).join('');
+                });
+            }
+        } catch(err) {
+            console.log(err);
+            return false;
+        }
+    }
+}
+
+module.exports = {convertPerms, replacer, JSONToMap, mapToObject, daysInMonth, setGuildConfig, setAutoModConfig, Warn};

@@ -25,7 +25,8 @@
             "a": "New",
             "b": "New"
         },
-        "color": "Color"
+        "color": "Color",
+        "none": "None"
     },
     "cmd": {
         "globalStatus": "Command is temporary turned off",
@@ -115,6 +116,13 @@
     "autoMod": {
         "censor": {
             "wordsListTitle": "Blocked words list"
+        },
+        "warn": {
+            "addWarn": "%VAR% has been warned by %VAR% %VAR%",
+            "removeWarn": "%VAR% removed warn from user %VAR% %VAR%",
+            "warnList": "Warn list for user %VAR%",
+            "guildWarnList": "Warn list in guild",
+            "error": "There was an error with removing warn"
         }
     },
     "permissions": {
