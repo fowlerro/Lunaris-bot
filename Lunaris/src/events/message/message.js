@@ -1,6 +1,6 @@
 const BaseEvent = require('../../utils/structures/BaseEvent');
 const { commandHandle } = require('../../modules/commandHandler');
-const { censor } = require('../../modules/autoMod');
+const { censor } = require('../../modules/autoMod/autoMod');
 module.exports = class MessageEvent extends BaseEvent {
     constructor() {
         super('message');

@@ -26,7 +26,8 @@
             "b": "New"
         },
         "color": "Color",
-        "none": "None"
+        "none": "None",
+        "forTime": "for"
     },
     "cmd": {
         "globalStatus": "Command is temporary turned off",
@@ -111,6 +112,12 @@
 
             "hoist": "Hoist",
             "mentionable": "Mention role"
+        },
+        "warn": {
+            "addWarn": "%VAR% has been warned",
+            "removeWarn": "%VAR%'s warn has been removed",
+            "addedBy": "Warned by",
+            "removedBy": "Removed by"
         }
     },
     "autoMod": {
@@ -119,10 +126,17 @@
         },
         "warn": {
             "addWarn": "%VAR% has been warned by %VAR% %VAR%",
-            "removeWarn": "%VAR% removed warn from user %VAR% %VAR%",
+            "removeWarn": "%VAR% removed warn from user %VAR%",
+            "removeAllWarns": "%VAR% removed all warns in guild",
             "warnList": "Warn list for user %VAR%",
             "guildWarnList": "Warn list in guild",
             "error": "There was an error with removing warn"
+        },
+        "mute": {
+            "addMute": "%VAR% has been muted by %VAR% %VAR%",
+            "removeMute": "%VAR% has been unmuted by %VAR%",
+            "notMuted": "%VAR% is not muted",
+            "muteList": "Mute list in guild"
         }
     },
     "permissions": {

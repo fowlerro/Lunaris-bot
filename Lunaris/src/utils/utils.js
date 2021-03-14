@@ -1,9 +1,8 @@
-const AutoMod = require("../database/schemas/AutoMod");
 const GuildConfig = require("../database/schemas/GuildConfig");
 const GuildMembers = require("../database/schemas/GuildMembers");
-const ms = require('ms');
-const { translate } = require("./languages/languages");
-const { generateId } = require("../database/utils");
+// const {generateId} = require('../database/utils');
+// const { warnAddLog } = require("../modules/guildLogs");
+// const { translate } = require("./languages/languages");
 
 const permissions = {
     CREATE_INSTANT_INVITE: 0x1,
@@ -78,7 +77,7 @@ function mapToObject(map) {
 }
 
 function JSONToMap(map, json) {
-    if(!json) json = {}
+    if(!json) json = {};
     json = JSON.parse(json);
     for(let v in json) {
         map.set(v, json[v])
@@ -97,6 +96,19 @@ async function setGuildConfig(client, guildID, toSet, value) {
     config[toSet] = value;
     client.guildConfigs.set(guildID, config);
     return client.guildConfigs.get(guildID);
+}
+
+function msToTime(ms) {
+    let result = ""
+    let d = Math.floor((ms/(1000*60*60*24)) % 7);
+    d && (result += d+'d '); 
+    let h = Math.floor((ms/(1000*60*60)) % 24);
+    h && (result += h+'h '); 
+    let m = Math.floor((ms/(1000*60)) % 60);
+    m && (result += m+'m '); 
+    let s = Math.floor((ms/(1000)) % 60);
+    s && (result += s+'s '); 
+    return result;
 }
 
 async function setAutoModConfig(client, guildID, state, toSet, value) {
@@ -120,61 +132,7 @@ async function setAutoModConfig(client, guildID, state, toSet, value) {
     }
 }
 
-const Warn = {
-    add: async (guildID, userID, reason, by, time = null) => {
-        try {
-            if(time) {
-                time = ms(time) + Date.now();
-            }
-            await GuildMembers.findOneAndUpdate({guildID, userID}, {
-                $push: {
-                    warns: {reason, time, by, id: await generateId()}
-                }
-            }, {upsert: true});
-            return true;
-        } catch(err) {
-            console.log(err);
-            return false;
-        }
-    },
-    remove: async (guildID, id) => {
-        try {
-            const result = await GuildMembers.findOneAndUpdate({'warns.id': id}, {
-                $pull: {
-                    warns: {id}
-                }
-            });
-            return result;
-        } catch(err) {
-            console.log(err);
-            return false;
-        }
-    },
-    list: async (client, guildID, userID) => {
-        try {
-            const guildConfig = client.guildConfigs.get(guildID);
-            const language = guildConfig.get('language');
-            let result;
-            if(userID) {
-                result = await GuildMembers.findOne({guildID, userID});
-                if(!result.warns.length) return translate(language, 'general.none');
-                return result.warns.map((v, i) => `${i+1}. ${translate(language, 'general.reason')}: ${v.reason ? v.reason : translate(language, 'general.none')} | ${translate(language, 'general.by').toLowerCase()}: <@${v.by}> | id: ` + "`" + v.id + "` | " + new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'short'}).format(v.date));
-            } else {
-                result = await GuildMembers.find({guildID});
-                if(!result.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return translate(language, 'general.none');
-                let index = 0;
-                return result.map((vv, ii) => {
-                    return vv.warns.map((v, i) => {
-                        index++;
-                        return `${index}. <@${vv.userID}> ${translate(language, 'general.by').toLowerCase()} <@${v.by}> ${translate(language, 'general.reason').toLowerCase()}: ${v.reason ? `| ${v.reason}` : translate(language, 'general.none')} | id: ` + "`" + v.id + "` | " + new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'short'}).format(v.date) + `\n`;
-                    }).join('');
-                });
-            }
-        } catch(err) {
-            console.log(err);
-            return false;
-        }
-    }
-}
 
-module.exports = {convertPerms, replacer, JSONToMap, mapToObject, daysInMonth, setGuildConfig, setAutoModConfig, Warn};
+
+module.exports = {convertPerms, replacer, JSONToMap, mapToObject, daysInMonth, setGuildConfig, 
+    msToTime, setAutoModConfig};

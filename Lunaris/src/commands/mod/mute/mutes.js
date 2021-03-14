@@ -1,13 +1,13 @@
 const { MessageEmbed } = require("discord.js");
-const { palette } = require("../../bot");
-const { translate } = require("../../utils/languages/languages");
-const { Warn } = require("../../utils/utils");
+const { Mute } = require("../../../modules/autoMod/utils");
+const { palette } = require("../../../bot");
+const { translate } = require("../../../utils/languages/languages");
 
 module.exports = {
-    name: 'warn',
-    aliases: ['w', 'ostrzez', 'ostrzezenie'],
+    name: 'mutes',
+    aliases: ['mutelist', 'mlist', 'muty', 'mute list'],
     ownerOnly: false,
-    minArgs: 1,
+    minArgs: null,
     maxArgs: null,
     autoRemove: false,
     autoRemoveResponse: false,
@@ -15,8 +15,8 @@ module.exports = {
     status: true,
 
     description: {
-        pl: "Nakłada ostrzeżenie na użytkownika",
-        en: "Warns user",
+        pl: "Wyświetla listę mute'ów",
+        en: "Display mute list",
     },
     category: 'mod',
 
@@ -36,18 +36,13 @@ module.exports = {
         try {
             const guildConfig = client.guildConfigs.get(message.guild.id);
             const language = guildConfig.get('language');
-            let [user, ...reason] = args;
-            reason = reason.join(" ");
+            const mutes = await Mute.list(client, message.guild.id);
             
-            const member = message.mentions.members.first() || message.guild.members.cache.get(user);
-            if(!member) return;
-
-            const result = await Warn.add(message.guild.id, member.id, reason, message.author.id);
-            if(!result) return;
-
             const embed = new MessageEmbed()
-                .setColor(palette.error)
-                .setDescription(translate(language, 'autoMod.warn.addWarn', `<@${member.id}>`, `<@${message.author.id}>`, reason.length ? `| ${reason}` : ""));
+                .setColor(palette.info)
+                .setAuthor(translate(language, 'autoMod.mute.muteList'), message.guild.iconURL())
+                .setDescription(mutes)
+                .setTimestamp();
 
             return message.channel.send(embed);
         } catch(err) {

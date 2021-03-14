@@ -1,7 +1,7 @@
 const { MessageEmbed } = require("discord.js");
-const { palette } = require("../../bot");
-const { translate } = require("../../utils/languages/languages");
-const { Warn } = require("../../utils/utils");
+const { palette } = require("../../../bot");
+const { translate } = require("../../../utils/languages/languages");
+const { Warn } = require("../../../modules/autoMod/utils");
 
 module.exports = {
     name: 'warns',

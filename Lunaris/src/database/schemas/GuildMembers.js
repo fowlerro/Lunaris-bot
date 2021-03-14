@@ -10,6 +10,24 @@ const GuildMembersSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.String,
         required: true,
     },
+    muted: {
+        state: {
+            type: mongoose.SchemaTypes.Boolean,
+            default: false,
+        },
+        timestamp: {
+            type: mongoose.SchemaTypes.Number,
+        },
+        date: {
+            type: mongoose.SchemaTypes.Number,
+        },
+        reason: {
+            type: mongoose.SchemaTypes.String,
+        },
+        by: {
+            type: mongoose.SchemaTypes.String,
+        }
+    },
     warns: [{
         id: {
             type: String,
@@ -21,9 +39,6 @@ const GuildMembersSchema = new mongoose.Schema({
         },
         by: {
             type: mongoose.SchemaTypes.String,
-        },
-        time: {
-            type: mongoose.SchemaTypes.Number,
         },
         date: {
             type: mongoose.SchemaTypes.Number,

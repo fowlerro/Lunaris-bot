@@ -17,7 +17,7 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
 
       const auditLog = await newMember.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_UPDATE'});
       const update = auditLog.entries.first();
-      if(!update) return;
+      if(!update ) return;
       const executor = update.executor;
       const target = update.target;
       const changes = update.changes.find(obj => obj.key === 'nick');
@@ -35,7 +35,7 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
 
       const auditLog = await newMember.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_ROLE_UPDATE'});
       const update = auditLog.entries.first();
-      if(!update) return;
+      if(!update || Date.now() - update.createdTimestamp > 5000) return;
       const {executor, target} = update;
       const addedRole = update.changes.find(obj => obj.key === '$add').new[0];
       
@@ -50,7 +50,7 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
 
       const auditLog = await newMember.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_ROLE_UPDATE'});
       const update = auditLog.entries.first();
-      if(!update) return;
+      if(!update || Date.now() - update.createdTimestamp > 5000) return;
       const {executor, target} = update;
       const removedRole = update.changes.find(obj => obj.key === '$remove').new[0];
       

@@ -26,7 +26,8 @@
             "b": "Nowa"
         },
         "color": "Kolor",
-        "none": "Brak"
+        "none": "Brak",
+        "forTime": "na czas"
     },
     "cmd": {
         "globalStatus": "Komenda jest chwilowo wyłączona",
@@ -111,6 +112,12 @@
 
             "hoist": "Wyświetlanie osobno",
             "mentionable": "Zezwolenie na wzmianki"
+        },
+        "warn": {
+            "addWarn": "%VAR% otrzymał ostrzeżenie",
+            "removeWarn": "Ostrzeżenie użytkownika %VAR% zostało zdjęte",
+            "addedBy": "Nadane przez",
+            "removedBy": "Zdjęte przez"
         }
     },
     "autoMod": {
@@ -119,10 +126,17 @@
         },
         "warn": {
             "addWarn": "%VAR% został ostrzeżony przez %VAR% %VAR%",
-            "removeWarn": "%VAR% zdjął ostrzeżenie z użytkownika %VAR% %VAR%",
+            "removeWarn": "%VAR% zdjął ostrzeżenie z użytkownika %VAR%",
+            "removeAllWarns": "%VAR% zdjął wszystkie ostrzeżenia na serwerze",
             "warnList": "Lista ostrzeżeń użytkownika %VAR%",
             "guildWarnList": "Lista ostrzeżeń na serwerze",
-            "error": "Wystąpił problem z usunięciem ostrzeżenia, sprawdź poprawność danych"
+            "error": "Wystąpił problem z usunięciem ostrzeżenia"
+        },
+        "mute": {
+            "addMute": "%VAR% został wyciszony przez %VAR% %VAR%",
+            "removeMute": "%VAR% został odciszony przez %VAR%",
+            "notMuted": "%VAR% nie jest wyciszony",
+            "muteList": "Lista mute'ów na serwerze"
         }
     },
     "permissions": {

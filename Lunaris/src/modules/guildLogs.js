@@ -592,10 +592,52 @@ async function roleUpdatedLog(client, role) {
 }
 
 
+function warnAddLog(client, guildID, executor, target, reason, id) {
+    const guildConfig = client.guildConfigs.get(guildID);
+    const guild = client.guilds.cache.find(guild => guild.id === guildID);
+    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
+    const language = guildConfig.get('language');
+    if(!logChannel) return;
+    const member = guild.members.cache.find(m => m.id === target);
+
+    const embed = new MessageEmbed()
+        .setColor(palette.info)
+        .setAuthor(translate(language, 'logs.warn.addWarn', member.user.tag), member.user.displayAvatarURL())
+        .addField('Target', `<@${member.id}>\n${member.id}`, true)
+        .addField(translate(language, 'general.by'), `<@${executor}>\n${executor}`, true)
+        .addField('ID', '`'+id+'`', true)
+        .addField(translate(language, 'general.reason'), reason ? reason : translate(language, 'general.none'))
+        .setTimestamp();
+
+    logChannel.send(embed);
+}
+
+function warnRemoveLog(client, guildID, by, executor, target, reason, id) {
+    const guildConfig = client.guildConfigs.get(guildID);
+    const guild = client.guilds.cache.find(guild => guild.id === guildID);
+    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
+    const language = guildConfig.get('language');
+    if(!logChannel) return;
+    const member = guild.members.cache.find(m => m.id === target);
+
+    const embed = new MessageEmbed()
+        .setColor(palette.info)
+        .setAuthor(translate(language, 'logs.warn.removeWarn', member.user.tag), member.user.displayAvatarURL())
+        .addField('Target', `<@${member.id}>\n${member.id}`, true)
+        .addField(translate(language, 'logs.warn.addedBy'), `<@${executor}>\n${executor}`, true)
+        .addField(translate(language, 'logs.warn.removedBy'), `<@${by}>\n${by}`, true)
+        .addField('ID', '`'+id+'`', true)
+        .addField(translate(language, 'general.reason'), reason ? reason : translate(language, 'general.none'), true)
+        .setTimestamp();
+
+    logChannel.send(embed);
+}
+
 module.exports = {memberJoinedLog, memberLeavedLog, memberNicknameLog, memberKickedLog, memberBannedLog, memberUnbannedLog,
     channelCreatedLog, channelDeletedLog, channelUpdatedLog,
     messageDeletedLog, messageEditedLog,
     inviteCreatedLog, inviteDeletedLog,
     cmdTriggerLog,
     memberRoleLog,
-    roleCreatedLog, roleDeletedLog, roleUpdatedLog};
+    roleCreatedLog, roleDeletedLog, roleUpdatedLog,
+    warnAddLog, warnRemoveLog};

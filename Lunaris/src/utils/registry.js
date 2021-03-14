@@ -2,9 +2,10 @@
 const path = require('path');
 const fs = require('fs').promises;
 const BaseEvent = require('./structures/BaseEvent');
-const { reviver, JSONToMap } = require('./utils');
+const { JSONToMap } = require('./utils');
 const GuildConfig = require('../database/schemas/GuildConfig');
 const AutoMod = require('../database/schemas/AutoMod');
+const GuildMembers = require('../database/schemas/GuildMembers');
 
 async function registerCommands(client, dir = '') {
   const filePath = path.join(__dirname, dir);
@@ -61,10 +62,51 @@ async function registerAutoModConfigs(client) {
   });
 }
 
+async function registerMutes(client) {
+  try {
+      const collections = await GuildMembers.find({'muted.state': true, 'muted.timestamp': { $ne: null }});
+      for(const collection of collections) {
+          const guild = client.guilds.cache.get(collection.guildID)
+          const member = guild.members.cache.get(collection.userID)
+          const guildConfig = client.guildConfigs.get(guild.id);
+          const muteRoleID = guildConfig.get('modules.autoMod.muteRole');
+          const muteRole = guild.roles.cache.get(muteRoleID) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
+          if(collection.muted.timestamp < Date.now()) {
+              await member.roles.remove(muteRole).catch(err => console.log(err));
+              await GuildMembers.findOneAndUpdate({guildID: guild.id, userID: member.id}, {
+                  muted: {
+                      state: false,
+                      timestamp: null,
+                      date: null,
+                      reason: null,
+                      by: null,
+                  }
+              }, {upsert: true});
+          } else {
+              setTimeout(async () => {
+                  await member.roles.remove(muteRole).catch(e => console.log(e));
+                  await GuildMembers.findOneAndUpdate({guildID: guild.id, userID: member.id}, {
+                      muted: {
+                          state: false,
+                          timestamp: null,
+                          date: null,
+                          reason: null,
+                          by: null,
+                      }
+                  }, {upsert: true});
+              }, collection.muted.timestamp - Date.now());
+          }
+      }
+  } catch(e) {
+      console.log(e)
+  }
+}
+
 module.exports = { 
   registerCommands, 
   registerEvents,
   registerMessagesCount,
   registerGuildConfigs,
   registerAutoModConfigs,
+  registerMutes
 };

@@ -1,7 +1,7 @@
 const { MessageEmbed } = require("discord.js");
-const { palette } = require("../../bot");
-const { translate } = require("../../utils/languages/languages");
-const { Warn } = require("../../utils/utils");
+const { palette } = require("../../../bot");
+const { translate } = require("../../../utils/languages/languages");
+const { Warn } = require("../../../modules/autoMod/utils");
 
 module.exports = {
     name: 'unwarn',
@@ -37,12 +37,18 @@ module.exports = {
             const guildConfig = client.guildConfigs.get(message.guild.id);
             const language = guildConfig.get('language');
 
-            let result = await Warn.remove(message.guild.id, args[0]);
+            let result = await Warn.remove(client, message.guild.id, args[0], message.author.id);
             if(!result) {
                 const embed = new MessageEmbed()
                     .setColor(palette.error)
                     .setDescription(translate(language, 'autoMod.warn.error'))
 
+                return message.channel.send(embed);
+            } else if(result === 'all') {
+                const embed = new MessageEmbed()
+                    .setColor(palette.success)
+                    .setDescription(translate(language, 'autoMod.warn.removeAllWarns', `<@${message.author.id}>`))
+    
                 return message.channel.send(embed);
             } else {
                 const embed = new MessageEmbed()

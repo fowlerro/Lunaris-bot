@@ -57,6 +57,11 @@ const GuildConfigSchema = new mongoose.Schema({
                 default: null,
             }
         },
+        autoMod: {
+            muteRole: {
+                type: mongoose.SchemaTypes.String,
+            }
+        }
     }
 });
 

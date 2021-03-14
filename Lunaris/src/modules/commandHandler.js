@@ -7,94 +7,104 @@ const { translate } = require("../utils/languages/languages");
 const { cmdTriggerLog } = require('./guildLogs');
 
 const commandHandle = async (client, message) => {
-    const guildConfig = await GuildConfig.findOne({guildID: message.guild.id});
-    const prefix = guildConfig.get('prefix');
-    const language = guildConfig.get('language');
-    if(message.mentions.has(client.user)) return message.channel.send(translate(language, "cmd.prefixMessage", "`"+prefix+"`"));
-    if (message.content.startsWith(prefix)) {
-        const [cmdName, ...cmdArgs] = message.content
-        .slice(prefix.length)
-        .trim()
-        .split(/\s+/);
-        let command = client.commands.get(cmdName);
-        let cmd = command;
-        if (command) {
-            if(!command.globalStatus) return message.channel.send(translate(language, "cmd.globalStatus"));
-            if(command.ownerOnly) {
-                if(!botOwners.includes(message.author.id)) return;
-            } else {
-                command = await CommandConfig.findOne({guildID: message.guild.id, name: command.name});
-                if(!command) {
-                    command = await CommandConfig.create({
-                        guildID: message.guild.id,
-                        name: cmd.name,
-                        aliases: cmd.aliases,
-                        minArgs: cmd.minArgs,
-                        maxArgs: cmd.maxArgs,
-                        autoRemove: cmd.autoRemove,
-                        autoRemoveResponse: cmd.autoRemoveResponse,
-                        status: cmd.status,
-                        requiredChannels: cmd.requiredChannels,
-                        blockedChannels: cmd.blockedChannels,
-                        requiredRoles: cmd.requiredRoles,
-                        blockedRoles: cmd.blockedRoles,
-                        cooldownStatus: cmd.cooldownStatus,
-                        cooldown: cmd.cooldown,
-                        cooldownPermissions: cmd.cooldownPermissions,
-                        cooldownChannels: cmd.cooldownChannels,
-                        cooldownRoles: cmd.cooldownRoles,
-                        cooldownReminder: cmd.cooldownReminder,
-                    });
+    try {
+        const guildConfig = await GuildConfig.findOne({guildID: message.guild.id});
+        const prefix = guildConfig.get('prefix');
+        const language = guildConfig.get('language');
+        if(message.mentions.has(client.user)) return message.channel.send(translate(language, "cmd.prefixMessage", "`"+prefix+"`"));
+        if (message.content.startsWith(prefix)) {
+            const [cmdName, ...cmdArgs] = message.content
+            .slice(prefix.length)
+            .trim()
+            .split(/\s+/);
+            let command = client.commands.get(cmdName);
+            let cmd = command;
+            if (command) {
+                if(command.cmdArgs) {
+                    if(command.cmdArgs[cmdArgs[0]]) {
+                        command = client.commands.get(command.cmdArgs[cmdArgs[0]]);
+                        cmd = command;
+                    }
                 }
-            }
-            
-            if(command.autoRemove) message.delete();
-            
-            if(!command.status) return;
-            
-            if(!checkPermissions(command.permissions, message.member)) return;
-            
-            if(command.requiredChannels.length !== 0 && !command.requiredChannels.includes(message.channel.id)) return;
-            if(command.blockedChannels.length !== 0 && command.blockedChannels.includes(message.channel.id)) return;
-            
-            if(!checkReqRoles(command.requiredRoles, message.member)) return;
-            if(!checkBlockRoles(command.blockedRoles, message.member)) return;
-            
-            if(!checkArgs(command.minArgs, command.maxArgs, cmdArgs.length)) return;
-
-            if(command.cooldownStatus && ms(command.cooldown) > 0) {
-                if(checkcdPermissions(command.cooldownPermissions, message.member)) {
-                    runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
-                    return;
-                }
-                if(command.cooldownChannels.length !== 0 && command.cooldownChannels.includes(message.channel.id)) {
-                    runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
-                    return;
-                }
-                if(checkcdRoles(command.cooldownRoles, message.member)) {
-                    runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
-                    return;
-                }
-                const userCD = await Cooldowns.findOne({guildID: message.guild.id, userID: message.author.id, cmdName: command.name});
-                if(userCD) {
-                    if(userCD.cooldown > Date.now()) return;
-                    const cdTime = Date.now() + ms(command.cooldown);
-                    await Cooldowns.findOneAndUpdate({guildID: message.guild.id, userID: message.author.id, cmdName: command.name}, {
-                        cooldown: cdTime,
-                    });
+                if(!command.globalStatus) return message.channel.send(translate(language, "cmd.globalStatus"));
+                if(command.ownerOnly) {
+                    if(!botOwners.includes(message.author.id)) return;
                 } else {
-                    const cdTime = Date.now() + ms(command.cooldown);
-                    Cooldowns.create({
-                        guildID: message.guild.id,
-                        userID: message.author.id,
-                        cmdName: command.name,
-                        cooldown: cdTime,
-                    });
+                    command = await CommandConfig.findOne({guildID: message.guild.id, name: command.name});
+                    if(!command) {
+                        command = await CommandConfig.create({
+                            guildID: message.guild.id,
+                            name: cmd.name,
+                            aliases: cmd.aliases,
+                            minArgs: cmd.minArgs,
+                            maxArgs: cmd.maxArgs,
+                            autoRemove: cmd.autoRemove,
+                            autoRemoveResponse: cmd.autoRemoveResponse,
+                            status: cmd.status,
+                            requiredChannels: cmd.requiredChannels,
+                            blockedChannels: cmd.blockedChannels,
+                            requiredRoles: cmd.requiredRoles,
+                            blockedRoles: cmd.blockedRoles,
+                            cooldownStatus: cmd.cooldownStatus,
+                            cooldown: cmd.cooldown,
+                            cooldownPermissions: cmd.cooldownPermissions,
+                            cooldownChannels: cmd.cooldownChannels,
+                            cooldownRoles: cmd.cooldownRoles,
+                            cooldownReminder: cmd.cooldownReminder,
+                        });
+                    }
                 }
+                
+                if(command.autoRemove) message.delete();
+                
+                if(!command.status) return;
+                
+                if(!checkPermissions(command.permissions, message.member)) return;
+                
+                if(command.requiredChannels.length !== 0 && !command.requiredChannels.includes(message.channel.id)) return;
+                if(command.blockedChannels.length !== 0 && command.blockedChannels.includes(message.channel.id)) return;
+                
+                if(!checkReqRoles(command.requiredRoles, message.member)) return;
+                if(!checkBlockRoles(command.blockedRoles, message.member)) return;
+                
+                if(!checkArgs(command.minArgs, command.maxArgs, cmdArgs.length)) return;
+    
+                if(command.cooldownStatus && ms(command.cooldown) > 0) {
+                    if(checkcdPermissions(command.cooldownPermissions, message.member)) {
+                        runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
+                        return;
+                    }
+                    if(command.cooldownChannels.length !== 0 && command.cooldownChannels.includes(message.channel.id)) {
+                        runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
+                        return;
+                    }
+                    if(checkcdRoles(command.cooldownRoles, message.member)) {
+                        runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
+                        return;
+                    }
+                    const userCD = await Cooldowns.findOne({guildID: message.guild.id, userID: message.author.id, cmdName: command.name});
+                    if(userCD) {
+                        if(userCD.cooldown > Date.now()) return;
+                        const cdTime = Date.now() + ms(command.cooldown);
+                        await Cooldowns.findOneAndUpdate({guildID: message.guild.id, userID: message.author.id, cmdName: command.name}, {
+                            cooldown: cdTime,
+                        });
+                    } else {
+                        const cdTime = Date.now() + ms(command.cooldown);
+                        Cooldowns.create({
+                            guildID: message.guild.id,
+                            userID: message.author.id,
+                            cmdName: command.name,
+                            cooldown: cdTime,
+                        });
+                    }
+                }
+                runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
             }
-            runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
+    
         }
-
+    } catch(err) {
+        console.log(err);
     }
 }
 
