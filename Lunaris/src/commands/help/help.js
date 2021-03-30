@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { palette } = require("../../bot");
+const { palette, botOwners } = require("../../bot");
 const GuildConfig = require("../../database/schemas/GuildConfig");
 
 module.exports = {
@@ -39,7 +39,8 @@ module.exports = {
 
             let categories = [];
             client.commands.forEach(cmd => {
-                if(!categories.includes(cmd.category)) categories.push(cmd.category)
+                if(!botOwners.includes(message.author.id) && cmd.ownerOnly) return;
+                    if(!categories.includes(cmd.category)) categories.push(cmd.category)
             });
             const embed = new MessageEmbed()
                 .setColor(palette.info)

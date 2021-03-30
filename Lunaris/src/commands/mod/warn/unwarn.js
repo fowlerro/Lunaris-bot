@@ -2,6 +2,7 @@ const { MessageEmbed } = require("discord.js");
 const { palette } = require("../../../bot");
 const { translate } = require("../../../utils/languages/languages");
 const { Warn } = require("../../../modules/autoMod/utils");
+const { warnRemoveAllLog } = require("../../../modules/guildLogs");
 
 module.exports = {
     name: 'unwarn',
@@ -49,6 +50,8 @@ module.exports = {
                     .setColor(palette.success)
                     .setDescription(translate(language, 'autoMod.warn.removeAllWarns', `<@${message.author.id}>`))
     
+                warnRemoveAllLog(client, message.guild.id, message.author.id);
+
                 return message.channel.send(embed);
             } else {
                 const embed = new MessageEmbed()

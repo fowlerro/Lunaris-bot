@@ -42,7 +42,9 @@ module.exports = {
             const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
             if(!member) return;
 
-            const result = await Mute.remove(client, message.guild.id, member.id);
+            const reason = args.slice(1, args.length).join(' ');
+
+            const result = await Mute.remove(client, message.guild.id, message.author.id, member.id, reason);
             if(!result) return;
             if(result === "notMuted") {
                 const embed = new MessageEmbed()

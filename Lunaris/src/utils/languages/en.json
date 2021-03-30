@@ -27,13 +27,13 @@
         },
         "color": "Color",
         "none": "None",
-        "forTime": "for"
+        "forTime": "For"
     },
     "cmd": {
         "globalStatus": "Command is temporary turned off",
-        "prefixMessage": "Prefix for this server is set to: %VAR%",
+        "prefixMessage": "The prefix is set to: %VAR%",
         "languageListMessage": "Supported languages",
-        "languageListFooter": "Type %VAR%language <language> to change it",
+        "languageListFooter": "Type %VAR% language <language> to change it",
         "wrongLanguage": "This language is not supported, type '%VAR%language' to see supported languages list",
         "prefixChange": "Prefix has been changed to %VAR%",
         "languageChange": "Language has been changed to %VAR%"
@@ -73,8 +73,8 @@
             "unbannedAt": "Unbanned at",
             "unbannedTarget": "Target",
 
-            "addRoleTitle": "%VAR% was given a role",
-            "removeRoleTitle": "%VAR% was lost a role"
+            "addRoleTitle": "%VAR% got a role",
+            "removeRoleTitle": "%VAR% lost the role"
         },
         "channel": {
             "createdTitle": "New channel has been created",
@@ -116,7 +116,14 @@
         "warn": {
             "addWarn": "%VAR% has been warned",
             "removeWarn": "%VAR%'s warn has been removed",
+            "removeAllWarns": "All server warns has been removed",
             "addedBy": "Warned by",
+            "removedBy": "Removed by"
+        },
+        "mute": {
+            "muted": "%VAR% has been muted",
+            "unmuted": "%VAR% has been unmuted",
+            "addedBy": "Muted by",
             "removedBy": "Removed by"
         }
     },
@@ -127,16 +134,16 @@
         "warn": {
             "addWarn": "%VAR% has been warned by %VAR% %VAR%",
             "removeWarn": "%VAR% removed warn from user %VAR%",
-            "removeAllWarns": "%VAR% removed all warns in guild",
-            "warnList": "Warn list for user %VAR%",
-            "guildWarnList": "Warn list in guild",
-            "error": "There was an error with removing warn"
+            "removeAllWarns": "%VAR% removed all active warns",
+            "warnList": "User's warns %VAR%",
+            "guildWarnList": "Warns:",
+            "error": "Something went wrong! Warn couldn't be removed"
         },
         "mute": {
             "addMute": "%VAR% has been muted by %VAR% %VAR%",
             "removeMute": "%VAR% has been unmuted by %VAR%",
             "notMuted": "%VAR% is not muted",
-            "muteList": "Mute list in guild"
+            "muteList": "Muted users:"
         }
     },
     "permissions": {

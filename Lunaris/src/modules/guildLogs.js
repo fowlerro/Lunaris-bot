@@ -8,8 +8,8 @@ Member:
     ?kicked
     ?banned
     ?unbanned
-    muted
-    warned
+    ?muted
+    ?warned
 
 ?Channel:
     ?created
@@ -468,7 +468,6 @@ async function cmdTriggerLog(client, cmdName, guild, channelID, executor, conten
 
 
 function memberRoleLog(client, executor, target, role, state, logChannel, language) {
-
     const embed = new MessageEmbed()
         .setColor(palette.info)
         .setAuthor(translate(language, `logs.member.${state}RoleTitle`, target.tag), target.displayAvatarURL())
@@ -633,6 +632,67 @@ function warnRemoveLog(client, guildID, by, executor, target, reason, id) {
     logChannel.send(embed);
 }
 
+function warnRemoveAllLog(client, guildID, by) {
+    const guildConfig = client.guildConfigs.get(guildID);
+    const guild = client.guilds.cache.find(guild => guild.id === guildID);
+    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
+    const language = guildConfig.get('language');
+    if(!logChannel) return;
+
+    const embed = new MessageEmbed()
+        .setColor(palette.info)
+        .setAuthor(translate(language, 'logs.warn.removeAllWarns'), guild.iconURL())
+        .addField(translate(language, 'logs.warn.removedBy'), `<@${by}>\n${by}`, true)
+        .setTimestamp();
+
+    logChannel.send(embed);
+}
+
+
+function muteLog(client, guildID, by, target, reason, time) {
+    const guildConfig = client.guildConfigs.get(guildID);
+    const guild = client.guilds.cache.find(guild => guild.id === guildID);
+    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
+    const language = guildConfig.get('language');
+    if(!logChannel) return;
+    const member = guild.members.cache.find(m => m.id === target);
+    if(!member) return;
+
+    const embed = new MessageEmbed()
+        .setColor(palette.info)
+        .setAuthor(translate(language, 'logs.mute.muted', member.user.tag), member.user.displayAvatarURL())
+        .addField('Target', `<@${member.id}>\n${member.id}`, true)
+        .addField(translate(language, 'logs.mute.addedBy'), `<@${by}>\n${by}`, true)
+        .addField(translate(language, 'general.forTime'), time, true)
+        .addField(translate(language, 'general.reason'), reason ? reason : translate(language, 'general.none'), true)
+        .setTimestamp();
+
+    logChannel.send(embed);
+}
+
+function unmuteLog(client, guildID, by, executor, target, reason = "") {
+    const guildConfig = client.guildConfigs.get(guildID);
+    const guild = client.guilds.cache.find(guild => guild.id === guildID);
+    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
+    const language = guildConfig.get('language');
+    if(!logChannel) return;
+    const member = guild.members.cache.find(m => m.id === target);
+    if(!member) return;
+
+    if(executor != "System") executor = `<@${executor}>\n${executor}`;
+
+    const embed = new MessageEmbed()
+        .setColor(palette.info)
+        .setAuthor(translate(language, 'logs.mute.unmuted', member.user.tag), member.user.displayAvatarURL())
+        .addField('Target', `<@${member.id}>\n${member.id}`, true)
+        .addField(translate(language, 'logs.mute.addedBy'), `<@${by}>\n${by}`, true)
+        .addField(translate(language, 'logs.mute.removedBy'), executor, true)
+        .addField(translate(language, 'general.reason'), reason ? reason : translate(language, 'general.none'), true)
+        .setTimestamp();
+
+    logChannel.send(embed);
+}
+
 module.exports = {memberJoinedLog, memberLeavedLog, memberNicknameLog, memberKickedLog, memberBannedLog, memberUnbannedLog,
     channelCreatedLog, channelDeletedLog, channelUpdatedLog,
     messageDeletedLog, messageEditedLog,
@@ -640,4 +700,5 @@ module.exports = {memberJoinedLog, memberLeavedLog, memberNicknameLog, memberKic
     cmdTriggerLog,
     memberRoleLog,
     roleCreatedLog, roleDeletedLog, roleUpdatedLog,
-    warnAddLog, warnRemoveLog};
+    warnAddLog, warnRemoveLog, warnRemoveAllLog,
+    muteLog, unmuteLog};

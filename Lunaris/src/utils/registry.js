@@ -85,7 +85,7 @@ async function registerMutes(client) {
           } else {
               setTimeout(async () => {
                   await member.roles.remove(muteRole).catch(e => console.log(e));
-                  await GuildMembers.findOneAndUpdate({guildID: guild.id, userID: member.id}, {
+                  const muteInfo = await GuildMembers.findOneAndUpdate({guildID: guild.id, userID: member.id}, {
                       muted: {
                           state: false,
                           timestamp: null,
@@ -94,6 +94,8 @@ async function registerMutes(client) {
                           by: null,
                       }
                   }, {upsert: true});
+                  unmuteLog(client, guild.id, muteInfo.muted.by, 'System', member.id);
+
               }, collection.muted.timestamp - Date.now());
           }
       }

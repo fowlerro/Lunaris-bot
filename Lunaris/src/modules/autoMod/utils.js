@@ -1,7 +1,8 @@
 const GuildMembers = require("../../database/schemas/GuildMembers");
 const {generateId} = require('../../database/utils');
-const { warnAddLog, warnRemoveLog } = require("../guildLogs");
+const { warnAddLog, warnRemoveLog, muteLog, unmuteLog } = require("../guildLogs");
 const { translate } = require("../../utils/languages/languages");
+const { msToTime } = require('../../utils/utils');
 
 const Warn = {
     add: async (client, guildID, userID, reason, by) => {
@@ -112,7 +113,7 @@ const Mute = {
             if(time) {
                 setTimeout(async () => {
                     await guild.members.cache.get(userID).roles.remove(muteRole).catch(e => console.log(e));
-                    await GuildMembers.findOneAndUpdate({guildID, userID}, {
+                    const muteInfo = await GuildMembers.findOneAndUpdate({guildID, userID}, {
                         muted: {
                             state: false,
                             timestamp: null,
@@ -121,16 +122,21 @@ const Mute = {
                             by: null,
                         }
                     }, {upsert: true});
+
+                    unmuteLog(client, guildID, muteInfo.muted.by, 'System', userID);
                 }, time);
             }
 
+            const timeString = `${time ? msToTime(time) : "perm"}`;
+            muteLog(client, guildID, by, userID, reason, timeString);
+            
             return true;
         } catch(err) {
             console.log(err);
             return false;
         }
     },
-    remove: async (client, guildID, userID) => {
+    remove: async (client, guildID, executor, userID, reason) => {
         try {
             const guild = client.guilds.cache.get(guildID);
             const member = guild.members.cache.get(userID);
@@ -141,7 +147,7 @@ const Mute = {
             if(!hasRole) return "notMuted";
 
             await member.roles.remove(muteRole).catch(e => console.log(e));
-            await GuildMembers.findOneAndUpdate({guildID, userID}, {
+            const muteInfo = await GuildMembers.findOneAndUpdate({guildID, userID}, {
                 muted: {
                     state: false,
                     timestamp: null,
@@ -150,8 +156,10 @@ const Mute = {
                     by: null,
                 }
             }, {upsert: true});
-            return true;
 
+            unmuteLog(client, guildID, muteInfo.muted.by, executor, userID, reason);
+
+            return true;
         } catch(err) {
             console.log(err);
             return false;

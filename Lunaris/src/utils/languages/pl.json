@@ -27,7 +27,7 @@
         },
         "color": "Kolor",
         "none": "Brak",
-        "forTime": "na czas"
+        "forTime": "Na czas"
     },
     "cmd": {
         "globalStatus": "Komenda jest chwilowo wyłączona",
@@ -116,6 +116,13 @@
         "warn": {
             "addWarn": "%VAR% otrzymał ostrzeżenie",
             "removeWarn": "Ostrzeżenie użytkownika %VAR% zostało zdjęte",
+            "removeAllWarns": "Wszystkie ostrzeżenia na serwerze zostały usunięte",
+            "addedBy": "Nadane przez",
+            "removedBy": "Zdjęte przez"
+        },
+        "mute": {
+            "muted": "%VAR% został wyciszony",
+            "unmuted": "%VAR% znów może pisać",
             "addedBy": "Nadane przez",
             "removedBy": "Zdjęte przez"
         }

@@ -38,6 +38,7 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
       if(!update || Date.now() - update.createdTimestamp > 5000) return;
       const {executor, target} = update;
       const addedRole = update.changes.find(obj => obj.key === '$add').new[0];
+      if(addedRole.id === guildConfig.get('modules.autoMod.muteRole')) return;
       
       memberRoleLog(client, executor, target, addedRole.id, "add", logChannel, language);
     }
@@ -53,6 +54,7 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
       if(!update || Date.now() - update.createdTimestamp > 5000) return;
       const {executor, target} = update;
       const removedRole = update.changes.find(obj => obj.key === '$remove').new[0];
+      if(removedRole.id === guildConfig.get('modules.autoMod.muteRole')) return;
       
       memberRoleLog(client, executor, target, removedRole.id, "remove", logChannel, language);
     }
