@@ -1,9 +1,5 @@
 const AutoMod = require("../database/schemas/AutoMod");
 const GuildConfig = require("../database/schemas/GuildConfig");
-const GuildMembers = require("../database/schemas/GuildMembers");
-// const {generateId} = require('../database/utils');
-// const { warnAddLog } = require("../modules/guildLogs");
-// const { translate } = require("./languages/languages");
 
 const permissions = {
     CREATE_INSTANT_INVITE: 0x1,
@@ -40,43 +36,29 @@ const permissions = {
 } 
 
 function convertPerms(to, permission) {
-    if(to==='flags') {
+    if(to === 'flags') {
         let convertedPerms = [];
         for(const [key, value] of Object.entries(permissions)) {
-            if((permission & value) === value) {
-                convertedPerms.push(key);
-            }
+            if((permission & value) === value) convertedPerms.push(key);
         }
         return convertedPerms;
-    } else if(to==='bits') {
-        return null
     }
-}
-
-function replacer(key, value) {
-    if(value instanceof Map) {
-        return {
-            "msg": value, // or with spread: value: [...value]
-        };
-    } else {
-        return value;
-    }
+    if(to==='bits') return null;
 }
 
 function mapToObject(map) {
     const out = Object.create(null)
     map.forEach((value, key) => {
-      if (value instanceof Map) {
+      if(value instanceof Map) {
         out[key] = mapToObject(value)
-      }
-      else {
-        out[key] = value
-      }
+      } else out[key] = value;
     })
     if(!out) return {}
     return out
 }
 
+
+// ! Deprecated
 function JSONToMap(map, json) {
     if(!json) json = {};
     json = JSON.parse(json);
@@ -109,11 +91,10 @@ function msToTime(ms) {
     m && (result += m+'m '); 
     let s = Math.floor((ms/(1000)) % 60);
     s && (result += s+'s '); 
-    return result;
+    return result.trimEnd();
 }
 
 async function setAutoModConfig(client, guildID, state, toSet, value) {
-
     if(state === 'add') {
         const config = await AutoMod.findOneAndUpdate({guildID}, {
             $addToSet: {
@@ -135,5 +116,5 @@ async function setAutoModConfig(client, guildID, state, toSet, value) {
 
 
 
-module.exports = {convertPerms, replacer, JSONToMap, mapToObject, daysInMonth, setGuildConfig, 
+module.exports = {convertPerms, JSONToMap, mapToObject, daysInMonth, setGuildConfig, 
     msToTime, setAutoModConfig};
