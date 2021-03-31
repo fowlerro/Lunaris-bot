@@ -17,10 +17,20 @@ module.exports = {
     status: true,
 
     description: {
-        pl: "Zmiana języka bota",
-        en: "Change bot language",
+        pl: "Umożliwia zarządzanie ustawieniami cenzury",
+        en: "Allows to manage censor options",
     },
     category: 'settings',
+    syntax: {
+        pl: 'censor <add/remove/list> [<słowa>]',
+        en: 'censor <add/remove/list> [<words>]',
+    },
+    syntaxHelp: {
+        pl: `Słowa wprowadzane po spacji uznawane są za osobne wpisy
+            Aby wprowadzić jeden wpis z kilkoma słowami należy napisać je w cudzysłowie`,
+        en: `Separate words with space, if you need fraze, type it like that: "fraze"`,
+    },
+    syntaxExample: 'censor add fuck "fuck you"',
 
     permissions: [],
     requiredChannels: [],
@@ -47,17 +57,19 @@ module.exports = {
                 words = words.map(word => word.replaceAll('"', ''));
             }
             if(state === 'add') {
-                setAutoModConfig(client, message.guild.id, 'add', 'censor.words', words);
-            } else if(state === 'remove') {
-                setAutoModConfig(client, message.guild.id, 'remove', 'censor.words', words);
-            } else if(state === 'list') {
+                return setAutoModConfig(client, message.guild.id, 'add', 'censor.words', words);
+            }
+            if(state === 'remove') {
+                return setAutoModConfig(client, message.guild.id, 'remove', 'censor.words', words);
+            }
+            if(state === 'list') {
                 const results = client.autoModConfigs.get(message.guild.id);
                 const embed = new MessageEmbed()
                     .setColor(palette.info)
                     .setAuthor(translate(language, 'autoMod.censor.wordsListTitle'))
                     .setDescription(results.censor.words);
 
-                message.channel.send(embed);
+                return message.channel.send(embed);
             }
 
         } catch(err) {

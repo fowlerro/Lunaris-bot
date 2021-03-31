@@ -27,7 +27,10 @@
         },
         "color": "Kolor",
         "none": "Brak",
-        "forTime": "Na czas"
+        "forTime": "Na czas",
+        "aliases": "Aliasy",
+        "syntax": "Składnia",
+        "example": "Przykład"
     },
     "cmd": {
         "globalStatus": "Komenda jest chwilowo wyłączona",
@@ -36,7 +39,10 @@
         "languageListFooter": "Wpisz %VAR%language <język>, aby zmienić język",
         "wrongLanguage": "Ten język jest nieobsługiwany, wpisz '%VAR%language', aby sprawdzić listę wspieranych języków",
         "prefixChange": "Prefix został pomyślnie zmieniony na %VAR%",
-        "languageChange": "Język został pomyślnie zmieniony na %VAR%"
+        "languageChange": "Język został pomyślnie zmieniony na %VAR%",
+        "helpTitle": "Pomoc",
+        "helpFooter": "Aby sprawdzić dokładną pomoc komendy, wpisz !help <cmd>",
+        "cmdHelpTitle": "Informacje o %VAR%"
     },
     "logs": {
         "general": {

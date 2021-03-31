@@ -22,6 +22,15 @@ module.exports = {
         en: "Mutes user",
     },
     category: 'mod',
+    syntax: {
+        pl: 'mute <@user> [<czas> <powód>]',
+        en: 'mute <@user> [<time> <reason>]',
+    },
+    syntaxHelp: {
+        pl: 'Format czasu: 1d 1h 1m 1s',
+        en: 'Time format: 1d 1h 1m 1s',
+    },
+    syntaxExample: 'mute @Lunaris 12h 30m toxic',
 
     permissions: ['KICK_MEMBERS'],
     requiredChannels: [],

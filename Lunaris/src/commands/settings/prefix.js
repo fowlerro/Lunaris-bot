@@ -19,6 +19,11 @@ module.exports = {
         en: "Change bot prefix",
     },
     category: 'settings',
+    syntax: {
+        pl: 'prefix <prefix>',
+        en: 'prefix <prefix>',
+    },
+    syntaxExample: 'prefix &',
 
     permissions: ['MANAGE_GUILD'],
     requiredChannels: [],

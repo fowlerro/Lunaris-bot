@@ -27,7 +27,10 @@
         },
         "color": "Color",
         "none": "None",
-        "forTime": "For"
+        "forTime": "For",
+        "aliases": "Aliases",
+        "syntax": "Syntax",
+        "example": "Example"
     },
     "cmd": {
         "globalStatus": "Command is temporary turned off",
@@ -36,7 +39,10 @@
         "languageListFooter": "Type %VAR% language <language> to change it",
         "wrongLanguage": "This language is not supported, type '%VAR%language' to see supported languages list",
         "prefixChange": "Prefix has been changed to %VAR%",
-        "languageChange": "Language has been changed to %VAR%"
+        "languageChange": "Language has been changed to %VAR%",
+        "helpTitle": "Help",
+        "helpFooter": "Type !help <cmd> for more informations about command",
+        "cmdHelpTitle": "Help for %VAR%"
     },
     "logs": {
         "general": {

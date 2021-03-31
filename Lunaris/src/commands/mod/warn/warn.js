@@ -20,6 +20,11 @@ module.exports = {
         en: "Warns user",
     },
     category: 'mod',
+    syntax: {
+        pl: 'warn <@user> [<powód>]',
+        en: 'warn <@user> [<reason>]',
+    },
+    syntaxExample: 'warn @Lunaris toxic',
 
     permissions: ['KICK_MEMBERS'],
     requiredChannels: [],

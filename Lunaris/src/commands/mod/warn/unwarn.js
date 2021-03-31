@@ -20,6 +20,17 @@ module.exports = {
         en: "Removes user warn",
     },
     category: 'mod',
+    syntax: {
+        pl: 'unwarn <id/all>',
+        en: 'unwarn <id/all>',
+    },
+    syntaxHelp: {
+        pl: `id: Identyfikator ostrzeżenia, które zostanie usunięte
+            all: Wszystkie ostrzeżenia na serwerze zostaną usunięte`,
+        en: `id: ID of warn, which will be removed
+            all: All warns on server will be removed`,
+    },
+    syntaxExample: 'unwarn _HG7UsitE',
 
     permissions: ['KICK_MEMBERS'],
     requiredChannels: [],

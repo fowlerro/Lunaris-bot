@@ -12,8 +12,8 @@ module.exports = {
     status: true,
 
     description: {
-        pl: "Wyświetla pomoc dotyczącą komend",
-        en: "Display commands help",
+        pl: "Komenda testowa",
+        en: "Testing command",
     },
     category: 'help',
 

@@ -15,10 +15,14 @@ module.exports = {
     status: true,
 
     description: {
-        pl: "Zmiana prefixu bota",
-        en: "Change bot prefix",
+        pl: "Komenda testowa",
+        en: "Testing command",
     },
     category: 'settings',
+    syntax: {
+        pl: 'rr <message id> <emojiID|roleID|mode>',
+        en: 'rr <message id> <emojiID|roleID|mode>',
+    },
 
     permissions: ['MANAGE_GUILD'],
     requiredChannels: [],

@@ -12,8 +12,8 @@ module.exports = {
     status: true,
 
     description: {
-        pl: "Zmiana prefixu bota",
-        en: "Change bot prefix",
+        pl: "Komenda testowa, to chyba do wyjebania xD",
+        en: "Testing command, to chyba do wyjebania xD",
     },
     category: 'settings',
     errorMessage: 'Wystąpił problem z wykonaniem komendy...',

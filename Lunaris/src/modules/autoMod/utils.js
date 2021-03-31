@@ -2,7 +2,7 @@ const GuildMembers = require("../../database/schemas/GuildMembers");
 const {generateId} = require('../../database/utils');
 const { warnAddLog, warnRemoveLog, muteLog, unmuteLog } = require("../guildLogs");
 const { translate } = require("../../utils/languages/languages");
-const { msToTime } = require('../../utils/utils');
+const { msToTime, setGuildConfig } = require('../../utils/utils');
 
 const Warn = {
     add: async (client, guildID, userID, reason, by) => {
@@ -112,7 +112,9 @@ const Mute = {
             }, {upsert: true});
             if(time) {
                 setTimeout(async () => {
-                    await guild.members.cache.get(userID).roles.remove(muteRole).catch(e => console.log(e));
+                    if(guild.members.cache.get(userID)) {
+                        await guild.members.cache.get(userID).roles.remove(muteRole).catch(e => console.log(e));
+                    }
                     const muteInfo = await GuildMembers.findOneAndUpdate({guildID, userID}, {
                         muted: {
                             state: false,
@@ -122,7 +124,6 @@ const Mute = {
                             by: null,
                         }
                     }, {upsert: true});
-
                     unmuteLog(client, guildID, muteInfo.muted.by, 'System', userID);
                 }, time);
             }
@@ -178,6 +179,23 @@ const Mute = {
             return false
         }
     },
+    reassignRole: async (client, guildID, userID) => {
+        try {
+            const guildConfig = client.guildConfigs.get(guildID);
+            const guild = client.guilds.cache.get(guildID);
+            const member = guild.members.cache.get(userID);
+            const memberInfo = await GuildMembers.findOne({guildID, userID, 'muted.state': true});
+            const muteRoleID = guildConfig.get('modules.autoMod.muteRole');
+            let muteRole = guild.roles.cache.get(muteRoleID) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
+            if(!memberInfo) return 'notMuted';
+            await member.roles.add(muteRole).catch(e => console.log(e));
+
+            return true;
+        } catch(err) {
+            console.log(err);
+            return false;
+        }
+    }
 }
 
 module.exports = {Mute, Warn}

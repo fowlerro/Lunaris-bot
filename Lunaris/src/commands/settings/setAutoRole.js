@@ -1,5 +1,4 @@
 const AutoRole = require("../../database/schemas/AutoRole");
-const ms = require('ms');
 
 module.exports = {
     name: 'setar',
@@ -13,10 +12,14 @@ module.exports = {
     status: true,
 
     description: {
-        pl: "Zmiana prefixu bota",
-        en: "Change bot prefix",
+        pl: "Ustawia auto role",
+        en: "Sets auto roles",
     },
     category: 'settings',
+    syntax: {
+        pl: 'setar <roleID:time>',
+        en: 'setar <roleID:time>',
+    },
 
     permissions: [],
     requiredChannels: [],

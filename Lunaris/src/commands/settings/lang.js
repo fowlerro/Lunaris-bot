@@ -19,6 +19,15 @@ module.exports = {
         en: "Change bot language",
     },
     category: 'settings',
+    syntax: {
+        pl: 'language [<język>]',
+        en: 'language [<language>]',
+    },
+    syntaxHelp: {
+        pl: `Bez uwzględnienia języka, zostanie wyświetlona lista wspieranych języków`,
+        en: `If not provide language, command will displays list of supported languages`,
+    },
+    syntaxExample: 'language en',
 
     permissions: ['MANAGE_GUILD'],
     requiredChannels: [],
@@ -38,7 +47,7 @@ module.exports = {
             let language = guildConfig.get('language');
             if(!args[0]) {
                 let langs = "";
-                langs = localeList().map(lang => langs + "`" + lang + "`");
+                langs = localeList().map(lang => langs + "`" + lang + "` " + translate(lang, 'name'));
                 const embed = new MessageEmbed()
                     .setColor(palette.info)
                     .addField(translate(language, 'cmd.languageListMessage'), langs)
@@ -46,13 +55,20 @@ module.exports = {
 
                 return message.channel.send(embed);
             };
-            if(!localeList().includes(args[0])) {
+            if(!localeList().includes(args[0]) && !localeList().some(lang => translate(lang, 'name').toLowerCase() == args[0].toLowerCase())) {
                 const embed = new MessageEmbed()
                     .setColor(palette.error)
                     .setDescription(translate(language, "cmd.wrongLanguage", guildConfig.get('prefix')));
         
                 return message.channel.send(embed);
             }
+            if(localeList().some(lang => translate(lang, 'name').toLowerCase() == args[0].toLowerCase())) {
+                localeList().forEach(lang => {
+                    if(translate(lang, 'name').toLowerCase() == args[0].toLowerCase()) args[0] = lang;
+                })
+            }
+
+
             guildConfig = await setGuildConfig(client, message.guild.id, 'language', args[0]);
             language = guildConfig.get('language');
             const embed = new MessageEmbed()

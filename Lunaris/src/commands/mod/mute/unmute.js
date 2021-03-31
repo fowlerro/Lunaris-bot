@@ -21,6 +21,11 @@ module.exports = {
         en: "Unmutes user",
     },
     category: 'mod',
+    syntax: {
+        pl: 'unmute <@user> [<powód>]',
+        en: 'unmute <@user> [<reason>]',
+    },
+    syntaxExample: 'unmute @Lunaris',
 
     permissions: ['KICK_MEMBERS'],
     requiredChannels: [],

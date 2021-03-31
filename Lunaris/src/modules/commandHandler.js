@@ -5,6 +5,7 @@ const Cooldowns = require("../database/schemas/Cooldowns");
 const GuildConfig = require("../database/schemas/GuildConfig");
 const { translate } = require("../utils/languages/languages");
 const { cmdTriggerLog } = require('./guildLogs');
+const helpArgs = ["help", "pomoc", "info"];
 
 const commandHandle = async (client, message) => {
     try {
@@ -55,7 +56,10 @@ const commandHandle = async (client, message) => {
                     }
                 }
                 
+
                 if(command.autoRemove) message.delete();
+
+                if(helpArgs.includes(cmdArgs[0])) return sendHelp(client, command, message);
                 
                 if(!command.status) return;
                 
@@ -160,6 +164,11 @@ const checkBlockRoles = (blockedRoles, member) => {
         if(member.roles.cache.find(r => r.id === blockedRoles[i])) return false;
     }
     return true;
+}
+
+const sendHelp = async (client, cmd, message) => {
+    const helpCmd = client.commands.get('help');
+    await helpCmd.run(client, message, [cmd.name]);
 }
 
 const runCmd = async (client, message, cmd, cmdArgs, autoRemoveResponse) => {

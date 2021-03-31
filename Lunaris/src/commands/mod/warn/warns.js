@@ -15,10 +15,19 @@ module.exports = {
     status: true,
 
     description: {
-        pl: "Nakłada ostrzeżenie na użytkownika",
-        en: "Warns user",
+        pl: "Wyświetla listę ostrzeżeń",
+        en: "Displays warns list",
     },
     category: 'mod',
+    syntax: {
+        pl: 'warns [<@user>]',
+        en: 'warns [<@user>]',
+    },
+    syntaxHelp: {
+        pl: `Jeśli podany zostanie użytkownik, wyświelone zostaną ostrzeżenia tylko danego użytkownika`,
+        en: `If you specify a user, only his warns will be displays`,
+    },
+    syntaxExample: 'warns @Lunaris',
 
     permissions: ['KICK_MEMBERS'],
     requiredChannels: [],
@@ -48,15 +57,15 @@ module.exports = {
                     .setTimestamp();
 
                 return message.channel.send(embed);
-            } else {
-                const embed = new MessageEmbed()
-                    .setColor(palette.info)
-                    .setAuthor(translate(language, 'autoMod.warn.warnList', member.user.tag), member.user.displayAvatarURL())
-                    .setDescription(warns)
-                    .setTimestamp();
-    
-                return message.channel.send(embed);
             }
+
+            const embed = new MessageEmbed()
+                .setColor(palette.info)
+                .setAuthor(translate(language, 'autoMod.warn.warnList', member.user.tag), member.user.displayAvatarURL())
+                .setDescription(warns)
+                .setTimestamp();
+
+            return message.channel.send(embed);
         } catch(err) {
             console.log(err)
         }

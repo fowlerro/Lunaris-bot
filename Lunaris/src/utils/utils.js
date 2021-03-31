@@ -1,3 +1,4 @@
+const AutoMod = require("../database/schemas/AutoMod");
 const GuildConfig = require("../database/schemas/GuildConfig");
 const GuildMembers = require("../database/schemas/GuildMembers");
 // const {generateId} = require('../database/utils');
