@@ -72,13 +72,18 @@ function daysInMonth(month, year) {
 }
 
 async function setGuildConfig(client, guildID, toSet, value) {
-    await GuildConfig.findOneAndUpdate({guildID}, {
-        [toSet]: value
-    });
-    let config = client.guildConfigs.get(guildID);
-    config[toSet] = value;
-    client.guildConfigs.set(guildID, config);
-    return client.guildConfigs.get(guildID);
+    try {
+        await GuildConfig.findOneAndUpdate({guildID}, {
+            [toSet]: value
+        });
+        let config = client.guildConfigs.get(guildID);
+        config[toSet] = value;
+        client.guildConfigs.set(guildID, config);
+        return client.guildConfigs.get(guildID);
+    } catch(err) {
+        console.log(err);
+        return null;
+    }
 }
 
 function msToTime(ms) {

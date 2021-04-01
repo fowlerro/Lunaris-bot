@@ -4,7 +4,7 @@ module.exports = {
         dbName: 'jest'
       },
       binary: {
-        version: '5.10.0', // Version of MongoDB
+        version: '4.4.4', // Version of MongoDB
         skipMD5: true
       },
       autoStart: false

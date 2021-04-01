@@ -35,8 +35,6 @@ test("Sprawdzanie dni w miesiącu", () => {
     expect(dniMarca).toBe(31);
 });
 
-// setGuildConfig
-
 // msToTime
 test("Konwertowanie milisekund na sformatowany tekst czasu", () => {
     const time = msToTime(44100000);
