@@ -13,20 +13,21 @@ describe('setGuildConfig test', () => {
     });
     
     it('Edycja konfiguracji serwera', async () => {
-        const client = {};
+        const client = {}
+        client.guildConfigs = new Map();
         const guildID = '533385524434698260'
         const guildConfig = await GuildConfig.create({
-            guildID: '533385524434698260'
+            guildID
         });
-        // client.guildConfigs.set(guildID, {prefix: guildConfig.get('prefix'), language: guildConfig.get('language')})
+        client.guildConfigs.set(guildID, guildConfig)
     
-        // let config = setGuildConfig(client, guildID, 'prefix', '?');
-        // console.log(config);
-        // expect(typeof config).toBe('object');
-        // expect(config.prefix).toBe('?');
-        // expect(config.language).toBe('en');
-        // config = setGuildConfig(client, guildID, 'language', 'pl');
-        // expect(config.prefix).toBe('?');
-        // expect(config.language).toBe('pl');
+        expect(guildConfig.prefix).toBe('$');
+        let config = setGuildConfig(client, guildID, 'prefix', '?');
+        expect(typeof config).toBe('object');
+        expect(config.get('prefix')).toBe('?');
+        expect(config.get('language')).toBe('en');
+        config = setGuildConfig(client, guildID, 'language', 'pl');
+        expect(config.get('prefix')).toBe('?');
+        expect(config.get('language')).toBe('pl');
     }, 20000)
 })

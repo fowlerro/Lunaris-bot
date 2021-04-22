@@ -1,4 +1,6 @@
 
+const { MessageEmbed } = require("discord.js");
+
 module.exports = {
     name: 'test',
     aliases: [],
@@ -30,13 +32,10 @@ module.exports = {
     cooldownReminder: true,
     async run(client, message, args) {
         try {
-            const map = new Map();
-            map.set('chuj', {1: 'jeden', 2: 'dwa', 'trzy': 'chuj'});
-            console.log(map)
-            const chuj = map.get('chuj');
-            console.log(chuj)
-            const trzy = chuj.get('trzy');
-            console.log(trzy)
+            const embed = new MessageEmbed()
+				.addField('Cos', '[Link :)](https://google.com)');
+				
+			message.channel.send(embed);
 
         } catch(err) {
             console.log(err)
