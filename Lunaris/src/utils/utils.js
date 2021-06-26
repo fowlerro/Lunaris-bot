@@ -108,12 +108,21 @@ async function setAutoModConfig(client, guildID, state, toSet, value) {
         }, {new: true, upsert: true});
         client.autoModConfigs.set(guildID, config);
         return client.autoModConfigs.get(guildID);
-    } else if(state === 'remove') {
+    }
+    
+    if(state === 'remove') {
         const config = await AutoMod.findOneAndUpdate({guildID}, {
             $pullAll: {
                 [toSet]: value
             }
         }, {new: true, upsert: true});
+        client.autoModConfigs.set(guildID, config);
+        return client.autoModConfigs.get(guildID);
+    }
+
+    if(state === undefined) {
+        let config = await AutoMod.findOne({guildID});
+        if(!config) config = await AutoMod.create({guildID});
         client.autoModConfigs.set(guildID, config);
         return client.autoModConfigs.get(guildID);
     }

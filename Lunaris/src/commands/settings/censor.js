@@ -54,7 +54,7 @@ module.exports = {
             if(words.length) {
                 words = words.join(" ");
                 words = words.match(/[^\s"]+|"([^"]*)"/gi);
-                words = words.map(word => word.replaceAll('"', ''));
+                words = words.map(word => word.replace(/"/g, ''));
             }
             if(state === 'add') {
                 return setAutoModConfig(client, message.guild.id, 'add', 'censor.words', words);
@@ -63,11 +63,14 @@ module.exports = {
                 return setAutoModConfig(client, message.guild.id, 'remove', 'censor.words', words);
             }
             if(state === 'list') {
-                const results = client.autoModConfigs.get(message.guild.id);
+                let results = await client.autoModConfigs.get(message.guild.id);
+                if(!results) results = setAutoModConfig(client, message.guild.id);
+
+                let words = results.censor.words.length ? results.censor.words : translate(language, 'general.none');
                 const embed = new MessageEmbed()
                     .setColor(palette.info)
                     .setAuthor(translate(language, 'autoMod.censor.wordsListTitle'))
-                    .setDescription(results.censor.words);
+                    .setDescription(words);
 
                 return message.channel.send(embed);
             }

@@ -16,7 +16,7 @@ const translate = (language, message, ...vars) => {
         }
     }
 
-    for(let count = 0; count<=vars.length; count++) {
+    for(let count = 0; count<=vars.length-1; count++) {
         locale = locale.replace(/%VAR%/, () => vars[count] !== null ? vars[count] : "%VAR%");
     }
     return locale;
@@ -29,6 +29,7 @@ const localeList = () => {
 }
 
 const readMessage = (language, message) => {
+    if(!localeList().includes(language)) language = defaultLanguage;
     const filePath = path.join(__dirname, `${language}.json`);
     let json = fs.readFileSync(filePath);
     json = JSON.parse(json);

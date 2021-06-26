@@ -135,7 +135,7 @@
     },
     "autoMod": {
         "censor": {
-            "wordsListTitle": "Blocked words list"
+            "wordsListTitle": "Blocked words"
         },
         "warn": {
             "addWarn": "%VAR% has been warned by %VAR% %VAR%",
@@ -156,7 +156,7 @@
         "CREATE_INSTANT_INVITE": "Create Invite",
         "KICK_MEMBERS": "Kick Members",
         "BAN_MEMBERS": "Ban Members",
-
+        "ADMINISTRATOR": "Administrator",
         "MANAGE_CHANNELS": "Manage Channels",
         "MANAGE_GUILD": "Manage Server",
         "ADD_REACTIONS": "Add Reactions",

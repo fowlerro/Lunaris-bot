@@ -17,7 +17,7 @@ const palette = {
   error: '#B71E13',
 }
 
-mongoose.connect(`mongodb+srv://dbUser:${process.env.DB_PASS}@cluster0.wsvos.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, {
+mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wsvos.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
