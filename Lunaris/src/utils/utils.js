@@ -128,7 +128,43 @@ async function setAutoModConfig(client, guildID, state, toSet, value) {
     }
 }
 
+function toggleBot(client, s) {
+    if(!s) client.state = !client.state;
+    if(s) client.state = s;
+
+    if(client.state) {
+        client.user.setPresence({
+            status: 'online',
+            activity: {
+                name: client.customActivity.name,
+                type: client.customActivity.type
+            }
+        });
+    }
+    if(!client.state) {
+        client.user.setPresence({
+            status: 'invisible'
+        });
+    }
+    return client.state;
+}
+
+function setActivity(client, type, activity) {
+    if(!type) return;
+    client.customActivity = {
+        name: activity,
+        type: type.toUpperCase()
+    }
+    client.user.setPresence({
+        activity: {
+            name: client.customActivity.name,
+            type: client.customActivity.type
+        }
+    })
+}
+
 
 
 module.exports = {convertPerms, JSONToMap, mapToObject, daysInMonth, setGuildConfig, 
-    msToTime, setAutoModConfig};
+    msToTime, setAutoModConfig,
+    toggleBot, setActivity};

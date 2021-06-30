@@ -10,6 +10,7 @@ module.exports = class GuildCreateEvent extends BaseEvent {
   }
   
   async run(client, guild) {
+    if(!client.state) return;
     try {
       let guildConfig = client.guildConfigs.get(guild.id);
       if(!guildConfig) {

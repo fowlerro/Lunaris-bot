@@ -9,6 +9,7 @@ module.exports = class GuildMemberRemoveEvent extends BaseEvent {
   }
   
   async run(client, member) {
+    if(!client.state) return;
 
     // const guildConfig = await GuildConfig.findOne({guildID: member.guild.id}).catch();
     const guildConfig = client.guildConfigs.get(member.guild.id);

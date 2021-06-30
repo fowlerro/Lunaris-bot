@@ -9,6 +9,7 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
   }
   
   async run(client, oldMember, newMember) {
+    if(!client.state) return;
     if(oldMember.nickname !== newMember.nickname) {
       const guildConfig = await GuildConfig.findOne({guildID: newMember.guild.id}).catch();
       const logChannel = newMember.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));

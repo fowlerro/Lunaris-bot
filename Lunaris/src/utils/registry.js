@@ -2,7 +2,7 @@
 const path = require('path');
 const fs = require('fs').promises;
 const BaseEvent = require('./structures/BaseEvent');
-const { JSONToMap } = require('./utils');
+const { JSONToMap, setActivity } = require('./utils');
 const GuildConfig = require('../database/schemas/GuildConfig');
 const AutoMod = require('../database/schemas/AutoMod');
 const GuildMembers = require('../database/schemas/GuildMembers');
@@ -104,11 +104,51 @@ async function registerMutes(client) {
   }
 }
 
+function registerTerminalCommands(client) {
+  try {
+    const terminalStdin = process.openStdin();
+    let sayChannel = null;
+    let dmChannel = null;
+    terminalStdin.addListener('data', res => {
+      const terminalInput = res.toString().trim().split(/ +/g);
+      const [command, ...args] = terminalInput;
+      
+      if(command === 'setChannel') {
+        sayChannel = args[0];
+      }
+
+      if(command === 'setDMChannel') {
+        dmChannel = args[0];
+      }
+
+      if(command === 'say') {
+        if(!sayChannel) return console.log("Specify channel by 'setChannel' command!");
+
+        client.channels.cache.get(sayChannel).send(args.join(" "))
+      }
+
+      if(command === 'dm') {
+        if(!dmChannel) return console.log("Specify userID by 'setDMChannel' command!");
+
+        client.users.cache.get(dmChannel).send(args.join(" "))
+      }
+
+      if(command === 'activity') {
+        const [mode, ...activity] = args;
+        setActivity(client, mode, activity.join(" "));
+      }
+    })
+  } catch(e) {
+    console.log(e)
+  }
+}
+
 module.exports = { 
   registerCommands, 
   registerEvents,
   registerMessagesCount,
   registerGuildConfigs,
   registerAutoModConfigs,
-  registerMutes
+  registerMutes,
+  registerTerminalCommands
 };

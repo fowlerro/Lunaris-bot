@@ -1,33 +1,39 @@
+const { MessageEmbed } = require("discord.js");
+const { palette } = require("../../bot");
+const { translate } = require("../../utils/languages/languages");
+const { Warn } = require("./utils");
 
-function censor(client, guildID, message, user) {
-    const config = client.autoModConfigs.get(guildID);
-    const trigger = config.censor.triggerValue;
-    const words = config.censor.words;
-    if(words.some((v) => message.content.indexOf(v) >= 0)) {
-        const userID = user.id;
-        const time = Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: 'numeric' }).format(new Date());
-        let userCounts = client.autoModUsers.get(userID);
-        let count;
-        if(userCounts) count = userCounts[time];
-        if(count) client.autoModUsers.set(userID, {...userCounts, [time]: count+1}); else client.autoModUsers.set(userID, {...userCounts, [time]: 1});
-        console.log(time, client.autoModUsers.get(userID)[time]);
-        console.log(time, client.autoModUsers.get(userID));
-        const countLen = Object.keys(client.autoModUsers.get(userID)).length;
+async function censor(client, guildID, message, user) {
+    const {language} = client.guildConfigs.get(message.guild.id);
+    const autoModConfig = client.autoModConfigs.get(guildID);
+    const trigger = autoModConfig.censor.triggerValue;
+    const words = autoModConfig.censor.words;
+    if(words.some((v) => message.content.toLowerCase().indexOf(v.toLowerCase()) >= 0)) { // If message contains banned word
+        let userSwearCount = client.autoModUsers.get(`${user.id}_${message.guild.id}`);
+        if(!userSwearCount) userSwearCount = 1; else userSwearCount++;
+        client.autoModUsers.set(`${user.id}_${message.guild.id}`, userSwearCount);
+        console.log(userSwearCount);
         
-        if(countLen > 5) {
-            for(const i in client.autoModUsers.get(userID)) {
-                delete client.autoModUsers.get(userID)[i];
-                break;
-            }
+        if(userSwearCount >= trigger) {
+
+            const warns = await Warn.list(client, message.guild.id, user.id); // Change Warn.list() function to return objects instead of strings;
+            console.log(warns);
+
+            const reason = `profanity abuse`;
+            const warnExecutor = `AutoMod System`;
+            const warn = await Warn.add(client, message.guild.id, user.id, reason, warnExecutor);
+            if(!warn) return;
+
+            const embed = new MessageEmbed()
+                .setColor(palette.error)
+                .setDescription(translate(language, 'autoMod.warn.addWarn', `<@${user.id}>`, `**${warnExecutor}**`, reason.length ? `| ${reason}` : ""));
+
+            message.channel.send(embed);
+            console.log(user.user.tag, 'censor trigger');
         }
-        const avg = (Object.values(client.autoModUsers.get(userID)).reduce((a, b) => a + b, 0)) / (Object.values(client.autoModUsers.get(userID)).length);
-        if(avg >= trigger) {
-            message.delete();
-            if(avg >= trigger*2) {
-                message.reply("Zostałeś ostrzeżony!");
-            }
-        }
-        console.log(time, client.autoModUsers.get(userID));
+        setTimeout(() => {
+            client.autoModUsers.set(`${user.id}_${message.guild.id}`, userSwearCount--);
+        }, 30000);
     }
 }
 

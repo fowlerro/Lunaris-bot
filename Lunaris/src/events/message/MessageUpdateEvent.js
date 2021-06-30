@@ -8,6 +8,7 @@ module.exports = class MessageUodateEvent extends BaseEvent {
   }
   
   async run(client, oldMessage, newMessage) {
+    if(!client.state) return;
     if(!newMessage.guild || newMessage.author.bot) return;
     
     if(oldMessage.content !== newMessage.content) {

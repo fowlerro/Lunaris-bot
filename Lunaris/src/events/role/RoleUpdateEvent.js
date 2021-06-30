@@ -7,6 +7,8 @@ module.exports = class RoleUpdateEvent extends BaseEvent {
   }
   
   async run(client, oldRole, newRole) {
+    if(!client.state) return;
+
     roleUpdatedLog(client, newRole);
   }
 }

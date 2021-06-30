@@ -8,6 +8,7 @@ module.exports = class MessageDeleteEvent extends BaseEvent {
   }
   
   async run(client, message) {
+    if(!client.state) return;
     // console.log(message);
     if(!message.guild || message.author.bot) return;
     const guildConfig = await GuildConfig.findOne({guildID: message.guild.id}).catch();

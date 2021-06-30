@@ -8,6 +8,8 @@ module.exports = class MessageEvent extends BaseEvent {
     }
     
     async run(client, invite) {
+        if(!client.state) return;
+        
         const guildConfig = await GuildConfig.findOne({guildID: invite.guild.id}).catch();
         const logChannel = invite.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.invites'));
         const language = guildConfig.get('language');

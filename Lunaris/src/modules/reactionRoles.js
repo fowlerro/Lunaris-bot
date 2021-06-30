@@ -30,7 +30,7 @@ const createReactionMessage = async (guildID, channelID, messageID, reactions, c
             reactRoles.reactions.some(element => reaction.emoji.identifier === element.reaction && !user.bot)
         );
 
-        createEmojiCollector(filter, reactRoles, message);
+        createEmojiCollector(client, filter, reactRoles, message);
 
         reactions.forEach(element => {
             message.react(element.reaction).catch();
@@ -40,10 +40,12 @@ const createReactionMessage = async (guildID, channelID, messageID, reactions, c
     }
 };
 
-const createEmojiCollector = (filter, options, message) => {
+const createEmojiCollector = (client, filter, options, message) => {
     const emojiCollector = message.createReactionCollector(filter, {dispose: true});
 
     emojiCollector.on('collect', (r, user) => {
+        if(!client.state) return;
+
         const reaction = options.reactions.find(react => react.reaction === r.emoji.identifier);
         const roleID = reaction.role;
         const member = r.message.guild.members.cache.find(m => m.id === user.id);
@@ -52,6 +54,8 @@ const createEmojiCollector = (filter, options, message) => {
     });
 
     emojiCollector.on('remove', (r, user) => {
+        if(!client.state) return;
+
         const reaction = options.reactions.find(react => react.reaction === r.emoji.identifier);
         if(reaction.mode === 'verify') return;
         const roleID = reaction.role;

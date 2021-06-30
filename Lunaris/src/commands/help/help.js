@@ -74,7 +74,7 @@ module.exports = {
                         value: Array.from(client.commands).filter(cmd => cmd[1].category === category && cmd[0] === cmd[1].name).map(cmd => "`" + prefix + cmd[1].name + "` " + cmd[1].description[language])
                     }
                 )))
-                .setFooter(translate(language, 'cmd.helpFooter'))
+                .setFooter(translate(language, 'cmd.helpFooter', prefix))
                 .setTimestamp();
 
             return message.channel.send(embed);

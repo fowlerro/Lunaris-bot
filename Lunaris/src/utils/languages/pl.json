@@ -30,7 +30,9 @@
         "forTime": "Na czas",
         "aliases": "Aliasy",
         "syntax": "Składnia",
-        "example": "Przykład"
+        "example": "Przykład",
+        "user": "Użytkownik",
+        "date": "Data"
     },
     "cmd": {
         "globalStatus": "Komenda jest chwilowo wyłączona",
@@ -41,7 +43,7 @@
         "prefixChange": "Prefix został pomyślnie zmieniony na %VAR%",
         "languageChange": "Język został pomyślnie zmieniony na %VAR%",
         "helpTitle": "Pomoc",
-        "helpFooter": "Aby sprawdzić dokładną pomoc komendy, wpisz !help <cmd>",
+        "helpFooter": "Aby sprawdzić dokładną pomoc komendy, wpisz %VAR%help <cmd>",
         "cmdHelpTitle": "Informacje o %VAR%"
     },
     "logs": {

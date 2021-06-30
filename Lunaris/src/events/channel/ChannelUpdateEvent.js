@@ -8,6 +8,7 @@ module.exports = class ChannelUpdateEvent extends BaseEvent {
   }
   
   async run(client, oldChannel, newChannel) {
+    if(!client.state) return;
     channelUpdatedLog(client, oldChannel, newChannel);
   }
 }

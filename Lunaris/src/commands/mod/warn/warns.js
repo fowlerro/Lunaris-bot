@@ -42,32 +42,81 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-        try {
             const guildConfig = client.guildConfigs.get(message.guild.id);
             const language = guildConfig.get('language');
             const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
-            const warns = await Warn.list(client, message.guild.id, member && member.id);
+            let warns = await Warn.list(client, message.guild.id, member && member.id);
             
             if(!member) {
+                if(warns.error) {
+                    const embed = new MessageEmbed()
+                        .setColor(palette.info)
+                        .setAuthor(translate(language, 'autoMod.warn.guildWarnList'), message.guild.iconURL())
+                        .setDescription(warns.error)
+                        .setTimestamp();
+    
+                    return message.channel.send(embed);
+                }
+
+                warns = warns.map(v => {
+                    const {userID, warns} = v;
+
+                    return warns.map(v => {
+                        const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(v.date);
+                        const by = !isNaN(v.by) ? client.users.cache.get(v.by).tag : v.by;
+                        return {
+                            name: `Nick: ${client.users.cache.get(userID).tag}`,
+                            value: `**Mod**: ${by}
+                                    **${translate(language, 'general.reason')}**: ${v.reason}
+                                    **${translate(language, 'general.date')}**: ${date}` +
+                                    "\n**ID**: `" + v.id + "`",
+                            inline: true
+                        }
+                    });
+                    
+                }).flat();
+                //! Check if (fieldIndex % 3 === 0) blank; will looks better
+
+                // console.log(warns);
+
                 const embed = new MessageEmbed()
                     .setColor(palette.info)
                     .setAuthor(translate(language, 'autoMod.warn.guildWarnList'), message.guild.iconURL())
-                    .setDescription(warns)
+                    .addFields(warns)
                     .setTimestamp();
 
                 return message.channel.send(embed);
             }
 
+            if(warns.error) {
+                const embed = new MessageEmbed()
+                    .setColor(palette.info)
+                    .setAuthor(translate(language, 'autoMod.warn.warnList', member.user.tag), message.guild.iconURL())
+                    .setDescription(warns.error)
+                    .setTimestamp();
+
+                return message.channel.send(embed);
+            }
+
+            warns = warns.map(v => {
+                const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(v.date);
+                const by = !isNaN(v.by) ? client.users.cache.get(v.by).tag : v.by;
+                return {
+                    name: `Mod: ${by}`,
+                    value: `**${translate(language, 'general.reason')}**: ${v.reason}
+                            **${translate(language, 'general.date')}**: ${date}` +
+                            "\n**ID**: `" + v.id + "`",
+                    inline: true
+                }
+            });
+
             const embed = new MessageEmbed()
                 .setColor(palette.info)
                 .setAuthor(translate(language, 'autoMod.warn.warnList', member.user.tag), member.user.displayAvatarURL())
-                .setDescription(warns)
+                .addFields(warns)
                 .setTimestamp();
 
             return message.channel.send(embed);
-        } catch(err) {
-            console.log(err)
-        }
     }
 }

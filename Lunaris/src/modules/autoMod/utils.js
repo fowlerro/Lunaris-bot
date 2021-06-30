@@ -6,69 +6,52 @@ const { msToTime, setGuildConfig } = require('../../utils/utils');
 
 const Warn = {
     add: async (client, guildID, userID, reason, by) => {
-        try {
-            const id = await generateId();
-            await GuildMembers.findOneAndUpdate({guildID, userID}, {
-                $push: {
-                    warns: {reason, by, id}
-                }
-            }, {upsert: true});
+        if(!guildID) return;
+        const id = await generateId();
+        await GuildMembers.findOneAndUpdate({guildID, userID}, {
+            $push: {
+                warns: {reason, by, id}
+            }
+        }, {upsert: true});
 
-            warnAddLog(client, guildID, by, userID, reason, id);
-            return true;
-        } catch(err) {
-            console.log(err);
-            return false;
-        }
+        warnAddLog(client, guildID, by, userID, reason, id);
+        return true;
     },
     remove: async (client, guildID, id, by) => {
-        try {
-            if(id === 'all') {
-                const result = await GuildMembers.updateMany({guildID}, {
-                    $set: {
-                        warns: []
-                    } 
-                });
-                return 'all';
-            } else {
-                const result = await GuildMembers.findOneAndUpdate({guildID, 'warns.id': id}, {
-                    $pull: {
-                        warns: {id}
-                    }
-                });
-                const warn = result.warns.filter(w => w.id === id);
-                warnRemoveLog(client, guildID, by, warn[0].by, result.userID, warn[0].reason, id);
-                return result;
-            }
-        } catch(err) {
-            console.log(err);
-            return false;
+        if(!guildID) return;
+        if(id === 'all') {
+            await GuildMembers.updateMany({guildID}, {
+                $set: {
+                    warns: []
+                } 
+            });
+            return 'all'; // !Wrong returned value (must be object or smth)
         }
+
+        const result = await GuildMembers.findOneAndUpdate({guildID, 'warns.id': id}, {
+            $pull: {
+                warns: {id}
+            }
+        });
+        const warn = result.warns.filter(w => w.id === id);
+        warnRemoveLog(client, guildID, by, warn[0].by, result.userID, warn[0].reason, id);
+        return result;
     },
     list: async (client, guildID, userID) => {
-        try {
-            const guildConfig = client.guildConfigs.get(guildID);
-            const language = guildConfig.get('language');
-            let result;
-            if(userID) {
-                result = await GuildMembers.findOne({guildID, userID});
-                if(!result.warns.length) return translate(language, 'general.none');
-                return result.warns.map((v, i) => `${i+1}. ${translate(language, 'general.reason')}: ${v.reason ? v.reason : translate(language, 'general.none')} | ${translate(language, 'general.by').toLowerCase()}: <@${v.by}> | id: ` + "`" + v.id + "` | " + new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'short'}).format(v.date));
-            } else {
-                result = await GuildMembers.find({guildID});
-                if(!result.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return translate(language, 'general.none');
-                let index = 0;
-                return result.map((vv, ii) => {
-                    return vv.warns.map((v, i) => {
-                        index++;
-                        return `${index}. <@${vv.userID}> ${translate(language, 'general.by').toLowerCase()} <@${v.by}> ${translate(language, 'general.reason').toLowerCase()}: ${v.reason ? `| ${v.reason}` : translate(language, 'general.none')} | id: ` + "`" + v.id + "` | " + new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'short'}).format(v.date) + `\n`;
-                    }).join('');
-                });
-            }
-        } catch(err) {
-            console.log(err);
-            return false;
+        if(!guildID) return;
+        const guildConfig = client.guildConfigs.get(guildID);
+        const language = guildConfig.get('language');
+        if(userID) {
+            const {warns} = await GuildMembers.findOne({guildID, userID});
+            if(!warns.length) return {error: translate(language, 'general.none')}; // !Wrong returned value (must be object or smth)
+            return warns;
         }
+
+        let warns = await GuildMembers.find({guildID}).select(['-muted', '-_id', '-guildID', '-__v']);
+        warns = warns.filter(v => v.warns.length > 0);
+        if(!warns.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return {error: translate(language, 'general.none')}; // !Wrong returned value (must be object or smth)
+        
+        return warns;
     }
 }
 

@@ -9,10 +9,12 @@ const helpArgs = ["help", "pomoc", "info"];
 
 const commandHandle = async (client, message) => {
     try {
+        if(!client.state && !botOwners.includes(message.author.id)) return;
+
         const guildConfig = await GuildConfig.findOne({guildID: message.guild.id});
         const prefix = guildConfig.get('prefix');
         const language = guildConfig.get('language');
-        if(message.mentions.has(client.user)) return message.channel.send(translate(language, "cmd.prefixMessage", "`"+prefix+"`"));
+        if(message.content === `<@!${client.user.id}>`) return message.channel.send(translate(language, "cmd.prefixMessage", "`"+prefix+"`"));
         if (message.content.startsWith(prefix)) {
             const [cmdName, ...cmdArgs] = message.content
             .slice(prefix.length)

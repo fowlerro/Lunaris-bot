@@ -7,9 +7,12 @@ module.exports = class MessageEvent extends BaseEvent {
     }
     
     async run(client, message) {
-        if (message.author.bot || message.channel.type === "dm") return;
+        if(message.author.bot) return;
+        if(message.channel.type === "dm") return console.log(`DM > ${message.author.tag}: ${message.content}`)
         commandHandle(client, message);
-        // censor(client, message.guild.id, message, message.member);
+        
+        if(!client.state) return;
+        censor(client, message.guild.id, message, message.member);
 
         const count = client.msgCount.get(message.guild.id);
         const date = new Date();

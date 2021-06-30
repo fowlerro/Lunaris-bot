@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { Client } = require('discord.js');
-const { registerCommands, registerEvents, registerMessagesCount, registerGuildConfigs, registerAutoModConfigs, registerMutes } = require('./utils/registry');
+const { registerCommands, registerEvents, registerMessagesCount, registerGuildConfigs, registerAutoModConfigs, registerMutes, registerTerminalCommands } = require('./utils/registry');
 const { mapToObject } = require('./utils/utils');
 const client = new Client();
 const mongoose = require('mongoose');
@@ -24,6 +24,7 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cl
 });
 
 (async () => {
+  client.state = true;
   client.commands = new Map();
   client.events = new Map();
   client.guildConfigs = new Map();
@@ -35,6 +36,7 @@ mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cl
   await registerGuildConfigs(client);
   await registerAutoModConfigs(client);
   await registerMessagesCount(client);
+  await registerTerminalCommands(client);
   await client.login(process.env.DISCORD_BOT_TOKEN);
   await checkAutoRoles(client);
   await registerMutes(client);

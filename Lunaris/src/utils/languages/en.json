@@ -30,7 +30,9 @@
         "forTime": "For",
         "aliases": "Aliases",
         "syntax": "Syntax",
-        "example": "Example"
+        "example": "Example",
+        "user": "User",
+        "date": "Date"
     },
     "cmd": {
         "globalStatus": "Command is temporary turned off",
@@ -41,7 +43,7 @@
         "prefixChange": "Prefix has been changed to %VAR%",
         "languageChange": "Language has been changed to %VAR%",
         "helpTitle": "Help",
-        "helpFooter": "Type !help <cmd> for more informations about command",
+        "helpFooter": "Type %VAR%help <cmd> for more informations about command",
         "cmdHelpTitle": "Help for %VAR%"
     },
     "logs": {
@@ -140,8 +142,8 @@
         "warn": {
             "addWarn": "%VAR% has been warned by %VAR% %VAR%",
             "removeWarn": "%VAR% removed warn from user %VAR%",
-            "removeAllWarns": "%VAR% removed all active warns",
-            "warnList": "User's warns %VAR%",
+            "removeAllWarns": "%VAR% removed all server warns",
+            "warnList": "%VAR% warns list",
             "guildWarnList": "Warns:",
             "error": "Something went wrong! Warn couldn't be removed"
         },
