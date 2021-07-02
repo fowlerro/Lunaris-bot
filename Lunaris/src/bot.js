@@ -8,6 +8,7 @@ const botOwners = ["313346190995619841"];
 const fs = require('fs');
 const path = require('path');
 const { checkAutoRoles } = require('./modules/autoRole');
+require('discord-buttons')(client);
 
 const palette = {
   primary: '#102693',

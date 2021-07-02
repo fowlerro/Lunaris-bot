@@ -58,7 +58,6 @@ const commandHandle = async (client, message) => {
                     }
                 }
                 
-
                 if(command.autoRemove) message.delete();
 
                 if(helpArgs.includes(cmdArgs[0])) return sendHelp(client, command, message);

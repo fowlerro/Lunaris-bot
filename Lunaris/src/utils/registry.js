@@ -6,6 +6,7 @@ const { JSONToMap, setActivity } = require('./utils');
 const GuildConfig = require('../database/schemas/GuildConfig');
 const AutoMod = require('../database/schemas/AutoMod');
 const GuildMembers = require('../database/schemas/GuildMembers');
+const { unmuteLog } = require('../modules/guildLogs');
 
 async function registerCommands(client, dir = '') {
   const filePath = path.join(__dirname, dir);

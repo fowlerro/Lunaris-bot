@@ -1,5 +1,6 @@
 
 const { MessageEmbed } = require("discord.js");
+const { checkEmbedLimits } = require("../../utils/utils");
 
 module.exports = {
     name: 'test',
@@ -7,7 +8,7 @@ module.exports = {
     ownerOnly: true,
     minArgs: null,
     maxArgs: null,
-    autoRemove: false,
+    autoRemove: true,
     autoRemoveResponse: false,
     globalStatus: true,
     status: true,
@@ -31,14 +32,22 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
-        try {
-            const embed = new MessageEmbed()
-				.addField('Cos', '[Link :)](https://google.com)');
-				
-			message.channel.send(embed);
-
-        } catch(err) {
-            console.log(err)
+        let fields = [];
+        for (let i = 0; i < 51; i++) {
+            fields[i] = {
+                name: `chuj${i+1}`,
+                value: `chuj${i+1}`,
+                inline: true
+            }
         }
+        const embed = new MessageEmbed()
+            .addFields(fields)
+
+        
+        checkEmbedLimits(client, embed, message.channel);
+
+        // console.log(embed.footer.text.length);
+
+        return message.channel.send(embed);
     }
 }

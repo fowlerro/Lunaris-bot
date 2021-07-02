@@ -33,20 +33,33 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-        try {
-            const guildConfig = client.guildConfigs.get(message.guild.id);
-            const language = guildConfig.get('language');
-            const mutes = await Mute.list(client, message.guild.id);
-            
-            const embed = new MessageEmbed()
-                .setColor(palette.info)
-                .setAuthor(translate(language, 'autoMod.mute.muteList'), message.guild.iconURL())
-                .setDescription(mutes)
-                .setTimestamp();
+        const guildConfig = client.guildConfigs.get(message.guild.id);
+        const language = guildConfig.get('language');
+        let mutes = await Mute.list(client, message.guild.id);
 
-            return message.channel.send(embed);
-        } catch(err) {
-            console.log(err)
+        if(!mutes.error) {
+            mutes = mutes.map(v => {
+                const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(v.muted.date);
+                const by = !isNaN(v.muted.by) ? client.users.cache.get(v.muted.by).tag : v.muted.by;
+                return {
+                    name: `Nick: ${client.users.cache.get(v.userID).tag}`,
+                    value: `**Mod**: ${by}
+                            **${translate(language, 'general.reason')}**: ${v.muted.reason ? v.muted.reason : translate(language, 'general.none')}
+                            **${translate(language, 'general.date')}**: ${date}`,
+                    inline: true
+                }
+            });
+            // ! Check if (fieldIndex % 3 === 0) blank; will looks better
         }
+
+
+        const embed = new MessageEmbed()
+            .setColor(palette.info)
+            .setAuthor(translate(language, 'autoMod.mute.muteList'), message.guild.iconURL())
+            .setTimestamp();
+
+        mutes.error ? embed.setDescription(mutes.error) : embed.addFields(mutes);
+
+        return message.channel.send(embed);
     }
 }

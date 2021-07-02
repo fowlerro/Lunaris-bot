@@ -45,18 +45,19 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-        try {
             const guildConfig = client.guildConfigs.get(message.guild.id);
             const language = guildConfig.get('language');
 
-            let result = await Warn.remove(client, message.guild.id, args[0], message.author.id);
-            if(!result) {
+            const result = await Warn.remove(client, message.guild.id, args[0], message.author.id);
+            if(!result || result.error) {
                 const embed = new MessageEmbed()
                     .setColor(palette.error)
                     .setDescription(translate(language, 'autoMod.warn.error'))
 
                 return message.channel.send(embed);
-            } else if(result === 'all') {
+            }
+            
+            if(result.action === 'all') {
                 const embed = new MessageEmbed()
                     .setColor(palette.success)
                     .setDescription(translate(language, 'autoMod.warn.removeAllWarns', `<@${message.author.id}>`))
@@ -64,15 +65,14 @@ module.exports = {
                 warnRemoveAllLog(client, message.guild.id, message.author.id);
 
                 return message.channel.send(embed);
-            } else {
-                const embed = new MessageEmbed()
-                    .setColor(palette.success)
-                    .setDescription(translate(language, 'autoMod.warn.removeWarn', `<@${message.author.id}>`, `<@${result.userID}>`, args[0] ? `| ${args[0]}` : ""))
-    
-                return message.channel.send(embed);
             }
-        } catch(err) {
-            console.log(err)
-        }
+
+            console.log(result)
+
+            const embed = new MessageEmbed()
+                .setColor(palette.success)
+                .setDescription(translate(language, 'autoMod.warn.removeWarn', `<@${message.author.id}>`, `<@${result.userID}>`, args[0] ? `| ${args[0]}` : ""))
+
+            return message.channel.send(embed);
     }
 }

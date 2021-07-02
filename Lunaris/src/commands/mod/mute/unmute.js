@@ -4,10 +4,9 @@ const ms = require('ms');
 const { MessageEmbed } = require("discord.js");
 const {palette} = require('../../../bot');
 const { translate } = require("../../../utils/languages/languages");
-
 module.exports = {
     name: 'unmute',
-    aliases: ['odmutuj', 'odcisz'],
+    aliases: ['odmutuj', 'odcisz', 'um'],
     ownerOnly: false,
     minArgs: 1,
     maxArgs: null,
@@ -40,32 +39,30 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-        try {
-            const guildConfig = client.guildConfigs.get(message.guild.id);
-            const language = guildConfig.get('language');
+        // TODO: Add parameter 'all' to unmute command
 
-            const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-            if(!member) return;
+        const guildConfig = client.guildConfigs.get(message.guild.id);
+        const language = guildConfig.get('language');
 
-            const reason = args.slice(1, args.length).join(' ');
+        const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+        if(!member) return;
 
-            const result = await Mute.remove(client, message.guild.id, message.author.id, member.id, reason);
-            if(!result) return;
-            if(result === "notMuted") {
-                const embed = new MessageEmbed()
-                    .setColor(palette.error)
-                    .setDescription(translate(language, 'autoMod.mute.notMuted', `<@${member.id}>`));
-    
-                return message.channel.send(embed);
-            }
-            
+        const reason = args.slice(1, args.length).join(' ');
+
+        const result = await Mute.remove(client, message.guild.id, message.author.id, member.id, reason);
+        if(!result) return;
+        if(result === "notMuted") {
             const embed = new MessageEmbed()
-                .setColor(palette.success)
-                .setDescription(translate(language, 'autoMod.mute.removeMute', `<@${member.id}>`, `<@${message.author.id}>`));
+                .setColor(palette.error)
+                .setDescription(translate(language, 'autoMod.mute.notMuted', `<@${member.id}>`));
 
             return message.channel.send(embed);
-        } catch(err) {
-            console.log(err)
         }
+        
+        const embed = new MessageEmbed()
+            .setColor(palette.success)
+            .setDescription(translate(language, 'autoMod.mute.removeMute', `<@${member.id}>`, `<@${message.author.id}>`));
+
+        return message.channel.send(embed);
     }
 }
