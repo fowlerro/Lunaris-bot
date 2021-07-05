@@ -48,7 +48,7 @@ Commands:
 */
 
 const { MessageEmbed } = require("discord.js");
-const { palette } = require("../bot");
+const { palette } = require("../utils/utils");
 const GuildConfig = require("../database/schemas/GuildConfig");
 const { translate } = require("../utils/languages/languages");
 const { convertPerms } = require("../utils/utils");

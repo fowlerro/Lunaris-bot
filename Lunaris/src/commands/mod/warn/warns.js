@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { palette } = require("../../../bot");
+const { palette } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
 const { Warn } = require("../../../modules/autoMod/utils");
 const { checkEmbedLimits } = require("../../../utils/utils");
@@ -21,8 +21,8 @@ module.exports = {
     },
     category: 'mod',
     syntax: {
-        pl: 'warns [<@user>]',
-        en: 'warns [<@user>]',
+        pl: 'warns [<@user> <page>]',
+        en: 'warns [<@user> <page>]',
     },
     syntaxHelp: {
         pl: `Jeśli podany zostanie użytkownik, wyświelone zostaną ostrzeżenia tylko danego użytkownika`,
@@ -47,8 +47,10 @@ module.exports = {
         const guildConfig = client.guildConfigs.get(message.guild.id);
         const language = guildConfig.get('language');
         const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+        let page = args.find(a => a.startsWith('p:'));
+        page = isNaN(page.slice(2)) ? 1 : Number(page.slice(2));
 
-        let warns = await Warn.list(client, message.guild.id, member && member.id);
+        let warns = await Warn.list(client, message.guild.id, member && member.id); // TODO: If member has no warns
         
         if(!member) {
             if(warns.error) {
@@ -58,7 +60,7 @@ module.exports = {
                     .setDescription(warns.error)
                     .setTimestamp();
 
-                checkEmbedLimits(client, embed, message.channel)
+                checkEmbedLimits(client, embed, message.channel);
 
                 return message.channel.send(embed);
             }
@@ -90,7 +92,7 @@ module.exports = {
                 .addFields(warns)
                 .setTimestamp();
 
-            checkEmbedLimits(client, embed, message.channel)
+            checkEmbedLimits(client, embed, message.channel, 9, page);
 
             return message.channel.send(embed);
         }
@@ -102,7 +104,7 @@ module.exports = {
                 .setDescription(warns.error)
                 .setTimestamp();
 
-            checkEmbedLimits(client, embed, message.channel)
+            checkEmbedLimits(client, embed, message.channel, 9, page);
 
             return message.channel.send(embed);
         }
@@ -125,7 +127,7 @@ module.exports = {
             .addFields(warns)
             .setTimestamp();
 
-        checkEmbedLimits(client, embed, message.channel)
+        checkEmbedLimits(client, embed, message.channel, 9, page);
 
         return message.channel.send(embed);
     }

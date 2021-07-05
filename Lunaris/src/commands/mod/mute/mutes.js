@@ -1,6 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { Mute } = require("../../../modules/autoMod/utils");
-const { palette } = require("../../../bot");
+const { palette } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
 
 module.exports = {

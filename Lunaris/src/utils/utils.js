@@ -37,6 +37,14 @@ const permissions = {
     MANAGE_EMOJIS: 0x40000000,
 } 
 
+const palette = {
+    primary: '#102693',
+    secondary: '',
+    success: '#7BDB27',
+    info: '#3C9FFC',
+    error: '#B71E13',
+}
+
 function convertPerms(to, permission) {
     if(to === 'flags') {
         let convertedPerms = [];
@@ -177,7 +185,7 @@ const EMBED_LIMITS = {
     footer: 2048,
 }
 
-async function checkEmbedLimits(client, embed, channel) {
+async function checkEmbedLimits(client, embed, channel, fieldsMax, startingPage) {
     // Title
     if(embed.title && embed.title.length > EMBED_LIMITS.title) embed.setTitle(embed.title.slice(0, EMBED_LIMITS.title-3) + "...");
     
@@ -206,7 +214,7 @@ async function checkEmbedLimits(client, embed, channel) {
         if(field.value.length > EMBED_LIMITS.field.value) field.value = field.value.slice(0, EMBED_LIMITS.field.value-3) + "...";
     });
 
-    if(embed.fields.length <= 25) return;
+    if(embed.fields.length <= (fieldsMax || EMBED_LIMITS.field.amount)) return;
 
     const filter = m => m.author.id === client.user.id
     const collector = channel.createMessageCollector(filter, { time: 5000, max: 1});
@@ -215,41 +223,7 @@ async function checkEmbedLimits(client, embed, channel) {
         collector.stop();
 
         const fieldsAmount = embed.fields.length;
-        const pageAmount = Math.ceil(fieldsAmount / EMBED_LIMITS.field.amount);
-        let currPage = 1
-
-        // const firstPageButton = new MessageButton()
-        //     .setStyle('blurple')
-        //     .setEmoji("⏮️")
-        //     .setID('firstPage')
-        //     .setDisabled();
-        
-        const previousPageButton = new MessageButton()
-            .setStyle('blurple')
-            .setEmoji("◀️")
-            .setID('previousPage')
-            .setDisabled();
-        
-        const nextPageButton = new MessageButton()
-            .setStyle('blurple')
-            .setEmoji("▶️")
-            .setID('nextPage');
-        
-        // const lastPageButton = new MessageButton()
-        //     .setStyle('blurple')
-        //     .setEmoji("⏭️")
-        //     .setID('lastPage');
-
-        const pageInfoButton = new MessageButton()
-            .setStyle('blurple')
-            .setLabel(`${currPage}/${pageAmount}`)
-            .setID('pageInfo')
-            .setDisabled();
-
-        const buttonsComponent = new MessageActionRow()
-            .addComponents([previousPageButton, pageInfoButton, nextPageButton])
-        
-        m = await m.edit({embed, component: buttonsComponent});
+        const pageAmount = Math.ceil(fieldsAmount / (fieldsMax || EMBED_LIMITS.field.amount));
 
         let embeds = [embed];
 
@@ -265,11 +239,47 @@ async function checkEmbedLimits(client, embed, channel) {
             e.thumbnail = embed.thumbnail;
             e.url = embed.url;
             e.fields = embed.fields;
-            e.fields = e.fields.slice(i*25, (i+1)*25);
+            e.fields = e.fields.slice(i * (fieldsMax || EMBED_LIMITS.field.amount), (i+1) * (fieldsMax || EMBED_LIMITS.field.amount));
             embeds.push(e);
         }
 
-        handleEmbedPageButtons(m, currPage, pageAmount, embeds);
+        startingPage = startingPage > pageAmount ? pageAmount : startingPage > 0 ? startingPage : 1;
+
+        // const firstPageButton = new MessageButton()
+        //     .setStyle('blurple')
+        //     .setEmoji("⏮️")
+        //     .setID('firstPage')
+        //     .setDisabled();
+        
+        const previousPageButton = new MessageButton()
+            .setStyle('blurple')
+            .setEmoji("◀️")
+            .setID('previousPage');
+        startingPage === 1 && previousPageButton.setDisabled();
+        
+        const nextPageButton = new MessageButton()
+            .setStyle('blurple')
+            .setEmoji("▶️")
+            .setID('nextPage');
+        startingPage === pageAmount && nextPageButton.setDisabled();
+        
+        // const lastPageButton = new MessageButton()
+        //     .setStyle('blurple')
+        //     .setEmoji("⏭️")
+        //     .setID('lastPage');
+
+        const pageInfoButton = new MessageButton()
+            .setStyle('blurple')
+            .setLabel(`${startingPage}/${pageAmount}`)
+            .setID('pageInfo')
+            .setDisabled();
+
+        const buttonsComponent = new MessageActionRow()
+            .addComponents([previousPageButton, pageInfoButton, nextPageButton])
+
+        m = await m.edit({embed: embeds[startingPage], component: buttonsComponent});
+
+        handleEmbedPageButtons(m, startingPage, pageAmount, embeds);
 
         // m.react('%E2%8F%AE%EF%B8%8F') // First page
         // m.react('%E2%97%80%EF%B8%8F') // Previous page
@@ -313,7 +323,7 @@ async function handleEmbedPageButtons(msg, currPage, pageAmount, embeds) {
 
 
 
-module.exports = {convertPerms, JSONToMap, mapToObject, daysInMonth, setGuildConfig, 
+module.exports = {palette, convertPerms, JSONToMap, mapToObject, daysInMonth, setGuildConfig, 
     msToTime, setAutoModConfig,
     toggleBot, setActivity,
     checkEmbedLimits};

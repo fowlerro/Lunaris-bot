@@ -2,7 +2,7 @@ const {ChartJSNodeCanvas} = require('chartjs-node-canvas');
 const { translate } = require('../utils/languages/languages');
 const GuildConfig = require('../database/schemas/GuildConfig');
 const { MessageAttachment } = require('discord.js');
-const { palette } = require('../bot');
+const { palette } = require("../utils/utils");
 const { daysInMonth } = require('../utils/utils');
 
 const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];

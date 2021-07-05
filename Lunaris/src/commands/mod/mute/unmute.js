@@ -2,7 +2,7 @@ const { Mute } = require("../../../modules/autoMod/utils");
 const regex = /[0-9]+[d|h|m|s]/g
 const ms = require('ms');
 const { MessageEmbed } = require("discord.js");
-const {palette} = require('../../../bot');
+const { palette } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
 module.exports = {
     name: 'unmute',

@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { palette } = require("../../bot");
+const { palette } = require("../../utils/utils");
 const { translate } = require("../../utils/languages/languages");
 const { Warn } = require("./utils");
 

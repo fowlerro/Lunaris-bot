@@ -10,18 +10,11 @@ const path = require('path');
 const { checkAutoRoles } = require('./modules/autoRole');
 require('discord-buttons')(client);
 
-const palette = {
-  primary: '#102693',
-  secondary: '',
-  success: '#7BDB27',
-  info: '#3C9FFC',
-  error: '#B71E13',
-}
-
 mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wsvos.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
+  useCreateIndex: true
 });
 
 (async () => {
@@ -52,4 +45,4 @@ function handle(signal) {
 process.on('SIGINT', handle);
 process.on('SIGTERM', handle);
 
-module.exports = {botOwners, palette};
+module.exports = {botOwners};

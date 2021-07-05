@@ -1,9 +1,7 @@
 const { MessageEmbed } = require("discord.js");
-const { palette } = require("../../bot");
-const AutoMod = require("../../database/schemas/AutoMod");
-const GuildConfig = require("../../database/schemas/GuildConfig");
-const { localeList, translate } = require("../../utils/languages/languages");
-const { setGuildConfig, setAutoModConfig } = require("../../utils/utils");
+const { palette } = require("../../utils/utils");
+const { translate } = require("../../utils/languages/languages");
+const { setAutoModConfig } = require("../../utils/utils");
 
 module.exports = {
     name: 'censor',
