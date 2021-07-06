@@ -45,16 +45,16 @@ const Warn = {
         const guildConfig = client.guildConfigs.get(guildID);
         const language = guildConfig.get('language');
         if(userID) {
-            const {warns} = await GuildMembers.findOne({guildID, userID});
-            if(!warns.length) return {error: translate(language, 'general.none')};
-            return warns;
+            const result = await GuildMembers.findOne({guildID, userID});
+            if(!result?.warns.length) return {error: translate(language, 'general.none')};
+            return {warns: result.warns};
         }
 
         let warns = await GuildMembers.find({guildID}).select(['-muted', '-_id', '-guildID', '-__v']);
         warns = warns.filter(v => v.warns.length > 0);
         if(!warns.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return {error: translate(language, 'general.none')};
         
-        return warns;
+        return {warns};
     }
 }
 

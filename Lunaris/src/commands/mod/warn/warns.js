@@ -17,7 +17,7 @@ module.exports = {
 
     description: {
         pl: "Wyświetla listę ostrzeżeń",
-        en: "Displays warns list",
+        en: "Displays warn list",
     },
     category: 'mod',
     syntax: {
@@ -25,8 +25,8 @@ module.exports = {
         en: 'warns [<@user> <page>]',
     },
     syntaxHelp: {
-        pl: `Jeśli podany zostanie użytkownik, wyświelone zostaną ostrzeżenia tylko danego użytkownika`,
-        en: `If you specify a user, only his warns will be displays`,
+        pl: `Jeśli podany zostanie użytkownik, wyświelone zostaną tylko jego ostrzeżenia`,
+        en: `If you specify a user, only his warns will be displayed`,
     },
     syntaxExample: 'warns @Lunaris',
 
@@ -43,75 +43,36 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-        // TODO: Rework this shitty code xD
         const guildConfig = client.guildConfigs.get(message.guild.id);
         const language = guildConfig.get('language');
         const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-        let page = args.find(a => a.startsWith('p:'));
-        page = isNaN(page.slice(2)) ? 1 : Number(page.slice(2));
 
-        let warns = await Warn.list(client, message.guild.id, member && member.id); // TODO: If member has no warns
+        let page = args.find(a => a.startsWith('p:'))?.slice(2);
+        page = isNaN(page) ? 1 : Number(page);
+
+        let warns = await Warn.list(client, message.guild.id, member && member.id);
         
-        if(!member) {
-            if(warns.error) {
-                const embed = new MessageEmbed()
-                    .setColor(palette.info)
-                    .setAuthor(translate(language, 'autoMod.warn.guildWarnList'), message.guild.iconURL())
-                    .setDescription(warns.error)
-                    .setTimestamp();
+        let embedAuthor = '';
+        member ? embedAuthor = translate(language, 'autoMod.warn.warnList', member.user.tag) : embedAuthor = translate(language, 'autoMod.warn.guildWarnList');
 
-                checkEmbedLimits(client, embed, message.channel);
+        if(warns.warns) warns.warns = warns.warns.map(v => {
+            const {userID, warns} = v;
 
-                return message.channel.send(embed);
-            }
-
-            warns = warns.map(v => {
-                const {userID, warns} = v;
-
-                return warns.map(v => {
-                    const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(v.date);
-                    const by = !isNaN(v.by) ? client.users.cache.get(v.by).tag : v.by;
-                    return {
-                        name: `Nick: ${client.users.cache.get(userID).tag}`,
-                        value: `**Mod**: ${by}
-                                **${translate(language, 'general.reason')}**: ${v.reason}
-                                **${translate(language, 'general.date')}**: ${date}` +
-                                "\n**ID**: `" + v.id + "`",
-                        inline: true
-                    }
-                });
-                
-            }).flat();
-            //! Check if (fieldIndex % 3 === 0) blank; will looks better
-
-            // console.log(warns);
-
-            const embed = new MessageEmbed()
-                .setColor(palette.info)
-                .setAuthor(translate(language, 'autoMod.warn.guildWarnList'), message.guild.iconURL())
-                .addFields(warns)
-                .setTimestamp();
-
-            checkEmbedLimits(client, embed, message.channel, 9, page);
-
-            return message.channel.send(embed);
-        }
-
-        if(warns.error) {
-            const embed = new MessageEmbed()
-                .setColor(palette.info)
-                .setAuthor(translate(language, 'autoMod.warn.warnList', member.user.tag), message.guild.iconURL())
-                .setDescription(warns.error)
-                .setTimestamp();
-
-            checkEmbedLimits(client, embed, message.channel, 9, page);
-
-            return message.channel.send(embed);
-        }
-
-        warns = warns.map(v => {
+            if(!member) return warns.map(v => {
+                const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(v.date);
+                const by = !isNaN(v.by) ? client.users.cache.get(v.by).tag : v.by;
+                return {
+                    name: `Nick: ${client.users.cache.get(userID).tag}`,
+                    value: `**Mod**: ${by}
+                            **${translate(language, 'general.reason')}**: ${v.reason}
+                            **${translate(language, 'general.date')}**: ${date}` +
+                            "\n**ID**: `" + v.id + "`",
+                    inline: true
+                }
+            });
             const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(v.date);
             const by = !isNaN(v.by) ? client.users.cache.get(v.by).tag : v.by;
+
             return {
                 name: `Mod: ${by}`,
                 value: `**${translate(language, 'general.reason')}**: ${v.reason}
@@ -119,13 +80,14 @@ module.exports = {
                         "\n**ID**: `" + v.id + "`",
                 inline: true
             }
-        });
+        }).flat();
 
         const embed = new MessageEmbed()
             .setColor(palette.info)
-            .setAuthor(translate(language, 'autoMod.warn.warnList', member.user.tag), member.user.displayAvatarURL())
-            .addFields(warns)
+            .setAuthor(embedAuthor, message.guild.iconURL())
             .setTimestamp();
+        warns.warns && embed.addFields(warns.warns);
+        warns.error && embed.setDescription(warns.error);
 
         checkEmbedLimits(client, embed, message.channel, 9, page);
 

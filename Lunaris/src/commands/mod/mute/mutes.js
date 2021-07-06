@@ -1,6 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const { Mute } = require("../../../modules/autoMod/utils");
-const { palette } = require("../../../utils/utils");
+const { palette, checkEmbedLimits } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
 
 module.exports = {
@@ -37,6 +37,9 @@ module.exports = {
         const language = guildConfig.get('language');
         let mutes = await Mute.list(client, message.guild.id);
 
+        let page = args.find(a => a.startsWith('p:'))?.slice(2);
+        page = isNaN(page) ? 1 : Number(page);
+
         if(!mutes.error) {
             mutes = mutes.map(v => {
                 const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(v.muted.date);
@@ -59,6 +62,8 @@ module.exports = {
             .setTimestamp();
 
         mutes.error ? embed.setDescription(mutes.error) : embed.addFields(mutes);
+
+        checkEmbedLimits(client, embed, message.channel, 9, page);
 
         return message.channel.send(embed);
     }
