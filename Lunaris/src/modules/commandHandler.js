@@ -29,33 +29,30 @@ const commandHandle = async (client, message) => {
                         cmd = command;
                     }
                 }
+                if(command.ownerOnly && !botOwners.includes(message.author.id)) return;
                 if(!command.globalStatus) return message.channel.send(translate(language, "cmd.globalStatus"));
-                if(command.ownerOnly) {
-                    if(!botOwners.includes(message.author.id)) return;
-                } else {
-                    command = await CommandConfig.findOne({guildID: message.guild.id, name: command.name});
-                    if(!command) {
-                        command = await CommandConfig.create({
-                            guildID: message.guild.id,
-                            name: cmd.name,
-                            aliases: cmd.aliases,
-                            minArgs: cmd.minArgs,
-                            maxArgs: cmd.maxArgs,
-                            autoRemove: cmd.autoRemove,
-                            autoRemoveResponse: cmd.autoRemoveResponse,
-                            status: cmd.status,
-                            requiredChannels: cmd.requiredChannels,
-                            blockedChannels: cmd.blockedChannels,
-                            requiredRoles: cmd.requiredRoles,
-                            blockedRoles: cmd.blockedRoles,
-                            cooldownStatus: cmd.cooldownStatus,
-                            cooldown: cmd.cooldown,
-                            cooldownPermissions: cmd.cooldownPermissions,
-                            cooldownChannels: cmd.cooldownChannels,
-                            cooldownRoles: cmd.cooldownRoles,
-                            cooldownReminder: cmd.cooldownReminder,
-                        });
-                    }
+                command = await CommandConfig.findOne({guildID: message.guild.id, name: command.name});
+                if(!command) {
+                    command = await CommandConfig.create({
+                        guildID: message.guild.id,
+                        name: cmd.name,
+                        aliases: cmd.aliases,
+                        minArgs: cmd.minArgs,
+                        maxArgs: cmd.maxArgs,
+                        autoRemove: cmd.autoRemove,
+                        autoRemoveResponse: cmd.autoRemoveResponse,
+                        status: cmd.status,
+                        requiredChannels: cmd.requiredChannels,
+                        blockedChannels: cmd.blockedChannels,
+                        requiredRoles: cmd.requiredRoles,
+                        blockedRoles: cmd.blockedRoles,
+                        cooldownStatus: cmd.cooldownStatus,
+                        cooldown: cmd.cooldown,
+                        cooldownPermissions: cmd.cooldownPermissions,
+                        cooldownChannels: cmd.cooldownChannels,
+                        cooldownRoles: cmd.cooldownRoles,
+                        cooldownReminder: cmd.cooldownReminder,
+                    });
                 }
                 
                 if(command.autoRemove) message.delete();

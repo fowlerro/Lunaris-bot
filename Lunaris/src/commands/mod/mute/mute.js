@@ -71,10 +71,11 @@ module.exports = {
 
             const result = await Mute.add(client, message.guild.id, member.id, reason, message.author.id, time);
             if(!result) return;
+            const description = result.error === 'missingPermission' ? `${translate(language, 'permissions.missingPermission')}: ${result.perms}` : translate(language, 'autoMod.mute.addMute', `<@${member.id}>`, `<@${message.author.id}>`, reason.length ? `| ${reason}` : "")
 
             const embed = new MessageEmbed()
                 .setColor(palette.error)
-                .setDescription(translate(language, 'autoMod.mute.addMute', `<@${member.id}>`, `<@${message.author.id}>`, reason.length ? `| ${reason}` : ""));
+                .setDescription(description);
 
             return message.channel.send(embed);
         } catch(err) {

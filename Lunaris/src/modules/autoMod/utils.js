@@ -65,6 +65,9 @@ const Mute = {
     add: async (client, guildID, userID, reason = null, by, time = null) => {
             const guild = client.guilds.cache.get(guildID);
             const guildConfig = client.guildConfigs.get(guildID);
+
+            if(!guild.me.hasPermission('MANAGE_ROLES')) return {error: "missingPermission", perms: 'MANAGE_ROLES'}
+
             const muteRoleID = guildConfig.get('modules.autoMod.muteRole');
             let timestamp = null;
             const date = Date.now();
@@ -111,9 +114,9 @@ const Mute = {
         const muteRoleID = guildConfig.get('modules.autoMod.muteRole');
         let muteRole = guild.roles.cache.get(muteRoleID) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
         const hasRole = member.roles.cache.has(muteRole.id);
-        if(!hasRole) return "notMuted";
+        if(!hasRole && reason !== "Role remove") return "notMuted";
 
-        await member.roles.remove(muteRole).catch(e => console.log(e));
+        hasRole && await member.roles.remove(muteRole).catch(e => console.log(e));
         const muteInfo = await GuildMembers.findOneAndUpdate({guildID, userID}, {
             muted: {
                 state: false,

@@ -155,6 +155,8 @@
         }
     },
     "permissions": {
+        "missingPermission": "Brak permisji",
+
         "CREATE_INSTANT_INVITE": "Tworzenie zaproszenia",
         "KICK_MEMBERS": "Wyrzucanie członków",
         "BAN_MEMBERS": "Banowanie członków",

@@ -46,7 +46,7 @@ module.exports = {
             let categories = [];
             client.commands.forEach(cmd => {
                 if(!botOwners.includes(message.author.id) && cmd.ownerOnly) return;
-                    if(!categories.includes(cmd.category)) categories.push(cmd.category)
+                if(!categories.includes(cmd.category)) categories.push(cmd.category)
             });
 
             if(args[0]) {
@@ -72,7 +72,7 @@ module.exports = {
                 .addFields(categories.map(category => (
                     {
                         name: category,
-                        value: Array.from(client.commands).filter(cmd => cmd[1].category === category && cmd[0] === cmd[1].name).map(cmd => "`" + prefix + cmd[1].name + "` " + cmd[1].description[language])
+                        value: Array.from(client.commands).filter(cmd => cmd[1].category === category && cmd[0] === cmd[1].name && (!cmd[1].ownerOnly || botOwners.includes(message.author.id))).map(cmd => "`" + prefix + cmd[1].name + "` " + cmd[1].description[language])
                     }
                 )))
                 .setFooter(translate(language, 'cmd.helpFooter', prefix))

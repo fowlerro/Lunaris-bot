@@ -155,6 +155,8 @@
         }
     },
     "permissions": {
+        "missingPermission": "Missing permission",
+
         "CREATE_INSTANT_INVITE": "Create Invite",
         "KICK_MEMBERS": "Kick Members",
         "BAN_MEMBERS": "Ban Members",

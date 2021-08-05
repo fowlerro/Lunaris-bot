@@ -5,12 +5,12 @@ const { mapToObject } = require('./utils/utils');
 const client = new Client();
 const mongoose = require('mongoose');
 const botOwners = ["313346190995619841"];
+// const botOwners = [];
 const fs = require('fs');
 const path = require('path');
 const { checkAutoRoles } = require('./modules/autoRole');
 require('discord-buttons')(client);
-
-mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wsvos.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, {
+mongoose.connect(process.env.DB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,

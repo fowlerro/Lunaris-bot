@@ -18,6 +18,7 @@ module.exports = class GuildMemberRemoveEvent extends BaseEvent {
     if(!logChannel) return;
 
     // KICK LOG 
+    if(!member.guild.me.hasPermission('VIEW_AUDIT_LOG')) return;
     const kickLog = await member.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_KICK'});
     const updateKick = kickLog.entries.first();
     if(updateKick.target.id === member.id) {
@@ -25,6 +26,7 @@ module.exports = class GuildMemberRemoveEvent extends BaseEvent {
     }
 
     // BAN LOG
+    if(!member.guild.me.hasPermission('VIEW_AUDIT_LOG')) return;
     const banLog = await member.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_BAN_ADD'});
     const updateBan = banLog.entries.first();
     if(updateBan.target.id === member.id) {

@@ -1,5 +1,6 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildMemberUpdate
 const GuildConfig = require('../../database/schemas/GuildConfig');
+const { Mute } = require('../../modules/autoMod/utils');
 const { memberNicknameLog, memberRoleLog } = require('../../modules/guildLogs');
 const BaseEvent = require('../../utils/structures/BaseEvent');
 
@@ -16,9 +17,10 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
       const language = guildConfig.get('language');
       if(!logChannel) return;
 
+      if(!newMember.guild.me.hasPermission('VIEW_AUDIT_LOG')) return; //!important
       const auditLog = await newMember.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_UPDATE'});
       const update = auditLog.entries.first();
-      if(!update ) return;
+      if(!update) return;
       const executor = update.executor;
       const target = update.target;
       const changes = update.changes.find(obj => obj.key === 'nick');
@@ -39,7 +41,7 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
       if(!update || Date.now() - update.createdTimestamp > 5000) return;
       const {executor, target} = update;
       const addedRole = update.changes.find(obj => obj.key === '$add').new[0];
-      if(addedRole.id === guildConfig.get('modules.autoMod.muteRole')) return;
+      if(addedRole.id === guildConfig.get('modules.autoMod.muteRole')) return //Mute.add(client, newMember.guild.id, target.id, 'Role add', executor.id);
       
       memberRoleLog(client, executor, target, addedRole.id, "add", logChannel, language);
     }
@@ -55,7 +57,7 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
       if(!update || Date.now() - update.createdTimestamp > 5000) return;
       const {executor, target} = update;
       const removedRole = update.changes.find(obj => obj.key === '$remove').new[0];
-      if(removedRole.id === guildConfig.get('modules.autoMod.muteRole')) return;
+      if(removedRole.id === guildConfig.get('modules.autoMod.muteRole')) return //Mute.remove(client, newMember.guild.id, executor.id, target.id, 'Role remove');
       
       memberRoleLog(client, executor, target, removedRole.id, "remove", logChannel, language);
     }

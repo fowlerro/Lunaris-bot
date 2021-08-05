@@ -35,6 +35,11 @@ const permissions = {
     MANAGE_ROLES: 0x10000000,
     MANAGE_WEBHOOKS: 0x20000000,
     MANAGE_EMOJIS: 0x40000000,
+    USE_SLASH_COMMANDS: 0x0080000000,
+    REQUEST_TO_SPEAK: 0x0100000000,
+    MANAGE_THREADS: 0x0400000000,
+    USE_PUBLIC_THREADS: 0x0800000000,
+    USE_PRIVATE_THREADS: 0x1000000000
 } 
 
 const palette = {
@@ -53,7 +58,7 @@ function convertPerms(to, permission) {
         }
         return convertedPerms;
     }
-    if(to==='bits') return null;
+    if(to === 'bits') return null;
 }
 
 function mapToObject(map) {
@@ -82,18 +87,13 @@ function daysInMonth(month, year) {
 }
 
 async function setGuildConfig(client, guildID, toSet, value) {
-    try {
-        await GuildConfig.findOneAndUpdate({guildID}, {
-            [toSet]: value
-        });
-        let config = client.guildConfigs.get(guildID);
-        config[toSet] = value;
-        client.guildConfigs.set(guildID, config);
-        return client.guildConfigs.get(guildID);
-    } catch(err) {
-        console.log(err);
-        return null;
-    }
+    await GuildConfig.findOneAndUpdate({guildID}, {
+        [toSet]: value
+    });
+    let config = client.guildConfigs.get(guildID);
+    config[toSet] = value;
+    client.guildConfigs.set(guildID, config);
+    return client.guildConfigs.get(guildID);
 }
 
 function msToTime(ms) {
@@ -130,12 +130,10 @@ async function setAutoModConfig(client, guildID, state, toSet, value) {
         return client.autoModConfigs.get(guildID);
     }
 
-    if(state === undefined) {
-        let config = await AutoMod.findOne({guildID});
-        if(!config) config = await AutoMod.create({guildID});
-        client.autoModConfigs.set(guildID, config);
-        return client.autoModConfigs.get(guildID);
-    }
+    let config = await AutoMod.findOne({guildID});
+    if(!config) config = await AutoMod.create({guildID});
+    client.autoModConfigs.set(guildID, config);
+    return client.autoModConfigs.get(guildID);
 }
 
 function toggleBot(client, s) {
@@ -207,7 +205,6 @@ async function checkEmbedLimits(client, embed, channel, fieldsMax, startingPage)
 
     // TODO: Add checking for total 6k chars limit
 
-    // TODO: Add custom fields limit for paging system
     // Fields 
     embed.fields.forEach(field => {
         if(field.name.length > EMBED_LIMITS.field.name) field.name = field.name.slice(0, EMBED_LIMITS.field.name-3) + "...";
@@ -280,11 +277,6 @@ async function checkEmbedLimits(client, embed, channel, fieldsMax, startingPage)
         m = await m.edit({embed: embeds[startingPage], component: buttonsComponent});
 
         handleEmbedPageButtons(m, startingPage, pageAmount, embeds);
-
-        // m.react('%E2%8F%AE%EF%B8%8F') // First page
-        // m.react('%E2%97%80%EF%B8%8F') // Previous page
-        // m.react('%E2%96%B6%EF%B8%8F') // Next page
-        // m.react('%E2%8F%AD%EF%B8%8F') // Last page
     });
     
 }
