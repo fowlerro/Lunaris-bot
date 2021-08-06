@@ -3,6 +3,8 @@ const GuildConfig = require("../database/schemas/GuildConfig");
 const { MessageButton, MessageActionRow } = require('discord-buttons');
 const { MessageEmbed } = require("discord.js");
 
+const botOwners = ["313346190995619841"];
+
 const permissions = {
     CREATE_INSTANT_INVITE: 0x1,
     KICK_MEMBERS: 0x2,
@@ -315,7 +317,7 @@ async function handleEmbedPageButtons(msg, currPage, pageAmount, embeds) {
 
 
 
-module.exports = {palette, convertPerms, JSONToMap, mapToObject, daysInMonth, setGuildConfig, 
+module.exports = {botOwners, palette, convertPerms, JSONToMap, mapToObject, daysInMonth, setGuildConfig, 
     msToTime, setAutoModConfig,
     toggleBot, setActivity,
     checkEmbedLimits};

@@ -4,8 +4,6 @@ const { registerCommands, registerEvents, registerMessagesCount, registerGuildCo
 const { mapToObject } = require('./utils/utils');
 const client = new Client();
 const mongoose = require('mongoose');
-const botOwners = ["313346190995619841"];
-// const botOwners = [];
 const fs = require('fs');
 const path = require('path');
 const { checkAutoRoles } = require('./modules/autoRole');
@@ -44,5 +42,3 @@ function handle(signal) {
 
 process.on('SIGINT', handle);
 process.on('SIGTERM', handle);
-
-module.exports = {botOwners};

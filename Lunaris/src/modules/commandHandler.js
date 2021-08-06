@@ -1,9 +1,9 @@
 const ms = require('ms');
-const { botOwners } = require("../bot");
 const CommandConfig = require("../database/schemas/CommandConfig");
 const Cooldowns = require("../database/schemas/Cooldowns");
 const GuildConfig = require("../database/schemas/GuildConfig");
 const { translate } = require("../utils/languages/languages");
+const { botOwners } = require('../utils/utils');
 const { cmdTriggerLog } = require('./guildLogs');
 const helpArgs = ["help", "pomoc", "info"];
 
