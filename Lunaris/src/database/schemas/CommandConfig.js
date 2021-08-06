@@ -30,13 +30,13 @@ const CommandConfigSchema = new mongoose.Schema({
     permissions: {
         type: mongoose.SchemaTypes.Array,
     },
-    requiredChannels: {
+    allowedChannels: {
         type: mongoose.SchemaTypes.Array,
     },
     blockedChannels: {
         type: mongoose.SchemaTypes.Array,
     },
-    requiredRoles: {
+    allowedRoles: {
         type: mongoose.SchemaTypes.Array,
     },
     blockedRoles: {

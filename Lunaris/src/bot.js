@@ -1,22 +1,17 @@
 require('dotenv').config();
-const { Client } = require('discord.js');
-const { registerCommands, registerEvents, registerMessagesCount, registerGuildConfigs, registerAutoModConfigs, registerMutes, registerTerminalCommands } = require('./utils/registry');
-const { mapToObject } = require('./utils/utils');
-const client = new Client();
-const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
+const { Client, Intents } = require('discord.js');
+const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS]});
+const { connectDatabase } = require('./database/mongoose');
+const { registerCommands, registerEvents, registerMessagesCount, registerGuildConfigs, registerAutoModConfigs, registerMutes, registerTerminalCommands } = require('./utils/registry');
+const { mapToObject } = require('./utils/utils');
 const { checkAutoRoles } = require('./modules/autoRole');
-require('discord-buttons')(client);
-mongoose.connect(process.env.DB_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
-});
 
 (async () => {
-  client.state = true;
+  connectDatabase();
+
+  client.isOnline = true;
   client.commands = new Map();
   client.events = new Map();
   client.guildConfigs = new Map();

@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Permissions } = require("discord.js");
 const { palette } = require("../../utils/utils");
 const { translate } = require("../../utils/languages/languages");
 const { setGuildConfig } = require("../../utils/utils");
@@ -25,11 +25,13 @@ module.exports = {
     },
     syntaxExample: 'prefix &',
 
-    permissions: ['MANAGE_GUILD'],
-    requiredChannels: [],
+    permissions: new Permissions([
+        Permissions.FLAGS.MANAGE_GUILD, Permissions.FLAGS.MANAGE_CHANNELS
+    ]).toArray(),
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
-    blockedRoles: [],
+    allowedRoles: [],
+    blockedRoles: ['861596116821737532', '821483520290979901'],
 
     cooldownStatus: false,
     cooldown: '30s',
@@ -45,7 +47,7 @@ module.exports = {
                 .setColor(palette.success)
                 .setDescription(translate(language, "cmd.prefixChange", "`" + guildConfig.get('prefix') + "`"));
     
-            return message.channel.send(embed);
+            return message.channel.send({ embeds: [embed]});
         } catch(err) {
             console.log(err);
         }

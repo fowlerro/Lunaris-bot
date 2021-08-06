@@ -15,10 +15,8 @@
     "canvas": "^2.6.1",
     "chart.js": "^2.9.4",
     "chartjs-node-canvas": "^3.0.8",
-    "discord-buttons": "^3.2.1",
-    "discord.js": "^12.5.1",
+    "discord.js": "^13.0.0",
     "dotenv": "^8.2.0",
-    "logrocket": "^1.0.14",
     "mongoose": "^5.12.3",
     "nodemon": "^2.0.6",
     "shortid": "^2.2.16"

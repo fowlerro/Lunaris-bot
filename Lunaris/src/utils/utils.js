@@ -1,6 +1,5 @@
 const AutoMod = require("../database/schemas/AutoMod");
 const GuildConfig = require("../database/schemas/GuildConfig");
-const { MessageButton, MessageActionRow } = require('discord-buttons');
 const { MessageEmbed } = require("discord.js");
 
 const botOwners = ["313346190995619841"];
@@ -139,10 +138,10 @@ async function setAutoModConfig(client, guildID, state, toSet, value) {
 }
 
 function toggleBot(client, s) {
-    if(!s) client.state = !client.state;
-    if(s) client.state = s;
+    if(!s) client.isOnline = !client.isOnline;
+    if(s) client.isOnline = s;
 
-    if(client.state) {
+    if(client.isOnline) {
         client.user.setPresence({
             status: 'online',
             activity: {
@@ -151,12 +150,12 @@ function toggleBot(client, s) {
             }
         });
     }
-    if(!client.state) {
+    if(!client.isOnline) {
         client.user.setPresence({
             status: 'invisible'
         });
     }
-    return client.state;
+    return client.isOnline;
 }
 
 function setActivity(client, type, activity) {
