@@ -27,9 +27,9 @@ module.exports = {
     syntaxExample: 'warn @Lunaris toxic',
 
     permissions: ['KICK_MEMBERS'],
-    requiredChannels: [],
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
+    allowedRoles: [],
     blockedRoles: [],
 
     cooldownStatus: false,
@@ -39,25 +39,20 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-        try {
-            const guildConfig = client.guildConfigs.get(message.guild.id);
-            const language = guildConfig.get('language');
-            let [user, ...reason] = args;
-            reason = reason.join(" ");
-            
-            const member = message.mentions.members.first() || message.guild.members.cache.get(user);
-            if(!member) return;
+        const member = message.mentions.members.first() || message.guild.members.cache.get(user);
+        if(!member) return;
 
-            const result = await Warn.add(client, message.guild.id, member.id, reason, message.author.id);
-            if(!result) return;
+        const { language } = client.guildConfigs.get(message.guild.id);
+        let [user, ...reason] = args;
+        reason = reason.join(" ");
 
-            const embed = new MessageEmbed()
-                .setColor(palette.error)
-                .setDescription(translate(language, 'autoMod.warn.addWarn', `<@${member.id}>`, `<@${message.author.id}>`, reason.length ? `| ${reason}` : ""));
+        const result = await Warn.add(client, message.guild.id, member.id, reason, message.author.id);
+        if(!result) return;
 
-            return message.channel.send(embed);
-        } catch(err) {
-            console.log(err)
-        }
+        const embed = new MessageEmbed()
+            .setColor(palette.error)
+            .setDescription(translate(language, 'autoMod.warn.addWarn', `<@${member.id}>`, `<@${message.author.id}>`, reason.length ? `| ${reason}` : ""));
+
+        return message.channel.send({embeds: [embed]});
     }
 }

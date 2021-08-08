@@ -18,9 +18,9 @@ module.exports = {
     category: 'owner',
 
     permissions: [],
-    requiredChannels: [],
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
+    allowedRoles: [],
     blockedRoles: [],
 
     cooldownStatus: false,
@@ -30,10 +30,6 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
-        try {
-            toggleBot(client, true);
-        } catch(err) {
-            console.log(err);
-        }
+        toggleBot(client, true);
     }
 }

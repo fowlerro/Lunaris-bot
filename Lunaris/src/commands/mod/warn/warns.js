@@ -31,9 +31,9 @@ module.exports = {
     syntaxExample: 'warns @Lunaris',
 
     permissions: ['KICK_MEMBERS'],
-    requiredChannels: [],
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
+    allowedRoles: [],
     blockedRoles: [],
 
     cooldownStatus: false,
@@ -43,8 +43,7 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-        const guildConfig = client.guildConfigs.get(message.guild.id);
-        const language = guildConfig.get('language');
+        const { language } = client.guildConfigs.get(message.guild.id);
         const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
         let page = args.find(a => a.startsWith('p:'))?.slice(2);
@@ -55,32 +54,46 @@ module.exports = {
         let embedAuthor = '';
         member ? embedAuthor = translate(language, 'autoMod.warn.warnList', member.user.tag) : embedAuthor = translate(language, 'autoMod.warn.guildWarnList');
 
-        if(warns.warns) warns.warns = warns.warns.map(v => {
-            const {userID, warns} = v;
+        if(warns.warns) {
+            warnsPromises = await warns.warns.map(v => {
+                const {userID, warns} = v;
 
-            if(!member) return warns.map(v => {
+                if(!member) return warns.map(async v => {
+                    const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(v.date);
+                    let by;
+                    if(isNaN(v.by)) by = v.by;
+                    if(!isNaN(v.by) && client.users.cache.get(v.by)) by = client.users.cache.get(v.by).tag;
+                    if(!isNaN(v.by) && !client.users.cache.get(v.by)) by = await client.users.fetch(v.by);
+                    // const by = !isNaN(v.by) ? client.users.cache.get(v.by).tag : v.by;
+
+
+                    let userNick = client.users.cache.get(userID);
+                    if(!userNick) userNick = await client.users.fetch(userID);
+                    userNick = userNick.tag;
+
+                    return {
+                        name: `Nick: ${userNick}`,
+                        value: `**Mod**: ${by}
+                                **${translate(language, 'general.reason')}**: ${v.reason}
+                                **${translate(language, 'general.date')}**: ${date}` +
+                                "\n**ID**: `" + v.id + "`",
+                        inline: true
+                    }
+                });
                 const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(v.date);
                 const by = !isNaN(v.by) ? client.users.cache.get(v.by).tag : v.by;
+
                 return {
-                    name: `Nick: ${client.users.cache.get(userID).tag}`,
-                    value: `**Mod**: ${by}
-                            **${translate(language, 'general.reason')}**: ${v.reason}
+                    name: `Mod: ${by}`,
+                    value: `**${translate(language, 'general.reason')}**: ${v.reason}
                             **${translate(language, 'general.date')}**: ${date}` +
                             "\n**ID**: `" + v.id + "`",
                     inline: true
                 }
-            });
-            const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(v.date);
-            const by = !isNaN(v.by) ? client.users.cache.get(v.by).tag : v.by;
+            }).flat();
 
-            return {
-                name: `Mod: ${by}`,
-                value: `**${translate(language, 'general.reason')}**: ${v.reason}
-                        **${translate(language, 'general.date')}**: ${date}` +
-                        "\n**ID**: `" + v.id + "`",
-                inline: true
-            }
-        }).flat();
+            warns.warns = await Promise.all(warnsPromises);
+        }
 
         const embed = new MessageEmbed()
             .setColor(palette.info)
@@ -91,6 +104,6 @@ module.exports = {
 
         checkEmbedLimits(client, embed, message.channel, 9, page);
 
-        return message.channel.send(embed);
+        return message.channel.send({embeds: [embed]});
     }
 }

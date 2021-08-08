@@ -7,7 +7,7 @@ module.exports = class RoleCreateEvent extends BaseEvent {
   }
   
   async run(client, role) {
-    if(!client.state) return;
+    if(!client.isOnline) return;
 
     roleCreatedLog(client, role);
   }

@@ -31,9 +31,9 @@ module.exports = {
     syntaxExample: 'censor add fuck "fuck you"',
 
     permissions: [],
-    requiredChannels: [],
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
+    allowedRoles: [],
     blockedRoles: [],
 
     cooldownStatus: false,
@@ -43,38 +43,31 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
-        try {
+        const { language } = client.guildConfigs.get(message.guild.id);
 
-            const guildConfig = client.guildConfigs.get(message.guild.id);
-            const language = guildConfig.get('language');
+        let [state, ...words] = args;
+        if(words.length) {
+            words = words.join(" ");
+            words = words.match(/[^\s"]+|"([^"]*)"/gi);
+            words = words.map(word => word.replace(/"/g, ''));
+        }
+        if(state === 'add') {
+            return setAutoModConfig(client, message.guild.id, 'add', 'censor.words', words);
+        }
+        if(state === 'remove') {
+            return setAutoModConfig(client, message.guild.id, 'remove', 'censor.words', words);
+        }
+        if(state === 'list') {
+            let results = await client.autoModConfigs.get(message.guild.id);
+            if(!results) results = setAutoModConfig(client, message.guild.id);
 
-            let [state, ...words] = args;
-            if(words.length) {
-                words = words.join(" ");
-                words = words.match(/[^\s"]+|"([^"]*)"/gi);
-                words = words.map(word => word.replace(/"/g, ''));
-            }
-            if(state === 'add') {
-                return setAutoModConfig(client, message.guild.id, 'add', 'censor.words', words);
-            }
-            if(state === 'remove') {
-                return setAutoModConfig(client, message.guild.id, 'remove', 'censor.words', words);
-            }
-            if(state === 'list') {
-                let results = await client.autoModConfigs.get(message.guild.id);
-                if(!results) results = setAutoModConfig(client, message.guild.id);
+            let words = results.censor.words.length ? results.censor.words : translate(language, 'general.none');
+            const embed = new MessageEmbed()
+                .setColor(palette.info)
+                .setAuthor(translate(language, 'autoMod.censor.wordsListTitle'))
+                .setDescription(words);
 
-                let words = results.censor.words.length ? results.censor.words : translate(language, 'general.none');
-                const embed = new MessageEmbed()
-                    .setColor(palette.info)
-                    .setAuthor(translate(language, 'autoMod.censor.wordsListTitle'))
-                    .setDescription(words);
-
-                return message.channel.send(embed);
-            }
-
-        } catch(err) {
-            console.log(err)
+            return message.channel.send({embeds: [embed]});
         }
     }
 }

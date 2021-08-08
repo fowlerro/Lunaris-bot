@@ -21,9 +21,9 @@ module.exports = {
     category: 'mod',
 
     permissions: ['KICK_MEMBERS'],
-    requiredChannels: [],
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
+    allowedRoles: [],
     blockedRoles: [],
 
     cooldownStatus: false,
@@ -33,8 +33,7 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-        const guildConfig = client.guildConfigs.get(message.guild.id);
-        const language = guildConfig.get('language');
+        const { language } = client.guildConfigs.get(message.guild.id);
         let mutes = await Mute.list(client, message.guild.id);
 
         let page = args.find(a => a.startsWith('p:'))?.slice(2);
@@ -65,6 +64,6 @@ module.exports = {
 
         checkEmbedLimits(client, embed, message.channel, 9, page);
 
-        return message.channel.send(embed);
+        return message.channel.send({embeds: [embed]});
     }
 }

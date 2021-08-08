@@ -9,43 +9,38 @@ const fetchReactionMessages = async (client) => {
         const filter = (reaction, user) => (
             msg.reactions.some(element => reaction.emoji.identifier === element.reaction && !user.bot)
         );
-        createEmojiCollector(filter, msg, message);
+        createEmojiCollector(client, filter, msg, message);
     });
 };
 
 const createReactionMessage = async (guildID, channelID, messageID, reactions, client) => {
-    try {
-        const reactRoles = await ReactionRoles.create({
-            guildID,
-            channelID,
-            messageID,
-            reactions
-        });
+    const reactRoles = await ReactionRoles.create({
+        guildID,
+        channelID,
+        messageID,
+        reactions
+    });
 
-        const guild = await client.guilds.cache.find(guild => guild.id === guildID);
-        const channel = await guild.channels.cache.find(channel => channel.id === channelID);
-        const message = await channel.messages.fetch(messageID);
+    const guild = await client.guilds.cache.find(guild => guild.id === guildID);
+    const channel = await guild.channels.cache.find(channel => channel.id === channelID);
+    const message = await channel.messages.fetch(messageID);
 
-        const filter = (reaction, user) => (
-            reactRoles.reactions.some(element => reaction.emoji.identifier === element.reaction && !user.bot)
-        );
+    const filter = (reaction, user) => (
+        reactRoles.reactions.some(element => reaction.emoji.identifier === element.reaction && !user.bot)
+    );
 
-        createEmojiCollector(client, filter, reactRoles, message);
-
-        reactions.forEach(element => {
-            message.react(element.reaction).catch();
-        });
-    } catch(err) {
-        console.log(err);
-    }
+    createEmojiCollector(client, filter, reactRoles, message);
 };
 
 const createEmojiCollector = (client, filter, options, message) => {
-    const emojiCollector = message.createReactionCollector(filter, {dispose: true});
 
+    options.reactions.forEach(async element => {
+        await message.react(element.reaction);
+    });
+
+    const emojiCollector = message.createReactionCollector({filter, dispose: true});
     emojiCollector.on('collect', (r, user) => {
-        if(!client.state) return;
-
+        if(!client.isOnline) return;
         const reaction = options.reactions.find(react => react.reaction === r.emoji.identifier);
         const roleID = reaction.role;
         const member = r.message.guild.members.cache.find(m => m.id === user.id);
@@ -54,8 +49,7 @@ const createEmojiCollector = (client, filter, options, message) => {
     });
 
     emojiCollector.on('remove', (r, user) => {
-        if(!client.state) return;
-
+        if(!client.isOnline) return;
         const reaction = options.reactions.find(react => react.reaction === r.emoji.identifier);
         if(reaction.mode === 'verify') return;
         const roleID = reaction.role;

@@ -18,9 +18,9 @@ module.exports = {
     category: 'help',
 
     permissions: [],
-    requiredChannels: [],
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
+    allowedRoles: [],
     blockedRoles: [],
 
     cooldownStatus: false,
@@ -30,10 +30,6 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-        try {
-            messageChart(client, message.guild);
-        } catch(err) {
-            console.log(err);
-        }
+        messageChart(client, message.guild);
     }
 }

@@ -27,15 +27,15 @@ module.exports = {
     syntaxHelp: {
         pl: `id: Identyfikator ostrzeżenia, które zostanie usunięte
             all: Wszystkie ostrzeżenia na serwerze zostaną usunięte`,
-        en: `id: ID of warn, which will be removed
+        en: `id: Warn's Id, which will be removed
             all: All warns on server will be removed`,
     },
     syntaxExample: 'unwarn _HG7UsitE',
 
     permissions: ['KICK_MEMBERS'],
-    requiredChannels: [],
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
+    allowedRoles: [],
     blockedRoles: [],
 
     cooldownStatus: false,
@@ -45,8 +45,7 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-            const guildConfig = client.guildConfigs.get(message.guild.id);
-            const language = guildConfig.get('language');
+            const { language } = client.guildConfigs.get(message.guild.id);
 
             const result = await Warn.remove(client, message.guild.id, args[0], message.author.id);
             if(!result || result.error) {
@@ -54,7 +53,7 @@ module.exports = {
                     .setColor(palette.error)
                     .setDescription(translate(language, 'autoMod.warn.error'))
 
-                return message.channel.send(embed);
+                return message.channel.send({embeds: [embed]});
             }
             
             if(result.action === 'all') {
@@ -64,15 +63,13 @@ module.exports = {
     
                 warnRemoveAllLog(client, message.guild.id, message.author.id);
 
-                return message.channel.send(embed);
+                return message.channel.send({embeds: [embed]});
             }
-
-            console.log(result)
 
             const embed = new MessageEmbed()
                 .setColor(palette.success)
                 .setDescription(translate(language, 'autoMod.warn.removeWarn', `<@${message.author.id}>`, `<@${result.userID}>`, args[0] ? `| ${args[0]}` : ""))
 
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed]});
     }
 }

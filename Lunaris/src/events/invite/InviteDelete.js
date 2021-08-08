@@ -8,12 +8,12 @@ module.exports = class MessageEvent extends BaseEvent {
     }
     
     async run(client, invite) {
-        if(!client.state) return;
+        if(!client.isOnline) return;
         
-        const guildConfig = await GuildConfig.findOne({guildID: invite.guild.id}).catch();
+        const guildConfig = client.guildConfigs.get(invite.guild.id);
         const logChannel = invite.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.invites'));
-        const language = guildConfig.get('language');
         if(!logChannel) return;
+        const language = guildConfig.get('language');
 
         inviteDeletedLog(client, invite.code, invite.channel.id, logChannel, language);
     }

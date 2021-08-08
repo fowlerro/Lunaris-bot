@@ -1,4 +1,5 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildMemberRemove
+const { Permissions } = require('discord.js');
 const GuildConfig = require('../../database/schemas/GuildConfig');
 const { memberLeavedLog, memberKickedLog, memberBannedLog } = require('../../modules/guildLogs');
 const BaseEvent = require('../../utils/structures/BaseEvent');
@@ -9,16 +10,14 @@ module.exports = class GuildMemberRemoveEvent extends BaseEvent {
   }
   
   async run(client, member) {
-    if(!client.state) return;
-
-    // const guildConfig = await GuildConfig.findOne({guildID: member.guild.id}).catch();
+    if(!client.isOnline) return;
     const guildConfig = client.guildConfigs.get(member.guild.id);
     const logChannel = member.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
-    const language = guildConfig.get('language');
     if(!logChannel) return;
+    const language = guildConfig.get('language');
 
     // KICK LOG 
-    if(!member.guild.me.hasPermission('VIEW_AUDIT_LOG')) return;
+    if(!member.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
     const kickLog = await member.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_KICK'});
     const updateKick = kickLog.entries.first();
     if(updateKick.target.id === member.id) {
@@ -26,7 +25,7 @@ module.exports = class GuildMemberRemoveEvent extends BaseEvent {
     }
 
     // BAN LOG
-    if(!member.guild.me.hasPermission('VIEW_AUDIT_LOG')) return;
+    if(!member.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
     const banLog = await member.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_BAN_ADD'});
     const updateBan = banLog.entries.first();
     if(updateBan.target.id === member.id) {

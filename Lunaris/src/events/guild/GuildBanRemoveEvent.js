@@ -8,7 +8,7 @@ module.exports = class GuildBanRemoveEvent extends BaseEvent {
   }
   
   async run(client, guild, user) {
-    if(!client.state) return;
+    if(!client.isOnline) return;
     memberUnbannedLog(client, guild, user);
   }
 }

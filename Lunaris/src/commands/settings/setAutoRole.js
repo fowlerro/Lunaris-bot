@@ -22,9 +22,9 @@ module.exports = {
     },
 
     permissions: [],
-    requiredChannels: [],
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
+    allowedRoles: [],
     blockedRoles: [],
 
     cooldownStatus: false,
@@ -34,26 +34,23 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
+        const roles = [];
+        args.forEach(element => {
+            let role = element.split(':');
+            role = {roleID: role[0], time: role[1]};
+            roles.push(role);
+        });
 
-        try {
-            const roles = [];
-            args.forEach(element => {
-                let role = element.split(':');
-                role = {roleID: role[0], time: role[1]};
-                roles.push(role);
+        const autoRole = await AutoRole.findOne({guildID: message.guild.id});
+        if(autoRole) {
+            await autoRole.updateOne({
+                roles
             });
-
-            const autoRole = await AutoRole.findOne({guildID: message.guild.id});
-            if(autoRole) {
-                await autoRole.updateOne({
-                    roles
-                });
-            } else {
-                await AutoRole.create({
-                    guildID: message.guild.id,
-                    roles,
-                })
-            }
-        } catch(err) {console.log(err)};
+        } else {
+            await AutoRole.create({
+                guildID: message.guild.id,
+                roles,
+            })
+        }
     }
 }

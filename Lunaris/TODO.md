@@ -37,3 +37,5 @@ Options
 	Incorrect syntax message
 	error message
 	all options warning message
+
+	TODO: Multi messages setup system

@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Permissions } = require("discord.js");
 const GuildConfig = require("../../database/schemas/GuildConfig");
 const ReactionRoles = require("../../database/schemas/ReactionRoles");
 const { createReactionMessage } = require("../../modules/reactionRoles");
@@ -24,10 +24,12 @@ module.exports = {
         en: 'rr <message id> <emojiID|roleID|mode>',
     },
 
-    permissions: ['MANAGE_GUILD'],
-    requiredChannels: [],
+    permissions: new Permissions([
+        Permissions.FLAGS.MANAGE_GUILD
+    ]).toArray(),
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
+    allowedRoles: [],
     blockedRoles: [],
 
     cooldownStatus: false,
@@ -36,17 +38,19 @@ module.exports = {
     cooldownChannels: [],
     cooldownRoles: [],
     cooldownReminder: true,
-    async run(client, message, args) {
-
+    async run(client, message, args) { //TODO: Fix whole reaction role system
         const guildID = message.guild.id;
         const channelID = message.channel.id;
         const messageID = args[0];
+        if(!messageID) return;
         let reactions = [];
         args.shift();
         args.forEach((element, index) => {
             let rs = element.split("|");
             reactions.push({reaction: rs[0], role: rs[1], mode: rs[2]});
         });
+
+        if(!reactions.length) return;
 
         createReactionMessage(guildID, channelID, messageID, reactions, client);
 

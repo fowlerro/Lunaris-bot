@@ -26,9 +26,9 @@ module.exports = {
 
 
     permissions: [],
-    requiredChannels: [],
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
+    allowedRoles: [],
     blockedRoles: [],
 
     cooldownStatus: false,
@@ -38,11 +38,7 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
-        try {
-            const [mode, ...activity] = args;
-            setActivity(client, mode, activity.join(" "));
-        } catch(err) {
-            console.log(err);
-        }
+        const [mode, ...activity] = args;
+        setActivity(client, mode, activity.join(" "));
     }
 }

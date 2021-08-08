@@ -8,7 +8,7 @@ module.exports = class ChannelDeleteEvent extends BaseEvent {
   }
   
   async run(client, channel) {
-    if(!client.state) return;
+    if(!client.isOnline) return;
     channelDeletedLog(client, channel);
   }
 }

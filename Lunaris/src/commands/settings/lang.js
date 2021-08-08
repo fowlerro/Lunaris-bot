@@ -30,9 +30,9 @@ module.exports = {
     syntaxExample: 'language en',
 
     permissions: ['MANAGE_GUILD'],
-    requiredChannels: [],
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
+    allowedRoles: [],
     blockedRoles: [],
 
     cooldownStatus: false,
@@ -42,42 +42,38 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
-        try {
-            let guildConfig = client.guildConfigs.get(message.guild.id);
-            let language = guildConfig.get('language');
-            if(!args[0]) {
-                let langs = "";
-                langs = localeList().map(lang => langs + "`" + lang + "` " + translate(lang, 'name'));
-                const embed = new MessageEmbed()
-                    .setColor(palette.info)
-                    .addField(translate(language, 'cmd.languageListMessage'), langs)
-                    .setFooter(translate(language, "cmd.languageListFooter", guildConfig.get('prefix')));
-
-                return message.channel.send(embed);
-            };
-            if(!localeList().includes(args[0]) && !localeList().some(lang => translate(lang, 'name').toLowerCase() == args[0].toLowerCase())) {
-                const embed = new MessageEmbed()
-                    .setColor(palette.error)
-                    .setDescription(translate(language, "cmd.wrongLanguage", guildConfig.get('prefix')));
-        
-                return message.channel.send(embed);
-            }
-            if(localeList().some(lang => translate(lang, 'name').toLowerCase() == args[0].toLowerCase())) {
-                localeList().forEach(lang => {
-                    if(translate(lang, 'name').toLowerCase() == args[0].toLowerCase()) args[0] = lang;
-                })
-            }
-
-
-            guildConfig = await setGuildConfig(client, message.guild.id, 'language', args[0]);
-            language = guildConfig.get('language');
+        let guildConfig = client.guildConfigs.get(message.guild.id);
+        let language = guildConfig.get('language');
+        if(!args[0]) {
+            let langs = "";
+            langs = localeList().map(lang => langs + "`" + lang + "` " + translate(lang, 'name'));
             const embed = new MessageEmbed()
-                .setColor(palette.success)
-                .setDescription(translate(language, "cmd.languageChange", "`" + guildConfig.get('language') + "`"));
+                .setColor(palette.info)
+                .addField(translate(language, 'cmd.languageListMessage'), langs)
+                .setFooter(translate(language, "cmd.languageListFooter", guildConfig.get('prefix')));
+
+            return message.channel.send(embed);
+        };
+        if(!localeList().includes(args[0]) && !localeList().some(lang => translate(lang, 'name').toLowerCase() == args[0].toLowerCase())) {
+            const embed = new MessageEmbed()
+                .setColor(palette.error)
+                .setDescription(translate(language, "cmd.wrongLanguage", guildConfig.get('prefix')));
     
             return message.channel.send(embed);
-        } catch(err) {
-            console.log(err);
         }
+        if(localeList().some(lang => translate(lang, 'name').toLowerCase() == args[0].toLowerCase())) {
+            localeList().forEach(lang => {
+                if(translate(lang, 'name').toLowerCase() == args[0].toLowerCase()) args[0] = lang;
+            })
+        }
+
+
+        guildConfig = await setGuildConfig(client, message.guild.id, 'language', args[0]);
+        language = guildConfig.get('language');
+        const embed = new MessageEmbed()
+            .setColor(palette.success)
+            .setDescription(translate(language, "cmd.languageChange", "`" + language + "`"));
+
+        return message.channel.send({embeds: [embed]});
     }
 }

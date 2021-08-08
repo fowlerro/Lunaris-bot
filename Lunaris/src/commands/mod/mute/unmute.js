@@ -27,9 +27,9 @@ module.exports = {
     syntaxExample: 'unmute @Lunaris',
 
     permissions: ['KICK_MEMBERS'],
-    requiredChannels: [],
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
+    allowedRoles: [],
     blockedRoles: [],
 
     cooldownStatus: false,
@@ -40,13 +40,10 @@ module.exports = {
     cooldownReminder: false,
     async run(client, message, args) {
         // TODO: Add parameter 'all' to unmute command
-
-        const guildConfig = client.guildConfigs.get(message.guild.id);
-        const language = guildConfig.get('language');
-
         const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
         if(!member) return;
-
+        
+        const { language } = client.guildConfigs.get(message.guild.id);
         const reason = args.slice(1, args.length).join(' ');
 
         const result = await Mute.remove(client, message.guild.id, message.author.id, member.id, reason);
@@ -56,13 +53,13 @@ module.exports = {
                 .setColor(palette.error)
                 .setDescription(translate(language, 'autoMod.mute.notMuted', `<@${member.id}>`));
 
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed]});
         }
         
         const embed = new MessageEmbed()
             .setColor(palette.success)
             .setDescription(translate(language, 'autoMod.mute.removeMute', `<@${member.id}>`, `<@${message.author.id}>`));
 
-        return message.channel.send(embed);
+        return message.channel.send({embeds: [embed]});
     }
 }

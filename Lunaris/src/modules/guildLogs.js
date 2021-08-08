@@ -47,18 +47,16 @@ Commands:
     ?(expired)
 */
 
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Permissions } = require("discord.js");
 const { palette } = require("../utils/utils");
-const GuildConfig = require("../database/schemas/GuildConfig");
 const { translate } = require("../utils/languages/languages");
-const { convertPerms } = require("../utils/utils");
 const ms = require('ms');
 
 async function memberJoinedLog(client, member) {
-    const guildConfig = await GuildConfig.findOne({guildID: member.guild.id}).catch();
+    const guildConfig = client.guildConfigs.get(member.guild.id);
     const logChannel = member.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
-    const language = guildConfig.get('language');
     if(!logChannel) return;
+    const language = guildConfig.get('language');
 
     const createdAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(member.user.createdAt);
     const embed = new MessageEmbed()
@@ -70,7 +68,7 @@ async function memberJoinedLog(client, member) {
         .setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
 
-    await logChannel.send(embed).catch();
+    return logChannel.send({embeds: [embed]});
 }
 
 function memberLeavedLog(client, member, logChannel, language) {
@@ -84,14 +82,15 @@ function memberLeavedLog(client, member, logChannel, language) {
         .setAuthor(translate(language, 'logs.member.leavedTitle', member.user.tag), member.user.displayAvatarURL())
         .setDescription(`<@${member.user.id}>`)
         .addField(translate(language, 'general.createdAt'), createdAt, true)
-        .addField("ID", member.user.id, true)
+        .addField("ID", member.user.id, true);
 
     member.nickname && embed.addField("Nickname", member.nickname, true);
     roles && embed.addField(translate(language, 'general.roles'), roles);
     embed.setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
 
-    logChannel.send(embed).catch();
+    return logChannel.send({embeds: [embed]});
+
     // msg.react('🔽');
     // cachedProfiles.set(msg.id, member);
 
@@ -148,25 +147,30 @@ function memberLeavedLog(client, member, logChannel, language) {
 
 async function memberNicknameLog(client, executor, target, oldNickname, newNickname, logChannel, language) {
 
-    let variant;
+    let variant2;
     if(oldNickname && newNickname) {
-        variant = 'Changed'
+        variant2 = 'Changed'
     } else if(!oldNickname && newNickname) {
-        variant = 'Created'
+        variant2 = 'Created'
     } else if(oldNickname && !newNickname) {
-        variant = 'Removed'
+        variant2 = 'Removed'
     }
+
+    const variant = oldNickname && newNickname ? 'Changed' : !oldNickname && newNickname ? 'Created' : 'Removed';
+    console.log('variant', variant);
+    console.log('variant2', variant2);
+
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
         .setAuthor(translate(language, `logs.member.nickname${variant}Title`, target.tag), target.displayAvatarURL())
-        .addField(translate(language, 'logs.member.nicknameChangedBy'), `<@${executor.id}>\n${executor.id}`, true)
+        .addField(translate(language, 'logs.member.nicknameChangedBy'), `<@${executor.id}>\n${executor.id}`, true);
     oldNickname && embed.addField(translate(language, 'logs.member.nicknameOld'), oldNickname, true);
     newNickname && embed.addField(translate(language, 'logs.member.nicknameNew'), newNickname, true);
     embed.setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
 
-    await logChannel.send(embed).catch();
+    return logChannel.send({embeds: [embed]});
 }
 
 function memberKickedLog(client, executor, target, member, reason, logChannel, language) {
@@ -186,7 +190,7 @@ function memberKickedLog(client, executor, target, member, reason, logChannel, l
     embed.setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
 
-    logChannel.send(embed).catch();
+    return logChannel.send({embeds: [embed]});
 }
 
 function memberBannedLog (client, executor, target, member, reason, logChannel, language) {
@@ -206,15 +210,15 @@ function memberBannedLog (client, executor, target, member, reason, logChannel, 
     embed.setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
 
-    logChannel.send(embed).catch();
+    return logChannel.send({embeds: [embed]});
 }
 
 async function memberUnbannedLog(client, guild, user) {
 
-    const guildConfig = await GuildConfig.findOne({guildID: guild.id}).catch();
+    const guildConfig = client.guildConfigs.get(guild.id);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
-    const language = guildConfig.get('language');
     if(!logChannel) return;
+    const language = guildConfig.get('language');
 
     const banLog = await guild.fetchAuditLogs({limit: 1, type: 'MEMBER_BAN_REMOVE'});
     const updateBan = banLog.entries.first();
@@ -230,17 +234,16 @@ async function memberUnbannedLog(client, guild, user) {
             .setFooter(client.user.username, client.user.displayAvatarURL())
             .setTimestamp();
 
-        logChannel.send(embed).catch();
+        return logChannel.send({embeds: [embed]});
     }
 }
 
 
-
 async function channelCreatedLog(client, channel) {
-    const guildConfig = await GuildConfig.findOne({guildID: channel.guild.id}).catch();
+    const guildConfig = client.guildConfigs.get(channel.guild.id);
     const logChannel = channel.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.channel'));
-    const language = guildConfig.get('language');
     if(!logChannel) return;
+    const language = guildConfig.get('language');
 
     const auditLog = await channel.guild.fetchAuditLogs({limit: 1, type: 'CHANNEL_CREATE'});
     const entry = auditLog.entries.first();
@@ -256,15 +259,15 @@ async function channelCreatedLog(client, channel) {
             .setFooter(client.user.username, client.user.displayAvatarURL())
             .setTimestamp();
 
-        await logChannel.send(embed).catch();
+        return logChannel.send({embeds: [embed]})
     }
 }
 
 async function channelDeletedLog(client, channel) {
-    const guildConfig = await GuildConfig.findOne({guildID: channel.guild.id}).catch();
+    const guildConfig = client.guildConfigs.get(channel.guild.id);
     const logChannel = channel.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.channel'));
-    const language = guildConfig.get('language');
     if(!logChannel) return;
+    const language = guildConfig.get('language');
 
     const auditLog = await channel.guild.fetchAuditLogs({limit: 1, type: 'CHANNEL_DELETE'});
     const entry = auditLog.entries.first();
@@ -279,28 +282,28 @@ async function channelDeletedLog(client, channel) {
             .setFooter(client.user.username, client.user.displayAvatarURL())
             .setTimestamp();
 
-        await logChannel.send(embed).catch();
+        return logChannel.send({embeds: [embed]})
     }
 }
 
 async function channelUpdatedLog(client, newChannel) {
-    const guildConfig = await GuildConfig.findOne({guildID: newChannel.guild.id}).catch();
+    const guildConfig = client.guildConfigs.get(newChannel.guild.id);
     const logChannel = newChannel.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.channel'));
-    const language = guildConfig.get('language');
     if(!logChannel) return;
+    const language = guildConfig.get('language');
 
-    let auditLog = await newChannel.guild.fetchAuditLogs({limit: 1, type: 'CHANNEL_UPDATE'});
+    let auditLog = await newChannel.guild.fetchAuditLogs({limit: 1, action: 'CHANNEL_UPDATE'});
     let entry = auditLog.entries.first();
     if(Date.now() - entry.createdTimestamp > 5000) {
-        auditLog = await newChannel.guild.fetchAuditLogs({limit: 1, type: 'CHANNEL_OVERWRITE_CREATE'});
+        auditLog = await newChannel.guild.fetchAuditLogs({limit: 1, action: 'CHANNEL_OVERWRITE_CREATE'});
         entry = auditLog.entries.first(); 
     }
     if(Date.now() - entry.createdTimestamp > 5000) {
-        auditLog = await newChannel.guild.fetchAuditLogs({limit: 1, type: 'CHANNEL_OVERWRITE_UPDATE'});
+        auditLog = await newChannel.guild.fetchAuditLogs({limit: 1, action: 'CHANNEL_OVERWRITE_UPDATE'});
         entry = auditLog.entries.first(); 
     }
     if(Date.now() - entry.createdTimestamp > 5000) {
-        auditLog = await newChannel.guild.fetchAuditLogs({limit: 1, type: 'CHANNEL_OVERWRITE_DELETE'});
+        auditLog = await newChannel.guild.fetchAuditLogs({limit: 1, action: 'CHANNEL_OVERWRITE_DELETE'});
         entry = auditLog.entries.first();
     }
     if(entry.target.id === newChannel.id && Date.now() - entry.createdTimestamp < 5000) {
@@ -312,11 +315,10 @@ async function channelUpdatedLog(client, newChannel) {
         let allowedPerms = [];
         let deniedPerms = [];
         let resetPerms = [];
-        // console.log(changes)
-        let permsAllow = changes.find(c => c.key === 'allow');
+        const permsAllow = changes.find(c => c.key === 'allow');
         if(permsAllow) {
-            const oldPerms = convertPerms('flags', permsAllow.old);
-            const newPerms = convertPerms('flags', permsAllow.new);
+            const oldPerms = new Permissions(BigInt(permsAllow.old)).toArray()
+            const newPerms = new Permissions(BigInt(permsAllow.new)).toArray()
             newPerms.forEach(element => {
                 if(!oldPerms.includes(element)) allowedPerms.push(element);
             });
@@ -324,10 +326,10 @@ async function channelUpdatedLog(client, newChannel) {
                 if(!newPerms.includes(element)) resetPerms.push(element);
             });
         }
-        let permsDeny = changes.find(key => key.key === 'deny');
+        const permsDeny = changes.find(key => key.key === 'deny');
         if(permsDeny) {
-            const oldPerms = convertPerms('flags', permsDeny.old);
-            const newPerms = convertPerms('flags', permsDeny.new);
+            const oldPerms = new Permissions(BigInt(permsDeny.old)).toArray()
+            const newPerms = new Permissions(BigInt(permsDeny.new)).toArray()
             newPerms.forEach(element => {
                 if(!oldPerms.includes(element)) deniedPerms.push(element);
             });
@@ -373,7 +375,7 @@ async function channelUpdatedLog(client, newChannel) {
         resetPerms.length && embed.addField(translate(language, 'logs.general.resetPerms'),
             resetPerms.map(perm => translate(language, `permissions.${perm}`)).toString().replaceAll(",", ", "), true);
         
-        await logChannel.send(embed).catch();
+        return logChannel.send({embeds: [embed]});
     }
 }
 
@@ -392,11 +394,10 @@ function messageDeletedLog(client, content, channelID, target, executor, logChan
         .setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
 
-    logChannel.send(embed).catch();
+    return logChannel.send({embeds: [embed]})
 }
 
 function messageEditedLog(client, oldContent, newContent, messageID, channelID, guildID, target, logChannel, language) {
-    
     const embed = new MessageEmbed()
         .setColor(palette.info)
         .setAuthor(translate(language, 'logs.message.editedTitle'), target.displayAvatarURL())
@@ -409,7 +410,7 @@ function messageEditedLog(client, oldContent, newContent, messageID, channelID, 
         .setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
 
-    logChannel.send(embed).catch();
+    return logChannel.send({embeds: [embed]})
 }
 
 
@@ -429,7 +430,7 @@ function inviteCreatedLog(client, url, expires, inviter, uses, channelID, logCha
         .setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
 
-    logChannel.send(embed).catch();
+    return logChannel.send({embeds: [embed]});
 }
 
 function inviteDeletedLog(client, code, channelID, logChannel, language) {
@@ -442,16 +443,16 @@ function inviteDeletedLog(client, code, channelID, logChannel, language) {
         .setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
 
-    logChannel.send(embed).catch();
+    return logChannel.send({embeds: [embed]});
 }
 
 
 
 async function cmdTriggerLog(client, cmdName, guild, channelID, executor, content) {
-    const guildConfig = await GuildConfig.findOne({guildID: guild.id}).catch();
+    const guildConfig = client.guildConfigs.get(guild.id);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.commands'));
-    const language = guildConfig.get('language');
     if(!logChannel) return;
+    const language = guildConfig.get('language');
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
@@ -462,7 +463,7 @@ async function cmdTriggerLog(client, cmdName, guild, channelID, executor, conten
         .setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
 
-    await logChannel.send(embed).catch();
+    return logChannel.send({embeds: [embed]})
 }
 
 
@@ -477,18 +478,18 @@ function memberRoleLog(client, executor, target, role, state, logChannel, langua
         .setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
 
-    logChannel.send(embed).catch();
+    return logChannel.send({embeds: [embed]});
 }
 
 
 
 async function roleCreatedLog(client, role) {
-    const guildConfig = await GuildConfig.findOne({guildID: role.guild.id}).catch();
+    const guildConfig = client.guildConfigs.get(role.guild.id);
     const logChannel = role.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.roles'));
-    const language = guildConfig.get('language');
     if(!logChannel) return;
+    const language = guildConfig.get('language');
 
-    const auditLog = await role.guild.fetchAuditLogs({limit: 1, type: 'ROLE_CREATE'});
+    const auditLog = await role.guild.fetchAuditLogs({limit: 1, action: 'ROLE_CREATE'});
     const entry = auditLog.entries.first();
     if(entry.target.id === role.id && Date.now() - entry.createdTimestamp < 5000) {
 
@@ -500,17 +501,17 @@ async function roleCreatedLog(client, role) {
             .setFooter(client.user.username, client.user.displayAvatarURL())
             .setTimestamp();
 
-        await logChannel.send(embed).catch();
+        return logChannel.send({embeds: [embed]});
     }
 }
 
 async function roleDeletedLog(client, role) {
-    const guildConfig = await GuildConfig.findOne({guildID: role.guild.id}).catch();
+    const guildConfig = client.guildConfigs.get(role.guild.id);
     const logChannel = role.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.roles'));
-    const language = guildConfig.get('language');
     if(!logChannel) return;
+    const language = guildConfig.get('language');
 
-    const auditLog = await role.guild.fetchAuditLogs({limit: 1, type: 'ROLE_DELETE'});
+    const auditLog = await role.guild.fetchAuditLogs({limit: 1, action: 'ROLE_DELETE'});
     const entry = auditLog.entries.first();
     if(entry.target.id === role.id && Date.now() - entry.createdTimestamp < 5000) {
 
@@ -521,17 +522,17 @@ async function roleDeletedLog(client, role) {
             .setFooter(client.user.username, client.user.displayAvatarURL())
             .setTimestamp();
 
-        await logChannel.send(embed).catch();
+        return logChannel.send({embeds: [embed]});
     }
 }
 
 async function roleUpdatedLog(client, role) {
-    const guildConfig = await GuildConfig.findOne({guildID: role.guild.id}).catch();
+    const guildConfig = client.guildConfigs.get(role.guild.id);
     const logChannel = role.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.roles'));
-    const language = guildConfig.get('language');
     if(!logChannel) return;
+    const language = guildConfig.get('language');
 
-    const auditLog = await role.guild.fetchAuditLogs({limit: 1, type: 'ROLE_UPDATE'});
+    const auditLog = await role.guild.fetchAuditLogs({limit: 1, action: 'ROLE_UPDATE'});
     const entry = auditLog.entries.first();
     if(entry.target.id === role.id && Date.now() - entry.createdTimestamp < 5000) {
         // console.log(entry);
@@ -545,8 +546,8 @@ async function roleUpdatedLog(client, role) {
         // console.log(changes)
         let perm = changes.find(c => c.key === 'permissions');
         if(perm) {
-            const oldPerms = convertPerms('flags', perm.old);
-            const newPerms = convertPerms('flags', perm.new);
+            const oldPerms = new Permissions(BigInt(perm.old)).toArray()
+            const newPerms = new Permissions(BigInt(perm.new)).toArray()
             newPerms.forEach(element => {
                 if(!oldPerms.includes(element)) allowedPerms.push(element);
             });
@@ -586,18 +587,20 @@ async function roleUpdatedLog(client, role) {
         deniedPerms.map(perm => translate(language, `permissions.${perm}`)).toString().replaceAll(",", ", "), true);
 
         
-        await logChannel.send(embed).catch();
+        return logChannel.send({embeds: [embed]});
     }
 }
 
 
 function warnAddLog(client, guildID, executor, target, reason, id) {
-    const guildConfig = client.guildConfigs.get(guildID);
     const guild = client.guilds.cache.find(guild => guild.id === guildID);
-    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
-    const language = guildConfig.get('language');
-    if(!logChannel) return;
     const member = guild.members.cache.find(m => m.id === target);
+    if(!member) return;
+
+    const guildConfig = client.guildConfigs.get(guildID);
+    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
+    if(!logChannel) return;
+    const language = guildConfig.get('language');
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
@@ -608,16 +611,18 @@ function warnAddLog(client, guildID, executor, target, reason, id) {
         .addField(translate(language, 'general.reason'), reason ? reason : translate(language, 'general.none'))
         .setTimestamp();
 
-    logChannel.send(embed);
+    return logChannel.send({embeds: [embed]});
 }
 
 function warnRemoveLog(client, guildID, by, executor, target, reason, id) {
-    const guildConfig = client.guildConfigs.get(guildID);
     const guild = client.guilds.cache.find(guild => guild.id === guildID);
-    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
-    const language = guildConfig.get('language');
-    if(!logChannel) return;
     const member = guild.members.cache.find(m => m.id === target);
+    if(!member) return;
+
+    const guildConfig = client.guildConfigs.get(guildID);
+    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
+    if(!logChannel) return;
+    const language = guildConfig.get('language');
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
@@ -629,15 +634,16 @@ function warnRemoveLog(client, guildID, by, executor, target, reason, id) {
         .addField(translate(language, 'general.reason'), reason ? reason : translate(language, 'general.none'), true)
         .setTimestamp();
 
-    logChannel.send(embed);
+    return logChannel.send({embeds: [embed]});
 }
 
 function warnRemoveAllLog(client, guildID, by) {
-    const guildConfig = client.guildConfigs.get(guildID);
     const guild = client.guilds.cache.find(guild => guild.id === guildID);
+
+    const guildConfig = client.guildConfigs.get(guildID);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
-    const language = guildConfig.get('language');
     if(!logChannel) return;
+    const language = guildConfig.get('language');
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
@@ -645,18 +651,19 @@ function warnRemoveAllLog(client, guildID, by) {
         .addField(translate(language, 'logs.warn.removedBy'), `<@${by}>\n${by}`, true)
         .setTimestamp();
 
-    logChannel.send(embed);
+    return logChannel.send({embeds: [embed]});
 }
 
 
 function muteLog(client, guildID, by, target, reason, time) {
-    const guildConfig = client.guildConfigs.get(guildID);
     const guild = client.guilds.cache.find(guild => guild.id === guildID);
-    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
-    const language = guildConfig.get('language');
-    if(!logChannel) return;
     const member = guild.members.cache.find(m => m.id === target);
     if(!member) return;
+
+    const guildConfig = client.guildConfigs.get(guildID);
+    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
+    if(!logChannel) return;
+    const language = guildConfig.get('language');
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
@@ -667,17 +674,18 @@ function muteLog(client, guildID, by, target, reason, time) {
         .addField(translate(language, 'general.reason'), reason ? reason : translate(language, 'general.none'), true)
         .setTimestamp();
 
-    logChannel.send(embed);
+    return logChannel.send({embeds: [embed]});
 }
 
 function unmuteLog(client, guildID, by, executor, target, reason = "") {
-    const guildConfig = client.guildConfigs.get(guildID);
     const guild = client.guilds.cache.find(guild => guild.id === guildID);
-    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
-    const language = guildConfig.get('language');
-    if(!logChannel) return;
     const member = guild.members.cache.find(m => m.id === target);
     if(!member) return;
+    
+    const guildConfig = client.guildConfigs.get(guildID);
+    const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
+    if(!logChannel) return;
+    const language = guildConfig.get('language');
 
     if(executor != "System") executor = `<@${executor}>\n${executor}`;
 
@@ -690,7 +698,7 @@ function unmuteLog(client, guildID, by, executor, target, reason = "") {
         .addField(translate(language, 'general.reason'), reason ? reason : translate(language, 'general.none'), true)
         .setTimestamp();
 
-    logChannel.send(embed);
+    return logChannel.send({embeds: [embed]});
 }
 
 module.exports = {memberJoinedLog, memberLeavedLog, memberNicknameLog, memberKickedLog, memberBannedLog, memberUnbannedLog,

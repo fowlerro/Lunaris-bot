@@ -7,6 +7,7 @@ const GuildConfig = require('../database/schemas/GuildConfig');
 const AutoMod = require('../database/schemas/AutoMod');
 const GuildMembers = require('../database/schemas/GuildMembers');
 const { unmuteLog } = require('../modules/guildLogs');
+const clientConfig = require('../database/config.json');
 
 async function registerCommands(client, dir = '') {
   const filePath = path.join(__dirname, dir);
@@ -146,6 +147,16 @@ function registerTerminalCommands(client) {
   }
 }
 
+function registerPresence(client) {
+  client.user.setPresence({
+    status: clientConfig.presence.status || 'online',
+    activities: [{
+      name: clientConfig.presence.activity.name || '',
+      type: clientConfig.presence.activity.type || 'PLAYING',
+    }]
+  })
+}
+
 module.exports = { 
   registerCommands, 
   registerEvents,
@@ -153,5 +164,6 @@ module.exports = {
   registerGuildConfigs,
   registerAutoModConfigs,
   registerMutes,
-  registerTerminalCommands
+  registerTerminalCommands,
+  registerPresence
 };

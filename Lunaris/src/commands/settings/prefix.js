@@ -26,12 +26,12 @@ module.exports = {
     syntaxExample: 'prefix &',
 
     permissions: new Permissions([
-        Permissions.FLAGS.MANAGE_GUILD, Permissions.FLAGS.MANAGE_CHANNELS
+        Permissions.FLAGS.MANAGE_GUILD
     ]).toArray(),
     allowedChannels: [],
     blockedChannels: [],
     allowedRoles: [],
-    blockedRoles: ['861596116821737532', '821483520290979901'],
+    blockedRoles: [],
 
     cooldownStatus: false,
     cooldown: '30s',
@@ -40,16 +40,11 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
-        try {
-            let guildConfig = await setGuildConfig(client, message.guild.id, 'prefix', args[0]);
-            const language = guildConfig.get('language');
-            const embed = new MessageEmbed()
-                .setColor(palette.success)
-                .setDescription(translate(language, "cmd.prefixChange", "`" + guildConfig.get('prefix') + "`"));
-    
-            return message.channel.send({ embeds: [embed]});
-        } catch(err) {
-            console.log(err);
-        }
+        const { prefix, language } = await setGuildConfig(client, message.guild.id, 'prefix', args[0]);
+        const embed = new MessageEmbed()
+            .setColor(palette.success)
+            .setDescription(translate(language, "cmd.prefixChange", "`" + prefix + "`"));
+
+        return message.channel.send({embeds: [embed]});
     }
 }

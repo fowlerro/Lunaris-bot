@@ -7,7 +7,7 @@ module.exports = class RoleDeleteEvent extends BaseEvent {
   }
   
   async run(client, role) {
-    if(!client.state) return;
+    if(!client.isOnline) return;
 
     roleDeletedLog(client, role);
   }

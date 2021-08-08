@@ -4,7 +4,7 @@ const { translate } = require("../../utils/languages/languages");
 const { Warn } = require("./utils");
 
 async function censor(client, guildID, message, user) {
-    const {language} = client.guildConfigs.get(message.guild.id);
+    const { language } = client.guildConfigs.get(message.guild.id);
     const autoModConfig = client.autoModConfigs.get(guildID);
     const trigger = autoModConfig.censor.triggerValue;
     const words = autoModConfig.censor.words;
@@ -28,7 +28,7 @@ async function censor(client, guildID, message, user) {
                 .setColor(palette.error)
                 .setDescription(translate(language, 'autoMod.warn.addWarn', `<@${user.id}>`, `**${warnExecutor}**`, reason.length ? `| ${reason}` : ""));
 
-            message.channel.send(embed);
+            message.channel.send({embeds: [embed]});
             console.log(user.user.tag, 'censor trigger');
         }
         setTimeout(() => {

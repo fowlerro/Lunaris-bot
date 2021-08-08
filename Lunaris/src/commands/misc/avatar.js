@@ -1,3 +1,5 @@
+const { translate } = require("../../utils/languages/languages");
+
 module.exports = {
     name: 'avatar',
     aliases: ['av'],
@@ -19,9 +21,9 @@ module.exports = {
         en: 'avatar <user>',
     },
     permissions: [],
-    requiredChannels: [],
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
+    allowedRoles: [],
     blockedRoles: [],
 
     cooldownStatus: false,
@@ -35,6 +37,7 @@ module.exports = {
         if(!member) return;
 
         const avatarURL = member.user.avatarURL();
+        if(!avatarURL) return;
 
         return message.channel.send(avatarURL);
     }

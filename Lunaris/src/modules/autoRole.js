@@ -3,7 +3,7 @@ const ms = require('ms');
 const AutoRoleTime = require("../database/schemas/AutoRoleTime");
 
 async function giveAutoRole(member) {
-    const config = await AutoRole.findOne({guildID: member.guild.id});
+    const config = await AutoRole.findOne({guildID: member.guild.id}); //TODO: Fetch data at client ready
     if(config) {
         const roles = config.get('roles');
         for(const element of roles) {

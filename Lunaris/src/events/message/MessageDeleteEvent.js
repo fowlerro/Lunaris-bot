@@ -1,5 +1,4 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-messageDelete
-const GuildConfig = require('../../database/schemas/GuildConfig');
 const { messageDeletedLog } = require('../../modules/guildLogs');
 const BaseEvent = require('../../utils/structures/BaseEvent');
 module.exports = class MessageDeleteEvent extends BaseEvent {
@@ -8,13 +7,13 @@ module.exports = class MessageDeleteEvent extends BaseEvent {
   }
   
   async run(client, message) {
-    if(!client.state) return;
+    if(!client.isOnline) return;
     // console.log(message);
     if(!message.guild || message.author.bot) return;
-    const guildConfig = await GuildConfig.findOne({guildID: message.guild.id}).catch();
+    const guildConfig = client.guildConfigs.get(message.guild.id);
     const logChannel = message.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.message'));
-    const language = guildConfig.get('language');
     if(!logChannel) return;
+    const language = guildConfig.get('language');
 
     const {content, channel} = message;
     const auditLog = await message.guild.fetchAuditLogs({limit: 1, type: 'MESSAGE_DELETE'});

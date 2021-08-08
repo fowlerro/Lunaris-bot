@@ -8,10 +8,10 @@ module.exports = class MessageCreateEvent extends BaseEvent {
     
     async run(client, message) {
         if(message.author.bot) return;
-        if(message.channel.type === "dm") return console.log(`DM > ${message.author.tag}: ${message.content}`)
+        // if(message.channel.type === "dm") return console.log(`DM > ${message.author.tag}: ${message.content}`)
         commandHandle(client, message);
         
-        if(!client.state) return;
+        if(!client.isOnline) return;
         censor(client, message.guild.id, message, message.member);
 
         const count = client.msgCount.get(message.guild.id);

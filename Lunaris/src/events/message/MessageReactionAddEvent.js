@@ -7,8 +7,8 @@ module.exports = class MessageReactionAddEvent extends BaseEvent {
   }
   
   async run(client, reaction, user) {
-    if(!client.state) return;
-    console.log(reaction.emoji.identifier)
+    if(!client.isOnline) return;
+    // console.log(reaction.emoji.identifier)
     // console.log(user);
   }
 }

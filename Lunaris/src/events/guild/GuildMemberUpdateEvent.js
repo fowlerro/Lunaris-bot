@@ -10,14 +10,14 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
   }
   
   async run(client, oldMember, newMember) {
-    if(!client.state) return;
+    if(!client.isOnline) return;
     if(oldMember.nickname !== newMember.nickname) {
-      const guildConfig = await GuildConfig.findOne({guildID: newMember.guild.id}).catch();
+      const guildConfig = client.guildConfigs.get(newMember.guild.id);
       const logChannel = newMember.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
-      const language = guildConfig.get('language');
       if(!logChannel) return;
+      const language = guildConfig.get('language');
 
-      if(!newMember.guild.me.hasPermission('VIEW_AUDIT_LOG')) return; //!important
+      if(!newMember.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return; //!important //TODO: Make permissions checking in all cases 
       const auditLog = await newMember.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_UPDATE'});
       const update = auditLog.entries.first();
       if(!update) return;
@@ -31,10 +31,10 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
     }
 
     if(oldMember._roles.length < newMember._roles.length) {
-      const guildConfig = await GuildConfig.findOne({guildID: newMember.guild.id}).catch();
+      const guildConfig = client.guildConfigs.get(newMember.guild.id);
       const logChannel = newMember.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
-      const language = guildConfig.get('language');
       if(!logChannel) return;
+      const language = guildConfig.get('language');
 
       const auditLog = await newMember.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_ROLE_UPDATE'});
       const update = auditLog.entries.first();
@@ -47,7 +47,7 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
     }
 
     if(oldMember._roles.length > newMember._roles.length) {
-      const guildConfig = await GuildConfig.findOne({guildID: newMember.guild.id}).catch();
+      const guildConfig = client.guildConfigs.get(newMember.guild.id);
       const logChannel = newMember.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
       const language = guildConfig.get('language');
       if(!logChannel) return;

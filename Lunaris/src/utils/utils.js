@@ -1,47 +1,8 @@
 const AutoMod = require("../database/schemas/AutoMod");
 const GuildConfig = require("../database/schemas/GuildConfig");
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
 
 const botOwners = ["313346190995619841"];
-
-const permissions = {
-    CREATE_INSTANT_INVITE: 0x1,
-    KICK_MEMBERS: 0x2,
-    BAN_MEMBERS: 0x4,
-    ADMINISTRATOR: 0x8,
-    MANAGE_CHANNELS: 0x10,
-    MANAGE_GUILD: 0x20,
-    ADD_REACTIONS: 0x40,
-    VIEW_AUDIT_LOG: 0x80,
-    PRIORITY_SPEAKER: 0x100,
-    STREAM: 0x200,
-    VIEW_CHANNEL: 0x400,
-    SEND_MESSAGES: 0x800,
-    SEND_TTS_MESSAGES: 0x1000,
-    MANAGE_MESSAGES: 0x2000,
-    EMBED_LINKS: 0x4000,
-    ATTACH_FILES: 0x8000,
-    READ_MESSAGE_HISTORY: 0x10000,
-    MENTION_EVERYONE: 0x20000,
-    USE_EXTERNAL_EMOJIS: 0x40000,
-    VIEW_GUILD_INSIGHTS: 0x80000,
-    CONNECT: 0x100000,
-    SPEAK: 0x200000,
-    MUTE_MEMBERS: 0x400000,
-    DEAFEN_MEMBERS: 0x800000,
-    MOVE_MEMBERS: 0x1000000,
-    USE_VAD: 0x2000000,
-    CHANGE_NICKNAME: 0x4000000,
-    MANAGE_NICKNAMES: 0x8000000,
-    MANAGE_ROLES: 0x10000000,
-    MANAGE_WEBHOOKS: 0x20000000,
-    MANAGE_EMOJIS: 0x40000000,
-    USE_SLASH_COMMANDS: 0x0080000000,
-    REQUEST_TO_SPEAK: 0x0100000000,
-    MANAGE_THREADS: 0x0400000000,
-    USE_PUBLIC_THREADS: 0x0800000000,
-    USE_PRIVATE_THREADS: 0x1000000000
-} 
 
 const palette = {
     primary: '#102693',
@@ -49,17 +10,6 @@ const palette = {
     success: '#7BDB27',
     info: '#3C9FFC',
     error: '#B71E13',
-}
-
-function convertPerms(to, permission) {
-    if(to === 'flags') {
-        let convertedPerms = [];
-        for(const [key, value] of Object.entries(permissions)) {
-            if((permission & value) === value) convertedPerms.push(key);
-        }
-        return convertedPerms;
-    }
-    if(to === 'bits') return null;
 }
 
 function mapToObject(map) {
@@ -72,7 +22,6 @@ function mapToObject(map) {
     if(!out) return {}
     return out
 }
-
 
 // ! Deprecated
 function JSONToMap(map, json) {
@@ -144,10 +93,10 @@ function toggleBot(client, s) {
     if(client.isOnline) {
         client.user.setPresence({
             status: 'online',
-            activity: {
-                name: client.customActivity.name,
-                type: client.customActivity.type
-            }
+            activities: [{
+                name: client.customActivity?.name || '',
+                type: client.customActivity?.type || ''
+            }]
         });
     }
     if(!client.isOnline) {
@@ -155,6 +104,7 @@ function toggleBot(client, s) {
             status: 'invisible'
         });
     }
+    console.log(client.isOnline);
     return client.isOnline;
 }
 
@@ -165,10 +115,10 @@ function setActivity(client, type, activity) {
         type: type.toUpperCase()
     }
     client.user.setPresence({
-        activity: {
+        activities: [{
             name: client.customActivity.name,
             type: client.customActivity.type
-        }
+        }]
     })
 }
 
@@ -215,7 +165,7 @@ async function checkEmbedLimits(client, embed, channel, fieldsMax, startingPage)
     if(embed.fields.length <= (fieldsMax || EMBED_LIMITS.field.amount)) return;
 
     const filter = m => m.author.id === client.user.id
-    const collector = channel.createMessageCollector(filter, { time: 5000, max: 1});
+    const collector = channel.createMessageCollector({ filter, time: 5000, max: 1 });
 
     collector.on('collect', async m => {
         collector.stop();
@@ -250,15 +200,15 @@ async function checkEmbedLimits(client, embed, channel, fieldsMax, startingPage)
         //     .setDisabled();
         
         const previousPageButton = new MessageButton()
-            .setStyle('blurple')
+            .setStyle('PRIMARY')
             .setEmoji("◀️")
-            .setID('previousPage');
+            .setCustomId('previousPage');
         startingPage === 1 && previousPageButton.setDisabled();
         
         const nextPageButton = new MessageButton()
-            .setStyle('blurple')
+            .setStyle('PRIMARY')
             .setEmoji("▶️")
-            .setID('nextPage');
+            .setCustomId('nextPage');
         startingPage === pageAmount && nextPageButton.setDisabled();
         
         // const lastPageButton = new MessageButton()
@@ -267,15 +217,15 @@ async function checkEmbedLimits(client, embed, channel, fieldsMax, startingPage)
         //     .setID('lastPage');
 
         const pageInfoButton = new MessageButton()
-            .setStyle('blurple')
+            .setStyle('PRIMARY')
             .setLabel(`${startingPage}/${pageAmount}`)
-            .setID('pageInfo')
+            .setCustomId('pageInfo')
             .setDisabled();
 
         const buttonsComponent = new MessageActionRow()
             .addComponents([previousPageButton, pageInfoButton, nextPageButton])
 
-        m = await m.edit({embed: embeds[startingPage], component: buttonsComponent});
+        m = await m.edit({embeds: [embeds[startingPage]], components: [buttonsComponent]});
 
         handleEmbedPageButtons(m, startingPage, pageAmount, embeds);
     });
@@ -285,20 +235,21 @@ async function checkEmbedLimits(client, embed, channel, fieldsMax, startingPage)
 async function handleEmbedPageButtons(msg, currPage, pageAmount, embeds) {
     const buttons = msg.components[0].components;
 
-    const buttonsCollector = msg.createButtonCollector(btn => btn.clicker.user.id === btn.clicker.user.id);
+    const filter = (interaction) => interaction.user.id === interaction.user.id;
+    const buttonsCollector = msg.createMessageComponentCollector({filter, time: 60000});
 
     buttonsCollector.on('collect', async btn => {
-        const previousButton = buttons.find(b => b.custom_id === 'previousPage');
-        const nextButton = buttons.find(b => b.custom_id === 'nextPage');
-        const pageInfoButton = buttons.find(b => b.custom_id === 'pageInfo');
+        const previousButton = buttons.find(b => b.customId === 'previousPage');
+        const nextButton = buttons.find(b => b.customId === 'nextPage');
+        const pageInfoButton = buttons.find(b => b.customId === 'pageInfo');
 
-        if(btn.id === 'nextPage') {
+        if(btn.customId === 'nextPage') {
             currPage++;
             previousButton.setDisabled(false);
             if(currPage === pageAmount) nextButton.setDisabled(true);
         }
 
-        if(btn.id === 'previousPage') {
+        if(btn.customId === 'previousPage') {
             currPage--;
             nextButton.setDisabled(false);
             if(currPage === 1) previousButton.setDisabled(true);
@@ -309,14 +260,14 @@ async function handleEmbedPageButtons(msg, currPage, pageAmount, embeds) {
         const buttonsComponent = new MessageActionRow()
             .addComponents([previousButton, pageInfoButton, nextButton]);
             
-        await msg.edit({embed: embeds[currPage],component: buttonsComponent});
-        return btn.defer(true);
+        await msg.edit({embeds: [embeds[currPage]], components: [buttonsComponent]});
+        return btn.deferUpdate();
     })
 }
 
 
 
-module.exports = {botOwners, palette, convertPerms, JSONToMap, mapToObject, daysInMonth, setGuildConfig, 
+module.exports = {botOwners, palette, JSONToMap, mapToObject, daysInMonth, setGuildConfig, 
     msToTime, setAutoModConfig,
     toggleBot, setActivity,
     checkEmbedLimits};

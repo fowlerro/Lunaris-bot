@@ -4,7 +4,7 @@ const path = require('path');
 const { Client, Intents } = require('discord.js');
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS]});
 const { connectDatabase } = require('./database/mongoose');
-const { registerCommands, registerEvents, registerMessagesCount, registerGuildConfigs, registerAutoModConfigs, registerMutes, registerTerminalCommands } = require('./utils/registry');
+const { registerCommands, registerEvents, registerMessagesCount, registerGuildConfigs, registerAutoModConfigs, registerMutes, registerTerminalCommands, registerPresence } = require('./utils/registry');
 const { mapToObject } = require('./utils/utils');
 const { checkAutoRoles } = require('./modules/autoRole');
 
@@ -25,6 +25,7 @@ const { checkAutoRoles } = require('./modules/autoRole');
   await registerMessagesCount(client);
   await registerTerminalCommands(client);
   await client.login(process.env.DISCORD_BOT_TOKEN);
+  await registerPresence(client);
   await checkAutoRoles(client);
   await registerMutes(client);
 })();

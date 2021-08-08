@@ -10,7 +10,7 @@ module.exports = class GuildMemberAddEvent extends BaseEvent {
   }
   
   async run(client, member) {
-    if(!client.state) return;
+    if(!client.isOnline) return;
     memberJoinedLog(client, member);
     if(client.guildConfigs.get(member.guild.id).modules.autoRole.status) {
       giveAutoRole(member);

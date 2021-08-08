@@ -20,9 +20,9 @@ module.exports = {
     category: 'test',
 
     permissions: [],
-    requiredChannels: [],
+    allowedChannels: [],
     blockedChannels: [],
-    requiredRoles: [],
+    allowedRoles: [],
     blockedRoles: [],
 
     cooldownStatus: false,
@@ -33,7 +33,7 @@ module.exports = {
     cooldownReminder: true,
     async run(client, message, args) {
         let fields = [];
-        for (let i = 0; i < 51; i++) {
+        for (let i = 0; i < 250; i++) {
             fields[i] = {
                 name: `chuj${i+1}`,
                 value: `chuj${i+1}`,
@@ -48,6 +48,6 @@ module.exports = {
 
         // console.log(embed.footer.text.length);
 
-        return message.channel.send(embed);
+        return message.channel.send('test');
     }
 }

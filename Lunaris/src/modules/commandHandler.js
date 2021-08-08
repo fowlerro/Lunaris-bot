@@ -29,7 +29,7 @@ const commandHandle = async (client, message) => {
             }
             if(command.ownerOnly && !botOwners.includes(message.author.id)) return;
             if(!command.globalStatus) return message.channel.send(translate(language, "cmd.globalStatus"));
-            command = await CommandConfig.findOne({guildID: message.guild.id, name: command.name});
+            if(!command.ownerOnly) command = await CommandConfig.findOne({guildID: message.guild.id, name: command.name});
             if(!command) {
                 command = await CommandConfig.create({
                     guildID: message.guild.id,
@@ -127,14 +127,12 @@ const checkBlockedRoles = (blockedRoles, member) => {
 
 const sendHelp = async (client, cmd, message) => {
     const helpCmd = client.commands.get('help');
-    await helpCmd.run(client, message, [cmd.name]);
+    return runCmd(client, message, helpCmd, [cmd.name], helpCmd.autoRemoveResponse)
 }
 
 const runCmd = async (client, message, cmd, cmdArgs, autoRemoveResponse) => {
-    await cmd.run(client, message, cmdArgs);
-    if(autoRemoveResponse && client.user.lastMessage) {
-        // client.user.lastMessage.delete({timeout: 5000}); // TODO: Fetch SOMEHOW client's last message
-    }
+    const cmdMessage = await cmd.run(client, message, cmdArgs);
+    if(autoRemoveResponse && cmdMessage) setTimeout(() => cmdMessage.delete(), 5000);
     cmdTriggerLog(client, cmd.name, message.guild, message.channel.id, message.author, message.content);
 }
 
