@@ -150,6 +150,8 @@
         "mute": {
             "addMute": "%VAR% został wyciszony przez %VAR% %VAR%",
             "removeMute": "%VAR% został odciszony przez %VAR%",
+            "removeMuteAll": "Wszyscy użytkownicy zostali odciszeni",
+            "removeAllMutesReason": "Odciszono wszystkich użytkowników",
             "notMuted": "%VAR% nie jest wyciszony",
             "muteList": "Lista mute'ów na serwerze"
         }

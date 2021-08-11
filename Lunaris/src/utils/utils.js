@@ -135,6 +135,8 @@ const EMBED_LIMITS = {
 }
 
 async function checkEmbedLimits(client, embed, channel, fieldsMax, startingPage) {
+    let ERROR = null;
+
     // Title
     if(embed.title && embed.title.length > EMBED_LIMITS.title) embed.setTitle(embed.title.slice(0, EMBED_LIMITS.title-3) + "...");
     
@@ -153,8 +155,6 @@ async function checkEmbedLimits(client, embed, channel, fieldsMax, startingPage)
         embed.footer.text.slice(0, EMBED_LIMITS.footer-3) + "...",
         embed.footer.iconURL
     );
-
-    // TODO: Add checking for total 6k chars limit
 
     // Fields 
     embed.fields.forEach(field => {
@@ -188,7 +188,17 @@ async function checkEmbedLimits(client, embed, channel, fieldsMax, startingPage)
             e.url = embed.url;
             e.fields = embed.fields;
             e.fields = e.fields.slice(i * (fieldsMax || EMBED_LIMITS.field.amount), (i+1) * (fieldsMax || EMBED_LIMITS.field.amount));
+
+            if(checkEmbedSumCharactersLimit(e)) {
+                ERROR = "Embed exceeds 6000 characters";
+                break;
+            }
             embeds.push(e);
+        }
+
+        if(ERROR) {
+            await m.edit(ERROR);
+            return ERROR;
         }
 
         startingPage = startingPage > pageAmount ? pageAmount : startingPage > 0 ? startingPage : 1;
@@ -230,6 +240,19 @@ async function checkEmbedLimits(client, embed, channel, fieldsMax, startingPage)
         handleEmbedPageButtons(m, startingPage, pageAmount, embeds);
     });
     
+}
+
+function checkEmbedSumCharactersLimit(embed) {
+    let total = 0;
+
+    total += (embed.title?.length || 0) + (embed.description?.length || 0) + (embed.author?.name.length || 0) + (embed.footer?.text.length || 0);
+
+    embed.fields.forEach(field => {
+        total += field.name.length + field.value.length;
+    })
+
+    if(total > 6000) return true;
+    return false;
 }
 
 async function handleEmbedPageButtons(msg, currPage, pageAmount, embeds) {

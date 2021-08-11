@@ -46,8 +46,6 @@ module.exports = {
         
         checkEmbedLimits(client, embed, message.channel);
 
-        // console.log(embed.footer.text.length);
-
         return message.channel.send('test');
     }
 }

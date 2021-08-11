@@ -150,6 +150,8 @@
         "mute": {
             "addMute": "%VAR% has been muted by %VAR% %VAR%",
             "removeMute": "%VAR% has been unmuted by %VAR%",
+            "removeMuteAll": "All members have been unmuted",
+            "removeAllMutesReason": "Unmute all members",
             "notMuted": "%VAR% is not muted",
             "muteList": "Muted users:"
         }

@@ -1,7 +1,7 @@
 const { Mute } = require("../../../modules/autoMod/utils");
 const regex = /[0-9]+[d|h|m|s]/g
 const ms = require('ms');
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Permissions } = require("discord.js");
 const { palette } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
 
@@ -32,7 +32,9 @@ module.exports = {
     },
     syntaxExample: 'mute @Lunaris 12h 30m toxic',
 
-    permissions: ['KICK_MEMBERS'],
+    permissions: new Permissions([
+        Permissions.FLAGS.KICK_MEMBERS
+    ]).toArray(),
     allowedChannels: [],
     blockedChannels: [],
     allowedRoles: [],

@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Permissions } = require("discord.js");
 const { palette } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
 const { Warn } = require("../../../modules/autoMod/utils");
@@ -32,7 +32,9 @@ module.exports = {
     },
     syntaxExample: 'unwarn _HG7UsitE',
 
-    permissions: ['KICK_MEMBERS'],
+    permissions: new Permissions([
+        Permissions.FLAGS.KICK_MEMBERS
+    ]).toArray(),
     allowedChannels: [],
     blockedChannels: [],
     allowedRoles: [],

@@ -11,7 +11,7 @@ const GuildMembersSchema = new mongoose.Schema({
         required: true,
     },
     muted: {
-        state: {
+        state: { //TODO: Change 'state' field name to 'isMuted'
             type: mongoose.SchemaTypes.Boolean,
             default: false,
         },

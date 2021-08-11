@@ -39,3 +39,4 @@ Options
 	all options warning message
 
 	TODO: Multi messages setup system
+	TODO: Error handler

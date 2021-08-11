@@ -38,7 +38,7 @@ module.exports = {
     cooldownChannels: [],
     cooldownRoles: [],
     cooldownReminder: true,
-    async run(client, message, args) { //TODO: Fix whole reaction role system
+    async run(client, message, args) {
         const guildID = message.guild.id;
         const channelID = message.channel.id;
         const messageID = args[0];

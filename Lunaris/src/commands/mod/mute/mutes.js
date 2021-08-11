@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageEmbed, Permissions } = require("discord.js");
 const { Mute } = require("../../../modules/autoMod/utils");
 const { palette, checkEmbedLimits } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
@@ -20,7 +20,9 @@ module.exports = {
     },
     category: 'mod',
 
-    permissions: ['KICK_MEMBERS'],
+    permissions: new Permissions([
+        Permissions.FLAGS.KICK_MEMBERS
+    ]).toArray(),
     allowedChannels: [],
     blockedChannels: [],
     allowedRoles: [],
@@ -40,17 +42,28 @@ module.exports = {
         page = isNaN(page) ? 1 : Number(page);
 
         if(!mutes.error) {
-            mutes = mutes.map(v => {
+            mutesPromises = await mutes.map(async v => {
                 const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(v.muted.date);
-                const by = !isNaN(v.muted.by) ? client.users.cache.get(v.muted.by).tag : v.muted.by;
+                // const by = !isNaN(v.muted.by) ? client.users.cache.get(v.muted.by).tag : v.muted.by;
+                let by;
+                if(isNaN(v.muted.by)) by = v.muted.by;
+                if(!isNaN(v.muted.by) && client.users.cache.get(v.muted.by)) by = client.users.cache.get(v.muted.by).tag;
+                if(!isNaN(v.muted.by) && !client.users.cache.get(v.muted.by)) by = await client.users.fetch(v.muted.by);
+
+                let userNick = client.users.cache.get(v.userID);
+                if(!userNick) userNick = await client.users.fetch(v.userID);
+                userNick = userNick.tag;
+
                 return {
-                    name: `Nick: ${client.users.cache.get(v.userID).tag}`,
+                    name: `Nick: ${userNick}`,
                     value: `**Mod**: ${by}
                             **${translate(language, 'general.reason')}**: ${v.muted.reason ? v.muted.reason : translate(language, 'general.none')}
                             **${translate(language, 'general.date')}**: ${date}`,
                     inline: true
                 }
             });
+
+            mutes = await Promise.all(mutesPromises);
             // ! Check if (fieldIndex % 3 === 0) blank; will looks better
         }
 

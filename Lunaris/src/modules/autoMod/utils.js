@@ -111,7 +111,7 @@ const Mute = {
         const member = guild.members.cache.get(userID);
         const guildConfig = client.guildConfigs.get(guildID);
         const muteRoleID = guildConfig.get('modules.autoMod.muteRole');
-        let muteRole = guild.roles.cache.get(muteRoleID) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
+        const muteRole = guild.roles.cache.get(muteRoleID) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
         const hasRole = member.roles.cache.has(muteRole.id);
         if(!hasRole && reason !== "Role remove") return "notMuted";
 
@@ -129,6 +129,42 @@ const Mute = {
         unmuteLog(client, guildID, muteInfo.muted.by, executor, userID, reason);
 
         return true;
+    },
+    removeAll: async (client, guildId) => {
+        const guild = client.guilds.cache.get(guildId);
+        const guildConfig = client.guildConfigs.get(guildId);
+        const language = guildConfig.get('language');
+
+        if(!guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return { error: 'missingPermission', perms: Permissions.FLAGS.MANAGE_ROLES }
+
+        const muteRoleID = guildConfig.get('modules.autoMod.muteRole');
+        const muteRole = guild.roles.cache.get(muteRoleID) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
+
+
+        // TODO: Fetch SOMEHOW all members with specific role
+        console.log('muteRole', muteRole.members);
+        console.log('users', client.users);
+
+        await muteRole.members.forEach(async member => { 
+            console.log('unmute', member.id);
+            member.roles.remove(muteRole, translate(language, 'autoMod.mute.removeAllMutesReason'));
+        })
+
+
+        // const guildMutes = await GuildMembers.find({ guildID: guildId, 'muted.state': true });
+        // if(!guildMutes.length) return { error: 'noMutes' };
+
+        const guildMutes = await GuildMembers.updateMany({ guildID: guildId, 'muted.state': true}, {
+            muted: {
+                state: false,
+                timestamp: null,
+                date: null,
+                reason: null,
+                by: null,
+            }
+        });
+
+        return { results: guildMutes }
     },
     list: async (client, guildID) => {
         const { language } = client.guildConfigs.get(guildID);

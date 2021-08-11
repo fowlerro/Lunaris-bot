@@ -77,7 +77,7 @@ async function registerMutes(client) {
           console.log('hasRole', hasRole)
           if(collection.muted.timestamp < Date.now() || !hasRole) {
               await member.roles.remove(muteRole).catch(err => console.log(err));
-              const muteInfo = await GuildMembers.findOneAndUpdate({guildID: guild.id, userID: member.id}, {
+              const muteInfo = await GuildMembers.findOneAndUpdate({guildID: guild.id, userID: member.id}, { //TODO: Update from collections array, instead of finding in database 2nd time (Model.updateMany())
                   muted: {
                       state: false,
                       timestamp: null,
