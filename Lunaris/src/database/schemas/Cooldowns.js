@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const CooldownSchema = new mongoose.Schema({
-    guildID: {
+    guildId: {
         type: mongoose.SchemaTypes.String,
         required: true,
     },
-    userID: {
+    userId: {
         type: mongoose.SchemaTypes.String,
         required: true,
     },

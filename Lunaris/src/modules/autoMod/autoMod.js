@@ -3,9 +3,9 @@ const { palette } = require("../../utils/utils");
 const { translate } = require("../../utils/languages/languages");
 const { Warn } = require("./utils");
 
-async function censor(client, guildID, message, user) {
+async function censor(client, guildId, message, user) {
     const { language } = client.guildConfigs.get(message.guild.id);
-    const autoModConfig = client.autoModConfigs.get(guildID);
+    const autoModConfig = client.autoModConfigs.get(guildId);
     const trigger = autoModConfig.censor.triggerValue;
     const words = autoModConfig.censor.words;
     if(words.some((v) => message.content.toLowerCase().indexOf(v.toLowerCase()) >= 0)) { // If message contains banned word

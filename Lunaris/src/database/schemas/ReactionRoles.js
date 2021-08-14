@@ -1,15 +1,15 @@
 const mongoose = require('mongoose');
 
 const ReactionRolesSchema = new mongoose.Schema({
-    guildID: {
+    guildId: {
         type: mongoose.SchemaTypes.String,
         required: true,
     },
-    channelID: {
+    channelId: {
         type: mongoose.SchemaTypes.String,
         required: true,
     },
-    messageID: {
+    messageId: {
         type: mongoose.SchemaTypes.String,
         required: true,
     },

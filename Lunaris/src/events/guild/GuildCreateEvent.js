@@ -12,7 +12,7 @@ module.exports = class GuildCreateEvent extends BaseEvent {
 		let guildConfig = client.guildConfigs.get(guild.id);
 		if(!guildConfig) {
 			guildConfig = await GuildConfig.create({
-				guildID: guild.id,
+				guildId: guild.id,
 			})
 			client.guildConfigs.set(guild.id, guildConfig);
 		}

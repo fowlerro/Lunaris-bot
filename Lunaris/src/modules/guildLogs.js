@@ -381,15 +381,15 @@ async function channelUpdatedLog(client, newChannel) {
 
 
 
-function messageDeletedLog(client, content, channelID, target, executor, logChannel, language) {
+function messageDeletedLog(client, content, channelId, target, executor, logChannel, language) {
     
     const embed = new MessageEmbed()
         .setColor(palette.info)
         .setAuthor(translate(language, 'logs.message.deletedTitle'), target.displayAvatarURL())
-        // .setDescription(translate(language, 'logs.message.deletedLink', `https://discord.com/channels/${guildID}/${channelID}/${messageID}`))
+        // .setDescription(translate(language, 'logs.message.deletedLink', `https://discord.com/channels/${guildId}/${channelId}/${messageId}`))
         .addField(translate(language, 'logs.message.target'), `<@${target.id}>\n${target.id}`, true);
     executor && embed.addField(translate(language, 'general.by'), `<@${executor.id}>\n${executor.id}`, true);
-    embed.addField(translate(language, 'general.channel'), `<#${channelID}>`, true)
+    embed.addField(translate(language, 'general.channel'), `<#${channelId}>`, true)
         .addField(translate(language, 'general.content'), content, true)
         .setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
@@ -397,13 +397,13 @@ function messageDeletedLog(client, content, channelID, target, executor, logChan
     return logChannel.send({embeds: [embed]})
 }
 
-function messageEditedLog(client, oldContent, newContent, messageID, channelID, guildID, target, logChannel, language) {
+function messageEditedLog(client, oldContent, newContent, messageId, channelId, guildId, target, logChannel, language) {
     const embed = new MessageEmbed()
         .setColor(palette.info)
         .setAuthor(translate(language, 'logs.message.editedTitle'), target.displayAvatarURL())
-        .setDescription(translate(language, 'logs.message.editedLink', `https://discord.com/channels/${guildID}/${channelID}/${messageID}`))
+        .setDescription(translate(language, 'logs.message.editedLink', `https://discord.com/channels/${guildId}/${channelId}/${messageId}`))
         .addField(translate(language, 'logs.message.target'), `<@${target.id}>\n${target.id}`, true)
-        .addField(translate(language, 'general.channel'), `<#${channelID}>`, true)
+        .addField(translate(language, 'general.channel'), `<#${channelId}>`, true)
         .addField(translate(language, 'general.content'), 
             `**${translate(language, 'general.before')}**: ${oldContent}
             **${translate(language, 'general.after')}**: ${newContent}`, true)
@@ -415,7 +415,7 @@ function messageEditedLog(client, oldContent, newContent, messageID, channelID, 
 
 
 
-function inviteCreatedLog(client, url, expires, inviter, uses, channelID, logChannel, language) {
+function inviteCreatedLog(client, url, expires, inviter, uses, channelId, logChannel, language) {
 
     const expiresAt = new Intl.DateTimeFormat(language, {dateStyle: 'long', timeStyle: 'medium'}).format(expires);
     
@@ -423,7 +423,7 @@ function inviteCreatedLog(client, url, expires, inviter, uses, channelID, logCha
         .setColor(palette.info)
         .setAuthor(translate(language, 'logs.invite.createdTitle'), inviter.displayAvatarURL())
         .addField(translate(language, 'logs.invite.createdBy'), `<@${inviter.id}>\n${inviter.id}`, true)
-        .addField(translate(language, 'general.channel'), `<#${channelID}>`, true)
+        .addField(translate(language, 'general.channel'), `<#${channelId}>`, true)
         .addField(translate(language, 'logs.invite.expiresAt'), expiresAt, true)
         .addField('URL', url, true)
         .addField(translate(language, 'logs.invite.maxUses'), uses, true)
@@ -433,12 +433,12 @@ function inviteCreatedLog(client, url, expires, inviter, uses, channelID, logCha
     return logChannel.send({embeds: [embed]});
 }
 
-function inviteDeletedLog(client, code, channelID, logChannel, language) {
+function inviteDeletedLog(client, code, channelId, logChannel, language) {
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
         .setAuthor(translate(language, 'logs.invite.deletedTitle'))
-        .addField(translate(language, 'general.channel'), `<#${channelID}>`, true)
+        .addField(translate(language, 'general.channel'), `<#${channelId}>`, true)
         .addField(translate(language, 'general.code'), code, true)
         .setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
@@ -448,7 +448,7 @@ function inviteDeletedLog(client, code, channelID, logChannel, language) {
 
 
 
-async function cmdTriggerLog(client, cmdName, guild, channelID, executor, content) {
+async function cmdTriggerLog(client, cmdName, guild, channelId, executor, content) {
     const guildConfig = client.guildConfigs.get(guild.id);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.commands'));
     if(!logChannel) return;
@@ -458,7 +458,7 @@ async function cmdTriggerLog(client, cmdName, guild, channelID, executor, conten
         .setColor(palette.info)
         .setAuthor(translate(language, 'logs.cmd.triggerTitle', guildConfig.get("prefix") + cmdName), executor.displayAvatarURL())
         .addField(translate(language, 'general.by'), `<@${executor.id}>\n${executor.id}`, true)
-        .addField(translate(language, 'general.channel'), `<#${channelID}>\n${channelID}`, true)
+        .addField(translate(language, 'general.channel'), `<#${channelId}>\n${channelId}`, true)
         .addField(translate(language, 'general.content'), content, true)
         .setFooter(client.user.username, client.user.displayAvatarURL())
         .setTimestamp();
@@ -592,12 +592,12 @@ async function roleUpdatedLog(client, role) {
 }
 
 
-function warnAddLog(client, guildID, executor, target, reason, id) {
-    const guild = client.guilds.cache.find(guild => guild.id === guildID);
+function warnAddLog(client, guildId, executor, target, reason, id) {
+    const guild = client.guilds.cache.find(guild => guild.id === guildId);
     const member = guild.members.cache.find(m => m.id === target);
     if(!member) return;
 
-    const guildConfig = client.guildConfigs.get(guildID);
+    const guildConfig = client.guildConfigs.get(guildId);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -614,12 +614,12 @@ function warnAddLog(client, guildID, executor, target, reason, id) {
     return logChannel.send({embeds: [embed]});
 }
 
-function warnRemoveLog(client, guildID, by, executor, target, reason, id) {
-    const guild = client.guilds.cache.find(guild => guild.id === guildID);
+function warnRemoveLog(client, guildId, by, executor, target, reason, id) {
+    const guild = client.guilds.cache.find(guild => guild.id === guildId);
     const member = guild.members.cache.find(m => m.id === target);
     if(!member) return;
 
-    const guildConfig = client.guildConfigs.get(guildID);
+    const guildConfig = client.guildConfigs.get(guildId);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -637,10 +637,10 @@ function warnRemoveLog(client, guildID, by, executor, target, reason, id) {
     return logChannel.send({embeds: [embed]});
 }
 
-function warnRemoveAllLog(client, guildID, by) {
-    const guild = client.guilds.cache.find(guild => guild.id === guildID);
+function warnRemoveAllLog(client, guildId, by) {
+    const guild = client.guilds.cache.find(guild => guild.id === guildId);
 
-    const guildConfig = client.guildConfigs.get(guildID);
+    const guildConfig = client.guildConfigs.get(guildId);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -655,12 +655,12 @@ function warnRemoveAllLog(client, guildID, by) {
 }
 
 
-function muteLog(client, guildID, by, target, reason, time) {
-    const guild = client.guilds.cache.find(guild => guild.id === guildID);
+function muteLog(client, guildId, by, target, reason, time) {
+    const guild = client.guilds.cache.find(guild => guild.id === guildId);
     const member = guild.members.cache.find(m => m.id === target);
     if(!member) return;
 
-    const guildConfig = client.guildConfigs.get(guildID);
+    const guildConfig = client.guildConfigs.get(guildId);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -677,12 +677,12 @@ function muteLog(client, guildID, by, target, reason, time) {
     return logChannel.send({embeds: [embed]});
 }
 
-function unmuteLog(client, guildID, by, executor, target, reason = "") {
-    const guild = client.guilds.cache.find(guild => guild.id === guildID);
+function unmuteLog(client, guildId, by, executor, target, reason = "") {
+    const guild = client.guilds.cache.find(guild => guild.id === guildId);
     const member = guild.members.cache.find(m => m.id === target);
     if(!member) return;
     
-    const guildConfig = client.guildConfigs.get(guildID);
+    const guildConfig = client.guildConfigs.get(guildId);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     if(!logChannel) return;
     const language = guildConfig.get('language');

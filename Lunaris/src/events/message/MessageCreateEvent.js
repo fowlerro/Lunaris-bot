@@ -1,5 +1,5 @@
 const BaseEvent = require('../../utils/structures/BaseEvent');
-const { commandHandle } = require('../../modules/commandHandler');
+const { commandHandle } = require('../../modules/commandHandler/commandHandler');
 const { censor } = require('../../modules/autoMod/autoMod');
 module.exports = class MessageCreateEvent extends BaseEvent {
     constructor() {
@@ -12,7 +12,7 @@ module.exports = class MessageCreateEvent extends BaseEvent {
         commandHandle(client, message);
         
         if(!client.isOnline) return;
-        censor(client, message.guild.id, message, message.member);
+        // censor(client, message.guild.id, message, message.member);
 
         const count = client.msgCount.get(message.guild.id);
         const date = new Date();

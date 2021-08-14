@@ -2,16 +2,16 @@ const mongoose = require('mongoose');
 const shortid = require('shortid');
 
 const GuildMembersSchema = new mongoose.Schema({
-    guildID: {
+    guildId: {
         type: mongoose.SchemaTypes.String,
         required: true,
     },
-    userID: {
+    userId: {
         type: mongoose.SchemaTypes.String,
         required: true,
     },
     muted: {
-        state: { //TODO: Change 'state' field name to 'isMuted'
+        isMuted: {
             type: mongoose.SchemaTypes.Boolean,
             default: false,
         },

@@ -49,17 +49,17 @@ module.exports = {
             langs = localeList().map(lang => langs + "`" + lang + "` " + translate(lang, 'name'));
             const embed = new MessageEmbed()
                 .setColor(palette.info)
-                .addField(translate(language, 'cmd.languageListMessage'), langs)
+                .addField(translate(language, 'cmd.languageListMessage'), langs.join('\n'))
                 .setFooter(translate(language, "cmd.languageListFooter", guildConfig.get('prefix')));
 
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed]});
         };
         if(!localeList().includes(args[0]) && !localeList().some(lang => translate(lang, 'name').toLowerCase() == args[0].toLowerCase())) {
             const embed = new MessageEmbed()
                 .setColor(palette.error)
                 .setDescription(translate(language, "cmd.wrongLanguage", guildConfig.get('prefix')));
     
-            return message.channel.send(embed);
+            return message.channel.send({embeds: [embed]});
         }
         if(localeList().some(lang => translate(lang, 'name').toLowerCase() == args[0].toLowerCase())) {
             localeList().forEach(lang => {

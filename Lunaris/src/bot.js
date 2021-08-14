@@ -8,6 +8,7 @@ const { registerCommands, registerEvents, registerMessagesCount, registerGuildCo
 const { mapToObject } = require('./utils/utils');
 const { checkAutoRoles } = require('./modules/autoRole');
 
+
 (async () => {
   connectDatabase();
 
@@ -15,13 +16,13 @@ const { checkAutoRoles } = require('./modules/autoRole');
   client.commands = new Map();
   client.events = new Map();
   client.guildConfigs = new Map();
-  client.autoModConfigs = new Map();
-  client.autoModUsers = new Map();
+  // client.autoModConfigs = new Map();
+  // client.autoModUsers = new Map();
   client.msgCount = new Map();
   await registerCommands(client, '../commands');
   await registerEvents(client, '../events');
   await registerGuildConfigs(client);
-  await registerAutoModConfigs(client);
+  // await registerAutoModConfigs(client);
   await registerMessagesCount(client);
   await registerTerminalCommands(client);
   await client.login(process.env.DISCORD_BOT_TOKEN);

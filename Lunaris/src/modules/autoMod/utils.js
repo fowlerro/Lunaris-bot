@@ -6,22 +6,22 @@ const { msToTime, setGuildConfig } = require('../../utils/utils');
 const { Permissions } = require("discord.js");
 
 const Warn = {
-    add: async (client, guildID, userID, reason, by) => {
-        if(!guildID) return;
+    add: async (client, guildId, userId, reason, by) => {
+        if(!guildId) return;
         const id = await generateId();
-        await GuildMembers.findOneAndUpdate({guildID, userID}, {
+        await GuildMembers.findOneAndUpdate({guildId, userId}, {
             $push: {
                 warns: {reason, by, id}
             }
         }, {upsert: true});
 
-        warnAddLog(client, guildID, by, userID, reason, id);
+        warnAddLog(client, guildId, by, userId, reason, id);
         return true;
     },
-    remove: async (client, guildID, id, by) => {
-        if(!guildID) return;
+    remove: async (client, guildId, id, by) => {
+        if(!guildId) return;
         if(id === 'all') {
-            await GuildMembers.updateMany({guildID}, {
+            await GuildMembers.updateMany({ guildId }, {
                 $set: {
                     warns: []
                 } 
@@ -29,7 +29,7 @@ const Warn = {
             return {action: 'all'};
         }
 
-        const result = await GuildMembers.findOneAndUpdate({guildID, 'warns.id': id}, {
+        const result = await GuildMembers.findOneAndUpdate({guildId, 'warns.id': id}, {
             $pull: {
                 warns: {id}
             }
@@ -38,46 +38,46 @@ const Warn = {
         if(!result) return {error: 'warnNotFound'}
 
         const warn = result.warns.filter(w => w.id === id);
-        warnRemoveLog(client, guildID, by, warn[0].by, result.userID, warn[0].reason, id);
+        warnRemoveLog(client, guildId, by, warn[0].by, result.userId, warn[0].reason, id);
         return result;
     },
-    list: async (client, guildID, userID) => {
-        if(!guildID) return;
-        const guildConfig = client.guildConfigs.get(guildID);
+    list: async (client, guildId, userId) => {
+        if(!guildId) return;
+        const guildConfig = client.guildConfigs.get(guildId);
         const language = guildConfig.get('language');
-        if(userID) {
-            const result = await GuildMembers.findOne({guildID, userID});
-            if(!result?.warns.length) return {error: translate(language, 'general.none')};
-            return {warns: result.warns};
+        if(userId) {
+            const result = await GuildMembers.findOne({guildId, userId});
+            if(!result?.warns.length) return { error: translate(language, 'general.none') };
+            return { warns: result.warns };
         }
 
-        let warns = await GuildMembers.find({guildID}).select(['-muted', '-_id', '-guildID', '-__v']);
+        let warns = await GuildMembers.find({guildId}).select(['-muted', '-_id', '-guildId', '-__v']);
         warns = warns.filter(v => v.warns.length > 0);
-        if(!warns.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return {error: translate(language, 'general.none')};
+        if(!warns.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return { error: translate(language, 'general.none') };
         
-        return {warns};
+        return { warns };
     }
 }
 
 // TODO: Remove mute if someone take role from a member
 const Mute = {
-    add: async (client, guildID, userID, reason = null, by, time = null) => {
-            const guild = client.guilds.cache.get(guildID);
-            const guildConfig = client.guildConfigs.get(guildID);
+    add: async (client, guildId, userId, reason = null, by, time = null) => {
+            const guild = client.guilds.cache.get(guildId);
+            const guildConfig = client.guildConfigs.get(guildId);
 
-            if(!guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return {error: "missingPermission", perms: Permissions.FLAGS.MANAGE_ROLES}
+            if(!guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return { error: "missingPermission", perms: Permissions.FLAGS.MANAGE_ROLES }
 
-            const muteRoleID = guildConfig.get('modules.autoMod.muteRole');
+            const muteRoleId = guildConfig.get('modules.autoMod.muteRole');
             let timestamp = null;
             const date = Date.now();
             if(time) timestamp = date + time;
-            let muteRole = guild.roles.cache.get(muteRoleID) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
+            let muteRole = guild.roles.cache.get(muteRoleId) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
             if(!muteRole) muteRole = await createMuteRole(guild);
-            if(muteRoleID !== muteRole.id) setGuildConfig(client, guildID, 'modules.autoMod.muteRole', muteRole.id);
-            await guild.members.cache.get(userID).roles.add(muteRole).catch(e => console.log(e));
-            await GuildMembers.findOneAndUpdate({guildID, userID}, {
+            if(muteRoleId !== muteRole.id) setGuildConfig(client, guildId, 'modules.autoMod.muteRole', muteRole.id);
+            await guild.members.cache.get(userId).roles.add(muteRole).catch(e => console.log(e));
+            await GuildMembers.findOneAndUpdate({guildId, userId}, {
                 muted: {
-                    state: true,
+                    isMuted: true,
                     timestamp,
                     date,
                     reason,
@@ -86,10 +86,10 @@ const Mute = {
             }, {upsert: true});
             if(time) {
                 setTimeout(async () => {
-                    if(guild.members.cache.get(userID)) await guild.members.cache.get(userID).roles.remove(muteRole).catch(e => console.log(e));
-                    const muteInfo = await GuildMembers.findOneAndUpdate({guildID, userID}, {
+                    if(guild.members.cache.get(userId)) await guild.members.cache.get(userId).roles.remove(muteRole).catch(e => console.log(e));
+                    const muteInfo = await GuildMembers.findOneAndUpdate({guildId, userId}, {
                         muted: {
-                            state: false,
+                            isMuted: false,
                             timestamp: null,
                             date: null,
                             reason: null,
@@ -97,28 +97,28 @@ const Mute = {
                         }
                     }, {upsert: true});
 
-                    unmuteLog(client, guildID, muteInfo.muted.by, 'System', userID);
+                    unmuteLog(client, guildId, muteInfo.muted.by, 'System', userId);
                 }, time);
             }
 
             const timeString = time ? msToTime(time).toString() : "perm";
-            muteLog(client, guildID, by, userID, reason, timeString);
+            muteLog(client, guildId, by, userId, reason, timeString);
             
             return true;
     },
-    remove: async (client, guildID, executor, userID, reason) => {
-        const guild = client.guilds.cache.get(guildID);
-        const member = guild.members.cache.get(userID);
-        const guildConfig = client.guildConfigs.get(guildID);
-        const muteRoleID = guildConfig.get('modules.autoMod.muteRole');
-        const muteRole = guild.roles.cache.get(muteRoleID) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
+    remove: async (client, guildId, executor, userId, reason) => {
+        const guild = client.guilds.cache.get(guildId);
+        const member = guild.members.cache.get(userId);
+        const guildConfig = client.guildConfigs.get(guildId);
+        const muteRoleId = guildConfig.get('modules.autoMod.muteRole');
+        const muteRole = guild.roles.cache.get(muteRoleId) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
         const hasRole = member.roles.cache.has(muteRole.id);
         if(!hasRole && reason !== "Role remove") return "notMuted";
 
         hasRole && await member.roles.remove(muteRole).catch(e => console.log(e));
-        const muteInfo = await GuildMembers.findOneAndUpdate({guildID, userID}, {
+        const muteInfo = await GuildMembers.findOneAndUpdate({guildId, userId}, {
             muted: {
-                state: false,
+                isMuted: false,
                 timestamp: null,
                 date: null,
                 reason: null,
@@ -126,7 +126,7 @@ const Mute = {
             }
         }, {upsert: true});
 
-        unmuteLog(client, guildID, muteInfo.muted.by, executor, userID, reason);
+        unmuteLog(client, guildId, muteInfo.muted.by, executor, userId, reason);
 
         return true;
     },
@@ -137,26 +137,29 @@ const Mute = {
 
         if(!guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return { error: 'missingPermission', perms: Permissions.FLAGS.MANAGE_ROLES }
 
-        const muteRoleID = guildConfig.get('modules.autoMod.muteRole');
-        const muteRole = guild.roles.cache.get(muteRoleID) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
-
+        const muteRoleId = guildConfig.get('modules.autoMod.muteRole');
+        let muteRole;
+        if(!muteRoleId) {
+            const guildRoles = await guild.roles.fetch();
+            muteRole = guildRoles.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
+        } else muteRole = await guild.roles.fetch(muteRoleId);
 
         // TODO: Fetch SOMEHOW all members with specific role
-        console.log('muteRole', muteRole.members);
+        console.log('muteRole', muteRole.members.fetch());
         console.log('users', client.users);
 
-        await muteRole.members.forEach(async member => { 
-            console.log('unmute', member.id);
-            member.roles.remove(muteRole, translate(language, 'autoMod.mute.removeAllMutesReason'));
-        })
+        // await muteRole.members.forEach(async member => { 
+        //     console.log('unmute', member.id);
+        //     member.roles.remove(muteRole, translate(language, 'autoMod.mute.removeAllMutesReason'));
+        // })
 
 
-        // const guildMutes = await GuildMembers.find({ guildID: guildId, 'muted.state': true });
+        // const guildMutes = await GuildMembers.find({ guildId, 'muted.isMuted': true });
         // if(!guildMutes.length) return { error: 'noMutes' };
 
-        const guildMutes = await GuildMembers.updateMany({ guildID: guildId, 'muted.state': true}, {
+        const guildMutes = await GuildMembers.updateMany({ guildId, 'muted.isMuted': true}, {
             muted: {
-                state: false,
+                isMuted: false,
                 timestamp: null,
                 date: null,
                 reason: null,
@@ -166,19 +169,19 @@ const Mute = {
 
         return { results: guildMutes }
     },
-    list: async (client, guildID) => {
-        const { language } = client.guildConfigs.get(guildID);
-        const collections = await GuildMembers.find({guildID, 'muted.state': true}).select(['-warns', '-_id', '-guildID', '-__v']);
-        if(!collections.length) return {error: translate(language, 'general.none')};
-        return collections
+    list: async (client, guildId) => {
+        const { language } = client.guildConfigs.get(guildId);
+        const collections = await GuildMembers.find({guildId, 'muted.isMuted': true}).select(['-warns', '-_id', '-guildId', '-__v']);
+        if(!collections.length) return { error: translate(language, 'general.none') };
+        return collections;
     },
-    reassignRole: async (client, guildID, userID) => {
-        const guildConfig = client.guildConfigs.get(guildID);
-        const muteRoleID = guildConfig.get('modules.autoMod.muteRole');
-        const guild = client.guilds.cache.get(guildID);
-        const member = guild.members.cache.get(userID);
-        const memberInfo = await GuildMembers.findOne({guildID, userID, 'muted.state': true});
-        let muteRole = guild.roles.cache.get(muteRoleID) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
+    reassignRole: async (client, guildId, userId) => {
+        const guildConfig = client.guildConfigs.get(guildId);
+        const muteRoleId = guildConfig.get('modules.autoMod.muteRole');
+        const guild = client.guilds.cache.get(guildId);
+        const member = guild.members.cache.get(userId);
+        const memberInfo = await GuildMembers.findOne({guildId, userId, 'muted.isMuted': true});
+        let muteRole = guild.roles.cache.get(muteRoleId) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
         if(!memberInfo) return 'notMuted';
         await member.roles.add(muteRole).catch(e => console.log(e));
 

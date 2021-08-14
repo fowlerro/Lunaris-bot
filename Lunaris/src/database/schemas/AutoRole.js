@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
 const AutoRoleSchema = new mongoose.Schema({
-    guildID: {
+    guildId: {
         type: mongoose.SchemaTypes.String,
         required: true,
         unique: true,
     },
     roles: [{
-        roleID: mongoose.SchemaTypes.String,
+        roleId: mongoose.SchemaTypes.String,
         time: mongoose.SchemaTypes.String,
     }],
 });

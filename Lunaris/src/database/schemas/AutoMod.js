@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const AutoModSchema = new mongoose.Schema({
-    guildID: {
+    guildId: {
         type: mongoose.SchemaTypes.String,
         required: true,
         unique: true,

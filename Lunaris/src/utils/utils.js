@@ -36,14 +36,14 @@ function daysInMonth(month, year) {
     return new Date(year, month, 0).getDate();
 }
 
-async function setGuildConfig(client, guildID, toSet, value) {
-    await GuildConfig.findOneAndUpdate({guildID}, {
+async function setGuildConfig(client, guildId, toSet, value) {
+    await GuildConfig.findOneAndUpdate({ guildId }, {
         [toSet]: value
     });
-    let config = client.guildConfigs.get(guildID);
+    let config = client.guildConfigs.get(guildId);
     config[toSet] = value;
-    client.guildConfigs.set(guildID, config);
-    return client.guildConfigs.get(guildID);
+    client.guildConfigs.set(guildId, config);
+    return client.guildConfigs.get(guildId);
 }
 
 function msToTime(ms) {
@@ -59,31 +59,31 @@ function msToTime(ms) {
     return result.trimEnd();
 }
 
-async function setAutoModConfig(client, guildID, state, toSet, value) {
+async function setAutoModConfig(client, guildId, state, toSet, value) {
     if(state === 'add') {
-        const config = await AutoMod.findOneAndUpdate({guildID}, {
+        const config = await AutoMod.findOneAndUpdate({ guildId }, {
             $addToSet: {
                 [toSet]: value
             }
         }, {new: true, upsert: true});
-        client.autoModConfigs.set(guildID, config);
-        return client.autoModConfigs.get(guildID);
+        client.autoModConfigs.set(guildId, config);
+        return client.autoModConfigs.get(guildId);
     }
     
     if(state === 'remove') {
-        const config = await AutoMod.findOneAndUpdate({guildID}, {
+        const config = await AutoMod.findOneAndUpdate({ guildId }, {
             $pullAll: {
                 [toSet]: value
             }
         }, {new: true, upsert: true});
-        client.autoModConfigs.set(guildID, config);
-        return client.autoModConfigs.get(guildID);
+        client.autoModConfigs.set(guildId, config);
+        return client.autoModConfigs.get(guildId);
     }
 
-    let config = await AutoMod.findOne({guildID});
-    if(!config) config = await AutoMod.create({guildID});
-    client.autoModConfigs.set(guildID, config);
-    return client.autoModConfigs.get(guildID);
+    let config = await AutoMod.findOne({ guildId });
+    if(!config) config = await AutoMod.create({ guildId });
+    client.autoModConfigs.set(guildId, config);
+    return client.autoModConfigs.get(guildId);
 }
 
 function toggleBot(client, s) {

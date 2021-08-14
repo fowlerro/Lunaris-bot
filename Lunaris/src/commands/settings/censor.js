@@ -11,7 +11,7 @@ module.exports = {
     maxArgs: null,
     autoRemove: false,
     autoRemoveResponse: false,
-    globalStatus: true,
+    globalStatus: false,
     status: true,
 
     description: {

@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const GuildConfigSchema = new mongoose.Schema({
-    guildID: {
+    guildId: {
         type: String,
         required: true,
         unique: true,

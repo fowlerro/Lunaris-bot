@@ -9,8 +9,8 @@ module.exports = class GuildDeleteEvent extends BaseEvent {
   
   async run(client, guild) {
     if(!client.isOnline) return;
-    await GuildConfig.deleteOne({guildID: guild.id});
+    await GuildConfig.deleteOne({guildId: guild.id});
     client.guildConfigs.delete(guild.id);
-    await CommandConfig.deleteMany({guildID: guild.id});
+    await CommandConfig.deleteMany({guildId: guild.id});
   }
 }

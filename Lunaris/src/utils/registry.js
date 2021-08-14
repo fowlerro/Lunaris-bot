@@ -51,35 +51,34 @@ async function registerMessagesCount(client) {
 async function registerGuildConfigs(client) {
   const configs = await GuildConfig.find({}).select('-_id -__v');
   configs.forEach(element => {
-    const {guildID} = element;
-    client.guildConfigs.set(guildID, element)
+    const { guildId } = element;
+    client.guildConfigs.set(guildId, element)
   });
 }
 
 async function registerAutoModConfigs(client) {
   const configs = await AutoMod.find({}).select('-_id -__v');
   configs.forEach(element => {
-    const {guildID} = element;
-    client.autoModConfigs.set(guildID, element);
+    const { guildId } = element;
+    client.autoModConfigs.set(guildId, element);
   });
 }
 
 async function registerMutes(client) {
   try {
-      const collections = await GuildMembers.find({'muted.state': true, 'muted.timestamp': { $ne: null }});
+      const collections = await GuildMembers.find({'muted.isMuted': true, 'muted.timestamp': { $ne: null }});
       for(const collection of collections) {
-          const guild = client.guilds.cache.get(collection.guildID)
-          const member = guild.members.cache.get(collection.userID)
+          const guild = client.guilds.cache.get(collection.guildId)
+          const member = guild.members.cache.get(collection.userId)
           const guildConfig = client.guildConfigs.get(guild.id);
-          const muteRoleID = guildConfig.get('modules.autoMod.muteRole');
-          const muteRole = guild.roles.cache.get(muteRoleID) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
+          const muteRoleId = guildConfig.get('modules.autoMod.muteRole');
+          const muteRole = guild.roles.cache.get(muteRoleId) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
           const hasRole = member.roles.cache.has(muteRole.id);
-          console.log('hasRole', hasRole)
           if(collection.muted.timestamp < Date.now() || !hasRole) {
               await member.roles.remove(muteRole).catch(err => console.log(err));
-              const muteInfo = await GuildMembers.findOneAndUpdate({guildID: guild.id, userID: member.id}, { //TODO: Update from collections array, instead of finding in database 2nd time (Model.updateMany())
+              const muteInfo = await GuildMembers.findOneAndUpdate({guildId: guild.id, userId: member.id}, { //TODO: Update from collections array, instead of finding in database 2nd time (Model.updateMany())
                   muted: {
-                      state: false,
+                      isMuted: false,
                       timestamp: null,
                       date: null,
                       reason: null,
@@ -90,9 +89,9 @@ async function registerMutes(client) {
           }
           setTimeout(async () => {
               await member.roles.remove(muteRole).catch(e => console.log(e));
-              const muteInfo = await GuildMembers.findOneAndUpdate({guildID: guild.id, userID: member.id}, {
+              const muteInfo = await GuildMembers.findOneAndUpdate({guildId: guild.id, userId: member.id}, {
                   muted: {
-                      state: false,
+                      isMuted: false,
                       timestamp: null,
                       date: null,
                       reason: null,

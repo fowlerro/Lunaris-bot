@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
 
 const AutoRoleTimeSchema = new mongoose.Schema({
-    guildID: {
+    guildId: {
         type: mongoose.SchemaTypes.String,
         required: true,
         unique: true,
     },
-    userID: {
+    userId: {
         type: mongoose.SchemaTypes.String,
         required: true,
         unique: true,
     },
     roles: [{
-        roleID: mongoose.SchemaTypes.String,
+        roleId: mongoose.SchemaTypes.String,
         timestamp: mongoose.SchemaTypes.String,
     }],
 });

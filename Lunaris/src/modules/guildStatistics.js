@@ -8,7 +8,7 @@ const { daysInMonth } = require('../utils/utils');
 const days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
 const messageChart = async (client, guild) => {
-    const guildConfig = await GuildConfig.findOne({guildID: guild.id}).catch();
+    const guildConfig = await GuildConfig.findOne({guildId: guild.id}).catch();
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('modules.stats.channel'));
     const language = guildConfig.get('language');
     if(!logChannel) return;

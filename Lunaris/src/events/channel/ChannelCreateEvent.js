@@ -8,7 +8,7 @@ module.exports = class ChannelCreateEvent extends BaseEvent {
   }
   
   async run(client, channel) {
-    if(!client.state) return;
+    if(!client.isOnline) return;
 
     if(channel.type === 'dm') return;
     channelCreatedLog(client, channel);
