@@ -12,12 +12,13 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
   async run(client, oldMember, newMember) {
     if(!client.isOnline) return;
     if(oldMember.nickname !== newMember.nickname) {
+      if(!newMember.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return; //!important //TODO: Make permissions checking in all cases 
+
       const guildConfig = client.guildConfigs.get(newMember.guild.id);
       const logChannel = newMember.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
       if(!logChannel) return;
       const language = guildConfig.get('language');
 
-      if(!newMember.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return; //!important //TODO: Make permissions checking in all cases 
       const auditLog = await newMember.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_UPDATE'});
       const update = auditLog.entries.first();
       if(!update) return;
@@ -31,6 +32,8 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
     }
 
     if(oldMember._roles.length < newMember._roles.length) {
+      if(!newMember.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
+
       const guildConfig = client.guildConfigs.get(newMember.guild.id);
       const logChannel = newMember.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
       if(!logChannel) return;
@@ -47,6 +50,8 @@ module.exports = class GuildMemberUpdateEvent extends BaseEvent {
     }
 
     if(oldMember._roles.length > newMember._roles.length) {
+      if(!newMember.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
+
       const guildConfig = client.guildConfigs.get(newMember.guild.id);
       const logChannel = newMember.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
       const language = guildConfig.get('language');

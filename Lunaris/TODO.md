@@ -40,3 +40,4 @@ Options
 
 	TODO: Multi messages setup system
 	TODO: Error handler
+	TODO: Refactor logs
