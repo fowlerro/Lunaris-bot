@@ -40,8 +40,8 @@ module.exports = {
         const profile = await getProfile(member.id);
         if(!profile) return;
 
-        const profileCardBuffer = await generateProfileCard(profile);
+        const profileCardBuffer = await generateProfileCard(member, profile, member.user.avatarURL({ format: 'png' }));
 
-        return message.channel.send({ content: 'ok', files: [profileCardBuffer] });
+        return message.channel.send({ files: [profileCardBuffer] });
     }
 }

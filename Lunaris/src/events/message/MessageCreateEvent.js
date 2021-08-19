@@ -1,5 +1,6 @@
 const BaseEvent = require('../../utils/structures/BaseEvent');
 const { commandHandle } = require('../../modules/commandHandler/commandHandler');
+const { addXpText } = require('../../modules/xpSystem/text');
 // const { censor } = require('../../modules/autoMod/autoMod');
 module.exports = class MessageCreateEvent extends BaseEvent {
     constructor() {
@@ -13,6 +14,8 @@ module.exports = class MessageCreateEvent extends BaseEvent {
         
         if(!client.isOnline) return;
         // censor(client, message.guild.id, message, message.member);
+
+        addXpText(message.author);
 
         const count = client.msgCount.get(message.guild.id);
         const date = new Date();

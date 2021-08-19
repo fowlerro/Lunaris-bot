@@ -6,6 +6,10 @@ const ProfileSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.String,
         required: true,
     },
+    coins: {
+        type: mongoose.SchemaTypes.Number,
+        default: 0
+    },
     statistics: {
         text: {
             level: {
@@ -13,6 +17,14 @@ const ProfileSchema = new mongoose.Schema({
                 default: 1
             },
             xp: {
+                type: mongoose.SchemaTypes.Number,
+                default: 0
+            },
+            totalXp: {
+                type: mongoose.SchemaTypes.Number,
+                default: 0
+            },
+            todayXp: {
                 type: mongoose.SchemaTypes.Number,
                 default: 0
             }
@@ -23,6 +35,14 @@ const ProfileSchema = new mongoose.Schema({
                 default: 1
             },
             xp: {
+                type: mongoose.SchemaTypes.Number,
+                default: 0
+            },
+            totalXp: {
+                type: mongoose.SchemaTypes.Number,
+                default: 0
+            },
+            todayXp: {
                 type: mongoose.SchemaTypes.Number,
                 default: 0
             },
