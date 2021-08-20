@@ -10,6 +10,48 @@ const GuildMembersSchema = new mongoose.Schema({
         type: mongoose.SchemaTypes.String,
         required: true,
     },
+    statistics: {
+        text: {
+            level: {
+                type: mongoose.SchemaTypes.Number,
+                default: 1
+            },
+            xp: {
+                type: mongoose.SchemaTypes.Number,
+                default: 0
+            },
+            totalXp: {
+                type: mongoose.SchemaTypes.Number,
+                default: 0
+            },
+            todayXp: {
+                type: mongoose.SchemaTypes.Number,
+                default: 0
+            }
+        },
+        voice: {
+            level: {
+                type: mongoose.SchemaTypes.Number,
+                default: 1
+            },
+            xp: {
+                type: mongoose.SchemaTypes.Number,
+                default: 0
+            },
+            totalXp: {
+                type: mongoose.SchemaTypes.Number,
+                default: 0
+            },
+            todayXp: {
+                type: mongoose.SchemaTypes.Number,
+                default: 0
+            },
+            timeSpent: {
+                type: mongoose.SchemaTypes.Number,
+                default: 0
+            }
+        }
+    },
     muted: {
         isMuted: {
             type: mongoose.SchemaTypes.Boolean,

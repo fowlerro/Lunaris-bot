@@ -1,17 +1,18 @@
+const GuildMembers = require("../../database/schemas/GuildMembers");
 const Profile = require("../../database/schemas/Profile");
 const { neededXp } = require("../Profiles/profile");
 
-async function addXpText(member) {
+async function addXpText(guildId, userId) {
     const xpToAdd = Math.floor(Math.random() * (10 - 5) + 5);
 
-    let profile = await Profile.findOne({ userId: member.id });
+    let profile = await GuildMembers.findOne({ guildId, userId });
     if(!profile) {
-        profile = await Profile.create({ userId: member.id });
+        profile = await GuildMembers.create({ guildId, userId });
     }
     const { level, xp } = profile.statistics.text;
     const xpNeeded = neededXp(level);
     if(xp + xpToAdd >= xpNeeded) {
-        const rest = xpNeeded - (xp + xpToAdd);
+        const rest = (xp + xpToAdd) - xpNeeded;
 
         profile.statistics.text.level += 1;
         profile.statistics.text.xp = rest;

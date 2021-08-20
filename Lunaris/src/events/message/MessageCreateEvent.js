@@ -10,12 +10,15 @@ module.exports = class MessageCreateEvent extends BaseEvent {
     async run(client, message) {
         if(message.author.bot) return;
         // if(message.channel.type === "dm") return console.log(`DM > ${message.author.tag}: ${message.content}`)
+        const guildConfig = client.guildConfigs.get(message.guild.id);
+        const prefix = guildConfig.get('prefix');
         commandHandle(client, message);
         
         if(!client.isOnline) return;
         // censor(client, message.guild.id, message, message.member);
 
-        addXpText(message.author);
+        if(!message.content.startsWith(prefix)) 
+            addXpText(message.guild.id, message.author.id);
 
         const count = client.msgCount.get(message.guild.id);
         const date = new Date();

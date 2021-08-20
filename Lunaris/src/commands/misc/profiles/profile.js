@@ -1,4 +1,4 @@
-const { getProfile, generateProfileCard } = require("../../../modules/Profiles/profile");
+const { getGuildProfile, generateProfileCard, getGlobalProfile } = require("../../../modules/Profiles/profile");
 
 module.exports = {
     name: 'profile',
@@ -35,12 +35,13 @@ module.exports = {
     async run(client, message, args) {
         const member = args[0] ? message.mentions.members.first() || await message.guild.members.fetch(args[0]) : (await message.guild.members.fetch(message.author.id));
         const guildConfig = client.guildConfigs.get(message.guild.id);
-        const language = guildConfig.get('language');
 
-        const profile = await getProfile(member.id);
+        const profile = await getGuildProfile(message.guild.id, member.id);
         if(!profile) return;
+        const globalProfile = await getGlobalProfile(member.id);
+        if(!globalProfile) return;
 
-        const profileCardBuffer = await generateProfileCard(member, profile, member.user.avatarURL({ format: 'png' }));
+        const profileCardBuffer = await generateProfileCard(member, profile, globalProfile, member.user.avatarURL({ format: 'png' }));
 
         return message.channel.send({ files: [profileCardBuffer] });
     }
