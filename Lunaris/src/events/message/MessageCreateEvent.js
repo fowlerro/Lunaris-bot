@@ -18,7 +18,7 @@ module.exports = class MessageCreateEvent extends BaseEvent {
         // censor(client, message.guild.id, message, message.member);
 
         if(!message.content.startsWith(prefix)) 
-            addXpText(message.guild.id, message.author.id);
+            addXpText(client, message);
 
         const count = client.msgCount.get(message.guild.id);
         const date = new Date();

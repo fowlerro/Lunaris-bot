@@ -7,6 +7,7 @@ const { connectDatabase } = require('./database/mongoose');
 const { registerCommands, registerEvents, registerMessagesCount, registerGuildConfigs, registerAutoModConfigs, registerMutes, registerTerminalCommands, registerPresence } = require('./utils/registry');
 const { mapToObject } = require('./utils/utils');
 const { checkAutoRoles } = require('./modules/autoRole');
+const { dailyResetHandler } = require('./modules/resets/daily');
 
 
 (async () => {
@@ -29,6 +30,7 @@ const { checkAutoRoles } = require('./modules/autoRole');
   await registerPresence(client);
   await checkAutoRoles(client);
   await registerMutes(client);
+  dailyResetHandler();
 })();
 
 function handle(signal) {

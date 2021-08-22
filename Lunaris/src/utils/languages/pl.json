@@ -156,6 +156,9 @@
             "muteList": "Lista mute'ów na serwerze"
         }
     },
+    "xp": {
+        "levelUpMessage": "Właśnie zdobyłeś **%VAR% lvl** %VAR%!"
+    },
     "permissions": {
         "missingPermission": "Brak permisji",
 

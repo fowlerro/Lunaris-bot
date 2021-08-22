@@ -52,6 +52,20 @@ const GuildConfigSchema = new mongoose.Schema({
             muteRole: {
                 type: mongoose.SchemaTypes.String,
             }
+        },
+        xp: {
+            levelUpMessage: {
+                mode: {
+                    type: mongoose.SchemaTypes.String,
+                    default: 'currentChannel' // off || currentChannel || specificChannel
+                },
+                channelId: {
+                    type: mongoose.SchemaTypes.String
+                }
+            },
+            multiplier: {
+                type: mongoose.SchemaTypes.Number
+            }
         }
     }
 });

@@ -24,7 +24,7 @@ const ProfileSchema = new mongoose.Schema({
                 type: mongoose.SchemaTypes.Number,
                 default: 0
             },
-            todayXp: {
+            dailyXp: {
                 type: mongoose.SchemaTypes.Number,
                 default: 0
             }
@@ -42,7 +42,7 @@ const ProfileSchema = new mongoose.Schema({
                 type: mongoose.SchemaTypes.Number,
                 default: 0
             },
-            todayXp: {
+            dailyXp: {
                 type: mongoose.SchemaTypes.Number,
                 default: 0
             },

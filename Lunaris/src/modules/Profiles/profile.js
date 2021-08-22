@@ -92,7 +92,7 @@ async function drawTextXPData(ctx, profile) {
     ctx.textAlign = 'center';
 
     ctx.fillText(profile.statistics.text.level, 232 + 48, 330 + 48, 90);
-    ctx.fillText(profile.statistics.text.todayXp, 340 + 75, 418 + 30, 150);
+    ctx.fillText(profile.statistics.text.dailyXp, 340 + 75, 418 + 30, 150);
     ctx.fillText(profile.statistics.text.totalXp, 874 + 75, 418 + 30, 150);
 
     const xpNeeded = neededXp(profile.statistics.text.level);
@@ -109,7 +109,7 @@ async function drawVoiceXPData(ctx, profile) {
     ctx.textAlign = 'center';
 
     ctx.fillText(profile.statistics.voice.level, 232 + 48, 488 + 48, 90);
-    ctx.fillText(profile.statistics.voice.todayXp, 340 + 75, 576 + 30, 150);
+    ctx.fillText(profile.statistics.voice.dailyXp, 340 + 75, 576 + 30, 150);
     ctx.fillText(profile.statistics.voice.totalXp, 874 + 75, 576 + 30, 150);
 
     const xpNeeded = neededXp(profile.statistics.voice.level);

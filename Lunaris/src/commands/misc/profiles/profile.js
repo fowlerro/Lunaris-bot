@@ -1,4 +1,5 @@
 const { getGuildProfile, generateProfileCard, getGlobalProfile } = require("../../../modules/Profiles/profile");
+const { resetDailyXp } = require("../../../modules/xpSystem/utils");
 
 module.exports = {
     name: 'profile',
