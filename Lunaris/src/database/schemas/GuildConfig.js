@@ -64,7 +64,8 @@ const GuildConfigSchema = new mongoose.Schema({
                 }
             },
             multiplier: {
-                type: mongoose.SchemaTypes.Number
+                type: mongoose.SchemaTypes.Number,
+                default: 1
             }
         }
     }

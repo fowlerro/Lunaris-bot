@@ -26,9 +26,11 @@ async function setProfile(userId, fieldToSet, valueToSet) {
     }, { new: true, upsert: true });
 }
 
-async function generateProfileCard(member, profile, globalProfile, avatarURL) {
+async function generateProfileCard(member, guildProfile, globalProfile, avatarURL, isGlobal) {
     const canvas = createCanvas(1200, 660);
     const ctx = canvas.getContext('2d');
+
+    const profile = isGlobal ? globalProfile : guildProfile;
 
     await drawXpBars(ctx, profile);
     await drawLevelRings(ctx, profile);

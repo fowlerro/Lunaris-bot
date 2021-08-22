@@ -1,31 +1,47 @@
 const { MessageEmbed } = require("discord.js");
-const GuildMembers = require("../../database/schemas/GuildMembers");
-const Profile = require("../../database/schemas/Profile");
 const { translate } = require("../../utils/languages/languages");
 const { palette } = require("../../utils/utils");
-const { neededXp } = require("../Profiles/profile");
+const { neededXp, getGuildProfile, getGlobalProfile } = require("../Profiles/profile");
 
 async function addXpText(client, message) {
     const guildId = message.guild.id;
     const userId = message.author.id;
+
+    const guildConfig = client.guildConfigs.get(guildId);
+    const multiplier = guildConfig.get('modules.xp.multiplier');
     const xpToAdd = Math.floor(Math.random() * (10 - 5) + 5);
 
-    let profile = await GuildMembers.findOne({ guildId, userId });
-    if(!profile) {
-        profile = await GuildMembers.create({ guildId, userId });
-    }
-    const { level, xp } = profile.statistics.text;
-    const xpNeeded = neededXp(level);
-    if(xp + xpToAdd >= xpNeeded) return levelUp(client, profile, message.channel.id, xp, xpToAdd, xpNeeded);
-
-    profile.statistics.text.xp += xpToAdd;
-    profile.statistics.text.totalXp += xpToAdd;
-    profile.statistics.text.dailyXp += xpToAdd;
-
-    return profile.save();
+    await addGuildXpText(client, guildId, message.channel.id, userId, xpToAdd, multiplier);
+    await addGlobalXpText(client, userId, xpToAdd);
 }
 
-async function levelUp(client, profile, channelId, xp, xpToAdd, xpNeeded) {
+async function addGuildXpText(client, guildId, channelId, userId, xpToAdd, multiplier) {
+    const guildProfile = await getGuildProfile(guildId, userId);
+    const { level, xp } = guildProfile.statistics.text;
+    const xpNeeded = neededXp(level);
+
+    if(xp + (xpToAdd * multiplier) >= xpNeeded) return levelUp(client, guildProfile, channelId, xp, (xpToAdd * multiplier), xpNeeded);
+
+    guildProfile.statistics.text.xp += xpToAdd * multiplier;
+    guildProfile.statistics.text.totalXp += xpToAdd * multiplier;
+    guildProfile.statistics.text.dailyXp += xpToAdd * multiplier;
+    return guildProfile.save();
+}
+
+async function addGlobalXpText(client, userId, xpToAdd) {
+    const globalProfile = await getGlobalProfile(userId);
+    const { level, xp } = globalProfile.statistics.text;
+    const xpNeeded = neededXp(level);
+
+    if(xp + xpToAdd >= xpNeeded) return levelUp(client, globalProfile, null, xp, xpToAdd, xpNeeded, true);
+
+    globalProfile.statistics.text.xp += xpToAdd;
+    globalProfile.statistics.text.totalXp += xpToAdd;
+    globalProfile.statistics.text.dailyXp += xpToAdd;
+    return globalProfile.save();
+}
+
+async function levelUp(client, profile, channelId, xp, xpToAdd, xpNeeded, isGlobal) {
     const rest = (xp + xpToAdd) - xpNeeded;
 
     profile.statistics.text.level += 1;
@@ -33,7 +49,9 @@ async function levelUp(client, profile, channelId, xp, xpToAdd, xpNeeded) {
     profile.statistics.text.totalXp += xpToAdd;
     profile.statistics.text.dailyXp += xpToAdd;
 
-    sendLevelUpMessage(client, profile, channelId);
+    isGlobal && (profile.coins += profile.statistics.text.level * (10 + profile.statistics.text.level * 2))
+
+    !isGlobal && sendLevelUpMessage(client, profile, channelId);
 
     return profile.save();
 }
