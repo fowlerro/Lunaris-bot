@@ -1,6 +1,6 @@
 const BaseEvent = require('../../utils/structures/BaseEvent');
-const { commandHandle } = require('../../modules/commandHandler/commandHandler');
-const { addXpText } = require('../../modules/xpSystem/text');
+const CommandHandlerModule = require('../../modules/commandHandler');
+const xpSystem = require('../../modules/xpSystem');
 // const { censor } = require('../../modules/autoMod/autoMod');
 module.exports = class MessageCreateEvent extends BaseEvent {
     constructor() {
@@ -9,16 +9,15 @@ module.exports = class MessageCreateEvent extends BaseEvent {
     
     async run(client, message) {
         if(message.author.bot) return;
-        // if(message.channel.type === "dm") return console.log(`DM > ${message.author.tag}: ${message.content}`)
         const guildConfig = client.guildConfigs.get(message.guild.id);
-        const prefix = guildConfig.get('prefix');
-        commandHandle(client, message);
+        const prefix = guildConfig.get('prefix')
+        CommandHandlerModule.handleCommand(client, message);
         
         if(!client.isOnline) return;
         // censor(client, message.guild.id, message, message.member);
 
         if(!message.content.startsWith(prefix)) 
-            addXpText(client, message);
+            xpSystem.addTextXp(client, message);
 
         const count = client.msgCount.get(message.guild.id);
         const date = new Date();

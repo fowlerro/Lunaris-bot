@@ -32,19 +32,46 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
-        let fields = [];
-        for (let i = 0; i < 250; i++) {
-            fields[i] = {
-                name: `chuj${i+1}`,
-                value: `chuj${i+1}`,
-                inline: true
-            }
+        let obj = {
+            statistics: {
+                text: {
+                  level: 5,
+                  xp: 1160,
+                  totalXp: 3610,
+                  dailyXp: 3610
+                },
+                voice: {
+                  level: 1,
+                  xp: 0,
+                  totalXp: 0,
+                  dailyXp: 0,
+                  timeSpent: 0
+                }
+            },
+            cardAppearance: {
+                background: 0,
+                accent: "#102693"
+            },
+            coins: 248,
         }
-        const embed = new MessageEmbed()
-            .addFields(fields)
 
-        
-        checkEmbedLimits(client, embed, message.channel);
+        console.log(obj);
+
+        let chuj = {
+            cardAppearance: {
+                background: 1
+            },
+            statistics: {
+                voice: {
+                    level: 1,
+                    timeSpent: 69,
+                }
+            },
+        }
+
+        let newObj = {...obj, ...chuj}
+
+        console.log(newObj)
 
         return message.channel.send('test');
     }

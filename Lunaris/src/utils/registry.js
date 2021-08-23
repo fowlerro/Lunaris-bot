@@ -4,9 +4,6 @@ const fs = require('fs').promises;
 const BaseEvent = require('./structures/BaseEvent');
 const { JSONToMap, setActivity } = require('./utils');
 const GuildConfig = require('../database/schemas/GuildConfig');
-const AutoMod = require('../database/schemas/AutoMod');
-const GuildMembers = require('../database/schemas/GuildMembers');
-const { unmuteLog } = require('../modules/guildLogs');
 const clientConfig = require('../database/config.json');
 
 async function registerCommands(client, dir = '') {
@@ -42,6 +39,21 @@ async function registerEvents(client, dir = '') {
   }
 }
 
+async function registerModules(client, dir = '') {
+  const filePath = path.join(__dirname, dir);
+  const files = await fs.readdir(filePath);
+  for(const file of files) {
+    const stat = await fs.lstat(path.join(filePath, file));
+    if(stat.isDirectory()) registerModules(client, path.join(dir, file));
+    if(file === 'index.js') {
+      const Module = require(path.join(filePath, file));
+      client.modules.set(Module.name, Module.enabled);
+      Module.run(client);
+      console.log(Module.name);
+    }
+  }
+}
+
 async function registerMessagesCount(client) {
   const pathFile = path.join(__dirname, './../database/statistics.json')
   const json = await fs.readFile(pathFile);
@@ -54,57 +66,6 @@ async function registerGuildConfigs(client) {
     const { guildId } = element;
     client.guildConfigs.set(guildId, element)
   });
-}
-
-async function registerAutoModConfigs(client) {
-  const configs = await AutoMod.find({}).select('-_id -__v');
-  configs.forEach(element => {
-    const { guildId } = element;
-    client.autoModConfigs.set(guildId, element);
-  });
-}
-
-async function registerMutes(client) {
-  try {
-      const collections = await GuildMembers.find({'muted.isMuted': true, 'muted.timestamp': { $ne: null }});
-      for(const collection of collections) {
-          const guild = client.guilds.cache.get(collection.guildId)
-          const member = guild.members.cache.get(collection.userId)
-          const guildConfig = client.guildConfigs.get(guild.id);
-          const muteRoleId = guildConfig.get('modules.autoMod.muteRole');
-          const muteRole = guild.roles.cache.get(muteRoleId) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
-          const hasRole = member.roles.cache.has(muteRole.id);
-          if(collection.muted.timestamp < Date.now() || !hasRole) {
-              await member.roles.remove(muteRole).catch(err => console.log(err));
-              const muteInfo = await GuildMembers.findOneAndUpdate({guildId: guild.id, userId: member.id}, { //TODO: Update from collections array, instead of finding in database 2nd time (Model.updateMany())
-                  muted: {
-                      isMuted: false,
-                      timestamp: null,
-                      date: null,
-                      reason: null,
-                      by: null,
-                  }
-              }, {upsert: true});
-              return unmuteLog(client, guild.id, muteInfo.muted.by, 'System', member.id);
-          }
-          setTimeout(async () => {
-              await member.roles.remove(muteRole).catch(e => console.log(e));
-              const muteInfo = await GuildMembers.findOneAndUpdate({guildId: guild.id, userId: member.id}, {
-                  muted: {
-                      isMuted: false,
-                      timestamp: null,
-                      date: null,
-                      reason: null,
-                      by: null,
-                  }
-              }, {upsert: true});
-              unmuteLog(client, guild.id, muteInfo.muted.by, 'System', member.id);
-
-          }, collection.muted.timestamp - Date.now());
-      }
-  } catch(e) {
-      console.log(e)
-  }
 }
 
 function registerTerminalCommands(client) {
@@ -159,10 +120,9 @@ function registerPresence(client) {
 module.exports = { 
   registerCommands, 
   registerEvents,
+  registerModules,
   registerMessagesCount,
   registerGuildConfigs,
-  registerAutoModConfigs,
-  registerMutes,
   registerTerminalCommands,
   registerPresence
 };

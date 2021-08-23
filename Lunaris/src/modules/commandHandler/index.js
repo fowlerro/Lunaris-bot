@@ -6,7 +6,14 @@ const { botOwners } = require('../../utils/utils');
 const { cmdTriggerLog } = require('../guildLogs');
 const helpArgs = ["help", "pomoc", "info"];
 
-const commandHandle = async (client, message) => {
+module.exports = {
+  name: "Command Handler",
+  enabled: true,
+  async run(client) {
+    if(!this.enabled) return;
+  },
+  async handleCommand(client, message) {
+    if(!this.enabled) return;
     if(!client.isOnline && !botOwners.includes(message.author.id)) return;
 
     const guildConfig = client.guildConfigs.get(message.guild.id);
@@ -88,9 +95,8 @@ const commandHandle = async (client, message) => {
                 if(userCD) {
                     if(userCD.cooldown > Date.now()) return;
                     const cdTime = Date.now() + ms(command.cooldown);
-                    await Cooldowns.findOneAndUpdate({guildId: message.guild.id, userId: message.author.id, cmdName: command.name}, {
-                        cooldown: cdTime,
-                    });
+                    userCD.cooldown = cdTime;
+                    userCD.save()
                 } else {
                     const cdTime = Date.now() + ms(command.cooldown);
                     Cooldowns.create({
@@ -104,36 +110,35 @@ const commandHandle = async (client, message) => {
             runCmd(client, message, cmd, cmdArgs, command.autoRemoveResponse);
         }
     }
+  }
 }
 
 const checkPermissions = (permissions, member) => {
-    return member.permissions.has(permissions);
+  return member.permissions.has(permissions);
 }
 
 const checkArgs = (min, max, argsLength) => {
-    if(min === null) min = 0;
-    if(max === null) max = argsLength;
-    if(argsLength >= min && argsLength <= max) return true;
-    return false;
+  if(min === null) min = 0;
+  if(max === null) max = argsLength;
+  if(argsLength >= min && argsLength <= max) return true;
+  return false;
 };
 
 const checkAllowedRoles = (allowedRoles, member) => {
-    return !allowedRoles.length || member.roles.cache.some(r => allowedRoles.includes(r.id))
+  return !allowedRoles.length || member.roles.cache.some(r => allowedRoles.includes(r.id))
 }
 
 const checkBlockedRoles = (blockedRoles, member) => {
-    return !blockedRoles.length || !member.roles.cache.some(r => blockedRoles.includes(r.id))
+  return !blockedRoles.length || !member.roles.cache.some(r => blockedRoles.includes(r.id))
 }
 
 const sendHelp = async (client, cmd, message) => {
-    const helpCmd = client.commands.get('help');
-    return runCmd(client, message, helpCmd, [cmd.name], helpCmd.autoRemoveResponse)
+  const helpCmd = client.commands.get('help');
+  return runCmd(client, message, helpCmd, [cmd.name], helpCmd.autoRemoveResponse)
 }
 
 const runCmd = async (client, message, cmd, cmdArgs, autoRemoveResponse) => {
-    const cmdMessage = await cmd.run(client, message, cmdArgs);
-    if(autoRemoveResponse && cmdMessage) setTimeout(() => cmdMessage.delete(), 5000);
-    cmdTriggerLog(client, cmd.name, message.guild, message.channel.id, message.author, message.content);
+  const cmdMessage = await cmd.run(client, message, cmdArgs);
+  if(autoRemoveResponse && cmdMessage) setTimeout(() => cmdMessage.delete(), 5000);
+  cmdTriggerLog(client, cmd.name, message.guild, message.channel.id, message.author, message.content);
 }
-
-module.exports = {commandHandle};
