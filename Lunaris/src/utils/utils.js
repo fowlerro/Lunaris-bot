@@ -64,33 +64,6 @@ function msToTime(ms) {
     return result.trimEnd();
 }
 
-async function setAutoModConfig(client, guildId, state, toSet, value) {
-    if(state === 'add') {
-        const config = await AutoMod.findOneAndUpdate({ guildId }, {
-            $addToSet: {
-                [toSet]: value
-            }
-        }, {new: true, upsert: true});
-        client.autoModConfigs.set(guildId, config);
-        return client.autoModConfigs.get(guildId);
-    }
-    
-    if(state === 'remove') {
-        const config = await AutoMod.findOneAndUpdate({ guildId }, {
-            $pullAll: {
-                [toSet]: value
-            }
-        }, {new: true, upsert: true});
-        client.autoModConfigs.set(guildId, config);
-        return client.autoModConfigs.get(guildId);
-    }
-
-    let config = await AutoMod.findOne({ guildId });
-    if(!config) config = await AutoMod.create({ guildId });
-    client.autoModConfigs.set(guildId, config);
-    return client.autoModConfigs.get(guildId);
-}
-
 function toggleBot(client, s) {
     if(!s) client.isOnline = !client.isOnline;
     if(s) client.isOnline = s;
@@ -296,6 +269,6 @@ async function handleEmbedPageButtons(msg, currPage, pageAmount, embeds) {
 
 
 module.exports = {botOwners, palette, mapToObject, groupBy, daysInMonth, setGuildConfig, 
-    msToTime, setAutoModConfig,
+    msToTime,
     toggleBot, setActivity,
     checkEmbedLimits};

@@ -6,16 +6,13 @@ const { registerCommands, registerEvents, registerGuildConfigs, registerModules 
 
 
 (async () => {
-  connectDatabase();
+  await connectDatabase();
 
   client.isOnline = true;
   client.commands = new Map();
   client.events = new Map();
   client.modules = new Map();
   client.guildConfigs = new Map();
-  // client.autoModConfigs = new Map();
-  // client.autoModUsers = new Map();
-  client.msgCount = new Map();
   await registerCommands(client, '../commands');
   await registerEvents(client, '../events');
   await registerModules(client, '../modules');

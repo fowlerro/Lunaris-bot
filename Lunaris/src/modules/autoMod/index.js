@@ -1,5 +1,3 @@
-const { Collection } = require("discord.js");
-const AutoMod = require("../../database/schemas/AutoMod");
 const GuildMembers = require("../../database/schemas/GuildMembers");
 const { unmuteLog } = require("../guildLogs");
 
@@ -7,19 +5,8 @@ module.exports = {
     name: "AutoMod",
     enabled: true,
     async run(client) {
-        // client.autoModConfigs = new Collection();
-
-        // registerAutoModConfigs(client);
         await registerMutes(client);
     },
-}
-
-async function registerAutoModConfigs(client) {
-    const configs = await AutoMod.find({}).select('-_id -__v');
-    configs.forEach(element => {
-        const { guildId } = element;
-        client.autoModConfigs.set(guildId, element);
-    });
 }
 
 async function registerMutes(client) {

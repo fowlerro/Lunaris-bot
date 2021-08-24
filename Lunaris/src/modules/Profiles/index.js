@@ -4,54 +4,44 @@ const { join } = require('path');
 const cron = require('node-cron');
 const GuildMembers = require("../../database/schemas/GuildMembers");
 const Profile = require("../../database/schemas/Profile");
-const { groupBy } = require("../../utils/utils");
-
 module.exports = {
     name: "Profiles",
     enabled: true,
     async run(client) {
         client.profiles = new Collection();
         client.guildMembers = new Collection();
-        await this.registerProfiles(client);
-        await this.registerGuildMembers(client);
+        // await this.registerProfiles(client);
+        // await this.registerGuildMembers(client);
+
+        cron.schedule('*/5 * * * *', async () => {
+            await saveGuildMembers(client);
+            await saveProfiles(client);
+        })
     },
     async get(client, userId, guildId) {
         if(guildId) {
-            const profile = client.guildMembers.get(guildId)?.find(member => member.userId === userId);
-            if(!profile) return createProfile(client, userId, guildId);
+            let profile = client.guildMembers.get(guildId)?.find(member => member.userId === userId);
+            if(!profile) {
+                profile = await GuildMembers.findOne({ guildId, userId });
+                if(!profile) return createProfile(client, userId, guildId);
+                if(client.guildMembers.size) 
+                    client.guildMembers.set(guildId, [profile, ...client.guildMembers?.get(guildId)])
+                else
+                    client.guildMembers.set(guildId, [profile]);
+            }
             return profile;
         }
 
-        const profile = client.profiles.get(userId);
-        if(!profile) return createProfile(client, userId);
+        let profile = client.profiles.get(userId);
+        if(!profile) {
+            profile = await Profile.findOne({ userId });
+            if(!profile) return createProfile(client, userId);
+            client.profiles.set(userId, profile);
+        }
         return profile;
     },
 
     // TODO Bulk update profiles to database after a period of time
-    async set(client, userId, guildId, updatedProfile) {
-        if(guildId) {
-            const profile = await GuildMembers.findOneAndUpdate({ guildId, userId }, updatedProfile, {new: true});
-            client.guildMembers.set(guildId, [profile, ...client.guildMembers?.get(guildId)]);
-            return profile;
-        }
-
-        const profile = await Profile.findOneAndUpdate({ userId }, updatedProfile, {new: true});
-        client.profiles.set(userId, profile);
-        return profile;
-    },
-
-    // TODO Fetch new profiles dynamicaly, instead of fetching whole collection
-    async registerProfiles(client) {
-        const profiles = await Profile.find({});
-        profiles.forEach(profile => {
-            const { userId } = profile;
-            client.profiles.set(userId, profile);
-        });
-    },
-    async registerGuildMembers(client) {
-        const guildMembers = await GuildMembers.find({});
-        client.guildMembers = groupBy(guildMembers, guildMember => guildMember.guildId);
-    },
 
     async generateCard(member, guildProfile, globalProfile, avatarURL, isGlobal) {
         const canvas = createCanvas(1200, 660);
@@ -84,7 +74,7 @@ module.exports = {
     
         return canvas.toBuffer();
     },
-    neededXp
+    neededXp,
 }
 
 function neededXp(level) {
@@ -107,8 +97,8 @@ async function getVoiceRank(guildId, userId) {
 async function createProfile(client, userId, guildId) {
     if(guildId) {
         const profile = await GuildMembers.create({ userId, guildId });
-        if(client.guildMembers.size) 
-            client.guildMembers.set(guildId, [profile, ...client.guildMembers?.get(guildId)])
+        if(client.guildMembers.get(guildId))
+            client.guildMembers.set(guildId, [profile, ...client.guildMembers.get(guildId)])
         else
             client.guildMembers.set(guildId, [profile]);
         return profile;
@@ -119,6 +109,25 @@ async function createProfile(client, userId, guildId) {
     return profile;
 }
 
+async function saveProfiles(client) {
+    const bulk = Profile.collection.initializeOrderedBulkOp();
+    client.profiles.forEach(profile => {
+        bulk.find({ userId: profile.userId }).replaceOne(profile);
+    });
+
+    await bulk.execute();
+}
+
+async function saveGuildMembers(client) {
+    const bulk = GuildMembers.collection.initializeOrderedBulkOp();
+    client.guildMembers.forEach(guild => {
+        guild.forEach(profile => {
+            console.log(profile);
+            bulk.find({ guildId: profile.guildId, userId: profile.userId }).replaceOne(profile);
+        })
+    });
+    await bulk.execute();
+}
 
 
 

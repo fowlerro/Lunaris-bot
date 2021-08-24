@@ -89,4 +89,6 @@ const GuildMembersSchema = new mongoose.Schema({
     }],
 });
 
+GuildMembersSchema.index({ guildId: 1, userId: 1 }, { unique: true });
+
 module.exports = mongoose.model('GuildMembers', GuildMembersSchema);

@@ -31,8 +31,8 @@ module.exports = {
             'statistics.text.dailyXp': 0,
             'statistics.voice.dailyXp': 0,
         });
-        Profiles.registerGuildMembers(client);
-        Profiles.registerProfiles(client);
+        client.guildMembers.clear();
+        client.profiles.clear();
     }
 }
 
@@ -43,17 +43,11 @@ async function addGuildTextXp(client, guildId, channelId, userId, xpToAdd, multi
 
     if(xp + (xpToAdd * multiplier) >= xpNeeded) return levelUp(client, guildProfile, channelId, xp, (xpToAdd * multiplier), xpNeeded);
 
-    const toUpdate = {
-        statistics: {
-            text: {
-                xp: guildProfile.statistics.text.xp + (xpToAdd * multiplier),
-                totalXp: guildProfile.statistics.text.totalXp + (xpToAdd * multiplier),
-                dailyXp: guildProfile.statistics.text.dailyXp + (xpToAdd * multiplier)
-            }
-        }
-    }
+    guildProfile.statistics.text.xp += xpToAdd * multiplier
+    guildProfile.statistics.text.totalXp += xpToAdd * multiplier
+    guildProfile.statistics.text.dailyXp += xpToAdd * multiplier
 
-    return Profiles.set(client, userId, guildId, toUpdate);
+    return guildProfile
 }
 
 async function addGlobalTextXp(client, userId, xpToAdd) {
@@ -61,40 +55,28 @@ async function addGlobalTextXp(client, userId, xpToAdd) {
     const { level, xp } = globalProfile.statistics.text;
     const xpNeeded = Profiles.neededXp(level);
 
-
     if(xp + xpToAdd >= xpNeeded) return levelUp(client, globalProfile, null, xp, xpToAdd, xpNeeded, true);
 
-    const toUpdate = {
-        statistics: {
-            text: {
-                xp: globalProfile.statistics.text.xp + xpToAdd,
-                totalXp: globalProfile.statistics.text.totalXp + xpToAdd,
-                dailyXp: globalProfile.statistics.text.dailyXp + xpToAdd
-            }
-        }
-    }
-    return Profiles.set(client, userId, null, toUpdate);
+    globalProfile.statistics.text.xp += xpToAdd
+    globalProfile.statistics.text.totalXp += xpToAdd
+    globalProfile.statistics.text.dailyXp += xpToAdd
 
+    return globalProfile;
 }
 
 async function levelUp(client, profile, channelId, xp, xpToAdd, xpNeeded, isGlobal) {
     const rest = (xp + xpToAdd) - xpNeeded;
 
-    const toUpdate = {
-        statistics: {
-            text: {
-                level: profile.statistics.text.level + 1,
-                xp: rest,
-                totalXp: profile.statistics.text.totalXp + xpToAdd,
-                dailyXp: profile.statistics.text.dailyXp + xpToAdd
-            }
-        }
-    }
+    profile.statistics.text.level += 1;
+    profile.statistics.text.xp = rest;
+    profile.statistics.text.totalXp += xpToAdd;
+    profile.statistics.text.dailyXp += xpToAdd;
+    
 
-    isGlobal && (toUpdate.coins = profile.coins + profile.statistics.text.level * (10 + profile.statistics.text.level * 2))
+    isGlobal && (profile.coins += profile.statistics.text.level * (10 + profile.statistics.text.level * 2))
     !isGlobal && sendLevelUpMessage(client, profile, channelId);
 
-    return Profiles.set(client, profile.userId, profile.guildId, toUpdate);
+    return profile;
 }
 
 async function sendLevelUpMessage(client, profile, channelId) {
