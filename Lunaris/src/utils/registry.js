@@ -2,7 +2,6 @@
 const path = require('path');
 const fs = require('fs').promises;
 const BaseEvent = require('./structures/BaseEvent');
-const { JSONToMap, setActivity } = require('./utils');
 const GuildConfig = require('../database/schemas/GuildConfig');
 const clientConfig = require('../database/config.json');
 
@@ -54,57 +53,12 @@ async function registerModules(client, dir = '') {
   }
 }
 
-async function registerMessagesCount(client) {
-  const pathFile = path.join(__dirname, './../database/statistics.json')
-  const json = await fs.readFile(pathFile);
-  JSONToMap(client.msgCount, json);
-}
-
 async function registerGuildConfigs(client) {
   const configs = await GuildConfig.find({}).select('-_id -__v');
   configs.forEach(element => {
     const { guildId } = element;
     client.guildConfigs.set(guildId, element)
   });
-}
-
-function registerTerminalCommands(client) {
-  try {
-    const terminalStdin = process.openStdin();
-    let sayChannel = null;
-    let dmChannel = null;
-    terminalStdin.addListener('data', res => {
-      const terminalInput = res.toString().trim().split(/ +/g);
-      const [command, ...args] = terminalInput;
-      
-      if(command === 'setChannel') {
-        sayChannel = args[0];
-      }
-
-      if(command === 'setDMChannel') {
-        dmChannel = args[0];
-      }
-
-      if(command === 'say') {
-        if(!sayChannel) return console.log("Specify channel by 'setChannel' command!");
-
-        client.channels.cache.get(sayChannel).send(args.join(" "))
-      }
-
-      if(command === 'dm') {
-        if(!dmChannel) return console.log("Specify userID by 'setDMChannel' command!");
-
-        client.users.cache.get(dmChannel).send(args.join(" "))
-      }
-
-      if(command === 'activity') {
-        const [mode, ...activity] = args;
-        setActivity(client, mode, activity.join(" "));
-      }
-    })
-  } catch(e) {
-    console.log(e)
-  }
 }
 
 function registerPresence(client) {
@@ -121,8 +75,6 @@ module.exports = {
   registerCommands, 
   registerEvents,
   registerModules,
-  registerMessagesCount,
   registerGuildConfigs,
-  registerTerminalCommands,
   registerPresence
 };

@@ -1,6 +1,7 @@
 const { Collection } = require("discord.js");
 const { createCanvas, loadImage } = require('canvas');
 const { join } = require('path');
+const cron = require('node-cron');
 const GuildMembers = require("../../database/schemas/GuildMembers");
 const Profile = require("../../database/schemas/Profile");
 const { groupBy } = require("../../utils/utils");
@@ -11,8 +12,8 @@ module.exports = {
     async run(client) {
         client.profiles = new Collection();
         client.guildMembers = new Collection();
-        await registerProfiles(client);
-        await registerGuildMembers(client);
+        await this.registerProfiles(client);
+        await this.registerGuildMembers(client);
     },
     async get(client, userId, guildId) {
         if(guildId) {
@@ -25,6 +26,8 @@ module.exports = {
         if(!profile) return createProfile(client, userId);
         return profile;
     },
+
+    // TODO Bulk update profiles to database after a period of time
     async set(client, userId, guildId, updatedProfile) {
         if(guildId) {
             const profile = await GuildMembers.findOneAndUpdate({ guildId, userId }, updatedProfile, {new: true});
@@ -36,6 +39,20 @@ module.exports = {
         client.profiles.set(userId, profile);
         return profile;
     },
+
+    // TODO Fetch new profiles dynamicaly, instead of fetching whole collection
+    async registerProfiles(client) {
+        const profiles = await Profile.find({});
+        profiles.forEach(profile => {
+            const { userId } = profile;
+            client.profiles.set(userId, profile);
+        });
+    },
+    async registerGuildMembers(client) {
+        const guildMembers = await GuildMembers.find({});
+        client.guildMembers = groupBy(guildMembers, guildMember => guildMember.guildId);
+    },
+
     async generateCard(member, guildProfile, globalProfile, avatarURL, isGlobal) {
         const canvas = createCanvas(1200, 660);
         const ctx = canvas.getContext('2d');
@@ -43,7 +60,7 @@ module.exports = {
     
         await drawXpBars(ctx, profile);
         await drawLevelRings(ctx, profile);
-        // await drawAvatar(ctx, avatarURL);
+        await drawAvatar(ctx, avatarURL);
         await drawBackground(ctx, globalProfile);
         await drawNickname(ctx, member);
     
@@ -100,19 +117,6 @@ async function createProfile(client, userId, guildId) {
     const profile = await Profile.create({ userId });
     client.profiles.set(userId, profile);
     return profile;
-}
-
-async function registerProfiles(client) {
-    const profiles = await Profile.find({});
-    profiles.forEach(profile => {
-        const { userId } = profile;
-        client.profiles.set(userId, profile);
-    });
-}
-
-async function registerGuildMembers(client) {
-    const guildMembers = await GuildMembers.find({});
-    client.guildMembers = groupBy(guildMembers, guildMember => guildMember.guildId);
 }
 
 

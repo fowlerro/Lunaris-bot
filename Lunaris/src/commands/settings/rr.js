@@ -1,7 +1,5 @@
 const { MessageEmbed, Permissions } = require("discord.js");
-const GuildConfig = require("../../database/schemas/GuildConfig");
-const ReactionRoles = require("../../database/schemas/ReactionRoles");
-const { createReactionMessage } = require("../../modules/reactionRoles");
+const reactionRoles = require("../../modules/reactionRoles");
 
 module.exports = {
     name: 'rr',
@@ -52,20 +50,8 @@ module.exports = {
 
         if(!reactions.length) return;
 
-        createReactionMessage(guildID, channelID, messageID, reactions, client);
+        reactionRoles.create(client, guildID, channelID, messageID, reactions);
 
         return message.channel.send("OK");
-
-        // try {
-        //     await ReactionRoles.create({
-        //         guildID: message.guild.id,
-        //         channelID: message.channel.id,
-        //         messageID: args[0]
-        //     });
-
-        //     return message.channel.send("OK");
-        // } catch(err) {
-        //     console.log(err);
-        // }
     }
 }

@@ -47,6 +47,8 @@ Commands:
     ?(expired)
 */
 
+// TODO Rewrite guild logs module
+
 const { MessageEmbed, Permissions } = require("discord.js");
 const { palette } = require("../utils/utils");
 const { translate } = require("../utils/languages/languages");

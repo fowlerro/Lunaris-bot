@@ -37,15 +37,6 @@ function groupBy(list, keyGetter) {
     return map;
 }
 
-// ! Deprecated
-function JSONToMap(map, json) {
-    if(!json) json = {};
-    json = JSON.parse(json);
-    for(let v in json) {
-        map.set(v, json[v])
-    }
-}
-
 function daysInMonth(month, year) {
     return new Date(year, month, 0).getDate();
 }
@@ -304,7 +295,7 @@ async function handleEmbedPageButtons(msg, currPage, pageAmount, embeds) {
 
 
 
-module.exports = {botOwners, palette, JSONToMap, mapToObject, groupBy, daysInMonth, setGuildConfig, 
+module.exports = {botOwners, palette, mapToObject, groupBy, daysInMonth, setGuildConfig, 
     msToTime, setAutoModConfig,
     toggleBot, setActivity,
     checkEmbedLimits};

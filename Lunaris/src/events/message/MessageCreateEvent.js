@@ -19,31 +19,5 @@ module.exports = class MessageCreateEvent extends BaseEvent {
         if(!message.content.startsWith(prefix)) 
             xpSystem.addTextXp(client, message);
 
-        const count = client.msgCount.get(message.guild.id);
-        const date = new Date();
-        let day = date.getDate();
-        if(day < 10) day = `0${day}`;
-        let month = date.getMonth()+1;
-        if(month < 10) month = `0${month}`;
-        const currDay = `${day}${month}`;
-        if(count) {
-            if(count[currDay]) {
-                const counter = client.msgCount.get(message.guild.id);
-                client.msgCount.set(message.guild.id, {
-                    ...client.msgCount.get(message.guild.id),
-                    [currDay]: counter[currDay]+1
-                })
-            } else {
-                client.msgCount.set(message.guild.id, {
-                    ...client.msgCount.get(message.guild.id),
-                    [currDay]: 1
-                })
-            }
-        } else {
-            client.msgCount.set(message.guild.id, {
-                ...client.msgCount.get(message.guild.id),
-                [currDay]: 1
-            });
-        }
     }
 };

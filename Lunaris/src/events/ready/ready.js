@@ -1,4 +1,5 @@
-const { fetchReactionMessages } = require('../../modules/reactionRoles');
+const reactionRoles = require('../../modules/reactionRoles');
+const { registerPresence } = require('../../utils/registry');
 const BaseEvent = require('../../utils/structures/BaseEvent');
 
 module.exports = class ReadyEvent extends BaseEvent {
@@ -7,6 +8,7 @@ module.exports = class ReadyEvent extends BaseEvent {
   }
   async run (client) {
     console.log(client.user.tag + ' has logged in.');
-    fetchReactionMessages(client);
+    reactionRoles.fetchMessages(client);
+    await registerPresence(client);
     }
 }

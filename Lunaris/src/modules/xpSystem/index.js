@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const GuildMembers = require("../../database/schemas/GuildMembers");
+const Profile = require("../../database/schemas/Profile");
 const { translate } = require("../../utils/languages/languages");
 const { palette } = require("../../utils/utils");
 const Profiles = require("../Profiles");
@@ -8,6 +9,7 @@ module.exports = {
     name: "XP System",
     enabled: true,
     async run(client) {
+
     },
     async addTextXp(client, message) {
         const guildId = message.guild.id;
@@ -20,11 +22,17 @@ module.exports = {
         await addGuildTextXp(client, guildId, message.channel.id, userId, xpToAdd, multiplier);
         await addGlobalTextXp(client, userId, xpToAdd);
     },
-    async resetDailyXp() {
-        await GuildMembers.updateMany({ $or: [ { 'statistics.text.dailyXp': { $gte: 1 } }, { 'statistics.voice.dailyXp': { $gte: 1 } } ] }, { // TODO Profiles.set() / Profiles.reset(), whatever
+    async resetDailyXp(client) {
+        await GuildMembers.updateMany({ $or: [ { 'statistics.text.dailyXp': { $gte: 1 } }, { 'statistics.voice.dailyXp': { $gte: 1 } } ] }, {
             'statistics.text.dailyXp': 0,
             'statistics.voice.dailyXp': 0,
         });
+        await Profile.updateMany({ $or: [ { 'statistics.text.dailyXp': { $gte: 1 } }, { 'statistics.voice.dailyXp': { $gte: 1 } } ] }, {
+            'statistics.text.dailyXp': 0,
+            'statistics.voice.dailyXp': 0,
+        });
+        Profiles.registerGuildMembers(client);
+        Profiles.registerProfiles(client);
     }
 }
 

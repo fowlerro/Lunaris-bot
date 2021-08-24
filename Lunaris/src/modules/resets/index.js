@@ -5,17 +5,19 @@ module.exports = {
     name: "Resets",
     enabled: true,
     async run(client) {
-        daily();
+        daily(client);
     }
 }
 
-async function dailyReset() {
+async function dailyReset(client) {
     console.log(new Date().toLocaleString('pl-PL'), 'Daily reset');
-    await xpSystem.resetDailyXp();
+    await xpSystem.resetDailyXp(client);
 }
 
-function daily() {
-    cron.schedule('0 0 * * *', dailyReset,
+function daily(client) {
+    cron.schedule('0 0 * * *', (() => {
+        dailyReset(client);
+    }),
     {
         scheduled: true,
         timezone: "Europe/Warsaw"
