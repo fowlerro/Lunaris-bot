@@ -4,6 +4,7 @@ const ms = require('ms');
 const { MessageEmbed, Permissions } = require("discord.js");
 const { palette } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
+const Guilds = require("../../../modules/Guilds");
 module.exports = {
     name: 'unmute',
     aliases: ['odmutuj', 'odcisz', 'um'],
@@ -45,7 +46,7 @@ module.exports = {
         const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
         if(!member && args[0] !== 'all') return;
         
-        const { language } = client.guildConfigs.get(message.guild.id);
+        const { language } = await Guilds.config.get(client, message.guild.id);
         const reason = args.slice(1, args.length).join(' ');
 
         if(args[0] === 'all') {

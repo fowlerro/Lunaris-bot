@@ -1,7 +1,7 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildMemberRemove
 const { Permissions } = require('discord.js');
-const GuildConfig = require('../../database/schemas/GuildConfig');
 const { memberLeavedLog, memberKickedLog, memberBannedLog } = require('../../modules/guildLogs');
+const Guilds = require('../../modules/Guilds');
 const BaseEvent = require('../../utils/structures/BaseEvent');
 
 module.exports = class GuildMemberRemoveEvent extends BaseEvent {
@@ -11,7 +11,7 @@ module.exports = class GuildMemberRemoveEvent extends BaseEvent {
   
   async run(client, member) {
     if(!client.isOnline) return;
-    const guildConfig = client.guildConfigs.get(member.guild.id);
+    const guildConfig = await Guilds.config.get(client, member.guild.id);
     const logChannel = member.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     if(!logChannel) return;
     const language = guildConfig.get('language');

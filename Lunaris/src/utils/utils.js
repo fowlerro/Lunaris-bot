@@ -1,5 +1,3 @@
-const AutoMod = require("../database/schemas/AutoMod");
-const GuildConfig = require("../database/schemas/GuildConfig");
 const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
 
 const botOwners = ["313346190995619841"];
@@ -39,16 +37,6 @@ function groupBy(list, keyGetter) {
 
 function daysInMonth(month, year) {
     return new Date(year, month, 0).getDate();
-}
-
-async function setGuildConfig(client, guildId, toSet, value) {
-    await GuildConfig.findOneAndUpdate({ guildId }, {
-        [toSet]: value
-    });
-    let config = client.guildConfigs.get(guildId);
-    config[toSet] = value;
-    client.guildConfigs.set(guildId, config);
-    return client.guildConfigs.get(guildId);
 }
 
 function msToTime(ms) {
@@ -268,7 +256,7 @@ async function handleEmbedPageButtons(msg, currPage, pageAmount, embeds) {
 
 
 
-module.exports = {botOwners, palette, mapToObject, groupBy, daysInMonth, setGuildConfig, 
+module.exports = {botOwners, palette, mapToObject, groupBy, daysInMonth, 
     msToTime,
     toggleBot, setActivity,
     checkEmbedLimits};

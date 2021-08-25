@@ -2,6 +2,7 @@ const { MessageEmbed, Permissions } = require("discord.js");
 const { palette } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
 const { Warn } = require("../../../modules/autoMod/utils");
+const Guilds = require("../../../modules/Guilds");
 
 module.exports = {
     name: 'warn',
@@ -44,7 +45,7 @@ module.exports = {
         const member = message.mentions.members.first() || message.guild.members.cache.get(user);
         if(!member) return;
 
-        const { language } = client.guildConfigs.get(message.guild.id);
+        const { language } = await Guilds.config.get(client, message.guild.id);
         let [user, ...reason] = args;
         reason = reason.join(" ");
 

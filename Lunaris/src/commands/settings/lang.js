@@ -1,7 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const { palette } = require("../../utils/utils");
 const { localeList, translate } = require("../../utils/languages/languages");
-const { setGuildConfig } = require("../../utils/utils");
+const Guilds = require("../../modules/Guilds");
 
 module.exports = {
     name: 'language',
@@ -42,7 +42,7 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
-        let guildConfig = client.guildConfigs.get(message.guild.id);
+        let guildConfig = await Guilds.config.get(client, message.guild.id);
         let language = guildConfig.get('language');
         if(!args[0]) {
             let langs = "";
@@ -68,7 +68,7 @@ module.exports = {
         }
 
 
-        guildConfig = await setGuildConfig(client, message.guild.id, 'language', args[0]);
+        guildConfig = await Guilds.config.set(client, message.guild.id, 'language', args[0]);
         language = guildConfig.get('language');
         const embed = new MessageEmbed()
             .setColor(palette.success)

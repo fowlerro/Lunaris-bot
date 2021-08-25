@@ -3,6 +3,7 @@ const { palette } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
 const { Warn } = require("../../../modules/autoMod/utils");
 const { warnRemoveAllLog } = require("../../../modules/guildLogs");
+const Guilds = require("../../../modules/Guilds");
 
 module.exports = {
     name: 'unwarn',
@@ -47,7 +48,7 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-            const { language } = client.guildConfigs.get(message.guild.id);
+            const { language } = await Guilds.config.get(client, message.guild.id);
 
             const result = await Warn.remove(client, message.guild.id, args[0], message.author.id);
             if(!result || result.error) {

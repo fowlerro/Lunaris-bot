@@ -1,5 +1,6 @@
 const GuildMembers = require("../../database/schemas/GuildMembers");
 const { unmuteLog } = require("../guildLogs");
+const Guilds = require("../Guilds");
 
 module.exports = {
     name: "AutoMod",
@@ -14,7 +15,7 @@ async function registerMutes(client) {
     for(const collection of collections) {
         const guild = await client.guilds.fetch(collection.guildId)
         const member = await guild.members.fetch(collection.userId)
-        const guildConfig = client.guildConfigs.get(guild.id);
+        const guildConfig = await Guilds.config.get(client, guild.id);
         const muteRoleId = guildConfig.get('modules.autoMod.muteRole');
         const muteRole = guild.roles.cache.get(muteRoleId) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
         const hasRole = member.roles.cache.has(muteRole.id);

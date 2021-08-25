@@ -10,8 +10,6 @@ module.exports = {
     async run(client) {
         client.profiles = new Collection();
         client.guildMembers = new Collection();
-        // await this.registerProfiles(client);
-        // await this.registerGuildMembers(client);
 
         cron.schedule('*/5 * * * *', async () => {
             await saveGuildMembers(client);
@@ -25,7 +23,7 @@ module.exports = {
                 profile = await GuildMembers.findOne({ guildId, userId });
                 if(!profile) return createProfile(client, userId, guildId);
                 if(client.guildMembers.size) 
-                    client.guildMembers.set(guildId, [profile, ...client.guildMembers?.get(guildId)])
+                    client.guildMembers.set(guildId, [profile, ...client.guildMembers?.get(guildId)]);
                 else
                     client.guildMembers.set(guildId, [profile]);
             }
@@ -40,8 +38,6 @@ module.exports = {
         }
         return profile;
     },
-
-    // TODO Bulk update profiles to database after a period of time
 
     async generateCard(member, guildProfile, globalProfile, avatarURL, isGlobal) {
         const canvas = createCanvas(1200, 660);
@@ -68,8 +64,8 @@ module.exports = {
         ctx.textAlign = 'center';
         ctx.fillText(globalProfile.coins, 945.42+118.27, 84.28+(76.26/2), 140);
     
-        await drawTextXPData(ctx, profile);
-        await drawVoiceXPData(ctx, profile);
+        await drawTextXPData(ctx, profile, isGlobal);
+        await drawVoiceXPData(ctx, profile, isGlobal);
     
     
         return canvas.toBuffer();
@@ -81,14 +77,14 @@ function neededXp(level) {
     return level * (200 + level * 15);
 }
 
-async function getTextRank(guildId, userId) {
-    let collections = await GuildMembers.find({ guildId });
+async function getTextRank(guildId, userId, isGlobal) {
+    let collections = isGlobal ? await Profile.find({}) : await GuildMembers.find({ guildId });
     collections = collections.sort((a, b) => b.statistics.text.totalXp - a.statistics.text.totalXp)
 
     return collections.findIndex(x => x.userId === userId) + 1;
 }
-async function getVoiceRank(guildId, userId) {
-    let collections = await GuildMembers.find({ guildId });
+async function getVoiceRank(guildId, userId, isGlobal) {
+    let collections = isGlobal ? await Profile.find({}) : await GuildMembers.find({ guildId });
     collections = collections.sort((a, b) => b.statistics.voice.totalXp - a.statistics.voice.totalXp)
 
     return collections.findIndex(x => x.userId === userId) + 1;
@@ -162,7 +158,7 @@ async function drawNickname(ctx, member) {
     ctx.fillText(member.user.tag, 536+(368/2), 6+(124/2));
 }
 
-async function drawTextXPData(ctx, profile) {
+async function drawTextXPData(ctx, profile, isGlobal) {
     ctx.fillStyle = '#FFF';
     ctx.font = `30px Roboto`;
     ctx.textAlign = 'center';
@@ -175,11 +171,11 @@ async function drawTextXPData(ctx, profile) {
     ctx.fillText(`${profile.statistics.text.xp}/${xpNeeded}`, 583 + 99, 418 + 30, 190);
 
     // Ranking
-    const rank = await getTextRank(profile.guildId, profile.userId);
+    const rank = await getTextRank(profile.guildId, profile.userId, isGlobal);
     ctx.fillText(`#${rank}`, 76 + 71, 348 + 30, 140);
 }
 
-async function drawVoiceXPData(ctx, profile) {
+async function drawVoiceXPData(ctx, profile, isGlobal) {
     ctx.fillStyle = '#FFF';
     ctx.font = `30px Roboto`;
     ctx.textAlign = 'center';
@@ -192,7 +188,7 @@ async function drawVoiceXPData(ctx, profile) {
     ctx.fillText(`${profile.statistics.voice.xp}/${xpNeeded}`, 583 + 99, 576 + 30, 190);
 
     // Ranking
-    const rank = await getVoiceRank(profile.guildId, profile.userId);
+    const rank = await getVoiceRank(profile.guildId, profile.userId, isGlobal);
     ctx.fillText(`#${rank}`, 76 + 71, 506 + 30, 140);
 }
 

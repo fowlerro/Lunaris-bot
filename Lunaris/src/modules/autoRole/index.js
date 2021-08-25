@@ -32,7 +32,7 @@ module.exports = {
                         roles: [{roleId: element.roleId, timestamp: Date.now() + ms(element.time)}],
                     }).catch(err => console.log(err));
                 }
-    
+
                 if(element.time) {
                     setTimeout(async () => {
                         member.roles.remove(element.roleId).catch(err => console.log(err));

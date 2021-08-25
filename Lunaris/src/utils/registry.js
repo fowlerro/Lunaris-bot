@@ -1,8 +1,6 @@
-
 const path = require('path');
 const fs = require('fs').promises;
 const BaseEvent = require('./structures/BaseEvent');
-const GuildConfig = require('../database/schemas/GuildConfig');
 const clientConfig = require('../database/config.json');
 
 async function registerCommands(client, dir = '') {
@@ -53,14 +51,6 @@ async function registerModules(client, dir = '') {
   }
 }
 
-async function registerGuildConfigs(client) {
-  const configs = await GuildConfig.find({}).select('-_id -__v');
-  configs.forEach(element => {
-    const { guildId } = element;
-    client.guildConfigs.set(guildId, element)
-  });
-}
-
 function registerPresence(client) {
   client.user.setPresence({
     status: clientConfig.presence.status || 'online',
@@ -75,6 +65,5 @@ module.exports = {
   registerCommands, 
   registerEvents,
   registerModules,
-  registerGuildConfigs,
   registerPresence
 };

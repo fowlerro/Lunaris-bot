@@ -3,6 +3,7 @@ const GuildMembers = require("../../database/schemas/GuildMembers");
 const Profile = require("../../database/schemas/Profile");
 const { translate } = require("../../utils/languages/languages");
 const { palette } = require("../../utils/utils");
+const Guilds = require("../Guilds");
 const Profiles = require("../Profiles");
 
 module.exports = {
@@ -15,7 +16,7 @@ module.exports = {
         const guildId = message.guild.id;
         const userId = message.author.id;
 
-        const guildConfig = client.guildConfigs.get(guildId);
+        const guildConfig = await Guilds.config.get(client, guildId);
         const multiplier = guildConfig.get('modules.xp.multiplier');
         const xpToAdd = Math.floor(Math.random() * (10 - 5) + 5);
 
@@ -80,7 +81,7 @@ async function levelUp(client, profile, channelId, xp, xpToAdd, xpNeeded, isGlob
 }
 
 async function sendLevelUpMessage(client, profile, channelId) {
-    const guildConfig = client.guildConfigs.get(profile.guildId);
+    const guildConfig = await Guilds.config.get(client, profile.guildId);
     const messageMode = guildConfig.get('modules.xp.levelUpMessage.mode');
     if(messageMode === 'off') return;
     const language = guildConfig.get('language');

@@ -3,6 +3,7 @@ const { palette } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
 const { Warn } = require("../../../modules/autoMod/utils");
 const { checkEmbedLimits } = require("../../../utils/utils");
+const Guilds = require("../../../modules/Guilds");
 
 module.exports = {
     name: 'warns',
@@ -45,7 +46,7 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-        const { language } = client.guildConfigs.get(message.guild.id);
+        const { language } = await Guilds.config.get(client, message.guild.id);
         const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
         let page = args.find(a => a.startsWith('p:'))?.slice(2);

@@ -53,9 +53,10 @@ const { MessageEmbed, Permissions } = require("discord.js");
 const { palette } = require("../utils/utils");
 const { translate } = require("../utils/languages/languages");
 const ms = require('ms');
+const Guilds = require("./Guilds");
 
 async function memberJoinedLog(client, member) {
-    const guildConfig = client.guildConfigs.get(member.guild.id);
+    const guildConfig = await Guilds.config.get(client, member.guild.id);
     const logChannel = member.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -217,7 +218,7 @@ function memberBannedLog (client, executor, target, member, reason, logChannel, 
 
 async function memberUnbannedLog(client, guild, user) {
 
-    const guildConfig = client.guildConfigs.get(guild.id);
+    const guildConfig = await Guilds.config.get(client, guild.id);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -242,7 +243,7 @@ async function memberUnbannedLog(client, guild, user) {
 
 
 async function channelCreatedLog(client, channel) {
-    const guildConfig = client.guildConfigs.get(channel.guild.id);
+    const guildConfig = await Guilds.config.get(client, channel.guild.id);
     const logChannel = channel.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.channel'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -266,7 +267,7 @@ async function channelCreatedLog(client, channel) {
 }
 
 async function channelDeletedLog(client, channel) {
-    const guildConfig = client.guildConfigs.get(channel.guild.id);
+    const guildConfig = await Guilds.config.get(client, channel.guild.id);
     const logChannel = channel.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.channel'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -289,7 +290,7 @@ async function channelDeletedLog(client, channel) {
 }
 
 async function channelUpdatedLog(client, newChannel) {
-    const guildConfig = client.guildConfigs.get(newChannel.guild.id);
+    const guildConfig = await Guilds.config.get(client, newChannel.guild.id);
     const logChannel = newChannel.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.channel'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -451,7 +452,7 @@ function inviteDeletedLog(client, code, channelId, logChannel, language) {
 
 
 async function cmdTriggerLog(client, cmdName, guild, channelId, executor, content) {
-    const guildConfig = client.guildConfigs.get(guild.id);
+    const guildConfig = await Guilds.config.get(client, guild.id);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.commands'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -486,7 +487,7 @@ function memberRoleLog(client, executor, target, role, state, logChannel, langua
 
 
 async function roleCreatedLog(client, role) {
-    const guildConfig = client.guildConfigs.get(role.guild.id);
+    const guildConfig = await Guilds.config.get(client, role.guild.id);
     const logChannel = role.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.roles'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -508,7 +509,7 @@ async function roleCreatedLog(client, role) {
 }
 
 async function roleDeletedLog(client, role) {
-    const guildConfig = client.guildConfigs.get(role.guild.id);
+    const guildConfig = await Guilds.config.get(client, role.guild.id);
     const logChannel = role.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.roles'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -529,7 +530,7 @@ async function roleDeletedLog(client, role) {
 }
 
 async function roleUpdatedLog(client, role) {
-    const guildConfig = client.guildConfigs.get(role.guild.id);
+    const guildConfig = await Guilds.config.get(client, role.guild.id);
     const logChannel = role.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.roles'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -594,12 +595,12 @@ async function roleUpdatedLog(client, role) {
 }
 
 
-function warnAddLog(client, guildId, executor, target, reason, id) {
+async function warnAddLog(client, guildId, executor, target, reason, id) {
     const guild = client.guilds.cache.find(guild => guild.id === guildId);
     const member = guild.members.cache.find(m => m.id === target);
     if(!member) return;
 
-    const guildConfig = client.guildConfigs.get(guildId);
+    const guildConfig = await Guilds.config.get(client, guildId);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -616,12 +617,12 @@ function warnAddLog(client, guildId, executor, target, reason, id) {
     return logChannel.send({embeds: [embed]});
 }
 
-function warnRemoveLog(client, guildId, by, executor, target, reason, id) {
+async function warnRemoveLog(client, guildId, by, executor, target, reason, id) {
     const guild = client.guilds.cache.find(guild => guild.id === guildId);
     const member = guild.members.cache.find(m => m.id === target);
     if(!member) return;
 
-    const guildConfig = client.guildConfigs.get(guildId);
+    const guildConfig = await Guilds.config.get(client, guildId);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -639,10 +640,10 @@ function warnRemoveLog(client, guildId, by, executor, target, reason, id) {
     return logChannel.send({embeds: [embed]});
 }
 
-function warnRemoveAllLog(client, guildId, by) {
+async function warnRemoveAllLog(client, guildId, by) {
     const guild = client.guilds.cache.find(guild => guild.id === guildId);
 
-    const guildConfig = client.guildConfigs.get(guildId);
+    const guildConfig = await Guilds.config.get(client, guildId);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -657,12 +658,12 @@ function warnRemoveAllLog(client, guildId, by) {
 }
 
 
-function muteLog(client, guildId, by, target, reason, time) {
+async function muteLog(client, guildId, by, target, reason, time) {
     const guild = client.guilds.cache.find(guild => guild.id === guildId);
     const member = guild.members.cache.find(m => m.id === target);
     if(!member) return;
 
-    const guildConfig = client.guildConfigs.get(guildId);
+    const guildConfig = await Guilds.config.get(client, guildId);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     if(!logChannel) return;
     const language = guildConfig.get('language');
@@ -679,12 +680,12 @@ function muteLog(client, guildId, by, target, reason, time) {
     return logChannel.send({embeds: [embed]});
 }
 
-function unmuteLog(client, guildId, by, executor, target, reason = "") {
+async function unmuteLog(client, guildId, by, executor, target, reason = "") {
     const guild = client.guilds.cache.find(guild => guild.id === guildId);
     const member = guild.members.cache.find(m => m.id === target);
     if(!member) return;
     
-    const guildConfig = client.guildConfigs.get(guildId);
+    const guildConfig = await Guilds.config.get(client, guildId);
     const logChannel = guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
     if(!logChannel) return;
     const language = guildConfig.get('language');

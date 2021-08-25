@@ -4,6 +4,7 @@ const ms = require('ms');
 const { MessageEmbed, Permissions } = require("discord.js");
 const { palette } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
+const Guilds = require("../../../modules/Guilds");
 
 module.exports = {
     name: 'mute',
@@ -50,7 +51,7 @@ module.exports = {
         const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
         if(!member) return;
 
-        const { language } = client.guildConfigs.get(message.guild.id);
+        const { language } = await Guilds.config.get(client, message.guild.id);
 
         let reason = '';
         let time = 0;

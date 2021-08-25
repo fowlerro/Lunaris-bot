@@ -1,6 +1,7 @@
 const { MessageEmbed } = require("discord.js");
 const { palette, botOwners } = require("../../utils/utils");
 const { translate } = require("../../utils/languages/languages");
+const Guilds = require("../../modules/Guilds");
 
 module.exports = {
     name: 'help',
@@ -37,7 +38,7 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-        const guildConfig = client.guildConfigs.get(message.guild.id);
+        const guildConfig = await Guilds.config.get(client, message.guild.id);
         const prefix = guildConfig.get('prefix');
         const language = guildConfig.get('language');
 

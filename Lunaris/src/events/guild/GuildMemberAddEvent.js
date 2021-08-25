@@ -2,6 +2,7 @@
 const { Mute } = require('../../modules/autoMod/utils');
 const autoRole = require('../../modules/autoRole');
 const { memberJoinedLog } = require('../../modules/guildLogs');
+const Guilds = require('../../modules/Guilds');
 const BaseEvent = require('../../utils/structures/BaseEvent');
 
 module.exports = class GuildMemberAddEvent extends BaseEvent {
@@ -12,7 +13,8 @@ module.exports = class GuildMemberAddEvent extends BaseEvent {
   async run(client, member) {
     if(!client.isOnline) return;
     memberJoinedLog(client, member);
-    if(client.guildConfigs.get(member.guild.id).modules.autoRole.status) {
+    const guildConfig = await Guilds.config.get(client, member.guild.id);
+    if(guildConfig.get('modules.autoRole.status')) {
       autoRole.give(member);
     }
     Mute.reassignRole(client, member.guild.id, member.id);

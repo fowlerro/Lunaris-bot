@@ -2,6 +2,7 @@ const { MessageEmbed, Permissions } = require("discord.js");
 const { Mute } = require("../../../modules/autoMod/utils");
 const { palette, checkEmbedLimits } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
+const Guilds = require("../../../modules/Guilds");
 
 module.exports = {
     name: 'mutes',
@@ -35,7 +36,7 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-        const { language } = client.guildConfigs.get(message.guild.id);
+        const { language } = await Guilds.config.get(client, message.guild.id);
         let mutes = await Mute.list(client, message.guild.id);
 
         let page = args.find(a => a.startsWith('p:'))?.slice(2);

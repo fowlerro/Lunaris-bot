@@ -1,6 +1,7 @@
 const BaseEvent = require('../../utils/structures/BaseEvent');
 const CommandHandlerModule = require('../../modules/commandHandler');
 const xpSystem = require('../../modules/xpSystem');
+const Guilds = require('../../modules/Guilds');
 module.exports = class MessageCreateEvent extends BaseEvent {
     constructor() {
         super('messageCreate');
@@ -8,7 +9,7 @@ module.exports = class MessageCreateEvent extends BaseEvent {
     
     async run(client, message) {
         if(message.author.bot) return;
-        const guildConfig = client.guildConfigs.get(message.guild.id);
+        const guildConfig = await Guilds.config.get(client, message.guild.id);
         const prefix = guildConfig.get('prefix')
         CommandHandlerModule.handleCommand(client, message);
         

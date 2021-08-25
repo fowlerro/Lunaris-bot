@@ -1,5 +1,6 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-messageDelete
 const { messageDeletedLog } = require('../../modules/guildLogs');
+const Guilds = require('../../modules/Guilds');
 const BaseEvent = require('../../utils/structures/BaseEvent');
 module.exports = class MessageDeleteEvent extends BaseEvent {
   constructor() {
@@ -10,7 +11,7 @@ module.exports = class MessageDeleteEvent extends BaseEvent {
     if(!client.isOnline) return;
     // console.log(message);
     if(!message.guild || message.author.bot) return;
-    const guildConfig = client.guildConfigs.get(message.guild.id);
+    const guildConfig = await Guilds.config.get(client, message.guild.id);
     const logChannel = message.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.message'));
     if(!logChannel) return;
     const language = guildConfig.get('language');

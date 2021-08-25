@@ -4,6 +4,7 @@ const Cooldowns = require("../../database/schemas/Cooldowns");
 const { translate } = require("../../utils/languages/languages");
 const { botOwners } = require('../../utils/utils');
 const { cmdTriggerLog } = require('../guildLogs');
+const Guilds = require('../Guilds');
 const helpArgs = ["help", "pomoc", "info"];
 
 module.exports = {
@@ -16,7 +17,7 @@ module.exports = {
     if(!this.enabled) return;
     if(!client.isOnline && !botOwners.includes(message.author.id)) return;
 
-    const guildConfig = client.guildConfigs.get(message.guild.id);
+    const guildConfig = await Guilds.config.get(client, message.guild.id);
     const prefix = guildConfig.get('prefix');
     const language = guildConfig.get('language');
     if(message.content === `<@!${client.user.id}>`) return message.channel.send(translate(language, "cmd.prefixMessage", "`"+prefix+"`"));
