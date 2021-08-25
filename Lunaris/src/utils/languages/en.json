@@ -44,7 +44,11 @@
         "languageChange": "Language has been changed to %VAR%",
         "helpTitle": "Help",
         "helpFooter": "Type %VAR%help <cmd> for more informations about command",
-        "cmdHelpTitle": "Help for %VAR%"
+        "cmdHelpTitle": "Help for %VAR%",
+        "ranking": {
+            "text": "Text",
+            "voice": "Voice"
+        }
     },
     "logs": {
         "general": {

@@ -44,7 +44,11 @@
         "languageChange": "Język został pomyślnie zmieniony na %VAR%",
         "helpTitle": "Pomoc",
         "helpFooter": "Aby sprawdzić dokładną pomoc komendy, wpisz %VAR%help <cmd>",
-        "cmdHelpTitle": "Informacje o %VAR%"
+        "cmdHelpTitle": "Informacje o %VAR%",
+        "ranking": {
+            "text": "Tekstowy",
+            "voice": "Głosowy"
+        }
     },
     "logs": {
         "general": {

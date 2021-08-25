@@ -71,6 +71,7 @@ module.exports = {
         return canvas.toBuffer();
     },
     neededXp,
+    getTextRank, getVoiceRank
 }
 
 function neededXp(level) {
