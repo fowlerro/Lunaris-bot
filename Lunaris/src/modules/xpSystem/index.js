@@ -18,7 +18,7 @@ module.exports = {
 
         const guildConfig = await Guilds.config.get(client, guildId);
         const multiplier = guildConfig.get('modules.xp.multiplier');
-        const xpToAdd = Math.floor(Math.random() * (10 - 5) + 5);
+        const xpToAdd = Math.floor(Math.random() * (35 - 20) + 20);
 
         await addGuildTextXp(client, guildId, message.channel.id, userId, xpToAdd, multiplier);
         await addGlobalTextXp(client, userId, xpToAdd);
@@ -39,8 +39,14 @@ module.exports = {
 
 async function addGuildTextXp(client, guildId, channelId, userId, xpToAdd, multiplier) {
     const guildProfile = await Profiles.get(client, userId, guildId);
-    const { level, xp } = guildProfile.statistics.text;
+    const { level, xp, cooldown } = guildProfile.statistics.text;
+    if(cooldown) return;
+    guildProfile.statistics.text.cooldown = true;
     const xpNeeded = Profiles.neededXp(level);
+
+    setTimeout(() => {
+        guildProfile.statistics.text.cooldown = false
+    }, 60000);
 
     if(xp + (xpToAdd * multiplier) >= xpNeeded) return levelUp(client, guildProfile, channelId, xp, (xpToAdd * multiplier), xpNeeded);
 
@@ -53,8 +59,14 @@ async function addGuildTextXp(client, guildId, channelId, userId, xpToAdd, multi
 
 async function addGlobalTextXp(client, userId, xpToAdd) {
     const globalProfile = await Profiles.get(client, userId);
-    const { level, xp } = globalProfile.statistics.text;
+    const { level, xp, cooldown } = globalProfile.statistics.text;
+    if(cooldown) return;
+    globalProfile.statistics.text.cooldown = true;
     const xpNeeded = Profiles.neededXp(level);
+
+    setTimeout(() => {
+        globalProfile.statistics.text.cooldown = false;
+    }, 60000);
 
     if(xp + xpToAdd >= xpNeeded) return levelUp(client, globalProfile, null, xp, xpToAdd, xpNeeded, true);
 
@@ -92,7 +104,7 @@ async function sendLevelUpMessage(client, profile, channelId) {
 
     const embed = new MessageEmbed()
         .setColor(palette.primary)
-        .setDescription(translate(language, 'xp.levelUpMessage', profile.statistics.text.level + 1, `<@${profile.userId}>`));
+        .setDescription(translate(language, 'xp.levelUpMessage', profile.statistics.text.level, `<@${profile.userId}>`));
 
     channel.send({ embeds: [embed] });
 }

@@ -118,7 +118,6 @@ async function saveGuildMembers(client) {
     const bulk = GuildMembers.collection.initializeOrderedBulkOp();
     client.guildMembers.forEach(guild => {
         guild.forEach(profile => {
-            console.log(profile);
             bulk.find({ guildId: profile.guildId, userId: profile.userId }).replaceOne(profile);
         })
     });
