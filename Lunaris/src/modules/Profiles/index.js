@@ -4,6 +4,8 @@ const { join } = require('path');
 const cron = require('node-cron');
 const GuildMembers = require("../../database/schemas/GuildMembers");
 const Profile = require("../../database/schemas/Profile");
+// TODO Remove after some time guild profiles from users who leaved a server
+// TODO Add property `isInGuild` to GuildMembers schema. Extra check for rankings, etc.
 module.exports = {
     name: "Profiles",
     enabled: true,
