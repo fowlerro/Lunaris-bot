@@ -1,4 +1,4 @@
-const Profiles = require("../../modules/Profiles");
+const { joinVoiceChannel } = require('@discordjs/voice');
 
 module.exports = {
     name: 'test',
@@ -30,6 +30,12 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
+
+        const connection = joinVoiceChannel({
+            channelId: '854756214713876530',
+            guildId: message.guild.id,
+            adapterCreator: message.guild.voiceAdapterCreator,
+        });
 
         return message.channel.send('test');
     }

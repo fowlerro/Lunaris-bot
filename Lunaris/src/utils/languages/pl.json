@@ -47,7 +47,9 @@
         "cmdHelpTitle": "Informacje o %VAR%",
         "ranking": {
             "text": "Tekstowy",
-            "voice": "Głosowy"
+            "voice": "Głosowy",
+            "coins": "Monety",
+            "lastUpdate": "Ostatni zapis"
         }
     },
     "logs": {
