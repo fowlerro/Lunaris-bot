@@ -7,11 +7,13 @@ const Profile = require("../../database/schemas/Profile");
 module.exports = {
     name: "Profiles",
     enabled: true,
+    lastSave: 0,
     async run(client) {
         client.profiles = new Collection();
         client.guildMembers = new Collection();
 
         cron.schedule('*/5 * * * *', async () => {
+            this.lastSave = Date.now()
             await saveGuildMembers(client);
             await saveProfiles(client);
         })

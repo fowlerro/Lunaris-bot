@@ -5,6 +5,7 @@ const { translate } = require("../../utils/languages/languages");
 const { palette } = require("../../utils/utils");
 const Guilds = require("../Guilds");
 const Profiles = require("../Profiles");
+const { handleVoiceXp } = require('./voice');
 
 module.exports = {
     name: "XP System",
@@ -23,6 +24,7 @@ module.exports = {
         await addGuildTextXp(client, guildId, message.channel.id, userId, xpToAdd, multiplier);
         await addGlobalTextXp(client, userId, xpToAdd);
     },
+    handleVoiceXp,
     async resetDailyXp(client) {
         await GuildMembers.updateMany({ $or: [ { 'statistics.text.dailyXp': { $gte: 1 } }, { 'statistics.voice.dailyXp': { $gte: 1 } } ] }, {
             'statistics.text.dailyXp': 0,

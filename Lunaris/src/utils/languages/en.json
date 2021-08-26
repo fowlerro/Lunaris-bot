@@ -47,7 +47,9 @@
         "cmdHelpTitle": "Help for %VAR%",
         "ranking": {
             "text": "Text",
-            "voice": "Voice"
+            "voice": "Voice",
+            "coins": "Coins",
+            "lastUpdate": "last update"
         }
     },
     "logs": {
