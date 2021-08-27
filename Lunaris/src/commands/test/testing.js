@@ -1,4 +1,4 @@
-const { joinVoiceChannel } = require('@discordjs/voice');
+// TODO Add `botResponse` boolean property to commands, bot will respond only if true
 
 module.exports = {
     name: 'test',
@@ -7,7 +7,7 @@ module.exports = {
     minArgs: null,
     maxArgs: null,
     autoRemove: true,
-    autoRemoveResponse: false,
+    autoRemoveResponse: true,
     globalStatus: true,
     status: true,
 
@@ -30,12 +30,6 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
-
-        const connection = joinVoiceChannel({
-            channelId: '854756214713876530',
-            guildId: message.guild.id,
-            adapterCreator: message.guild.voiceAdapterCreator,
-        });
 
         return message.channel.send('test');
     }

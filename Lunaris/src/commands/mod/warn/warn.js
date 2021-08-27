@@ -42,7 +42,7 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-        const member = message.mentions.members.first() || message.guild.members.cache.get(user);
+        const member = message.mentions.members.first() || await message.guild.members.fetch(args[0]);
         if(!member) return;
 
         const { language } = await Guilds.config.get(client, message.guild.id);

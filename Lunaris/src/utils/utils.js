@@ -254,9 +254,25 @@ async function handleEmbedPageButtons(msg, currPage, pageAmount, embeds) {
     })
 }
 
+async function getUserFromMention(client, mention) {
+    if(!mention) return false;
+    if(!isNaN(mention)) return client.users.fetch(mention);
+    const matches = mention.match(/^<@!?(\d+)>$/);
+    if(!matches) return false;
+
+    return client.users.fetch(matches[1]);
+}
+async function getChannelFromMention(guild, mention) {
+    if(!mention) return false
+    const matches = mention.match(/^<#(\d+)>$/);
+    if(!matches) return false;
+
+    return guild.channels.fetch(matches[1]);
+}
+
 
 
 module.exports = {botOwners, palette, mapToObject, groupBy, daysInMonth, 
     msToTime,
     toggleBot, setActivity,
-    checkEmbedLimits};
+    checkEmbedLimits, getUserFromMention, getChannelFromMention};
