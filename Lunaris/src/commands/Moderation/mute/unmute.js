@@ -1,4 +1,4 @@
-const { Mute } = require("../../../modules/autoMod/utils");
+const { Mute } = require("../../../modules/Mod/utils");
 const regex = /[0-9]+[d|h|m|s]/g
 const ms = require('ms');
 const { MessageEmbed, Permissions } = require("discord.js");

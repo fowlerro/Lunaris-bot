@@ -1,7 +1,7 @@
 const { MessageEmbed, Permissions } = require("discord.js");
 const { palette } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
-const { Warn } = require("../../../modules/autoMod/utils");
+const { Warn } = require("../../../modules/Mod/utils");
 const Guilds = require("../../../modules/Guilds");
 
 module.exports = {

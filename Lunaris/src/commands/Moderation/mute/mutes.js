@@ -1,5 +1,5 @@
 const { MessageEmbed, Permissions } = require("discord.js");
-const { Mute } = require("../../../modules/autoMod/utils");
+const { Mute } = require("../../../modules/Mod/utils");
 const { palette, checkEmbedLimits } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
 const Guilds = require("../../../modules/Guilds");

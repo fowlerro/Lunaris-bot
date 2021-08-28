@@ -256,7 +256,7 @@ async function handleEmbedPageButtons(msg, currPage, pageAmount, embeds) {
 
 async function getUserFromMention(client, mention) {
     if(!mention) return false;
-    if(!isNaN(mention)) return client.users.fetch(mention);
+    if(!isNaN(mention)) return client.users.fetch(mention).catch(err => console.error(err));
     const matches = mention.match(/^<@!?(\d+)>$/);
     if(!matches) return false;
 
@@ -267,7 +267,7 @@ async function getChannelFromMention(guild, mention) {
     const matches = mention.match(/^<#(\d+)>$/);
     if(!matches) return false;
 
-    return guild.channels.fetch(matches[1]);
+    return guild.channels.fetch(matches[1]).catch(err => console.error(err))
 }
 
 function assignNestedObjects(obj, keyPath, value) {

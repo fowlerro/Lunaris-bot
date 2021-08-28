@@ -1,13 +1,16 @@
 const GuildMembers = require("../../database/schemas/GuildMembers");
 const { unmuteLog } = require("../guildLogs");
 const Guilds = require("../Guilds");
+const { Ban, registerBans } = require("./ban");
 
 module.exports = {
-    name: "AutoMod",
+    name: "Mod",
     enabled: true,
     async run(client) {
         await registerMutes(client);
+        await registerBans(client)
     },
+    ban: Ban
 }
 
 async function registerMutes(client) {

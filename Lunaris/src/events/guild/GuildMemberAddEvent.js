@@ -1,5 +1,5 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildMemberAdd
-const { Mute } = require('../../modules/autoMod/utils');
+const { Mute } = require('../../modules/Mod/utils');
 const autoRole = require('../../modules/autoRole');
 const { memberJoinedLog } = require('../../modules/guildLogs');
 const Guilds = require('../../modules/Guilds');

@@ -66,7 +66,7 @@ const Mute = {
             const guild = client.guilds.cache.get(guildId);
             const guildConfig = await Guilds.config.get(client, guildId);
 
-            if(!guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return { error: "missingPermission", perms: Permissions.FLAGS.MANAGE_ROLES }
+            if(!guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return { error: "missingPermission", perms: new Permissions([Permissions.FLAGS.MANAGE_ROLES]).toArray() }
 
             const muteRoleId = guildConfig.get('modules.autoMod.muteRole');
             let timestamp = null;
@@ -108,8 +108,11 @@ const Mute = {
             return true;
     },
     remove: async (client, guildId, executor, userId, reason) => {
-        const guild = client.guilds.cache.get(guildId);
-        const member = guild.members.cache.get(userId);
+        const guild = await client.guilds.fetch(guildId).catch(e => {})
+
+        if(!guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return { error: "missingPermission", perms: new Permissions([Permissions.FLAGS.MANAGE_ROLES]).toArray() }
+
+        const member = guild.members.fetch(userId).catch(e => {})
         const guildConfig = await Guilds.config.get(client, guildId);
         const muteRoleId = guildConfig.get('modules.autoMod.muteRole');
         const muteRole = guild.roles.cache.get(muteRoleId) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');

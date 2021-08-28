@@ -160,6 +160,11 @@
             "removeAllMutesReason": "Unmute all members",
             "notMuted": "%VAR% is not muted",
             "muteList": "Muted users:"
+        },
+        "ban": {
+            "add": "%VAR% has been banned by %VAR% %VAR%",
+            "remove": "%VAR% has been unbanned by %VAR% %VAR%",
+            "notBanned": "%VAR% is not banned"
         }
     },
     "xp": {

@@ -1,6 +1,6 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildMemberUpdate
 const { Permissions } = require('discord.js');
-const { Mute } = require('../../modules/autoMod/utils');
+const { Mute } = require('../../modules/Mod/utils');
 const { memberNicknameLog, memberRoleLog } = require('../../modules/guildLogs');
 const Guilds = require('../../modules/Guilds');
 const BaseEvent = require('../../utils/structures/BaseEvent');

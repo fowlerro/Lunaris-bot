@@ -160,6 +160,11 @@
             "removeAllMutesReason": "Odciszono wszystkich użytkowników",
             "notMuted": "%VAR% nie jest wyciszony",
             "muteList": "Lista mute'ów na serwerze"
+        },
+        "ban": {
+            "add": "%VAR% został zbanowany przez %VAR% %VAR%",
+            "remove": "%VAR% został odbanowany przez %VAR% %VAR%",
+            "notBanned": "%VAR% nie jest zbanowany"
         }
     },
     "xp": {

@@ -1,40 +1,39 @@
-const { Mute } = require("../../../modules/Mod/utils");
-const regex = /[0-9]+[d|h|m|s]/g
 const ms = require('ms');
+const regex = /[0-9]+[d|h|m|s]/g
 const { MessageEmbed, Permissions } = require("discord.js");
-const { palette } = require("../../../utils/utils");
+const { palette, getUserFromMention } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
 const Guilds = require("../../../modules/Guilds");
+const Mod = require('../../../modules/Mod');
 
 module.exports = {
-    name: 'mute',
-    aliases: ['mutuj', 'wycisz'],
+    name: 'ban',
+    aliases: ['zbanuj', 'b'],
     ownerOnly: false,
     minArgs: 1,
     maxArgs: null,
-    cmdArgs: {list: 'mutes'},
+    cmdArgs: {list: 'bans'},
     autoRemove: false,
     autoRemoveResponse: false,
     globalStatus: true,
     status: true,
 
     description: {
-        pl: "Wycisza użytkownika",
-        en: "Mutes user",
+        pl: "Banuje użytkownika",
+        en: "Ban a user",
     },
-    category: 'mod',
     syntax: {
-        pl: 'mute <@user> [<czas> <powód>]',
-        en: 'mute <@user> [<time> <reason>]',
+        pl: 'ban <@user> [<czas> <powód>]',
+        en: 'ban <@user> [<time> <reason>]',
     },
     syntaxHelp: {
         pl: 'Format czasu: 1d 1h 1m 1s',
         en: 'Time format: 1d 1h 1m 1s',
     },
-    syntaxExample: 'mute @Lunaris 12h 30m toxic',
+    syntaxExample: 'ban @Lunaris 12h 30m toxic',
 
     permissions: new Permissions([
-        Permissions.FLAGS.KICK_MEMBERS
+        Permissions.FLAGS.BAN_MEMBERS
     ]).toArray(),
     allowedChannels: [],
     blockedChannels: [],
@@ -48,7 +47,7 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: false,
     async run(client, message, args) {
-        const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+        const member = await getUserFromMention(client, args[0]);
         if(!member) return;
 
         const { language } = await Guilds.config.get(client, message.guild.id);
@@ -70,14 +69,14 @@ module.exports = {
             }
         }
 
-        const result = await Mute.add(client, message.guild.id, member.id, reason, message.author.id, time);
+        const result = await Mod.ban.add(client, member.id, message.guild.id, message.author.id, reason, time);
         if(!result) return;
-        const description = result.error === 'missingPermission' ? `${translate(language, 'permissions.missingPermission')}: ${result.perms}` : translate(language, 'autoMod.mute.addMute', `<@${member.id}>`, `<@${message.author.id}>`, reason.length ? `| ${reason}` : "")
+        const description = result.error === 'missingPermission' ? `${translate(language, 'permissions.missingPermission')}: ${result.perms}` : translate(language, 'autoMod.ban.add', `<@${member.id}>`, `<@${message.author.id}>`, reason.length ? `| ${reason}` : "")
 
         const embed = new MessageEmbed()
             .setColor(palette.error)
             .setDescription(description);
 
-        return message.channel.send({embeds: [embed]});
+        return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false }});
     }
 }
