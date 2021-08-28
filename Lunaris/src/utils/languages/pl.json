@@ -50,6 +50,11 @@
             "voice": "Głosowy",
             "coins": "Monety",
             "lastUpdate": "Ostatni zapis"
+        },
+        "userInfo": {
+            "title": "Informacje o %VAR%",
+            "createdAt": "Data utworzenia",
+            "joinedAt": "Data dołączenia"
         }
     },
     "logs": {

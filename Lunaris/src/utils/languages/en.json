@@ -50,6 +50,12 @@
             "voice": "Voice",
             "coins": "Coins",
             "lastUpdate": "last update"
+        },
+        "userInfo": {
+            "title": "%VAR%'s informations",
+            "createdAt": "Created at",
+            "joinedAt": "Joined at",
+            "avatar": "Avatar URL"
         }
     },
     "logs": {
