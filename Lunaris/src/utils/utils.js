@@ -270,9 +270,28 @@ async function getChannelFromMention(guild, mention) {
     return guild.channels.fetch(matches[1]);
 }
 
+function assignNestedObjects(obj, keyPath, value) {
+    lastKeyIndex = keyPath.length-1;
+    for (var i = 0; i < lastKeyIndex; ++ i) {
+      key = keyPath[i];
+      if (!(key in obj)){
+        obj[key] = {}
+      }
+      obj = obj[key];
+    }
+    if(obj[keyPath[lastKeyIndex]]) {
+        if(obj[keyPath[lastKeyIndex]].includes(value)) return;
+        obj[keyPath[lastKeyIndex]] = [value, ...obj[keyPath[lastKeyIndex]]]
+    } else obj[keyPath[lastKeyIndex]] = [value]
+}
+
+function capitalize(string) {
+    if (typeof string !== 'string') return ''
+    return string.charAt(0).toUpperCase() + string.slice(1)
+}
 
 
 module.exports = {botOwners, palette, mapToObject, groupBy, daysInMonth, 
     msToTime,
     toggleBot, setActivity,
-    checkEmbedLimits, getUserFromMention, getChannelFromMention};
+    checkEmbedLimits, getUserFromMention, getChannelFromMention, assignNestedObjects, capitalize};
