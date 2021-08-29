@@ -12,51 +12,27 @@ const EMBED_LIMITS = {
 	footer: 2048,
 }
 
-const BUTTONS = [
-	{
-		customId: 'firstPage',
-		disabled: false,
-		emoji: '⏮',
-		label: null,
-		style: 'PRIMARY',
-		type: 'BUTTON',
-		url: null,
-	},
-	{
-		customId: 'previousPage',
-		disabled: false,
-		emoji: '◀️',
-		label: null,
-		style: 'PRIMARY',
-		type: 'BUTTON',
-		url: null,
-	},
-	{
-		customId: 'nextPage',
-		disabled: false,
-		emoji: '▶️',
-		label: null,
-		style: 'PRIMARY',
-		type: 'BUTTON',
-		url: null,
-	},
-	{
-		customId: 'lastPage',
-		disabled: false,
-		emoji: '⏭',
-		label: null,
-		style: 'PRIMARY',
-		type: 'BUTTON',
-		url: null,
-	}
-]
-
 module.exports = {
 	name: 'Embeds',
 	enabled: true,
 	limits: EMBED_LIMITS,
 	async run(client) {},
-	async send(client, embed, guildId, channelId) {},
+	async send(client, document, guildId, channelId) {
+		const guild = await client.guilds.fetch(guildId).catch(e => {})
+		if(!guild) return { error: "Guild not found" }
+		const channel = await guild.channels.fetch(channelId).catch(e => {})
+		if(!channel) return { error: "Channel not found" }
+
+		const embed = document.embed
+
+		const e = new MessageEmbed(embed)
+		embed.timestamp.display && e.setTimestamp(embed.timestamp.timestamp || Date.now())
+
+		const embeds = this.checkLimits(e, true)
+		if(embeds?.error) return
+
+		return this.pageEmbeds(client, embeds, guildId, channelId, 1, true)
+	},
 	checkLimits(embed, pageEmbed = true, maxFields = 25) {
 		checkTitle(embed)
 		checkAuthor(embed)
@@ -149,25 +125,8 @@ function divideFields(embed, maxFields) {
 
 function checkPagesTotalLimit(pages) {
 	return pages.reduce((prev, curr, index) => {
-		return index === 0 ? false : prev ? true : checkTotalLimit(pages[index])
+		return index === 0 ? false : prev ? true : (pages[index].length > 6000)
 	}, false)
-}
-
-function checkTotalLimit(embed) {
-	let total = 0
-
-	total +=
-		(embed.title?.length || 0) +
-		(embed.description?.length || 0) +
-		(embed.author?.name.length || 0) +
-		(embed.footer?.text.length || 0)
-
-	embed.fields.forEach(field => {
-		total += field.name.length + field.value.length
-	})
-
-	if (total > 6000) return true
-	return false
 }
 
 function addButtons(pages, defaultPage) {

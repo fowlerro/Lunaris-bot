@@ -136,10 +136,10 @@ async function saveGuildMembers(client) {
 async function drawAvatar(ctx, avatarURL) {
     ctx.save();
     ctx.beginPath();
-    ctx.arc(125, 125, 124, 0, 2 * Math.PI);
+    ctx.arc(130, 130, 115, 0, 2 * Math.PI);
     ctx.clip();
     const avatar = await loadImage(avatarURL);
-    ctx.drawImage(avatar, 2, 2, 250, 250);
+    ctx.drawImage(avatar, 0, 0, 250, 250);
     ctx.closePath();
     ctx.restore();
 }
