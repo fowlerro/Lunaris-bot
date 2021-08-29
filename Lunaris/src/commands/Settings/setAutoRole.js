@@ -37,18 +37,18 @@ module.exports = {
         const roles = [];
         args.forEach(element => {
             let role = element.split(':');
-            role = {roleID: role[0], time: role[1]};
+            role = {roleId: role[0], time: role[1]};
             roles.push(role);
         });
 
-        const autoRole = await AutoRole.findOne({guildID: message.guild.id});
+        const autoRole = await AutoRole.findOne({guildId: message.guild.id});
         if(autoRole) {
             await autoRole.updateOne({
                 roles
             });
         } else {
             await AutoRole.create({
-                guildID: message.guild.id,
+                guildId: message.guild.id,
                 roles,
             })
         }

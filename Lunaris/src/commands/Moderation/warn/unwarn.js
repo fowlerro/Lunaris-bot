@@ -71,7 +71,7 @@ module.exports = {
 
             const embed = new MessageEmbed()
                 .setColor(palette.success)
-                .setDescription(translate(language, 'autoMod.warn.removeWarn', `<@${message.author.id}>`, `<@${result.userID}>`, args[0] ? `| ${args[0]}` : ""))
+                .setDescription(translate(language, 'autoMod.warn.removeWarn', `<@${message.author.id}>`, `<@${result.userId}>`, args[0] ? `| ${args[0]}` : ""))
 
             return message.channel.send({embeds: [embed]});
     }

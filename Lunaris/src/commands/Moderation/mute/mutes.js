@@ -1,8 +1,9 @@
 const { MessageEmbed, Permissions } = require("discord.js");
 const { Mute } = require("../../../modules/Mod/utils");
-const { palette, checkEmbedLimits } = require("../../../utils/utils");
+const { palette } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
 const Guilds = require("../../../modules/Guilds");
+const Embeds = require("../../../modules/Embeds");
 
 module.exports = {
     name: 'mutes',
@@ -51,8 +52,8 @@ module.exports = {
                 if(!isNaN(v.muted.by) && client.users.cache.get(v.muted.by)) by = client.users.cache.get(v.muted.by).tag;
                 if(!isNaN(v.muted.by) && !client.users.cache.get(v.muted.by)) by = await client.users.fetch(v.muted.by);
 
-                let userNick = client.users.cache.get(v.userID);
-                if(!userNick) userNick = await client.users.fetch(v.userID);
+                let userNick = client.users.cache.get(v.userId);
+                if(!userNick) userNick = await client.users.fetch(v.userId);
                 userNick = userNick.tag;
 
                 return {
@@ -76,8 +77,10 @@ module.exports = {
 
         mutes.error ? embed.setDescription(mutes.error) : embed.addFields(mutes);
 
-        checkEmbedLimits(client, embed, message.channel, 9, page);
+        const embeds = Embeds.checkLimits(embed, true, 9)
+		if(embeds?.error)
+			return message.channel.send({ content: 'Error' })
 
-        return message.channel.send({embeds: [embed]});
+		return Embeds.pageEmbeds(client, embeds, message.guild.id, message.channel.id, page, true)
     }
 }

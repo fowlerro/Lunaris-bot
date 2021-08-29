@@ -2,8 +2,8 @@ const { MessageEmbed, Permissions } = require("discord.js");
 const { palette } = require("../../../utils/utils");
 const { translate } = require("../../../utils/languages/languages");
 const { Warn } = require("../../../modules/Mod/utils");
-const { checkEmbedLimits } = require("../../../utils/utils");
 const Guilds = require("../../../modules/Guilds");
+const Embeds = require("../../../modules/Embeds");
 
 module.exports = {
     name: 'warns',
@@ -59,7 +59,7 @@ module.exports = {
 
         if(warns.warns) {
             warnsPromises = await warns.warns.map(v => {
-                const {userID, warns} = v;
+                const {userId, warns} = v;
 
                 if(!member) return warns.map(async v => {
                     const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(v.date);
@@ -70,8 +70,8 @@ module.exports = {
                     // const by = !isNaN(v.by) ? client.users.cache.get(v.by).tag : v.by;
 
 
-                    let userNick = client.users.cache.get(userID);
-                    if(!userNick) userNick = await client.users.fetch(userID);
+                    let userNick = client.users.cache.get(userId);
+                    if(!userNick) userNick = await client.users.fetch(userId);
                     userNick = userNick.tag;
 
                     return {
@@ -105,8 +105,10 @@ module.exports = {
         warns.warns && embed.addFields(warns.warns);
         warns.error && embed.setDescription(warns.error);
 
-        checkEmbedLimits(client, embed, message.channel, 9, page);
+        const embeds = Embeds.checkLimits(embed, true, 9)
+		if(embeds?.error)
+			return message.channel.send({ content: 'Error' })
 
-        return message.channel.send({embeds: [embed]});
+		return Embeds.pageEmbeds(client, embeds, message.guild.id, message.channel.id, page, true)
     }
 }

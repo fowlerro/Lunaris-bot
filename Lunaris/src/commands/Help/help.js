@@ -1,5 +1,5 @@
 const { MessageEmbed, MessageActionRow, MessageSelectMenu, Formatters } = require("discord.js");
-const { palette, botOwners, assignNestedObjects, checkEmbedLimits, capitalize } = require("../../utils/utils");
+const { palette, botOwners, assignNestedObjects, capitalize } = require("../../utils/utils");
 const { translate } = require("../../utils/languages/languages");
 const Guilds = require("../../modules/Guilds");
 

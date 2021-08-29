@@ -37,10 +37,10 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
-        const guildID = message.guild.id;
-        const channelID = message.channel.id;
-        const messageID = args[0];
-        if(!messageID) return;
+        const guildId = message.guild.id;
+        const channelId = message.channel.id;
+        const messageId = args[0];
+        if(!messageId) return;
         let reactions = [];
         args.shift();
         args.forEach((element, index) => {
@@ -50,7 +50,7 @@ module.exports = {
 
         if(!reactions.length) return;
 
-        reactionRoles.create(client, guildID, channelID, messageID, reactions);
+        reactionRoles.create(client, guildId, channelId, messageId, reactions);
 
         return message.channel.send("OK");
     }
