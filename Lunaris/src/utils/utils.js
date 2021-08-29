@@ -279,6 +279,7 @@ function assignNestedObjects(obj, keyPath, value) {
       }
       obj = obj[key];
     }
+    // console.log({keyPath, k: keyPath[lastKeyIndex], lastKeyIndex})
     if(obj[keyPath[lastKeyIndex]]) {
         if(obj[keyPath[lastKeyIndex]].includes(value)) return;
         obj[keyPath[lastKeyIndex]] = [value, ...obj[keyPath[lastKeyIndex]]]
