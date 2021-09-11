@@ -2,6 +2,7 @@ const {GraphQLObjectType, GraphQLSchema} = require('graphql');
 
 const { getUser } = require('./User/query')
 const { getMutualGuilds, getGuildConfig, getGuildRoles } = require('./Guilds/query')
+const { getProfile } = require('./Profile/query')
 const { updateGuildConfig } = require('./Guilds/mutation')
 
 const RootQuery = new GraphQLObjectType({
@@ -11,6 +12,7 @@ const RootQuery = new GraphQLObjectType({
         getMutualGuilds,
         getGuildConfig,
         getGuildRoles,
+        getProfile
     }
 });
 
