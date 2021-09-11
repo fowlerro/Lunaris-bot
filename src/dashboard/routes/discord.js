@@ -1,7 +1,7 @@
 const {getBotGuilds, getUserGuilds, getGuildRoles} = require('../utils/api');
 const router = require('express').Router();
-const GuildConfig = require('../../database/schemas/GuildConfig');
 const {getMutualGuilds} = require('../utils/utils');
+const Guilds = require('../../modules/Guilds');
 
 router.get('/guilds', async (req, res) => {
     if(req.user) {
@@ -18,15 +18,13 @@ router.put('/guilds/:guildId/config', async (req, res) => {
     const { config } = req.body;
     const { guildId } = req.params;
     if(!config) return res.status(400).send("Config required!");
-    const update = await GuildConfig.findOneAndUpdate({ guildId }, {
-        prefix: config.prefix,
-    }, {new: true});
+    const update = await Guilds.config.set(global.client, guildId, { prefix: config.prefix, 'modules.autoMod.muteRole': config.muteRole })
     return update ? res.send(update) : res.status(400).send('Could not find document');
 });
 
 router.get('/guilds/:guildId/config', async (req, res) => {
     const { guildId } = req.params;
-    const config = await GuildConfig.findOne({ guildId });
+    const config = await Guilds.config.get(global.client, guildId)
     return config ? res.send(config) : res.status(404).send("Not found");
 });
 

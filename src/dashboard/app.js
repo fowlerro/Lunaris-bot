@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const cors = require('cors');
 const Store = require('connect-mongo')(session);
-const {graphqlHTTP} = require('express-graphql');
+const { graphqlHTTP } = require('express-graphql');
 const RootSchema = require('./graphql');
 
 
@@ -35,8 +35,8 @@ module.exports = async (client) => {
     app.use(passport.session());
 
     app.use('/graphql', graphqlHTTP({
-    graphiql: true,
-    schema: RootSchema,
+        graphiql: true,
+        schema: RootSchema,
     }))
 
     app.use('/api', routes);

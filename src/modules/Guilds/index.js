@@ -18,9 +18,7 @@ module.exports = {
             return config;
         },
         async set(client, guildId, toSet, value) {
-            const config = await GuildConfig.findOneAndUpdate({ guildId }, {
-                [toSet]: value
-            }, { new: true }).select('-_id -__v');
+            const config = await GuildConfig.findOneAndUpdate({ guildId }, toSet, { new: true }).select('-_id -__v');
             client.guildConfigs.set(guildId, config);
             return config;
         },        

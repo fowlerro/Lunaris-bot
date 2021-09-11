@@ -48,7 +48,7 @@ async function registerModules(client, dir = '') {
       const Module = require(path.join(filePath, file));
       client.modules.set(Module.name, Module.enabled);
       Module.run(client);
-      console.log(Module.name);
+      // console.log(Module.name);
     }
   }
 }

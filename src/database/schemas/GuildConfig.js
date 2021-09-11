@@ -43,11 +43,6 @@ const GuildConfigSchema = new mongoose.Schema({
         autoRole: {
             status: mongoose.SchemaTypes.Boolean,
         },
-        stats: {
-            channel: {
-                type: mongoose.SchemaTypes.String,
-            }
-        },
         autoMod: {
             muteRole: {
                 type: mongoose.SchemaTypes.String,

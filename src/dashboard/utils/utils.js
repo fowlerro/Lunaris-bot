@@ -1,6 +1,6 @@
 const CryptoJS = require('crypto-js');
 
-function getMutualGuilds(userGuilds, botGuilds) {
+function getGuilds(userGuilds, botGuilds) {
     const validGuilds = userGuilds.filter(guild => (guild.permissions & 0x20) === 0x20);
     const included = [];
     const excluded = validGuilds.filter(userGuild => {
@@ -22,4 +22,4 @@ function decrypt(token) {
 
 
 
-module.exports = {getMutualGuilds, encrypt, decrypt};
+module.exports = {getGuilds, encrypt, decrypt};
