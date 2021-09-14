@@ -1,13 +1,13 @@
 const {getBotGuilds, getUserGuilds, getGuildRoles} = require('../utils/api');
 const router = require('express').Router();
-const {getMutualGuilds} = require('../utils/utils');
+const { getGuilds } = require('../utils/utils');
 const Guilds = require('../../modules/Guilds');
 
 router.get('/guilds', async (req, res) => {
     if(req.user) {
         const guilds = await getBotGuilds();
         const userGuilds = await getUserGuilds(req.user.discordId);
-        const mutualGuilds = getMutualGuilds(userGuilds, guilds);
+        const mutualGuilds = getGuilds(userGuilds, guilds);
         res.send(mutualGuilds);
     } else {
         return res.status(401).send("Unauthorized");
