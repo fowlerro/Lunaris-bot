@@ -40,7 +40,7 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
-        const { prefix, language } = await Guilds.config.set(client, message.guild.id, 'prefix', args[0]);
+        const { prefix, language } = await Guilds.config.set(client, message.guild.id, { prefix: args[0] });
         const embed = new MessageEmbed()
             .setColor(palette.success)
             .setDescription(translate(language, "cmd.prefixChange", "`" + prefix + "`"));

@@ -26,7 +26,7 @@ const getGuildConfig = {
         const { guildId } = args;
         if(!guildId || !request.user) return null;
         const config = await Guilds.config.get(global.client, guildId)
-        return config ? config : null;
+        return (config && !config.error) ? config : null;
     }
 }
 const getGuildRoles = {

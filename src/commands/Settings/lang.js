@@ -68,7 +68,7 @@ module.exports = {
         }
 
 
-        guildConfig = await Guilds.config.set(client, message.guild.id, 'language', args[0]);
+        guildConfig = await Guilds.config.set(client, message.guild.id, { language: args[0] });
         language = guildConfig.get('language');
         const embed = new MessageEmbed()
             .setColor(palette.success)

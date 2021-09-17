@@ -4,7 +4,7 @@ const { setProfile } = require("../../../modules/Profiles/profile");
 module.exports = {
     name: 'changeProfile',
     aliases: [],
-    ownerOnly: false,
+    ownerOnly: true,
     minArgs: 0,
     maxArgs: 1,
     autoRemove: false,

@@ -16,8 +16,8 @@ const dashboard = require('./dashboard/app');
   client.guildConfigs = new Map();
   await registerCommands(client, '../commands');
   await registerEvents(client, '../events');
-  await registerModules(client, '../modules');
   await client.login(process.env.DISCORD_CLIENT_TOKEN);
+  await registerModules(client, '../modules');
 
   dashboard(client)
 })();
