@@ -1,5 +1,5 @@
-const { createCanvas, loadImage } = require('canvas');
 const { Collection } = require("discord.js");
+const { createCanvas, loadImage } = require('canvas');
 const { join } = require('path');
 const cron = require('node-cron');
 const GuildMembers = require("../../database/schemas/GuildMembers");
@@ -22,14 +22,11 @@ module.exports = {
     },
     async get(client, userId, guildId) {
         if(guildId) {
-            let profile = client.guildMembers.get(guildId)?.find(member => member.userId === userId);
+            let profile = client.guildMembers.get({ userId, guildId })
             if(!profile) {
                 profile = await GuildMembers.findOne({ guildId, userId });
                 if(!profile) return createProfile(client, userId, guildId);
-                if(client.guildMembers.size) 
-                    client.guildMembers.set(guildId, [profile, ...client.guildMembers?.get(guildId)]);
-                else
-                    client.guildMembers.set(guildId, [profile]);
+                    client.guildMembers.set({ userId, guildId }, profile)
             }
             return profile;
         }
@@ -98,10 +95,7 @@ async function getVoiceRank(guildId, userId, isGlobal) {
 async function createProfile(client, userId, guildId) {
     if(guildId) {
         const profile = await GuildMembers.create({ userId, guildId });
-        if(client.guildMembers.get(guildId))
-            client.guildMembers.set(guildId, [profile, ...client.guildMembers.get(guildId)])
-        else
-            client.guildMembers.set(guildId, [profile]);
+        client.guildMembers.set({ userId, guildId }, profile)
         return profile;
     }
 
