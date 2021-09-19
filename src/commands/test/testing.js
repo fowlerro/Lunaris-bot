@@ -1,8 +1,6 @@
 // TODO Add `botResponse` boolean property to commands, bot will respond only if true
 
-const { MessageEmbed } = require('discord.js')
-const Embed = require('../../database/schemas/Embed')
-const Embeds = require('../../modules/Embeds')
+const Profiles = require('../../modules/Profiles')
 
 module.exports = {
 	name: 'test',
@@ -34,10 +32,6 @@ module.exports = {
 	cooldownRoles: [],
 	cooldownReminder: true,
 	async run(client, message, args) {
-		
-		const embed = await Embed.findOne({ name: "Chuj", guildId: message.guild.id });
-
-		const msg = await Embeds.send(client, embed, embed.guildId, embed.channelId)
 		
 	},
 }

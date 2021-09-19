@@ -22,11 +22,11 @@ module.exports = {
     },
     async get(client, userId, guildId) {
         if(guildId) {
-            let profile = client.guildMembers.get({ userId, guildId })
+            let profile = client.guildMembers.get(`${userId}-${guildId}`)
             if(!profile) {
                 profile = await GuildMembers.findOne({ guildId, userId });
                 if(!profile) return createProfile(client, userId, guildId);
-                    client.guildMembers.set({ userId, guildId }, profile)
+                    client.guildMembers.set(`${userId}-${guildId}`, profile)
             }
             return profile;
         }
@@ -95,7 +95,7 @@ async function getVoiceRank(guildId, userId, isGlobal) {
 async function createProfile(client, userId, guildId) {
     if(guildId) {
         const profile = await GuildMembers.create({ userId, guildId });
-        client.guildMembers.set({ userId, guildId }, profile)
+        client.guildMembers.set(`${userId}-${guildId}`, profile)
         return profile;
     }
 

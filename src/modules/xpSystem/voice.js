@@ -127,7 +127,7 @@ function addGuildXp(client, profile, xpToAdd) {
     const { level, xp } = profile.statistics.voice;
     const xpNeeded = Profiles.neededXp(level);
     if(xp + xpToAdd >= xpNeeded) return levelUp(client, profile, xp, xpToAdd, xpNeeded);
-
+    
     profile.statistics.voice.xp += xpToAdd
     profile.statistics.voice.totalXp += xpToAdd
     profile.statistics.voice.dailyXp += xpToAdd

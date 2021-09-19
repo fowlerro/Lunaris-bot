@@ -6,6 +6,7 @@ const GuildType = new GraphQLObjectType({
         id: { type: GraphQLString },
         name: { type: GraphQLString },
         icon: { type: GraphQLString },
+        banner: { type: GraphQLString },
         owner: { type: GraphQLBoolean },
         permissions: { type: GraphQLInt },
         features: { type: new GraphQLList(GraphQLString) },
