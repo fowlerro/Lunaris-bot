@@ -33,7 +33,8 @@ module.exports = {
     cooldownRoles: [],
     cooldownReminder: true,
     async run(client, message, args) {
-        const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+        // const member = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+        const member = !isNaN(args[0]) ? await message.guild.members.fetch(args[0]).catch(e => {}) : message.mentions.members.first() || (await message.guild.members.fetch(message.author.id));
         if(!member) return;
 
         const avatarURL = member.user.avatarURL();

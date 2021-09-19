@@ -17,7 +17,7 @@ async function handleVoiceXp(client, oldState, newState) {
 }
 
 async function joinedVoice(client, newState) {
-    console.log('joined');
+    // console.log('joined');
     const members = newState.channel.members.filter(member => !member.user.bot);
     const verifiedMembers = checkMembers(members);
 
@@ -29,7 +29,7 @@ async function joinedVoice(client, newState) {
 }
 
 async function changedChannel(client, oldState, newState) {
-    console.log('changed channel');
+    // console.log('changed channel');
     stopXp(newState.guild.id, newState.member.id);
 
     checkNewChannel(client, newState);
@@ -37,7 +37,7 @@ async function changedChannel(client, oldState, newState) {
 }
 
 async function changedState(client, newState) {
-    console.log('changed state');
+    // console.log('changed state');
     const { id, serverDeaf, serverMute, selfDeaf, selfMute } = newState;
     const members = newState.channel.members.filter(member => !member.user.bot);
     const verifiedMembers = checkMembers(members);
@@ -58,7 +58,7 @@ async function changedState(client, newState) {
 }
 
 async function disconnectedVoice(client, oldState) {
-    console.log('disconnected');
+    // console.log('disconnected');
     stopXp(oldState.guild.id, oldState.member.id);
     
     const members = oldState.channel.members.filter(member => !member.user.bot);
@@ -105,7 +105,7 @@ function checkMembers(members) {
 async function startXp(client, guildId, memberId) {
     if(!membersInterval[`${guildId}-${memberId}`]) {
         membersInterval[`${guildId}-${memberId}`] = setInterval(async () => {
-            console.log('xp', memberId);
+            // console.log('xp', memberId);
             const guildProfile = await Profiles.get(client, memberId, guildId);
             const globalProfile = await Profiles.get(client, memberId);
             const guildConfig = await Guilds.config.get(client, guildId);
