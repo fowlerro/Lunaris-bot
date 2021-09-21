@@ -4,7 +4,7 @@ const { resetDailyXp } = require("../../../modules/xpSystem/utils");
 
 module.exports = {
     name: 'profile',
-    aliases: [],
+    aliases: ['profil', 'prof'],
     ownerOnly: false,
     minArgs: 0,
     maxArgs: 2,

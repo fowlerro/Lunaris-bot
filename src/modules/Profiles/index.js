@@ -13,7 +13,7 @@ module.exports = {
     async run(client) {
         client.profiles = new Collection();
         client.guildMembers = new Collection();
-
+        
         cron.schedule('*/5 * * * *', async () => {
             this.lastSave = Date.now()
             await saveGuildMembers(client);
@@ -115,10 +115,8 @@ async function saveProfiles(client) {
 
 async function saveGuildMembers(client) {
     const bulk = GuildMembers.collection.initializeOrderedBulkOp();
-    client.guildMembers.forEach(guild => {
-        guild.forEach(profile => {
-            bulk.find({ guildId: profile.guildId, userId: profile.userId }).replaceOne(profile);
-        })
+    client.guildMembers.forEach(profile => {
+        bulk.find({ guildId: profile.guildId, userId: profile.userId }).replaceOne(profile);   
     });
     await bulk.execute();
 }
