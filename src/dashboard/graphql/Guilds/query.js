@@ -3,6 +3,7 @@ const { getBotGuilds, getUserGuilds, getRolesFromGuild } = require("../../utils/
 const { getGuilds } = require('../../utils/utils');
 const { MutualGuildType, GuildRoleType } = require("./types/Guild");
 const { GuildConfigType } = require("./types/GuildConfig");
+const { ClientMemberType } = require('./types/ClientMember')
 const Guilds = require("../../../modules/Guilds");
 
 const getMutualGuilds = {
@@ -41,4 +42,18 @@ const getGuildRoles = {
     }
 }
 
-module.exports = { getMutualGuilds, getGuildConfig, getGuildRoles }
+const getClientMember = {
+    type: ClientMemberType,
+    args: {
+        guildId: { type: GraphQLString },
+    },
+    async resolve(parent, args, request) {
+        const { guildId } = args;
+        if(!guildId || !request.user) return null;
+        const guild = await global.client.guilds.fetch(guildId).catch(e => {})
+        if(!guild) return null
+        return guild.me
+    }
+}
+
+module.exports = { getMutualGuilds, getGuildConfig, getGuildRoles, getClientMember }
