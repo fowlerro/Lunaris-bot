@@ -3,7 +3,7 @@ const { palette } = require('../../utils/utils');
 
 const EmbedSchema = new mongoose.Schema({
     name: {
-        type: String
+        type: String,
     },
     guildId: {
         type: String,

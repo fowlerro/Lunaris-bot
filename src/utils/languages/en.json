@@ -176,6 +176,11 @@
     "xp": {
         "levelUpMessage": "You've just leveled up to **%VAR% lvl** %VAR%!"
     },
+    "dashboard": {
+        "embeds": {
+            "newEmbed": "New Embed"
+        }
+    },
     "permissions": {
         "missingPermission": "Missing permission",
 

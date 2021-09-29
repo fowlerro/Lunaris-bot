@@ -1,5 +1,5 @@
-const { GraphQLObjectType, GraphQLString, GraphQLInt, GraphQL } = require("graphql");
-const { GraphQLBuffer } = require("../Scalars");
+const { GraphQLObjectType, GraphQLString, GraphQLInt } = require("graphql");
+const { GraphQLBuffer } = require("../../Scalars");
 
 const ProfileStatsTextType = new GraphQLObjectType({
     name: 'ProfileStatsTextType',

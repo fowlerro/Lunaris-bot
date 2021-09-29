@@ -9,7 +9,7 @@ const session = require('express-session');
 const cors = require('cors');
 const Store = require('connect-mongo')(session);
 const { graphqlHTTP } = require('express-graphql');
-const RootSchema = require('./graphql');
+const schema = require('./graphql');
 
 
 module.exports = async (client) => {
@@ -17,8 +17,8 @@ module.exports = async (client) => {
     app.use(express.urlencoded({extended: false}));
 
     app.use(cors({
-    origin: ['http://localhost:3000'],
-    credentials: true,
+        origin: ['http://localhost:3000'],
+        credentials: true,
     }))
 
     app.use(session({
@@ -36,7 +36,7 @@ module.exports = async (client) => {
 
     app.use('/graphql', graphqlHTTP({
         graphiql: true,
-        schema: RootSchema,
+        schema
     }))
 
     app.use('/api', routes);

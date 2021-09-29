@@ -1,4 +1,4 @@
-const { ProfileType } = require("./Profile");
+const { ProfileType } = require("./types/Profile");
 const Profiles = require('../../../modules/Profiles')
 
 const getProfile = {
