@@ -15,6 +15,9 @@ const EmbedSchema = new mongoose.Schema({
     messageId: {
         type: String
     },
+    messageContent: {
+        type: String,
+    },
     embed: {
         author: {
             name: String,

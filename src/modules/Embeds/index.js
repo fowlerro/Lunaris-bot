@@ -17,13 +17,13 @@ module.exports = {
 	enabled: true,
 	limits: EMBED_LIMITS,
 	async run(client) {},
-	async send(client, document, guildId, channelId) {
+	async send(client, messageContent, embed, guildId, channelId) {
 		const guild = await client.guilds.fetch(guildId).catch(e => {})
 		if(!guild) return { error: "Guild not found" }
 		const channel = await guild.channels.fetch(channelId).catch(e => {})
 		if(!channel) return { error: "Channel not found" }
 
-		const embed = document.embed
+		// const embed = document.embed
 
 		const e = new MessageEmbed(embed)
 		embed.timestamp.display && e.setTimestamp(embed.timestamp.timestamp || Date.now())
@@ -54,7 +54,7 @@ module.exports = {
 		selectMenu && components.push(addSelectMenu(embeds, defaultPage))
 		buttons && components.push(addButtons(embeds, defaultPage))
 		
-		const message = await channel.send({ embeds: [embeds[defaultPage] || embeds[0]], components })
+		const message = await channel.send({ content: messageContent, embeds: [embeds[defaultPage] || embeds[0]], components })
 		message.currentPage = defaultPage
 		createCollectors(message, embeds, defaultPage)
 

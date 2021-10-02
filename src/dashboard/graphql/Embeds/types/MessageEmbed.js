@@ -77,6 +77,7 @@ const MessageEmbedType = new GraphQLObjectType({
         guildId: { type: GraphQLString },
         channelId: { type: GraphQLString },
         messageId: { type: GraphQLString },
+        messageContent: { type: GraphQLString },
         embed: { type: EmbedType }
     })
 })

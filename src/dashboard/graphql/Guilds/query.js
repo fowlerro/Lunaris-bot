@@ -1,7 +1,7 @@
-const { GraphQLString, GraphQLList } = require("graphql");
-const { getBotGuilds, getUserGuilds, getRolesFromGuild } = require("../../utils/api");
+const { GraphQLString, GraphQLInt, GraphQLID, GraphQLList } = require("graphql");
+const { getBotGuilds, getUserGuilds, getRolesFromGuild, getChannelsFromGuild } = require("../../utils/api");
 const { getGuilds } = require('../../utils/utils');
-const { MutualGuildType, GuildRoleType } = require("./types/Guild");
+const { MutualGuildType, GuildRoleType, GuildChannelType } = require("./types/Guild");
 const { GuildConfigType } = require("./types/GuildConfig");
 const { ClientMemberType } = require('./types/ClientMember')
 const Guilds = require("../../../modules/Guilds");
@@ -30,6 +30,7 @@ const getGuildConfig = {
         return (config && !config.error) ? config : null;
     }
 }
+
 const getGuildRoles = {
     type: GraphQLList(GuildRoleType),
     args: {
@@ -39,6 +40,21 @@ const getGuildRoles = {
         const { guildId } = args;
         if(!guildId || !request.user) return null;
         return getRolesFromGuild(guildId);
+    }
+}
+
+const getGuildChannels = {
+    type: GraphQLList(GuildChannelType),
+    args: {
+        guildId: { type: GraphQLID },
+        type: { type: new GraphQLList(GraphQLInt) },
+    },
+    async resolve(parent, args, request) {
+        const { guildId, type } = args;
+        if(!guildId || !request.user) return null;
+        const channels = await getChannelsFromGuild(guildId)
+        if(type.length) return channels.filter(channel => type.includes(channel.type))
+        return channels
     }
 }
 
@@ -56,4 +72,4 @@ const getClientMember = {
     }
 }
 
-module.exports = { getMutualGuilds, getGuildConfig, getGuildRoles, getClientMember }
+module.exports = { getMutualGuilds, getGuildConfig, getGuildRoles, getGuildChannels, getClientMember }

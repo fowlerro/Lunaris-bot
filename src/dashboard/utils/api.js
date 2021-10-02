@@ -25,6 +25,16 @@ async function getRolesFromGuild(guildId) {
     return response.json();
 };
 
+async function getChannelsFromGuild(guildId) {
+    const response = await fetch(`${API}/guilds/${guildId}/channels`, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bot ${process.env.DISCORD_CLIENT_TOKEN}`
+        }
+    });
+    return response.json()
+};
+
 async function getUserGuilds(discordId) {
     const credentials = await OAuth2Credentials.findOne({ discordId });
     if(!credentials) throw new Error("No credentials.");
@@ -40,4 +50,4 @@ async function getUserGuilds(discordId) {
     return response.json();
 }
 
-module.exports = {getBotGuilds, getRolesFromGuild, getUserGuilds};
+module.exports = {getBotGuilds, getRolesFromGuild, getUserGuilds, getChannelsFromGuild};

@@ -2,6 +2,7 @@ const {getBotGuilds, getUserGuilds, getGuildRoles} = require('../utils/api');
 const router = require('express').Router();
 const { getGuilds } = require('../utils/utils');
 const Guilds = require('../../modules/Guilds');
+const Embeds = require('../../modules/Embeds')
 
 router.get('/guilds', async (req, res) => {
     if(req.user) {
@@ -37,6 +38,13 @@ router.get('/guilds/:guildId/roles', async (req, res) => {
         console.log(err);
         res.status(500).send("Internal Server Error");
     }
+})
+
+router.put('/guilds/:guildId/embed/send', async (req, res) => {
+    const { guildId } = req.params
+    const { channelId, messageContent, embed } = req.body
+    if(!channelId || !embed) return res.status(400).send({ "msg": "ChannelId required" })
+    return Embeds.send(global.client, messageContent, embed, guildId, channelId)
 })
 
 module.exports = router;
