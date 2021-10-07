@@ -59,11 +59,21 @@ module.exports = {
     
         const microphoneIcon = await loadImage(join(__dirname, 'assets', 'icons', 'Microphone.png'));
         ctx.drawImage(microphoneIcon, 1086.52, 489.42, 57, 93.53);
-    
+
+        const coinsIconX = 945.42
+        const coinsIconWidth = 78.32
+        const coinsBackgroundY = 84.28
+        const coinsBackgroundWidth = 236.54
+        const coinsBackgroundHeight = 76.26
+
+        const coinsValueTextX = coinsIconX + coinsIconWidth / 2 + (coinsBackgroundWidth - (coinsIconWidth / 2)) / 2
+        const coinsValueTextY = coinsBackgroundY + coinsBackgroundHeight / 2
+
         ctx.fillStyle = '#FFF';
         ctx.font = `30px Roboto`;
         ctx.textAlign = 'center';
-        ctx.fillText(globalProfile.coins, 945.42+118.27, 84.28+(76.26/2), 140);
+        ctx.fillText(globalProfile.coins, coinsValueTextX, coinsValueTextY, 140);
+        // ctx.fillText(globalProfile.coins, 945.42+118.27, 84.28+(76.26/2), 140);
     
         await drawTextXPData(ctx, profile, isGlobal);
         await drawVoiceXPData(ctx, profile, isGlobal);
