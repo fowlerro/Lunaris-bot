@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const GuildMembers = require("../../../database/schemas/GuildMembers");
+const Profile = require("../../../database/schemas/Profile");
 const Guilds = require("../../../modules/Guilds");
 const Profiles = require("../../../modules/Profiles");
 const { translate } = require("../../../utils/languages/languages");
@@ -77,7 +78,6 @@ module.exports = {
 
             return message.channel.send({ embeds: [embed] })
         }
-
 
         const collection = await GuildMembers.find({ guildId: message.guild.id })
         

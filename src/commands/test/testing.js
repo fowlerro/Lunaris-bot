@@ -2,6 +2,7 @@
 
 const { MessageEmbed } = require('discord.js')
 const Profiles = require('../../modules/Profiles')
+const { palette } = require('../../utils/utils')
 
 module.exports = {
 	name: 'test',
@@ -33,11 +34,11 @@ module.exports = {
 	cooldownRoles: [],
 	cooldownReminder: true,
 	async run(client, message, args) {
-		const embed = new MessageEmbed()
-			.setColor('#000')
-			.setTitle('Title')
-			.setURL('https://google.com/')
-			.setAuthor('Author', 'https://cdn.discordapp.com/avatars/313346190995619841/4164c45f723be7ae03e665181ec7ef33.webp', 'https://google.com/')
+		// const embed = new MessageEmbed()
+			// .setColor('#000')
+			// .setTitle('Title')
+			// .setURL('https://google.com/')
+			// .setAuthor('Author', 'https://cdn.discordapp.com/avatars/313346190995619841/4164c45f723be7ae03e665181ec7ef33.webp', 'https://google.com/')
 			// .setDescription('Incididunt dolor non non et dolor dolore sint occaecat nulla commodo voluptate. Sint sint do laborum Lorem esse consequat ullamco exercitation consequat nisi ut officia. Est ad eu ea anim consectetur duis officia sint dolore veniam.')
 			// .setImage('https://cdn.discordapp.com/avatars/313346190995619841/4164c45f723be7ae03e665181ec7ef33.webp')
 			// .setThumbnail('https://cdn.discordapp.com/avatars/313346190995619841/4164c45f723be7ae03e665181ec7ef33.webp')
@@ -48,7 +49,25 @@ module.exports = {
 			// .addField('Chuj', 'chuj', true)
 			// .setFooter('chuj', 'https://cdn.discordapp.com/avatars/313346190995619841/4164c45f723be7ae03e665181ec7ef33.webp')
 			// .setTimestamp()
+
+		// const embed = new MessageEmbed()
+		// 	.setColor(palette.info)
+		// 	.setTitle('Strony nauczycieli:')
+		// 	.setDescription(
+		// 		`[Parowińska](http://zse.gda.pl/~maryp/)
+		// 		[Grzegrzółka](http://zse.gda.pl/~hagrz/)
+		// 		[Tadzio](http://zse.gda.pl/~net/)
+		// 		[Tadzio 2](http://zse.gda.pl/~tt/)
+		// 		[Kołodko](http://zse.gda.pl/~zk/)
+		// 		[Gryzio](http://zse.gda.pl/~gr/)
+		// 		[Rawa](http://zse.gda.pl/~ar/)
+		// 		[Karwowska](http://zse.gda.pl/~jk/)
+		// 		[Ochnik](http://153.19.170.6/~witek/)
+		// 		[EE08](http://ee08.zse.gda.pl/)`
+		// 	)
+		// 	.setFooter('jebać ich')
+
 			
-		message.channel.send({ content: "Chuj", embeds: [embed] })
+		// message.channel.send({ embeds: [embed] })
 	},
 }

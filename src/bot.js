@@ -19,5 +19,5 @@ const dashboard = require('./dashboard/app');
   await client.login(process.env.DISCORD_CLIENT_TOKEN);
   await registerModules(client, '../modules');
 
-  dashboard(client)
+  // dashboard(client)
 })();

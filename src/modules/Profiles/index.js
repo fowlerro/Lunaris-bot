@@ -73,7 +73,6 @@ module.exports = {
         ctx.font = `30px Roboto`;
         ctx.textAlign = 'center';
         ctx.fillText(globalProfile.coins, coinsValueTextX, coinsValueTextY, 140);
-        // ctx.fillText(globalProfile.coins, 945.42+118.27, 84.28+(76.26/2), 140);
     
         await drawTextXPData(ctx, profile, isGlobal);
         await drawVoiceXPData(ctx, profile, isGlobal);
