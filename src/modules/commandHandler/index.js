@@ -36,7 +36,7 @@ module.exports = {
                 }
             }
             if(command.ownerOnly && !botOwners.includes(message.author.id)) return;
-            if(!command.globalStatus) return message.channel.send(translate(language, "cmd.globalStatus"));
+            if(!command.globalStatus && !botOwners.includes(message.author.id)) return message.channel.send(translate(language, "cmd.globalStatus"));
             if(!command.ownerOnly) command = await CommandConfig.findOne({ guildId: message.guild.id, name: command.name });
             if(!command) {
                 command = await CommandConfig.create({
