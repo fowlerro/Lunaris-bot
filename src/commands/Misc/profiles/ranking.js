@@ -1,5 +1,6 @@
 const { MessageEmbed } = require("discord.js");
 const GuildMembers = require("../../../database/schemas/GuildMembers");
+const Profile = require("../../../database/schemas/Profile");
 const Guilds = require("../../../modules/Guilds");
 const Profiles = require("../../../modules/Profiles");
 const { translate } = require("../../../utils/languages/languages");
@@ -41,52 +42,34 @@ module.exports = {
         const { language } = await Guilds.config.get(client, message.guild.id);
         const authorProfile = await Profiles.get(client, message.author.id, message.guild.id);
 
-        
-        if(['gold', 'coin', 'coins', 'money'].includes(args[0])) {
-            
-            const result = await GuildMembers.aggregate([
-                { $match: { guildId: message.guild.id } },
-                { $lookup: { from: "profiles", localField: "userId", foreignField: "userId", as: "id"  } },
-                { $unwind: "$id" },
-                { $replaceRoot: { newRoot: "$id" } }
-            ]);
+        const mode = ['gold', 'coin', 'coins', 'money'].includes(args[0]) ? 'gold' :
+            ['global', 'g'].includes(args[0]) ? 'global' : 'normal'
 
-            const sorted = result.sort((a, b) => b.coins - a.coins);
-            const rank = [];
-            let myRank = false;
+        const result = mode === 'gold' ? await GuildMembers.aggregate([
+            { $match: { guildId: message.guild.id } },
+            { $lookup: { from: "profiles", localField: "userId", foreignField: "userId", as: "id"  } },
+            { $unwind: "$id" },
+            { $replaceRoot: { newRoot: "$id" } }
+        ]).sort((a, b) => b.coins - a.coins) :
+            mode === 'global' ? await Profile.find() :
+            await GuildMembers.find({ guildId: message.guild.id })
 
-            sorted.every((profile, index) => {
-                if(index === 10) return false;
-                if(authorProfile.userId === profile.userId) myRank = true;
-                rank.push(authorProfile.userId === profile.userId ? `**#${index+1}. <@${profile.userId}> | ${profile.coins} coins**`
-                    : `#${index+1}. <@${profile.userId}> | ${profile.coins} coins`);
-                return true;
-            });
-    
-            if(!myRank) {
-                const index = sorted.findIndex(profile => profile.userId === authorProfile.userId);
-                const myProfile = sorted[index];
-                rank[9] = `**#${index+1}. <@${myProfile.userId}> | ${myProfile.coins} coins**`
-            }
+        const rank = { text: [], voice: [], gold: [] };
+        let myRank = { text: false, voice: false, gold: false };
 
-            const embed = new MessageEmbed()
-                .setColor(palette.primary)
-                .addField(translate(language, 'cmd.ranking.coins'), rank.join('\n'), true)
-                .setFooter(translate(language, 'cmd.ranking.lastUpdate'))
-                .setTimestamp(Profiles.lastSave);
+        result.every((profile, index) => {
+            if(index === 10) return false;
+            if(authorProfile.userId === profile.userId) myRank = 
+            rank.push(authorProfile.userId === profile.userId ? `**#${index+1}. <@${profile.userId}> | ${profile.coins} coins**`
+                : `#${index+1}. <@${profile.userId}> | ${profile.coins} coins`);
+            return true;
+        });
 
-            return message.channel.send({ embeds: [embed] })
+        if(!myRank) {
+            const index = sorted.findIndex(profile => profile.userId === authorProfile.userId);
+            const myProfile = sorted[index];
+            rank[9] = `**#${index+1}. <@${myProfile.userId}> | ${myProfile.coins} coins**`
         }
-
-
-        const collection = await GuildMembers.find({ guildId: message.guild.id })
-        
-        const sortedText = collection.sort((a, b) => b.statistics.text.totalXp - a.statistics.text.totalXp)
-
-        const textRank = [];
-        let myTextRank = false;
-        const voiceRank = [];
-        let myVoiceRank = false;
 
         sortedText.every((profile, index) => {
             if(index === 10) return false;
@@ -95,6 +78,60 @@ module.exports = {
                 : `#${index+1}. <@${profile.userId}> | ${profile.statistics.text.level} level, \`${profile.statistics.text.totalXp}\` xp`);
             return true;
         });
+        
+        // if(['gold', 'coin', 'coins', 'money'].includes(args[0])) {
+            
+        //     const result = await GuildMembers.aggregate([
+        //         { $match: { guildId: message.guild.id } },
+        //         { $lookup: { from: "profiles", localField: "userId", foreignField: "userId", as: "id"  } },
+        //         { $unwind: "$id" },
+        //         { $replaceRoot: { newRoot: "$id" } }
+        //     ]);
+
+        //     const sorted = result.sort((a, b) => b.coins - a.coins);
+        //     const rank = [];
+        //     let myRank = false;
+
+        //     sorted.every((profile, index) => {
+        //         if(index === 10) return false;
+        //         if(authorProfile.userId === profile.userId) myRank = true;
+        //         rank.push(authorProfile.userId === profile.userId ? `**#${index+1}. <@${profile.userId}> | ${profile.coins} coins**`
+        //             : `#${index+1}. <@${profile.userId}> | ${profile.coins} coins`);
+        //         return true;
+        //     });
+    
+        //     if(!myRank) {
+        //         const index = sorted.findIndex(profile => profile.userId === authorProfile.userId);
+        //         const myProfile = sorted[index];
+        //         rank[9] = `**#${index+1}. <@${myProfile.userId}> | ${myProfile.coins} coins**`
+        //     }
+
+        //     const embed = new MessageEmbed()
+        //         .setColor(palette.primary)
+        //         .addField(translate(language, 'cmd.ranking.coins'), rank.join('\n'), true)
+        //         .setFooter(translate(language, 'cmd.ranking.lastUpdate'))
+        //         .setTimestamp(Profiles.lastSave);
+
+        //     return message.channel.send({ embeds: [embed] })
+        // }
+
+
+        // const collection = await GuildMembers.find({ guildId: message.guild.id })
+        
+        // const sortedText = collection.sort((a, b) => b.statistics.text.totalXp - a.statistics.text.totalXp)
+
+        // const textRank = [];
+        // let myTextRank = false;
+        // const voiceRank = [];
+        // let myVoiceRank = false;
+
+        // sortedText.every((profile, index) => {
+        //     if(index === 10) return false;
+        //     if(authorProfile.userId === profile.userId) myTextRank = true;
+        //     textRank.push(authorProfile.userId === profile.userId ? `**#${index+1}. <@${profile.userId}> | ${profile.statistics.text.level} level, \`${profile.statistics.text.totalXp}\` xp**`
+        //         : `#${index+1}. <@${profile.userId}> | ${profile.statistics.text.level} level, \`${profile.statistics.text.totalXp}\` xp`);
+        //     return true;
+        // });
 
         if(!myTextRank) {
             const index = sortedText.findIndex(profile => profile.userId === authorProfile.userId);
