@@ -61,7 +61,6 @@ module.exports = {
 
         const msg = await handleAction(member.id, action, amount, unit, scope, guild)
         console.log(msg)
-        // TODO: Fix
         return message.channel.send(msg);
     }
 }
@@ -87,7 +86,7 @@ Voice: ${voice.level} lvl | ${voice.xp} xp | ${voice.totalXp} total XP | ${voice
         .addField('Voice', `${voice.level} lvl\n${voice.xp} xp\n${voice.totalXp} total XP\n${voice.dailyXp} daily XP\n${voice.timeSpent} min`, true)
 
     console.log(embed)
-    return { embed: [embed] }
+    return { embeds: [embed] }
 }
 
 function add(userId, amount, unit, scope, guild) {
