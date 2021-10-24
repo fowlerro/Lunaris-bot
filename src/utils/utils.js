@@ -124,8 +124,13 @@ function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
+function convertLargeNumbers(number) {
+    return number >= 1000000 ? Math.floor((number / 1000000) * 10) / 10 + "M" :
+        number >= 1000 ? Math.floor((number / 1000) * 10) / 10 + "K" : number
+}
+
 
 module.exports = {botOwners, palette, mapToObject, groupBy, daysInMonth, 
     msToTime,
     toggleBot, setActivity,
-    getUserFromMention, getChannelFromMention, assignNestedObjects, capitalize};
+    getUserFromMention, getChannelFromMention, assignNestedObjects, capitalize, convertLargeNumbers};

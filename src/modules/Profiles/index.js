@@ -4,6 +4,7 @@ const { join } = require('path');
 const cron = require('node-cron');
 const GuildMembers = require("../../database/schemas/GuildMembers");
 const Profile = require("../../database/schemas/Profile");
+const { convertLargeNumbers } = require("../../utils/utils");
 // TODO Remove after some time guild profiles from users who leaved a server
 // TODO Add property `isInGuild` to GuildMembers schema. Extra check for rankings, etc.
 module.exports = {
@@ -169,11 +170,11 @@ async function drawTextXPData(ctx, profile, isGlobal) {
     ctx.textAlign = 'center';
 
     ctx.fillText(profile.statistics.text.level, 232 + 48, 330 + 48, 90);
-    ctx.fillText(profile.statistics.text.dailyXp, 340 + 75, 418 + 30, 150);
-    ctx.fillText(profile.statistics.text.totalXp, 874 + 75, 418 + 30, 150);
+    ctx.fillText(convertLargeNumbers(profile.statistics.text.dailyXp), 340 + 75, 418 + 30, 150);
+    ctx.fillText(convertLargeNumbers(profile.statistics.text.totalXp), 874 + 75, 418 + 30, 150);
 
     const xpNeeded = neededXp(profile.statistics.text.level);
-    ctx.fillText(`${profile.statistics.text.xp}/${xpNeeded}`, 583 + 99, 418 + 30, 190);
+    ctx.fillText(`${convertLargeNumbers(profile.statistics.text.xp)}/${convertLargeNumbers(xpNeeded)}`, 583 + 99, 418 + 30, 190);
 
     // Ranking
     const rank = await getTextRank(profile.guildId, profile.userId, isGlobal);
@@ -186,11 +187,11 @@ async function drawVoiceXPData(ctx, profile, isGlobal) {
     ctx.textAlign = 'center';
 
     ctx.fillText(profile.statistics.voice.level, 232 + 48, 488 + 48, 90);
-    ctx.fillText(profile.statistics.voice.dailyXp, 340 + 75, 576 + 30, 150);
-    ctx.fillText(profile.statistics.voice.totalXp, 874 + 75, 576 + 30, 150);
+    ctx.fillText(convertLargeNumbers(profile.statistics.voice.dailyXp), 340 + 75, 576 + 30, 150);
+    ctx.fillText(convertLargeNumbers(profile.statistics.voice.totalXp), 874 + 75, 576 + 30, 150);
 
     const xpNeeded = neededXp(profile.statistics.voice.level);
-    ctx.fillText(`${profile.statistics.voice.xp}/${xpNeeded}`, 583 + 99, 576 + 30, 190);
+    ctx.fillText(`${convertLargeNumbers(profile.statistics.voice.xp)}/${convertLargeNumbers(xpNeeded)}`, 583 + 99, 576 + 30, 190);
 
     // Ranking
     const rank = await getVoiceRank(profile.guildId, profile.userId, isGlobal);
