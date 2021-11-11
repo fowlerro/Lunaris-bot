@@ -114,7 +114,7 @@ async function startXp(client, guildId, memberId) {
 
             addGuildXp(client, guildProfile, (xpToAdd * multiplier));
             addGlobalXp(client, globalProfile, xpToAdd);
-        }, 10000);
+        }, 60000);
     }
 }
 
