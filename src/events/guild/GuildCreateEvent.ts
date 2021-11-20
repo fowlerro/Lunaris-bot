@@ -1,14 +1,15 @@
 //  https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildCreate
-const BaseEvent = require('../../utils/structures/BaseEvent');
-const GuildConfig = require('../../database/schemas/GuildConfig');
+import { Guild } from "discord.js";
+import DiscordClient from "../../types/client";
+import BaseEvent from "../../utils/structures/BaseEvent";
 const Guilds = require('../../modules/Guilds');
 
-module.exports = class GuildCreateEvent extends BaseEvent {
+export default class GuildCreateEvent extends BaseEvent {
 	constructor() {
 		super('guildCreate');
 	}
   
-	async run(client, guild) {
+	async run(client: DiscordClient, guild: Guild) {
 		if(!client.isOnline) return;
 		let guildConfig = await Guilds.config.get(client, guild.id);
 		if(guildConfig.error) {

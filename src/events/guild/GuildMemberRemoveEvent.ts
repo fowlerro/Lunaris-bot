@@ -1,15 +1,16 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildMemberRemove
-const { Permissions } = require('discord.js');
 const { memberLeavedLog, memberKickedLog, memberBannedLog } = require('../../modules/guildLogs');
 const Guilds = require('../../modules/Guilds');
-const BaseEvent = require('../../utils/structures/BaseEvent');
+import { GuildMember, Permissions } from "discord.js";
+import DiscordClient from "../../types/client";
+import BaseEvent from "../../utils/structures/BaseEvent";
 
-module.exports = class GuildMemberRemoveEvent extends BaseEvent {
+export default class GuildMemberRemoveEvent extends BaseEvent {
   constructor() {
     super('guildMemberRemove');
   }
   
-  async run(client, member) {
+  async run(client: DiscordClient, member: GuildMember) {
     if(!client.isOnline) return;
     const guildConfig = await Guilds.config.get(client, member.guild.id);
     const logChannel = member.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
@@ -17,10 +18,10 @@ module.exports = class GuildMemberRemoveEvent extends BaseEvent {
     const language = guildConfig.get('language');
 
     // KICK LOG 
-    if(!member.guild.me.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
+    if(!member.guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
     const kickLog = await member.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_KICK'});
     const updateKick = kickLog.entries.first();
-    if(updateKick.target.id === member.id) {
+    if(updateKick && updateKick.target?.id === member.id) {
       if(Date.now() - updateKick.createdTimestamp < 5000) return memberKickedLog(client, updateKick.executor, updateKick.target, member, updateKick.reason, logChannel, language);
     }
 

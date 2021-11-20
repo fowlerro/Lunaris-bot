@@ -1,23 +1,25 @@
-require('dotenv').config();
-const { Client, Intents, Collection } = require('discord.js');
-const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_VOICE_STATES]});
-global.client = client
-const { connectDatabase } = require('./database/mongoose');
-const { registerCommands, registerEvents, registerModules } = require('./utils/registry');
-const dashboard = require('./dashboard/app');
+import * as dotenv from 'dotenv'
+dotenv.config()
+
+import { Intents, Collection } from 'discord.js'
+import DiscordClient from './types/client';
+const client = new DiscordClient({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_VOICE_STATES]});
+import { connectDatabase } from './database/mongoose'
+// const { registerCommands, registerEvents, registerModules } = require('./utils/registry');
+import { registerCommands, registerEvents } from './utils/registry'
+// const dashboard = require('./dashboard/app');
+declare global {
+  var client: DiscordClient;
+}
+global.client = client;
 
 (async () => {
   await connectDatabase();
-
-  client.isOnline = true;
-  client.commands = new Collection();
-  client.events = new Map();
-  client.modules = new Map();
-  client.guildConfigs = new Map();
-  await registerCommands(client, '../commands');
-  await registerEvents(client, '../events');
+  
+  await registerCommands('../commands');
+  await registerEvents('../events');
   await client.login(process.env.DISCORD_CLIENT_TOKEN);
-  await registerModules(client, '../modules');
+  // await registerModules(client, '../modules');
 
   // dashboard(client)
 })();
