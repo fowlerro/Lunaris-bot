@@ -37,9 +37,10 @@
   },
   "devDependencies": {
     "@shelf/jest-mongodb": "^1.2.3",
+    "@types/node": "^16.11.7",
     "jest": "^26.6.3"
   },
-   "engines": {
+  "engines": {
     "node": "16.x"
   }
 }
