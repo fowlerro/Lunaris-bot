@@ -4,7 +4,6 @@ const autoRole = require('../../modules/autoRole');
 const { memberJoinedLog } = require('../../modules/guildLogs');
 const Guilds = require('../../modules/Guilds');
 import { GuildMember } from "discord.js";
-import DiscordClient from "../../types/client";
 import BaseEvent from "../../utils/structures/BaseEvent";
 
 export default class GuildMemberAddEvent extends BaseEvent {
@@ -12,7 +11,7 @@ export default class GuildMemberAddEvent extends BaseEvent {
     super('guildMemberAdd');
   }
   
-  async run(client: DiscordClient, member: GuildMember) {
+  async run(member: GuildMember) {
     if(!client.isOnline) return;
     memberJoinedLog(client, member);
     const guildConfig = await Guilds.config.get(client, member.guild.id);

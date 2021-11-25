@@ -1,13 +1,16 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-messageUpdate
+import { Message } from "discord.js";
+import BaseEvent from "../../utils/structures/BaseEvent";
+
 const { messageEditedLog } = require('../../modules/guildLogs');
 const Guilds = require('../../modules/Guilds');
-const BaseEvent = require('../../utils/structures/BaseEvent');
-module.exports = class MessageUodateEvent extends BaseEvent {
+
+export default class MessageUpdateEvent extends BaseEvent {
   constructor() {
     super('messageUpdate');
   }
   
-  async run(client, oldMessage, newMessage) {
+  async run(oldMessage: Message, newMessage: Message) {
     if(!client.isOnline) return;
     if(!newMessage.guild || newMessage.author.bot) return;
     

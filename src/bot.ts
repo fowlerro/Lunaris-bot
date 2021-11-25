@@ -3,7 +3,7 @@ dotenv.config()
 
 import { Intents, Collection } from 'discord.js'
 import DiscordClient from './types/client';
-const client = new DiscordClient({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_VOICE_STATES]});
+const client = new DiscordClient({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_INVITES]});
 import { connectDatabase } from './database/mongoose'
 // const { registerCommands, registerEvents, registerModules } = require('./utils/registry');
 import { registerCommands, registerEvents } from './utils/registry'

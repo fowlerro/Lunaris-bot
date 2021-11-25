@@ -1,12 +1,15 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-roleUpdate
+import { Role } from "discord.js";
+import BaseEvent from "../../utils/structures/BaseEvent";
+
 const { roleUpdatedLog } = require('../../modules/guildLogs');
-const BaseEvent = require('../../utils/structures/BaseEvent');
-module.exports = class RoleUpdateEvent extends BaseEvent {
+
+export default class RoleUpdateEvent extends BaseEvent {
   constructor() {
     super('roleUpdate');
   }
   
-  async run(client, oldRole, newRole) {
+  async run(oldRole: Role, newRole: Role) {
     if(!client.isOnline) return;
 
     roleUpdatedLog(client, newRole);
