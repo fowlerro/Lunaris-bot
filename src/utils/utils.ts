@@ -1,8 +1,9 @@
-const { MessageEmbed, MessageButton, MessageActionRow } = require("discord.js");
+import { ActivityType, ChannelMention, Guild, MemberMention } from "discord.js";
+import { Snowflake } from "discord-api-types";
 
-const botOwners = ["313346190995619841"];
+export const botOwners = ["313346190995619841"];
 
-const palette = {
+export const palette = {
     primary: '#102693',
     secondary: '',
     success: '#7BDB27',
@@ -10,7 +11,7 @@ const palette = {
     error: '#B71E13',
 }
 
-function mapToObject(map) {
+export function mapToObject(map: Map<any, any>) {
     const out = Object.create(null)
     map.forEach((value, key) => {
       if(value instanceof Map) {
@@ -21,25 +22,11 @@ function mapToObject(map) {
     return out
 }
 
-function groupBy(list, keyGetter) {
-    const map = new Map();
-    list.forEach((item) => {
-         const key = keyGetter(item);
-         const collection = map.get(key);
-         if (!collection) {
-             map.set(key, [item]);
-         } else {
-             collection.push(item);
-         }
-    });
-    return map;
-}
-
-function daysInMonth(month, year) {
+export function daysInMonth(month: number, year: number) {
     return new Date(year, month, 0).getDate();
 }
 
-function msToTime(ms) {
+export function msToTime(ms: number) {
     let result = ""
     let d = Math.floor((ms/(1000*60*60*24)) % 7);
     d && (result += d+'d '); 
@@ -52,35 +39,34 @@ function msToTime(ms) {
     return result.trimEnd();
 }
 
-function toggleBot(client, s) {
-    if(!s) client.isOnline = !client.isOnline;
-    if(s) client.isOnline = s;
+export function toggleBot(state: boolean) {
+    if(!state) client.isOnline = !client.isOnline;
+    if(state) client.isOnline = state;
 
     if(client.isOnline) {
-        client.user.setPresence({
+        client.user?.setPresence({
             status: 'online',
             activities: [{
-                name: client.customActivity?.name || '',
-                type: client.customActivity?.type || ''
+                name: client.customActivity?.name,
+                type: client.customActivity?.type
             }]
         });
     }
     if(!client.isOnline) {
-        client.user.setPresence({
+        client.user?.setPresence({
             status: 'invisible'
         });
     }
-    console.log(client.isOnline);
     return client.isOnline;
 }
 
-function setActivity(client, type, activity) {
+export function setActivity(type: ActivityType, activity: string) {
     if(!type) return;
     client.customActivity = {
         name: activity,
-        type: type.toUpperCase()
+        type
     }
-    client.user.setPresence({
+    client.user?.setPresence({
         activities: [{
             name: client.customActivity.name,
             type: client.customActivity.type
@@ -88,15 +74,16 @@ function setActivity(client, type, activity) {
     })
 }
 
-async function getUserFromMention(client, mention) {
+export async function getUserFromMention(mention: MemberMention | Snowflake) {
     if(!mention) return false;
-    if(!isNaN(mention)) return client.users.fetch(mention).catch(err => console.error(err));
+    if(!isNaN(+mention)) return client.users.fetch(mention).catch(() => {});
     const matches = mention.match(/^<@!?(\d+)>$/);
     if(!matches) return false;
 
     return client.users.fetch(matches[1]);
 }
-async function getChannelFromMention(guild, mention) {
+
+export async function getChannelFromMention(guild: Guild, mention: ChannelMention) {
     if(!mention) return false
     const matches = mention.match(/^<#(\d+)>$/);
     if(!matches) return false;
@@ -104,13 +91,11 @@ async function getChannelFromMention(guild, mention) {
     return guild.channels.fetch(matches[1]).catch(err => console.error(err))
 }
 
-function assignNestedObjects(obj, keyPath, value) {
-    lastKeyIndex = keyPath.length-1;
-    for (var i = 0; i < lastKeyIndex; ++ i) {
-      key = keyPath[i];
-      if (!(key in obj)){
-        obj[key] = {}
-      }
+export function assignNestedObjects(obj: any, keyPath: string[], value: any) {
+    const lastKeyIndex = keyPath.length-1;
+    for (let i = 0; i < lastKeyIndex; ++i) {
+      const key = keyPath[i];
+      if (!(key in obj)) obj[key] = {}
       obj = obj[key];
     }
     if(obj[keyPath[lastKeyIndex]]) {
@@ -119,18 +104,12 @@ function assignNestedObjects(obj, keyPath, value) {
     } else obj[keyPath[lastKeyIndex]] = [value]
 }
 
-function capitalize(string) {
+export function capitalize(string: string) {
     if (typeof string !== 'string') return ''
     return string.charAt(0).toUpperCase() + string.slice(1)
 }
 
-function convertLargeNumbers(number) {
+export function convertLargeNumbers(number: number) {
     return number >= 1000000 ? Math.floor((number / 1000000) * 10) / 10 + "M" :
         number >= 1000 ? Math.floor((number / 1000) * 10) / 10 + "K" : number
 }
-
-
-module.exports = {botOwners, palette, mapToObject, groupBy, daysInMonth, 
-    msToTime,
-    toggleBot, setActivity,
-    getUserFromMention, getChannelFromMention, assignNestedObjects, capitalize, convertLargeNumbers};

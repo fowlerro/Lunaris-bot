@@ -1,4 +1,4 @@
-import { Client, ClientOptions, Collection } from 'discord.js';
+import { ActivityOptions, Client, ClientOptions, Collection } from 'discord.js';
 import { Snowflake } from 'discord-api-types';
 import BaseEvent from '../utils/structures/BaseEvent';
 import Command from '../utils/structures/Command';
@@ -8,6 +8,10 @@ import BaseModule from '../utils/structures/BaseModule';
 export default class DiscordClient extends Client {
 
   public isOnline = true
+  public customActivity: ActivityOptions = {
+    name: '',
+    type: "PLAYING"
+  }
   private _commands = new Collection<string, Command>();
   private _events = new Collection<string, BaseEvent>();
   private _modules = new Collection<string, BaseModule>();

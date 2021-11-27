@@ -1,6 +1,7 @@
 import path from 'path'
 import fs from 'fs/promises'
 import BaseEvent from './structures/BaseEvent'
+import BaseModule from './structures/BaseModule';
 const clientConfig = require('../database/config.json');
 
 export async function registerCommands(dir = '') {
@@ -38,34 +39,30 @@ export async function registerEvents(dir = '') {
   }
 }
 
-// async function registerModules(dir = '') {
-//   const filePath = path.join(__dirname, dir);
-//   const files = await fs.readdir(filePath);
-//   for(const file of files) {
-//     const stat = await fs.lstat(path.join(filePath, file));
-//     if(stat.isDirectory()) registerModules(client, path.join(dir, file));
-//     if(file === 'index.js') {
-//       const Module = require(path.join(filePath, file));
-//       client.modules.set(Module.name, Module.enabled);
-//       Module.run(client);
-//       // console.log(Module.name);
-//     }
-//   }
-// }
+export async function registerModules(dir = '') {
+  const filePath = path.join(__dirname, dir);
+  const files = await fs.readdir(filePath);
+  for(const file of files) {
+    const stat = await fs.lstat(path.join(filePath, file));
+    if(stat.isDirectory()) registerModules(path.join(dir, file));
+    if(file === 'index.ts') {
+      const { default: Module } = await import(path.join(filePath, file))
+      if(Module.prototype instanceof BaseModule) {
+        const module = new Module()
+        client.modules.set(module.getName(), module.isEnabled());
+        console.log(module.getName(), module.isEnabled())
+        module.run();
+      }
+    }
+  }
+}
 
-// function registerPresence() {
-//   client.user.setPresence({
-//     status: clientConfig.presence.status || 'online',
-//     activities: [{
-//       name: clientConfig.presence.activity.name || '',
-//       type: clientConfig.presence.activity.type || 'PLAYING',
-//     }]
-//   })
-// }
-
-// module.exports = { 
-//   registerCommands, 
-//   registerEvents,
-//   registerModules,
-//   registerPresence
-// };
+export function registerPresence() {
+  client.user?.setPresence({
+    status: clientConfig.presence.status || 'online',
+    activities: [{
+      name: clientConfig.presence.activity.name || '',
+      type: clientConfig.presence.activity.type || 'PLAYING',
+    }]
+  })
+}

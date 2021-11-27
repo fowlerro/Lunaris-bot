@@ -1,13 +1,13 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs'
+import path from 'path'
 
-const defaultLanguage = 'en';
+const fallbackLanguage = 'en';
 
-const translate = (language, message, ...vars) => {
+export function translate(language: string, message: string, ...vars: any[]) {
     let locale = readMessage(language, message);
     if(!locale) {
-        const langs = localeList().filter(el => el !== language || el !== defaultLanguage);
-        locale = readMessage(defaultLanguage, message);
+        const langs = localeList().filter(el => el !== language || el !== fallbackLanguage);
+        locale = readMessage(fallbackLanguage, message);
         if(!locale) {
             for(let i=0; i<langs.length; i++) {
                 locale = readMessage(langs[i], message);
@@ -22,20 +22,18 @@ const translate = (language, message, ...vars) => {
     return locale;
 }
 
-const localeList = () => {
+export function localeList() {
     const dirPath = path.resolve(__dirname);
     let files = fs.readdirSync(dirPath);
     return files.filter(el => path.extname(el) === '.json').map(el => el.slice(0, -5))
 }
 
-const readMessage = (language, message) => {
-    if(!localeList().includes(language)) language = defaultLanguage;
+function readMessage(language: string, message: string): string {
+    if(!localeList().includes(language)) language = fallbackLanguage;
     const filePath = path.join(__dirname, `${language}.json`);
-    let json = fs.readFileSync(filePath);
-    json = JSON.parse(json);
+    const json = JSON.parse(fs.readFileSync(filePath).toString());
+    console.log({ json })
     return message.split('.').reduce((prev, curr) => {
         return prev ? prev[curr] : null
     }, json);
 }
-
-module.exports = {localeList, translate};

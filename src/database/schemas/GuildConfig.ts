@@ -1,4 +1,7 @@
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
+import { Document, Schema, model } from "mongoose";
+
+// https://stackoverflow.com/questions/34482136/mongoose-the-typescript-way/36661990
 
 const GuildConfigSchema = new mongoose.Schema({
     guildId: {
