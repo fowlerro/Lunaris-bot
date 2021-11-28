@@ -48,10 +48,11 @@ export async function registerModules(dir = '') {
     if(file === 'index.ts') {
       const { default: Module } = await import(path.join(filePath, file))
       if(Module.prototype instanceof BaseModule) {
-        const module = new Module()
-        client.modules.set(module.getName(), module.isEnabled());
-        console.log(module.getName(), module.isEnabled())
-        module.run();
+        // const module = new Module()
+        // client.modules.set(module.getName(), module.isEnabled());
+        // console.log(module.getName(), module.isEnabled())
+        // module.run();
+        console.log('dsa')
       }
     }
   }

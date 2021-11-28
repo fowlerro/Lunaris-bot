@@ -2,8 +2,8 @@ import { ActivityOptions, Client, ClientOptions, Collection } from 'discord.js';
 import { Snowflake } from 'discord-api-types';
 import BaseEvent from '../utils/structures/BaseEvent';
 import Command from '../utils/structures/Command';
-import { GuildConfig } from '../modules/Guilds/types';
 import BaseModule from '../utils/structures/BaseModule';
+import { GuildConfig } from '../database/schemas/GuildConfig';
 
 export default class DiscordClient extends Client {
 

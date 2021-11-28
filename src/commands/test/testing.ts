@@ -1,5 +1,8 @@
+import { Message } from "discord.js"
+import Guilds from "../../modules/Guilds"
+import DiscordClient from "../../types/client"
+
 // TODO Add `botResponse` boolean property to commands, bot will respond only if true
-const { getUserFromMention, getChannelFromMention } = require('../../utils/utils')
 
 module.exports = {
 	name: 'test',
@@ -30,10 +33,11 @@ module.exports = {
 	cooldownChannels: [],
 	cooldownRoles: [],
 	cooldownReminder: true,
-	async run(client, message, args) {
-
-		const user = await getChannelFromMention(message.guild, args[0])
-		console.log(user)
+	async run(client: DiscordClient, message: Message, args: any) {
+		if(!message.guild) return
+		console.log(Guilds.getName())
+		const config = await Guilds.config.get(message.guild.id)
+		console.log(config)
 
 		// const embed = new MessageEmbed()
 			// .setColor('#000')
