@@ -12,25 +12,26 @@ class GuildsModule extends BaseModule {
     }
 
     config = {
-        get: async (guildId: Snowflake): Promise<GuildConfig | null> => {
-            let config: GuildConfig | undefined | null = client.guildConfigs.get(guildId);
+        get: async (guildId: Snowflake): Promise<GuildConfig> => {
+            let config: GuildConfig | undefined | null = client.guildConfigs.get(guildId)
             if(config) return config
 
             config = await GuildConfigModel.findOne({ guildId }).select('-_id -__v')
-            if(!config) return null
+            if(config) return config
 
-            client.guildConfigs.set(guildId, config);
-            return config;
+            config = await this.config.create(guildId)
+            client.guildConfigs.set(guildId, config)
+            return config
         },
         set: async (guildId: Snowflake, toSet: any): Promise<GuildConfig | null> => {
-            const config = await GuildConfigModel.findOneAndUpdate({ guildId }, toSet, { new: true }).select('-_id -__v');
+            const config = await GuildConfigModel.findOneAndUpdate({ guildId }, toSet, { new: true }).select('-_id -__v')
             if(!config) return null
             client.guildConfigs.set(guildId, config);
             return config;
         },        
         create: async (guildId: Snowflake) => {
-            await GuildConfigModel.create({ guildId });
-            return this.config.get(guildId);
+            const config: GuildConfig = await GuildConfigModel.create({ guildId }) // TODO Remove _id and __v from returned document
+            return config
         },
         delete: async (guildId: Snowflake) => {
             client.guildConfigs.delete(guildId);

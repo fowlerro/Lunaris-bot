@@ -1,13 +1,13 @@
-const GuildMembers = require("../../database/schemas/GuildMembers");
-const { unmuteLog } = require("../guildLogs");
-const Guilds = require("../Guilds");
-const { Ban, registerBans } = require("./ban");
+const GuildMembers = require("../../database/schemas/GuildMembers")
+const { unmuteLog } = require("../guildLogs")
+const Guilds = require("../Guilds")
+const { Ban, registerBans } = require("./ban")
 
 module.exports = {
     name: "Mod",
     enabled: true,
     async run(client) {
-        await registerMutes(client);
+        await registerMutes(client)
         await registerBans(client)
     },
     ban: Ban
