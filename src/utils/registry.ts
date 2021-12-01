@@ -1,7 +1,9 @@
 import path from 'path'
 import fs from 'fs/promises'
+
 import BaseEvent from './structures/BaseEvent'
 import BaseModule from './structures/BaseModule';
+
 const clientConfig = require('../database/config.json');
 
 export async function registerCommands(dir = '') {
@@ -47,12 +49,8 @@ export async function registerModules(dir = '') {
     if(stat.isDirectory()) registerModules(path.join(dir, file));
     if(file === 'index.ts') {
       const { default: Module } = await import(path.join(filePath, file))
-      if(Module.prototype instanceof BaseModule) {
-        // const module = new Module()
-        // client.modules.set(module.getName(), module.isEnabled());
-        // console.log(module.getName(), module.isEnabled())
-        // module.run();
-        console.log('dsa')
+      if(Module instanceof BaseModule) {
+        Module.run();
       }
     }
   }
