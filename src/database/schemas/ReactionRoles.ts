@@ -1,4 +1,4 @@
-import { getModelForClass, index, mongoose, prop } from "@typegoose/typegoose"
+import { getModelForClass, index, modelOptions, mongoose, prop, Severity } from "@typegoose/typegoose"
 import { Snowflake } from "discord-api-types"
 
 export class Reactions {
@@ -13,6 +13,7 @@ export class Reactions {
 }
 
 @index({ guildId: 1, channelId: 1, messageId: 1 }, { unique: true })
+@modelOptions({ options: { allowMixed: Severity.ALLOW } })
 export class ReactionRole {
     @prop({ required: true })
     public guildId!: Snowflake

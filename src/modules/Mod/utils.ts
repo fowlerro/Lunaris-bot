@@ -1,58 +1,66 @@
-const GuildMembers = require("../../database/schemas/GuildMembers");
-const {generateId} = require('../../database/utils');
-const { warnAddLog, warnRemoveLog, muteLog, unmuteLog } = require("../guildLogs");
-const { translate } = require("../../utils/languages/languages");
-const { msToTime } = require('../../utils/utils');
-const { Permissions } = require("discord.js");
-const Guilds = require("../Guilds");
+// const GuildMembers = require("../../database/schemas/GuildMembers");
+// const {generateId} = require('../../database/utils');
+// const { warnAddLog, warnRemoveLog, muteLog, unmuteLog } = require("../guildLogs");
+// const { translate } = require("../../utils/languages/languages");
+// const { msToTime } = require('../../utils/utils');
+// const { Permissions } = require("discord.js");
+// const Guilds = require("../Guilds");
+
+import { Snowflake } from "discord-api-types";
+import { Guild, Permissions } from "discord.js";
+import { GuildMemberModel } from "../../database/schemas/GuildMembers";
+import { generateId } from "../../database/utils";
+import { translate } from "../../utils/languages/languages";
+import Guilds from "../Guilds";
 
 const Warn = {
-    add: async (client, guildId, userId, reason, by) => {
+    add: async (guildId: Snowflake, userId: Snowflake, reason?: string, by?: Snowflake) => {
         if(!guildId) return;
         const id = await generateId();
-        await GuildMembers.findOneAndUpdate({guildId, userId}, {
+        await GuildMemberModel.findOneAndUpdate({guildId, userId}, {
             $push: {
                 warns: {reason, by, id}
             }
-        }, {upsert: true});
+        }, { upsert: true });
 
-        warnAddLog(client, guildId, by, userId, reason, id);
+        // warnAddLog(guildId, by, userId, reason, id); // TODO
         return true;
     },
-    remove: async (client, guildId, id, by) => {
+    remove: async (guildId: Snowflake, id: string, by: Snowflake) => {
         if(!guildId) return;
         if(id === 'all') {
-            await GuildMembers.updateMany({ guildId }, {
+            await GuildMemberModel.updateMany({ guildId }, {
                 $set: {
                     warns: []
                 } 
             });
-            return {action: 'all'};
+            return { action: 'all' };
         }
 
-        const result = await GuildMembers.findOneAndUpdate({guildId, 'warns.id': id}, {
+        const result = await GuildMemberModel.findOneAndUpdate({ guildId, 'warns.id': id }, {
             $pull: {
-                warns: {id}
+                warns: { id }
             }
         });
 
-        if(!result) return {error: 'warnNotFound'}
+        if(!result) return { error: 'warnNotFound' }
 
         const warn = result.warns.filter(w => w.id === id);
-        warnRemoveLog(client, guildId, by, warn[0].by, result.userId, warn[0].reason, id);
+        // warnRemoveLog(client, guildId, by, warn[0].by, result.userId, warn[0].reason, id); // TODO
         return result;
     },
-    list: async (client, guildId, userId) => {
+    list: async (guildId: Snowflake, userId: Snowflake) => {
         if(!guildId) return;
-        const guildConfig = await Guilds.config.get(client, guildId);
-        const language = guildConfig.get('language');
+        const guildConfig = await Guilds.config.get(guildId);
+        if(!guildConfig) return
+        const language = guildConfig.language
         if(userId) {
-            const result = await GuildMembers.findOne({guildId, userId});
+            const result = await GuildMemberModel.findOne({ guildId, userId });
             if(!result?.warns.length) return { error: translate(language, 'general.none') };
             return { warns: result.warns };
         }
 
-        let warns = await GuildMembers.find({guildId}).select(['-muted', '-_id', '-guildId', '-__v']);
+        let warns = await GuildMemberModel.find({ guildId }).select(['-muted', '-_id', '-guildId', '-__v']);
         warns = warns.filter(v => v.warns.length > 0);
         if(!warns.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return { error: translate(language, 'general.none') };
         
@@ -62,19 +70,21 @@ const Warn = {
 
 // TODO: Remove mute if someone take role from a member
 const Mute = {
-    add: async (client, guildId, userId, reason = null, by, time = null) => {
-            const guild = client.guilds.cache.get(guildId);
-            const guildConfig = await Guilds.config.get(client, guildId);
+    add: async (guildId: Snowflake, userId: Snowflake, reason?: string, by?: Snowflake, time?: number) => {
+            const guild = await client.guilds.fetch(guildId).catch(() => {})
+            if(!guild) return
+            const guildConfig = await Guilds.config.get(guildId);
+            if(!guildConfig) return
 
-            if(!guild.me.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return { error: "missingPermission", perms: new Permissions([Permissions.FLAGS.MANAGE_ROLES]).toArray() }
+            if(!guild.me?.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return { error: "missingPermission", perms: new Permissions([Permissions.FLAGS.MANAGE_ROLES]).toArray() }
 
-            const muteRoleId = guildConfig.get('modules.autoMod.muteRole');
-            let timestamp = null;
+            const muteRoleId = guildConfig.modules?.autoMod?.muteRole
+            let timestamp = 0;
             const date = Date.now();
             if(time) timestamp = date + time;
-            let muteRole = guild.roles.cache.get(muteRoleId) || guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
+            let muteRole = muteRoleId ? await guild.roles.fetch(muteRoleId) : guild.roles.cache.find(r => r.name.toLowerCase() === 'muted' || r.name.toLowerCase() === 'mute');
             if(!muteRole) muteRole = await createMuteRole(guild);
-            if(muteRoleId !== muteRole.id) Guilds.config.set(client, guildId, 'modules.autoMod.muteRole', muteRole.id);
+            if(muteRoleId !== muteRole.id) Guilds.config.set(guildId, 'modules.autoMod.muteRole', muteRole.id);
             await guild.members.cache.get(userId).roles.add(muteRole).catch(e => console.log(e));
             await GuildMembers.findOneAndUpdate({guildId, userId}, {
                 muted: {
@@ -193,13 +203,12 @@ const Mute = {
     }
 }
 
-async function createMuteRole(guild) {
+async function createMuteRole(guild: Guild) {
     const muteRole = await guild.roles.create({
         name: 'Muted',
         permissions: []
     });
-    
-    await guild.channels.cache.map(async channel => {
+    await (await guild.channels.fetch()).map(async channel => {
         await channel.permissionOverwrites.create(muteRole, {
             SEND_MESSAGES: false,
             MANAGE_MESSAGES: false,
@@ -210,4 +219,4 @@ async function createMuteRole(guild) {
     return muteRole;
 }
 
-module.exports = {Mute, Warn}
+// module.exports = {Mute, Warn}

@@ -1,4 +1,4 @@
-import { getModelForClass, mongoose, prop } from "@typegoose/typegoose"
+import { getModelForClass, modelOptions, mongoose, prop, Severity } from "@typegoose/typegoose"
 import { Snowflake } from "discord-api-types"
 
 class Roles {
@@ -9,6 +9,7 @@ class Roles {
     public time!: number
 }
 
+@modelOptions({ options: { allowMixed: Severity.ALLOW } })
 export class AutoRole {
     @prop({ required: true, unique: true })
     public guildId!: Snowflake
