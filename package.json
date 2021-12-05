@@ -40,6 +40,7 @@
     "@shelf/jest-mongodb": "^1.2.3",
     "@types/ms": "^0.7.31",
     "@types/node": "^16.11.9",
+    "@types/node-cron": "^3.0.0",
     "@types/shortid": "^0.0.29",
     "jest": "^26.6.3"
   },

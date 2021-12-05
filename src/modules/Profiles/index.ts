@@ -1,47 +1,46 @@
-const { Collection } = require("discord.js");
-const { createCanvas, loadImage } = require('canvas');
-const { join } = require('path');
-const cron = require('node-cron');
-const GuildMembers = require("../../database/schemas/GuildMembers");
-const Profile = require("../../database/schemas/Profile");
-const { convertLargeNumbers } = require("../../utils/utils");
+
 // TODO Remove after some time guild profiles from users who leaved a server
 // TODO Add property `isInGuild` to GuildMembers schema. Extra check for rankings, etc.
-module.exports = {
-    name: "Profiles",
-    enabled: true,
-    lastSave: 0,
-    async run(client) {
-        client.profiles = new Collection();
-        client.guildMembers = new Collection();
-        
+// TODO Optimize canvas code and organize module
+import cron from 'node-cron'
+import { join } from 'path';
+import { createCanvas, loadImage, NodeCanvasRenderingContext2D } from 'canvas';
+import { GuildMember as DiscordGuildMember } from 'discord.js'
+import { Snowflake } from 'discord-api-types';
+
+import BaseModule from "../../utils/structures/BaseModule";
+import { GuildMember, GuildMemberModel } from '../../database/schemas/GuildMembers';
+import { Profile, ProfileModel } from '../../database/schemas/Profile';
+import { convertLargeNumbers } from '../../utils/utils';
+
+
+class ProfileModule extends BaseModule {
+    constructor() {
+        super('Profile', true)
+    }
+
+    private _lastSave = 0
+    get lastSave(): number { return this._lastSave }
+
+    async run() {
         cron.schedule('*/5 * * * *', async () => {
-            this.lastSave = Date.now()
-            await saveGuildMembers(client);
-            await saveProfiles(client);
+            this._lastSave = Date.now()
+            await saveProfiles(false) // Guild Members
+            await saveProfiles(true) // Global Profiles
         })
-    },
-    async get(client, userId, guildId) {
-        if(guildId) {
-            let profile = client.guildMembers.get(`${userId}-${guildId}`)
-            if(!profile) {
-                profile = await GuildMembers.findOne({ guildId, userId });
-                if(!profile) return createProfile(client, userId, guildId);
-                    client.guildMembers.set(`${userId}-${guildId}`, profile)
-            }
-            return profile;
-        }
+    }
 
-        let profile = client.profiles.get(userId);
+    async get(userId: Snowflake, guildId?: Snowflake): Promise<GuildMember | Profile> {
+        const isGlobal = Boolean(guildId)
+        let profile: Profile | GuildMember | undefined | null = isGlobal ? client.profiles.get(userId) : client.guildMembers.get(`${userId}-${guildId}`)
         if(!profile) {
-            profile = await Profile.findOne({ userId });
-            if(!profile) return createProfile(client, userId);
-            client.profiles.set(userId, profile);
+            profile = isGlobal ? await ProfileModel.findOne({ userId }) : await GuildMemberModel.findOne({ guildId, userId })
+            if(!profile) return createProfile(userId, guildId)
         }
-        return profile;
-    },
+        return profile
+    }
 
-    async generateCard(member, guildProfile, globalProfile, avatarURL, isGlobal) {
+    async generateCard(member: DiscordGuildMember, guildProfile: GuildMember, globalProfile: Profile, avatarURL: string, isGlobal: boolean) {
         const canvas = createCanvas(1200, 660);
         const ctx = canvas.getContext('2d');
         const profile = isGlobal ? globalProfile : guildProfile;
@@ -73,69 +72,56 @@ module.exports = {
         ctx.fillStyle = '#FFF';
         ctx.font = `30px Roboto`;
         ctx.textAlign = 'center';
-        ctx.fillText(globalProfile.coins, coinsValueTextX, coinsValueTextY, 140);
+        ctx.fillText(globalProfile.coins.toString(), coinsValueTextX, coinsValueTextY, 140);
     
         await drawTextXPData(ctx, profile, isGlobal);
         await drawVoiceXPData(ctx, profile, isGlobal);
     
-    
         return canvas.toBuffer();
-    },
-    neededXp,
-    getTextRank, getVoiceRank
+    }
+
+    // TODO TOFIX
+    neededXp(level: number) { return neededXp(level) }
+
+    async getRank(guildId: Snowflake, userId: Snowflake, xpType: 'text' | 'voice' = 'text', isGlobal: boolean = false) {
+        return getRank(guildId, userId, xpType, isGlobal)
+    }
 }
 
-function neededXp(level) {
+function neededXp(level: number) {
     return level * (200 + level * 15);
 }
 
-async function getTextRank(guildId, userId, isGlobal) {
-    let collections = isGlobal ? await Profile.find({}) : await GuildMembers.find({ guildId });
-    collections = collections.sort((a, b) => b.statistics.text.totalXp - a.statistics.text.totalXp)
+async function getRank(guildId: Snowflake, userId: Snowflake, xpType: 'text' | 'voice' = 'text', isGlobal: boolean = false) {
+    const profiles = isGlobal ? await ProfileModel.find() : await GuildMemberModel.find({ guildId })
+    const sortedProfiles = profiles.sort((a, b) => b.statistics[xpType].totalXp - a.statistics[xpType].totalXp)
 
-    return collections.findIndex(x => x.userId === userId) + 1;
-}
-async function getVoiceRank(guildId, userId, isGlobal) {
-    let collections = isGlobal ? await Profile.find({}) : await GuildMembers.find({ guildId });
-    collections = collections.sort((a, b) => b.statistics.voice.totalXp - a.statistics.voice.totalXp)
-
-    return collections.findIndex(x => x.userId === userId) + 1;
+    return sortedProfiles.findIndex(x => x.userId === userId) + 1
 }
 
-async function createProfile(client, userId, guildId) {
-    if(guildId) {
-        const profile = await GuildMembers.create({ userId, guildId });
-        client.guildMembers.set(`${userId}-${guildId}`, profile)
-        return profile;
+async function createProfile(userId: Snowflake, guildId?: Snowflake) {
+    const isGlobal = Boolean(guildId)
+    const profile = isGlobal ? await ProfileModel.create({ userId }) : await GuildMemberModel.create({ userId, guildId })
+    'guildId' in profile ? client.guildMembers.set(`${userId}-${guildId}`, profile) : client.profiles.set(userId, profile)
+    return profile
+}
+
+async function saveProfiles(global: boolean) {
+    const bulk = global ? ProfileModel.collection.initializeOrderedBulkOp() : GuildMemberModel.collection.initializeOrderedBulkOp()
+    if(global) {
+        client.profiles.forEach(profile => bulk.find({ userId: profile.userId }).replaceOne(profile))
+        return bulk.execute()
     }
 
-    const profile = await Profile.create({ userId });
-    client.profiles.set(userId, profile);
-    return profile;
-}
-
-async function saveProfiles(client) {
-    const bulk = Profile.collection.initializeOrderedBulkOp();
-    client.profiles.forEach(profile => {
-        bulk.find({ userId: profile.userId }).replaceOne(profile);
-    });
-
-    await bulk.execute();
-}
-
-async function saveGuildMembers(client) {
-    const bulk = GuildMembers.collection.initializeOrderedBulkOp();
-    client.guildMembers.forEach(profile => {
-        bulk.find({ guildId: profile.guildId, userId: profile.userId }).replaceOne(profile);   
-    });
-    await bulk.execute();
+    client.guildMembers.forEach(profile => bulk.find({ guildId: profile.guildId, userId: profile.userId }).replaceOne(profile))
+    return bulk.execute()
 }
 
 
 
 
 
-async function drawAvatar(ctx, avatarURL) {
+async function drawAvatar(ctx: NodeCanvasRenderingContext2D, avatarURL: string) {
     ctx.save();
     ctx.beginPath();
     ctx.arc(130, 130, 115, 0, 2 * Math.PI);
@@ -146,15 +132,14 @@ async function drawAvatar(ctx, avatarURL) {
     ctx.restore();
 }
 
-async function drawBackground(ctx, globalProfile) {
-    let backgroundImage;
-    if(globalProfile.cardAppearance.customBackground) {
-        backgroundImage = await loadImage(globalProfile.cardAppearance.customBackground);
-    } else backgroundImage = await loadImage(join(__dirname, 'assets', 'backgrounds', `${globalProfile.cardAppearance.background}.svg`))
+async function drawBackground(ctx: NodeCanvasRenderingContext2D, globalProfile: Profile) {
+    const customBackground = globalProfile.cardAppearance.customBackground
+    const backgroundImage = customBackground ? await loadImage(customBackground) : await loadImage(join(__dirname, 'assets', 'backgrounds', `${globalProfile.cardAppearance.background}.svg`))
+
     ctx.drawImage(backgroundImage, 0, 0, 1200, 660);
 }
 
-async function drawNickname(ctx, member) {
+async function drawNickname(ctx: NodeCanvasRenderingContext2D, member: DiscordGuildMember) {
     const nicknameBg = await loadImage(join(__dirname, 'assets', 'elements', 'NicknameField.svg'));
     ctx.drawImage(nicknameBg, 532, 4, 376, 128);
     ctx.font = "30px Roboto";
@@ -164,41 +149,41 @@ async function drawNickname(ctx, member) {
     ctx.fillText(member.user.tag, 536+(368/2), 6+(124/2));
 }
 
-async function drawTextXPData(ctx, profile, isGlobal) {
+async function drawTextXPData(ctx: NodeCanvasRenderingContext2D, profile: GuildMember | Profile, isGlobal: boolean) {
     ctx.fillStyle = '#FFF';
     ctx.font = `30px Roboto`;
     ctx.textAlign = 'center';
 
-    ctx.fillText(profile.statistics.text.level, 232 + 48, 330 + 48, 90);
-    ctx.fillText(convertLargeNumbers(profile.statistics.text.dailyXp), 340 + 75, 418 + 30, 150);
-    ctx.fillText(convertLargeNumbers(profile.statistics.text.totalXp), 874 + 75, 418 + 30, 150);
+    ctx.fillText(profile.statistics.text.level.toString(), 232 + 48, 330 + 48, 90);
+    ctx.fillText(convertLargeNumbers(profile.statistics.text.dailyXp).toString(), 340 + 75, 418 + 30, 150);
+    ctx.fillText(convertLargeNumbers(profile.statistics.text.totalXp).toString(), 874 + 75, 418 + 30, 150);
 
     const xpNeeded = neededXp(profile.statistics.text.level);
     ctx.fillText(`${convertLargeNumbers(profile.statistics.text.xp)}/${convertLargeNumbers(xpNeeded)}`, 583 + 99, 418 + 30, 190);
 
     // Ranking
-    const rank = await getTextRank(profile.guildId, profile.userId, isGlobal);
+    const rank = await getRank('guildId' in profile ? profile.guildId : '', profile.userId, 'text', isGlobal)
     ctx.fillText(`#${rank}`, 76 + 71, 348 + 30, 140);
 }
 
-async function drawVoiceXPData(ctx, profile, isGlobal) {
+async function drawVoiceXPData(ctx: NodeCanvasRenderingContext2D, profile: GuildMember | Profile, isGlobal: boolean) {
     ctx.fillStyle = '#FFF';
     ctx.font = `30px Roboto`;
     ctx.textAlign = 'center';
 
-    ctx.fillText(profile.statistics.voice.level, 232 + 48, 488 + 48, 90);
-    ctx.fillText(convertLargeNumbers(profile.statistics.voice.dailyXp), 340 + 75, 576 + 30, 150);
-    ctx.fillText(convertLargeNumbers(profile.statistics.voice.totalXp), 874 + 75, 576 + 30, 150);
+    ctx.fillText(profile.statistics.voice.level.toString(), 232 + 48, 488 + 48, 90);
+    ctx.fillText(convertLargeNumbers(profile.statistics.voice.dailyXp).toString(), 340 + 75, 576 + 30, 150);
+    ctx.fillText(convertLargeNumbers(profile.statistics.voice.totalXp).toString(), 874 + 75, 576 + 30, 150);
 
     const xpNeeded = neededXp(profile.statistics.voice.level);
     ctx.fillText(`${convertLargeNumbers(profile.statistics.voice.xp)}/${convertLargeNumbers(xpNeeded)}`, 583 + 99, 576 + 30, 190);
 
     // Ranking
-    const rank = await getVoiceRank(profile.guildId, profile.userId, isGlobal);
+    const rank = await getRank('guildId' in profile ? profile.guildId : '', profile.userId, 'voice', isGlobal)
     ctx.fillText(`#${rank}`, 76 + 71, 506 + 30, 140);
 }
 
-async function drawXpBars(ctx, profile) {
+async function drawXpBars(ctx: NodeCanvasRenderingContext2D, profile: GuildMember | Profile) {
     const barImage = await loadImage(join(__dirname, 'assets', 'elements', 'XPBar.svg'));
 
     const xpText = profile.statistics.text.xp;
@@ -221,7 +206,7 @@ async function drawXpBars(ctx, profile) {
     ctx.drawImage(barEndImage, 338 + xVoicePercentage - 36, 507, 40, 58);
 }
 
-async function drawLevelRings(ctx, profile) {
+async function drawLevelRings(ctx: NodeCanvasRenderingContext2D, profile: GuildMember | Profile) {
 
     const xpText = profile.statistics.text.xp;
     const neededXpText = neededXp(profile.statistics.text.level);
@@ -238,7 +223,7 @@ async function drawLevelRings(ctx, profile) {
 
     ctx.beginPath();
     ctx.strokeStyle = '#36393F';
-    ctx.lineWidth = '14';
+    ctx.lineWidth = 14;
     xTextPercentage === 90 ? ctx.arc(232 + 48, 330 + 48, 42, 0, 2 * Math.PI) : ctx.arc(232 + 48, 330 + 48, 42, xTextPercentage * Math.PI / 180, 90 * Math.PI / 180);
     ctx.stroke();
     ctx.closePath();
@@ -247,3 +232,5 @@ async function drawLevelRings(ctx, profile) {
     ctx.stroke();
     ctx.closePath();
 }
+
+export default new ProfileModule()

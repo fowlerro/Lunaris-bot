@@ -3,7 +3,15 @@ import { Snowflake } from "discord-api-types";
 
 export const botOwners = ["313346190995619841"];
 
-export const palette = {
+interface IPalette {
+    primary: `#${string}`
+    secondary: string
+    success: `#${string}`
+    info: `#${string}`
+    error: `#${string}`
+}
+
+export const palette: IPalette = {
     primary: '#102693',
     secondary: '',
     success: '#7BDB27',

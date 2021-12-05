@@ -3,21 +3,36 @@ import { Snowflake } from "discord-api-types";
 import { Language } from "../../utils/languages/types";
 
 class GuildLogs {
-    member?: Snowflake
-    channel?: Snowflake
-    voice?: Snowflake
-    roles?: Snowflake
-    message?: Snowflake
-    commands?: Snowflake
-    invites?: Snowflake
+    @prop()
+    public member?: Snowflake
+    
+    @prop()
+    public channel?: Snowflake
+    
+    @prop()
+    public voice?: Snowflake
+    
+    @prop()
+    public roles?: Snowflake
+    
+    @prop()
+    public message?: Snowflake
+    
+    @prop()
+    public commands?: Snowflake
+    
+    @prop()
+    public invites?: Snowflake
 }
 
-interface GuildAutoRoleModule {
-    status: boolean
+class GuildAutoRoleModule {
+    @prop({ default: false })
+    public status!: boolean
 }
 
-interface GuildAutoModModule {
-    muteRole: Snowflake
+class GuildAutoModModule {
+    @prop()
+    public muteRole?: Snowflake
 }
 
 class LevelUpMessage {
@@ -29,15 +44,21 @@ class LevelUpMessage {
 }
 
 class GuildXpModule {
+    @prop()
     public levelUpMessage!: LevelUpMessage
 
     @prop({ default: 1 })
     public multiplier!: number
 }
 class GuildModules {
-    public autoRole?: GuildAutoRoleModule
+    @prop()
+    public autoRole!: GuildAutoRoleModule
+    
+    @prop()
     public autoMod?: GuildAutoModModule
-    public xp?: GuildXpModule
+    
+    @prop()
+    public xp!: GuildXpModule
 }
 
 export class GuildConfig {
@@ -54,7 +75,7 @@ export class GuildConfig {
     public logs?: GuildLogs
 
     @prop()
-    public modules?: GuildModules
+    public modules!: GuildModules
 }
 
 export const GuildConfigModel = getModelForClass(GuildConfig)

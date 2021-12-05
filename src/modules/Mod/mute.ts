@@ -3,68 +3,10 @@ import { Guild, Permissions, Role } from "discord.js";
 import { GuildMemberModel } from "../../database/schemas/GuildMembers";
 import { generateId } from "../../database/utils";
 import { translate } from "../../utils/languages/languages";
-import { msToTime } from "../../utils/utils";
 import Guilds from "../Guilds";
 
-const Warn = {
-    add: async (guildId: Snowflake, userId: Snowflake, reason?: string, by?: Snowflake) => {
-        if(!guildId) return;
-        const id = await generateId();
-        await GuildMemberModel.findOneAndUpdate({guildId, userId}, {
-            $push: {
-                warns: {reason, by, id}
-            }
-        }, { upsert: true });
-
-        // warnAddLog(guildId, by, userId, reason, id); // TODO
-        return true;
-    },
-    remove: async (guildId: Snowflake, id: string, by: Snowflake) => {
-        if(!guildId) return;
-        if(id === 'all') {
-            await GuildMemberModel.updateMany({ guildId }, {
-                $set: {
-                    warns: []
-                } 
-            });
-            return { action: 'all' };
-        }
-
-        const result = await GuildMemberModel.findOneAndUpdate({ guildId, 'warns.id': id }, {
-            $pull: {
-                warns: { id }
-            }
-        });
-
-        if(!result) return { error: 'warnNotFound' }
-
-        const warn = result.warns.filter(w => w.id === id);
-        // warnRemoveLog(client, guildId, by, warn[0].by, result.userId, warn[0].reason, id); // TODO
-        return result;
-    },
-    list: async (guildId: Snowflake, userId: Snowflake) => {
-        if(!guildId) return;
-        const guildConfig = await Guilds.config.get(guildId);
-        if(!guildConfig) return
-        const language = guildConfig.language
-        if(userId) {
-            const result = await GuildMemberModel.findOne({ guildId, userId });
-            if(!result?.warns.length) return { error: translate(language, 'general.none') };
-            return { warns: result.warns };
-        }
-
-        let warns = await GuildMemberModel.find({ guildId }).select(['-muted', '-_id', '-guildId', '-__v']);
-        warns = warns.filter(v => v.warns.length > 0);
-        if(!warns.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return { error: translate(language, 'general.none') };
-        
-        return { warns };
-    }
-}
-
-
-
 // TODO: Remove mute if someone take role from a member
-const Mute = {
+export const Mute = {
     add: async (guildId: Snowflake, userId: Snowflake, reason?: string, by?: Snowflake, time?: number) => {
             const guild = await client.guilds.fetch(guildId).catch(() => {})
             if(!guild) return
@@ -159,7 +101,7 @@ const Mute = {
         //     member.roles.remove(muteRole, translate(language, 'autoMod.mute.removeAllMutesReason'));
         // })
 
-        const guildMutes = await GuildMemberModel.updateMany({ guildId, 'muted.isMuted': true }, {
+        const guildMutes = await GuildMemberModel.updateMany({ guildId, 'mute.isMuted': true }, {
             muted: {
                 isMuted: false,
                 timestamp: null,
@@ -173,7 +115,7 @@ const Mute = {
     },
     list: async (guildId: Snowflake) => {
         const { language } = await Guilds.config.get(guildId);
-        const guildMembers = await GuildMemberModel.find({ guildId, 'muted.isMuted': true }).select(['-warns', '-_id', '-guildId', '-__v']);
+        const guildMembers = await GuildMemberModel.find({ guildId, 'mute.isMuted': true }).select(['-warns', '-_id', '-guildId', '-__v']);
         if(!guildMembers.length) return { error: translate(language, 'general.none') };
         return guildMembers;
     },
@@ -184,7 +126,7 @@ const Mute = {
         if(!member) return
 
         const muteRole = await Mute.getRole(guild)
-        const guildMembers = await GuildMemberModel.findOne({ guildId, userId, 'muted.isMuted': true });
+        const guildMembers = await GuildMemberModel.findOne({ guildId, userId, 'mute.isMuted': true });
         if(!guildMembers) return 'notMuted';
         await member.roles.add(muteRole).catch(e => console.log(e));
 

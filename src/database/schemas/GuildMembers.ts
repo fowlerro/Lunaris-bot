@@ -1,49 +1,23 @@
 import { getModelForClass, index, modelOptions, prop, Severity } from "@typegoose/typegoose";
 import { Snowflake } from "discord-api-types";
 import shortid from "shortid";
-
-class XpStatistics {
-    @prop({ required: true, default: 1 })
-    public level!: number
-
-    @prop({ required: true, default: 0 })
-    public xp!: number
-
-    @prop({ required: true, default: 0 })
-    public totalXp!: number
-
-    @prop({ required: true, default: 0 })
-    public dailyXp!: number
-}
-
-class VoiceStatistics extends XpStatistics {
-    @prop({ required: true, default: 0 })
-    public timeSpent!: number
-}
-
-class GuildMemberStatistics {
-    @prop()
-    public text!: XpStatistics
-
-    @prop()
-    public voice!: VoiceStatistics
-}
+import { ProfileStatistics } from "./Profile";
 
 class GuildMemberMute {
     @prop({ default: false })
     public isMuted!: boolean
     
     @prop()
-    public timestamp?: number
+    public timestamp?: number | null
 
     @prop()
-    public date?: number
+    public date?: number | null
 
     @prop()
-    public reason?: string
+    public reason?: string | null
 
     @prop()
-    public by?: Snowflake | string
+    public by?: Snowflake | string | null
 }
 
 class GuildMemberWarn {
@@ -70,7 +44,7 @@ export class GuildMember {
     public userId!: Snowflake
 
     @prop()
-    public statistics!: GuildMemberStatistics
+    public statistics!: ProfileStatistics
 
     @prop()
     public mute!: GuildMemberMute

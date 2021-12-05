@@ -1,5 +1,9 @@
-const Profiles = require("../../../modules/Profiles");
-const { getGuildProfile, generateProfileCard, getGlobalProfile } = require("../../../modules/Profiles/profile");
+import { Message } from "discord.js";
+import { GuildMember } from "../../../database/schemas/GuildMembers";
+import { Profile } from "../../../database/schemas/Profile";
+import Profiles from "../../../modules/Profiles";
+import DiscordClient from "../../../types/client";
+
 const { resetDailyXp } = require("../../../modules/xpSystem/utils");
 
 module.exports = {
@@ -34,13 +38,15 @@ module.exports = {
     cooldownChannels: [],
     cooldownRoles: [],
     cooldownReminder: true,
-    async run(client, message, args) {
-        const member = !isNaN(args[0]) ? await message.guild.members.fetch(args[0]) : message.mentions.members.first() || (await message.guild.members.fetch(message.author.id));
+    async run(client: DiscordClient, message: Message, args: any) {
+        if(!message.guild) return
+        const member = !isNaN(args[0]) ? await message.guild.members.fetch(args[0]) : message.mentions.members?.first() || (await message.guild.members.fetch(message.author.id));
+        if(!member) return
         const isGlobal = args.includes('global');
 
-        const profile = await Profiles.get(client, member.id, message.guild.id);
+        const profile = await Profiles.get(member.id, message.guild.id);
         if(!profile) return;
-        const globalProfile = await Profiles.get(client, member.id);
+        const globalProfile: Profile = await Profiles.get(member.id);
         if(!globalProfile) return;
 
         const profileCardBuffer = await Profiles.generateCard(member, profile, globalProfile, member.user.displayAvatarURL({ format: 'png' }), isGlobal);
