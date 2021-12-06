@@ -12,14 +12,14 @@ export async function registerCommands(dir = '') {
   for (const file of files) {
     const stat = await fs.lstat(path.join(filePath, file));
     if (stat.isDirectory()) registerCommands(path.join(dir, file));
-    if (file.endsWith('.js') || file.endsWith('.ts')) {
-      const cmd = require(path.join(filePath, file));
-      const cat = dir.split('/').slice(2);
-      cmd.cat = cat;
-      client.commands.set(cmd.name, cmd);
-      cmd.aliases.forEach((alias: string) => {
-        client.commands.set(alias, cmd);
-      });
+    if (file.endsWith('.ts')) {
+      // const cmd = require(path.join(filePath, file));
+      // const cat = dir.split('/').slice(2);
+      // cmd.cat = cat;
+      // client.commands.set(cmd.name, cmd);
+      // cmd.aliases.forEach((alias: string) => {
+      //   client.commands.set(alias, cmd);
+      // });
     }
   }
 }

@@ -1,6 +1,6 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-channelDelete
-const { channelDeletedLog } = require('../../modules/guildLogs');
 import { DMChannel, GuildChannel } from "discord.js";
+
 import BaseEvent from "../../utils/structures/BaseEvent";
 
 
@@ -11,6 +11,6 @@ export default class ChannelDeleteEvent extends BaseEvent {
   
   async run(channel: DMChannel | GuildChannel) {
     if(!client.isOnline) return;
-    channelDeletedLog(client, channel);
+    // channelDeletedLog(client, channel);
   }
 }

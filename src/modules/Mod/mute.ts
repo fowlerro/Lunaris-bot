@@ -1,9 +1,9 @@
-import { Snowflake } from "discord-api-types";
 import { Guild, Permissions, Role } from "discord.js";
-import { GuildMemberModel } from "../../database/schemas/GuildMembers";
-import { generateId } from "../../database/utils";
-import { translate } from "../../utils/languages/languages";
+import { Snowflake } from "discord-api-types";
+
 import Guilds from "../Guilds";
+import { GuildMemberModel } from "../../database/schemas/GuildMembers";
+import { translate } from "../../utils/languages/languages";
 
 // TODO: Remove mute if someone take role from a member
 export const Mute = {

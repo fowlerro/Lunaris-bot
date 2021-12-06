@@ -1,9 +1,9 @@
 import { GuildMember } from "discord.js";
 import ms from 'ms'
 
+import BaseModule from "../../utils/structures/BaseModule";
 import { AutoRoleModel } from "../../database/schemas/AutoRole";
 import { AutoRoleTimeModel } from "../../database/schemas/AutoRoleTime";
-import BaseModule from "../../utils/structures/BaseModule";
 
 class AutoRoleModule extends BaseModule {
     constructor() {

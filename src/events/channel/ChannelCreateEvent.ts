@@ -1,6 +1,6 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-channelCreate
-const { channelCreatedLog } = require('../../modules/guildLogs');
 import { DMChannel, GuildChannel } from "discord.js";
+
 import BaseEvent from "../../utils/structures/BaseEvent";
 
 export default class ChannelCreateEvent extends BaseEvent {
@@ -12,6 +12,6 @@ export default class ChannelCreateEvent extends BaseEvent {
     if(!client.isOnline) return;
 
     if(channel.type === 'DM') return;
-    channelCreatedLog(client, channel);
+    // channelCreatedLog(client, channel);
   }
 }

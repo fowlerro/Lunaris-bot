@@ -1,10 +1,6 @@
-import { Guild, Invite } from "discord.js";
+import { Invite } from "discord.js";
+
 import BaseEvent from "../../utils/structures/BaseEvent";
-
-const { inviteDeletedLog } = require('../../modules/guildLogs');
-const Guilds = require('../../modules/Guilds');
-
-// TODO NOT EXECUTING
 export default class InviteDeleteEvent extends BaseEvent {
     constructor() {
         super('inviteDelete');
@@ -13,11 +9,11 @@ export default class InviteDeleteEvent extends BaseEvent {
     async run(invite: Invite) {
         if(!client.isOnline) return;
         if(!invite.guild) return
-        const guildConfig = await Guilds.config.get(client, invite.guild.id);
-        const logChannel = (invite.guild as Guild).channels.cache.find(channel => channel.id === guildConfig.get('logs.invites'));
-        if(!logChannel) return;
-        const language = guildConfig.get('language');
+        // const guildConfig = await Guilds.config.get(client, invite.guild.id);
+        // const logChannel = (invite.guild as Guild).channels.cache.find(channel => channel.id === guildConfig.get('logs.invites'));
+        // if(!logChannel) return;
+        // const language = guildConfig.get('language');
 
-        inviteDeletedLog(client, invite.code, invite.channel.id, logChannel, language);
+        // inviteDeletedLog(client, invite.code, invite.channel.id, logChannel, language);
     }
 };

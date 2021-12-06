@@ -1,8 +1,7 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildBanRemove
-const { memberUnbannedLog } = require('../../modules/guildLogs');
 import { GuildBan } from "discord.js";
-import BaseEvent from "../../utils/structures/BaseEvent";
 
+import BaseEvent from "../../utils/structures/BaseEvent";
 
 export default class GuildBanRemoveEvent extends BaseEvent {
   constructor() {

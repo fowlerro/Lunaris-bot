@@ -1,9 +1,8 @@
 import { Message } from "discord.js";
-import Guilds from "../../modules/Guilds";
-import BaseEvent from "../../utils/structures/BaseEvent";
 
-const CommandHandlerModule = require('../../modules/commandHandler');
-const xpSystem = require('../../modules/xpSystem');
+import BaseEvent from "../../utils/structures/BaseEvent";
+import Guilds from "../../modules/Guilds";
+import xpSystem from "../../modules/xpSystem";
 
 export default class MessageCreateEvent extends BaseEvent {
     constructor() {
@@ -16,12 +15,15 @@ export default class MessageCreateEvent extends BaseEvent {
         const guildConfig = await Guilds.config.get(message.guild.id);
         if(!guildConfig) return
         const prefix = guildConfig.prefix
-        CommandHandlerModule.handleCommand(client, message);
+        // CommandHandlerModule.handleCommand(client, message);
+
+        if(message.content.startsWith('!test')) {
+        }
         
         if(!client.isOnline) return;
 
         if(!message.content.startsWith(prefix)) 
-            xpSystem.addTextXp(client, message);
+            xpSystem.addTextXp(message);
 
     }
 };

@@ -3,6 +3,8 @@ import { Snowflake } from "discord-api-types";
 import shortid from "shortid";
 import { ProfileStatistics } from "./Profile";
 
+
+@modelOptions({ options: { allowMixed: Severity.ALLOW } })
 class GuildMemberMute {
     @prop({ default: false })
     public isMuted!: boolean

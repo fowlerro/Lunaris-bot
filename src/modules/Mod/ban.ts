@@ -1,5 +1,6 @@
 import { Guild, Permissions } from "discord.js"
 import { Snowflake } from "discord-api-types"
+
 import { GuildBanModel } from "../../database/schemas/GuildBans"
 
 export const Ban = {

@@ -1,6 +1,8 @@
+import { Snowflake } from "discord-api-types";
+
 import BaseModule from "../../utils/structures/BaseModule";
 import { GuildConfig, GuildConfigModel } from "../../database/schemas/GuildConfig";
-import { Snowflake } from "discord-api-types";
+
 class GuildsModule extends BaseModule {
     constructor() {
         super('Guilds', true)

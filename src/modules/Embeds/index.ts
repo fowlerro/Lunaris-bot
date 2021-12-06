@@ -1,4 +1,4 @@
-import { ButtonInteraction, Interaction, Message, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextChannel } from "discord.js"
+import { ButtonInteraction, Message, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextChannel } from "discord.js"
 import { Snowflake } from "discord-api-types"
 
 import BaseModule from "../../utils/structures/BaseModule"

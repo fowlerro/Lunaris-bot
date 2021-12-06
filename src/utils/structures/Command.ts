@@ -1,6 +1,7 @@
 
-import { Permissions, Snowflake } from 'discord-api-types';
 import { Message } from 'discord.js';
+import { Permissions, Snowflake } from 'discord-api-types';
+
 import DiscordClient from '../../types/client';
 
 interface CommandDescription {

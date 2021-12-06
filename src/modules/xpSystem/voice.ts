@@ -1,9 +1,10 @@
 import { VoiceState, GuildMember as DiscordGuildMember, Collection } from "discord.js";
 import { Snowflake } from "discord-api-types";
-import { Profile } from "../../database/schemas/Profile";
-import Profiles from "../Profiles";
-import { GuildMember } from "../../database/schemas/GuildMembers";
+
 import Guilds from "../Guilds";
+import Profiles from "../Profiles";
+import { Profile } from "../../database/schemas/Profile";
+import { GuildMember } from "../../database/schemas/GuildMembers";
 
 const membersInterval: {
     [x: string]: NodeJS.Timer
@@ -118,7 +119,7 @@ function checkMembers(members: Collection<string, DiscordGuildMember>): Snowflak
 async function startXp(guildId: Snowflake, memberId: Snowflake) {
     if(!membersInterval[`${guildId}-${memberId}`]) {
         membersInterval[`${guildId}-${memberId}`] = setInterval(async () => {
-            // console.log('xp', memberId);
+            console.log('xp', memberId);
             const guildProfile = await Profiles.get(memberId, guildId) as GuildMember;
             const globalProfile = await Profiles.get(memberId) as Profile;
             const guildConfig = await Guilds.config.get(guildId);

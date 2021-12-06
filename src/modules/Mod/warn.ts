@@ -1,8 +1,9 @@
 import { Snowflake } from "discord-api-types";
+
+import Guilds from "../Guilds";
 import { GuildMemberModel } from "../../database/schemas/GuildMembers";
 import { generateId } from "../../database/utils";
 import { translate } from "../../utils/languages/languages";
-import Guilds from "../Guilds";
 
 export const Warn = {
     add: async (guildId: Snowflake, userId: Snowflake, reason?: string, by?: Snowflake) => {

@@ -1,13 +1,14 @@
 import { Message, MessageEmbed, TextChannel, VoiceState } from "discord.js";
 import { Snowflake } from "discord-api-types";
-import { GuildMember, GuildMemberModel } from "../../database/schemas/GuildMembers";
-import { Profile, ProfileModel } from "../../database/schemas/Profile";
+
 import BaseModule from "../../utils/structures/BaseModule";
 import Guilds from "../Guilds";
 import Profiles from "../Profiles";
+import { handleVoiceXp } from "./voice";
+import { GuildMember, GuildMemberModel } from "../../database/schemas/GuildMembers";
+import { Profile, ProfileModel } from "../../database/schemas/Profile";
 import { palette } from "../../utils/utils";
 import { translate } from "../../utils/languages/languages";
-import { handleVoiceXp } from "./voice";
 
 
 class XpSystemModule extends BaseModule {

@@ -1,6 +1,7 @@
 import cron from 'node-cron'
+
 import BaseModule from "../../utils/structures/BaseModule";
-const xpSystem = require('../xpSystem');
+import xpSystem from '../xpSystem';
 
 
 class ResetModule extends BaseModule {

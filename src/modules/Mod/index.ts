@@ -6,8 +6,6 @@ import { Ban, registerBans } from "./ban"
 import { Mute } from "./mute"
 import { Warn } from "./warn"
 
-// const { unmuteLog } = require("../guildLogs")
-
 class ModModule extends BaseModule {
     constructor() {
         super('Mod', true)

@@ -1,7 +1,7 @@
 //  https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildCreate
 import { Guild } from "discord.js";
+
 import BaseEvent from "../../utils/structures/BaseEvent";
-const Guilds = require('../../modules/Guilds');
 
 export default class GuildCreateEvent extends BaseEvent {
 	constructor() {
@@ -10,9 +10,9 @@ export default class GuildCreateEvent extends BaseEvent {
   
 	async run(guild: Guild) {
 		if(!client.isOnline) return;
-		let guildConfig = await Guilds.config.get(client, guild.id);
-		if(guildConfig.error) {
-			await Guilds.config.create(client, guild.id)
-		}
+		// let guildConfig = await Guilds.config.get(guild.id);
+		// if(guildConfig.error) {
+		// 	await Guilds.config.create(guild.id)
+		// }
 	}
 }

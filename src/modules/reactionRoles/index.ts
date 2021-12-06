@@ -1,7 +1,8 @@
-import { Snowflake } from "discord-api-types";
 import { Message, MessageReaction, User } from "discord.js";
-import { ReactionRole, ReactionRoleModel, Reactions } from "../../database/schemas/ReactionRoles";
+import { Snowflake } from "discord-api-types";
+
 import BaseModule from "../../utils/structures/BaseModule";
+import { ReactionRole, ReactionRoleModel, Reactions } from "../../database/schemas/ReactionRoles";
 
 class ReactionRolesModule extends BaseModule {
     constructor() {

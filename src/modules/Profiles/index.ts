@@ -2,11 +2,12 @@
 // TODO Remove after some time guild profiles from users who leaved a server
 // TODO Add property `isInGuild` to GuildMembers schema. Extra check for rankings, etc.
 // TODO Optimize canvas code and organize module
-import cron from 'node-cron'
-import { join } from 'path';
-import { createCanvas, loadImage, NodeCanvasRenderingContext2D } from 'canvas';
+
 import { GuildMember as DiscordGuildMember } from 'discord.js'
 import { Snowflake } from 'discord-api-types';
+import { createCanvas, loadImage, NodeCanvasRenderingContext2D } from 'canvas';
+import { join } from 'path';
+import cron from 'node-cron'
 
 import BaseModule from "../../utils/structures/BaseModule";
 import { GuildMember, GuildMemberModel } from '../../database/schemas/GuildMembers';
@@ -30,13 +31,14 @@ class ProfileModule extends BaseModule {
         })
     }
 
-    async get(userId: Snowflake, guildId?: Snowflake): Promise<GuildMember | Profile> {
-        const isGlobal = Boolean(guildId)
+    async get(userId: Snowflake, guildId?: Snowflake) {
+        const isGlobal = !Boolean(guildId)
         let profile: Profile | GuildMember | undefined | null = isGlobal ? client.profiles.get(userId) : client.guildMembers.get(`${userId}-${guildId}`)
         if(!profile) {
             profile = isGlobal ? await ProfileModel.findOne({ userId }) : await GuildMemberModel.findOne({ guildId, userId })
             if(!profile) return createProfile(userId, guildId)
         }
+        // console.log({ userId, guildId, profile })
         return profile
     }
 
