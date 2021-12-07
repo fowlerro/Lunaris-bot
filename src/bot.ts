@@ -27,9 +27,9 @@ global.client = client;
 (async () => {
 	await connectDatabase();
 	
-	await registerCommands('../commands');
 	await registerEvents('../events');
 	await client.login(process.env.DISCORD_CLIENT_TOKEN);
+	await registerCommands('../commands');
 	await registerModules('../modules');
 
 	// dashboard(client)

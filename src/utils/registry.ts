@@ -3,23 +3,33 @@ import fs from 'fs/promises'
 
 import BaseEvent from './structures/BaseEvent'
 import BaseModule from './structures/BaseModule';
+import BaseCommand from './structures/BaseCommand';
 
 const clientConfig = require('../database/config.json');
+const testGuildId = '533385524434698260'
 
 export async function registerCommands(dir = '') {
   const filePath = path.join(__dirname, dir);
   const files = await fs.readdir(filePath);
+  const guild = await client.guilds.fetch('533385524434698260')
+  if(!guild) return
   for (const file of files) {
     const stat = await fs.lstat(path.join(filePath, file));
-    if (stat.isDirectory()) registerCommands(path.join(dir, file));
-    if (file.endsWith('.ts')) {
-      // const cmd = require(path.join(filePath, file));
-      // const cat = dir.split('/').slice(2);
-      // cmd.cat = cat;
-      // client.commands.set(cmd.name, cmd);
-      // cmd.aliases.forEach((alias: string) => {
-      //   client.commands.set(alias, cmd);
-      // });
+    if(stat.isDirectory()) registerCommands(path.join(dir, file));
+    if(file.endsWith('.ts')) {
+      const { default: Command } = await import(path.join(filePath, file))
+      if(Command.prototype instanceof BaseCommand) {
+        const command: BaseCommand = new Command()
+
+        guild.commands.create({
+          name: command.name,
+          description: command.description.en,
+          defaultPermission: command.defaultPermission,
+          options: command.options,
+          type: command.type
+        })
+        client.commands.set(command.name, command)
+      }
     }
   }
 }

@@ -32,7 +32,6 @@ function readMessage(language: string, message: string): string {
     if(!localeList().includes(language)) language = fallbackLanguage;
     const filePath = path.join(__dirname, `${language}.json`);
     const json = JSON.parse(fs.readFileSync(filePath).toString());
-    console.log({ json })
     return message.split('.').reduce((prev, curr) => {
         return prev ? prev[curr] : null
     }, json);

@@ -25,9 +25,8 @@ class GuildsModule extends BaseModule {
             client.guildConfigs.set(guildId, config)
             return config
         },
-        set: async (guildId: Snowflake, toSet: any): Promise<GuildConfig | null> => {
-            const config = await GuildConfigModel.findOneAndUpdate({ guildId }, toSet, { new: true }).select('-_id -__v')
-            if(!config) return null
+        set: async (guildId: Snowflake, toSet: any): Promise<GuildConfig> => {
+            const config = await GuildConfigModel.findOneAndUpdate({ guildId }, toSet, { new: true, upsert: true }).select('-_id -__v')
             client.guildConfigs.set(guildId, config);
             return config;
         },        
