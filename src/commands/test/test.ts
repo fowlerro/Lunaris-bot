@@ -6,6 +6,7 @@ export default class TestCommand extends BaseCommand {
     constructor() {
         super(
             'test',
+            'CHAT_INPUT',
             {
                 en: 'Testing command',
                 pl: 'Komenda testowa'

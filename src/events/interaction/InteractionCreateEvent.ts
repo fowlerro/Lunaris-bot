@@ -12,6 +12,6 @@ export default class InteractionCreateEvent extends BaseEvent {
     async run(interaction: Interaction) {
         if(!client.isOnline) return;
 
-        if(interaction.isCommand()) CommandHandler.handle(interaction)
+        if(interaction.isCommand() || interaction.isContextMenu()) CommandHandler.handle(interaction)
     }
 }

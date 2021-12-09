@@ -56,6 +56,15 @@
             "createdAt": "Created at",
             "joinedAt": "Joined at",
             "avatar": "Avatar URL"
+        },
+        "purge": {
+            "wrongChannel": "Please provide a text channel",
+            "success": {
+                "default": "Successfully purged %VAR% messages",
+                "user": "Successfully purged %VAR% <@%VAR%>'s messages",
+                "channel": "Successfully purged %VAR% messages in <#%VAR%>",
+                "user-channel": "Successfully purged %VAR% <@%VAR%>'s messages in <#%VAR%>"
+            }
         }
     },
     "logs": {

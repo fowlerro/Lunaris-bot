@@ -13,6 +13,8 @@ export async function registerCommands(dir = '') {
   const files = await fs.readdir(filePath);
   const guild = await client.guilds.fetch('533385524434698260')
   if(!guild) return
+  // await guild.commands.fetch()
+  // guild.commands.cache.each(cmd => cmd.delete())
   for (const file of files) {
     const stat = await fs.lstat(path.join(filePath, file));
     if(stat.isDirectory()) registerCommands(path.join(dir, file));
@@ -21,13 +23,16 @@ export async function registerCommands(dir = '') {
       if(Command.prototype instanceof BaseCommand) {
         const command: BaseCommand = new Command()
 
-        guild.commands.create({
+        const commandOptions: any = {
           name: command.name,
-          description: command.description.en,
-          defaultPermission: command.defaultPermission,
+          type: command.type,
           options: command.options,
-          type: command.type
-        })
+          defaultPermission: command.defaultPermission
+        }
+
+        if(command.type === 'CHAT_INPUT') commandOptions.description = command.description.en
+
+        guild.commands.create(commandOptions)
         client.commands.set(command.name, command)
       }
     }

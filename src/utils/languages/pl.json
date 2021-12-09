@@ -55,6 +55,15 @@
             "title": "Informacje o %VAR%",
             "createdAt": "Data utworzenia",
             "joinedAt": "Data dołączenia"
+        },
+        "purge": {
+            "wrongChannel": "Musisz podać kanał tekstowy",
+            "success": {
+                "default": "Pomyślnie wyczyszczono %VAR% wiadomości",
+                "user": "Pomyślnie wyczyszczono %VAR% wiadomości użytkownika <@%VAR%>",
+                "channel": "Pomyślnie wyczyszczono %VAR% wiadomości w <#%VAR>",
+                "user-channel": "Pomyślnie wyczyszczono %VAR% wiadomości użytkownika <@%VAR%> w <#%VAR%>"
+            }
         }
     },
     "logs": {

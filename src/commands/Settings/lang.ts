@@ -9,11 +9,11 @@ export default class LanguageCommand extends BaseCommand {
     constructor() {
         super(
             'language',
+            'CHAT_INPUT',
             {
                 en: "Manage bot's language on this server",
                 pl: 'Zarządzanie językiem bota na tym serwerze'
             },
-            'CHAT_INPUT',
             [
                 {
                     name: 'change',
