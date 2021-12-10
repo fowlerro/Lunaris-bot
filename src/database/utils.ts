@@ -1,9 +1,9 @@
 import shortid from 'shortid'
-const GuildMembers = require('./schemas/GuildMembers');
+import { GuildProfileModel } from './schemas/GuildProfile';
 
 export async function generateId(): Promise<string> {
     const id = shortid.generate();
-    const result = await GuildMembers.find({ 'warns.id': id });
+    const result = await GuildProfileModel.find({ 'warns.id': id });
     if(!result) return generateId();
     return id;
 }

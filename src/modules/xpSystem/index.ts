@@ -5,7 +5,7 @@ import BaseModule from "../../utils/structures/BaseModule";
 import Guilds from "../Guilds";
 import Profiles from "../Profiles";
 import { handleVoiceXp } from "./voice";
-import { GuildMember, GuildMemberModel } from "../../database/schemas/GuildMembers";
+import { GuildProfile, GuildProfileModel } from "../../database/schemas/GuildProfile";
 import { Profile, ProfileModel } from "../../database/schemas/Profile";
 import { palette } from "../../utils/utils";
 import { translate } from "../../utils/languages/languages";
@@ -36,7 +36,7 @@ class XpSystemModule extends BaseModule {
         return handleVoiceXp(oldState, newState)
     }
     async resetDailyXp() {
-        await GuildMemberModel.updateMany({ $or: [ { 'statistics.text.dailyXp': { $gte: 1 } }, { 'statistics.voice.dailyXp': { $gte: 1 } } ] }, {
+        await GuildProfileModel.updateMany({ $or: [ { 'statistics.text.dailyXp': { $gte: 1 } }, { 'statistics.voice.dailyXp': { $gte: 1 } } ] }, {
             'statistics.text.dailyXp': 0,
             'statistics.voice.dailyXp': 0,
         });
@@ -51,7 +51,7 @@ class XpSystemModule extends BaseModule {
 }
 
 async function addGuildTextXp(guildId: Snowflake, channelId: Snowflake, userId: Snowflake, xpToAdd: number, multiplier: number) {
-    const guildProfile = await Profiles.get(userId, guildId) as GuildMember;
+    const guildProfile = await Profiles.get(userId, guildId) as GuildProfile;
     const { level, xp, cooldown } = guildProfile.statistics.text;
     if(cooldown) return;
     guildProfile.statistics.text.cooldown = true;
@@ -90,7 +90,7 @@ async function addGlobalTextXp(userId: Snowflake, xpToAdd: number) {
     return globalProfile;
 }
 
-async function levelUp(profile: GuildMember | Profile, channelId: Snowflake | null, xp: number, xpToAdd: number, xpNeeded: number, isGlobal: boolean = false) {
+async function levelUp(profile: GuildProfile | Profile, channelId: Snowflake | null, xp: number, xpToAdd: number, xpNeeded: number, isGlobal: boolean = false) {
     const rest = (xp + xpToAdd) - xpNeeded;
 
     profile.statistics.text.level += 1;
@@ -105,7 +105,7 @@ async function levelUp(profile: GuildMember | Profile, channelId: Snowflake | nu
     return profile;
 }
 
-async function sendLevelUpMessage(profile: GuildMember, channelId: Snowflake) {
+async function sendLevelUpMessage(profile: GuildProfile, channelId: Snowflake) {
     const guildConfig = await Guilds.config.get(profile.guildId);
     const messageMode = guildConfig.modules.xp.levelUpMessage.mode
     if(messageMode === 'off') return;

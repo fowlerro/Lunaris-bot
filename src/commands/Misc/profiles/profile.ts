@@ -1,55 +1,50 @@
-// import { Message } from "discord.js";
-// import { GuildMember } from "../../../database/schemas/GuildMembers";
-// import { Profile } from "../../../database/schemas/Profile";
-// import Profiles from "../../../modules/Profiles";
-// import DiscordClient from "../../../types/client";
+import { CommandInteraction } from "discord.js";
 
-// const { resetDailyXp } = require("../../../modules/xpSystem/utils");
+import BaseCommand from "../../../utils/structures/BaseCommand";
+import Profiles from "../../../modules/Profiles";
+import { GuildProfile } from "../../../database/schemas/GuildProfile";
+import { Profile } from "../../../database/schemas/Profile";
 
-// module.exports = {
-//     name: 'profile',
-//     aliases: ['profil', 'prof'],
-//     ownerOnly: false,
-//     minArgs: 0,
-//     maxArgs: 2,
-//     autoRemove: false,
-//     autoRemoveResponse: false,
-//     globalStatus: true,
-//     status: true,
+export default class LanguageCommand extends BaseCommand {
+    constructor() {
+        super(
+            'profile',
+            'CHAT_INPUT',
+            {
+                en: "Displays user's profile",
+                pl: 'Wyświetla profil użytkownika'
+            },
+            [
+                {
+                    name: 'user',
+                    description: "Displays specified user's profile",
+                    type: 'USER',
+                },
+                {
+                    name: 'global',
+                    description: "Mark to display global profile insted of server profile",
+                    type: 'BOOLEAN',
+                },
+            ]
+        );
+    }
 
-//     description: {
-//         pl: "Wyświetla profil użytkownika",
-//         en: "Displays user's profile",
-//     },
-//     category: 'profiles',
-//     syntax: {
-//         pl: 'profile [<user>]',
-//         en: 'profile [<user>]',
-//     },
-//     permissions: [],
-//     allowedChannels: [],
-//     blockedChannels: [],
-//     allowedRoles: [],
-//     blockedRoles: [],
+    async run(interaction: CommandInteraction) {
+        if(!interaction.guildId) return
 
-//     cooldownStatus: false,
-//     cooldown: '30s',
-//     cooldownPermissions: [],
-//     cooldownChannels: [],
-//     cooldownRoles: [],
-//     cooldownReminder: true,
-//     async run(client: DiscordClient, message: Message, args: any) {
-//         if(!message.guild) return
-//         const member = !isNaN(args[0]) ? await message.guild.members.fetch(args[0]) : message.mentions.members?.first() || (await message.guild.members.fetch(message.author.id));
-//         if(!member) return
-//         const isGlobal = args.includes('global');
+        const member = interaction.options.getMember('user') || interaction.member
+        if(!member || !('id' in member)) return
+        const isGlobal = interaction.options.getBoolean('global') || false
 
-//         const profile = await Profiles.get(member.id, message.guild.id);
-//         if(!profile) return;
-//         const globalProfile: Profile = await Profiles.get(member.id);
-//         if(!globalProfile) return;
+        const profile = await Profiles.get(member.id, interaction.guildId) as GuildProfile;
+        if(!profile) return;
+        const globalProfile = await Profiles.get(member.id) as Profile;
+        if(!globalProfile) return;
 
-//         const profileCardBuffer = await Profiles.generateCard(member, profile, globalProfile, member.user.displayAvatarURL({ format: 'png' }), isGlobal);
-//         return message.channel.send({ files: [profileCardBuffer] });
-//     }
-// }
+        const profileCardBuffer = await Profiles.generateCard(member, profile, globalProfile, member.user.displayAvatarURL({ format: 'png' }), isGlobal);
+
+        interaction.reply({
+            files: [profileCardBuffer]
+        })
+    }
+}

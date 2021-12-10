@@ -1,5 +1,5 @@
 import BaseModule from "../../utils/structures/BaseModule"
-import { GuildMember, GuildMemberModel } from "../../database/schemas/GuildMembers"
+import { GuildProfile, GuildProfileModel } from "../../database/schemas/GuildProfile"
 import Guilds from "../Guilds"
 
 import { Ban, registerBans } from "./ban"
@@ -23,7 +23,7 @@ class ModModule extends BaseModule {
 }
 
 async function registerMutes() {
-    const mutedMembers = await GuildMemberModel.find({ 'mute.isMuted': true, 'mute.timestamp': { $ne: null } });
+    const mutedMembers = await GuildProfileModel.find({ 'mute.isMuted': true, 'mute.timestamp': { $ne: null } });
     for(const mutedMember of mutedMembers) {
         const guild = await client.guilds.fetch(mutedMember.guildId).catch(() => {})
         if(!guild) continue

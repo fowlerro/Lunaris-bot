@@ -2,7 +2,7 @@ import { Guild, Permissions, Role } from "discord.js";
 import { Snowflake } from "discord-api-types";
 
 import Guilds from "../Guilds";
-import { GuildMemberModel } from "../../database/schemas/GuildMembers";
+import { GuildProfileModel } from "../../database/schemas/GuildProfile";
 import { translate } from "../../utils/languages/languages";
 
 // TODO: Remove mute if someone take role from a member
@@ -20,7 +20,7 @@ export const Mute = {
             const member = await guild.members.fetch(userId).catch(() => {})
             if(!member) return 
             await member.roles.add(muteRole).catch(e => console.log(e))
-            await GuildMemberModel.findOneAndUpdate({ guildId, userId }, {
+            await GuildProfileModel.findOneAndUpdate({ guildId, userId }, {
                 muted: {
                     isMuted: true,
                     timestamp,
@@ -34,7 +34,7 @@ export const Mute = {
                 setTimeout(async () => {
                     const member = await guild.members.fetch(userId).catch(() => {})
                     if(member) await member.roles.remove(muteRole).catch(e => console.log(e));
-                    const muteInfo = await GuildMemberModel.findOneAndUpdate({ guildId, userId }, {
+                    const muteInfo = await GuildProfileModel.findOneAndUpdate({ guildId, userId }, {
                         muted: {
                             isMuted: false,
                             timestamp: null,
@@ -66,7 +66,7 @@ export const Mute = {
         if(!hasRole && reason !== "Role remove") return "notMuted";
 
         hasRole && await member.roles.remove(muteRole).catch(e => console.log(e));
-        const muteInfo = await GuildMemberModel.findOneAndUpdate({ guildId, userId }, {
+        const muteInfo = await GuildProfileModel.findOneAndUpdate({ guildId, userId }, {
             muted: {
                 isMuted: false,
                 timestamp: null,
@@ -101,7 +101,7 @@ export const Mute = {
         //     member.roles.remove(muteRole, translate(language, 'autoMod.mute.removeAllMutesReason'));
         // })
 
-        const guildMutes = await GuildMemberModel.updateMany({ guildId, 'mute.isMuted': true }, {
+        const guildMutes = await GuildProfileModel.updateMany({ guildId, 'mute.isMuted': true }, {
             muted: {
                 isMuted: false,
                 timestamp: null,
@@ -115,7 +115,7 @@ export const Mute = {
     },
     list: async (guildId: Snowflake) => {
         const { language } = await Guilds.config.get(guildId);
-        const guildMembers = await GuildMemberModel.find({ guildId, 'mute.isMuted': true }).select(['-warns', '-_id', '-guildId', '-__v']);
+        const guildMembers = await GuildProfileModel.find({ guildId, 'mute.isMuted': true }).select(['-warns', '-_id', '-guildId', '-__v']);
         if(!guildMembers.length) return { error: translate(language, 'general.none') };
         return guildMembers;
     },
@@ -126,7 +126,7 @@ export const Mute = {
         if(!member) return
 
         const muteRole = await Mute.getRole(guild)
-        const guildMembers = await GuildMemberModel.findOne({ guildId, userId, 'mute.isMuted': true });
+        const guildMembers = await GuildProfileModel.findOne({ guildId, userId, 'mute.isMuted': true });
         if(!guildMembers) return 'notMuted';
         await member.roles.add(muteRole).catch(e => console.log(e));
 

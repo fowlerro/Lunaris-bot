@@ -5,7 +5,7 @@ import { ProfileStatistics } from "./Profile";
 
 
 @modelOptions({ options: { allowMixed: Severity.ALLOW } })
-class GuildMemberMute {
+class GuildProfileMute {
     @prop({ default: false })
     public isMuted!: boolean
     
@@ -22,7 +22,7 @@ class GuildMemberMute {
     public by?: Snowflake | string | null
 }
 
-class GuildMemberWarn {
+class GuildProfileWarn {
     @prop({ required: true, default: shortid.generate() })
     public id!: string
 
@@ -38,7 +38,7 @@ class GuildMemberWarn {
 
 @index({ guildId: 1, userId: 1 }, { unique: true })
 @modelOptions({ options: { allowMixed: Severity.ALLOW } })
-export class GuildMember {
+export class GuildProfile {
     @prop({ required: true })
     public guildId!: Snowflake
 
@@ -49,14 +49,14 @@ export class GuildMember {
     public statistics!: ProfileStatistics
 
     @prop()
-    public mute!: GuildMemberMute
+    public mute!: GuildProfileMute
 
     @prop({ default: [] })
-    public warns!: GuildMemberWarn[]
+    public warns!: GuildProfileWarn[]
 }
 
 
-export const GuildMemberModel = getModelForClass(GuildMember)
+export const GuildProfileModel = getModelForClass(GuildProfile)
 
 // const mongoose = require('mongoose');
 // const shortid = require('shortid');

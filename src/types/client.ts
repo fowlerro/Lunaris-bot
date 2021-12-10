@@ -5,7 +5,7 @@ import BaseModule from '../utils/structures/BaseModule';
 import BaseCommand from '../utils/structures/BaseCommand';
 import { GuildConfig } from '../database/schemas/GuildConfig';
 import { Profile } from '../database/schemas/Profile';
-import { GuildMember } from '../database/schemas/GuildMembers';
+import { GuildProfile } from '../database/schemas/GuildProfile';
 
 export default class DiscordClient extends Client {
 
@@ -19,7 +19,7 @@ export default class DiscordClient extends Client {
   private _modules = new Collection<string, BaseModule>();
   private _guildConfigs = new Collection<Snowflake, GuildConfig>();
   private _profiles = new Collection<Snowflake, Profile>();
-  private _guildMembers = new Collection<string, GuildMember>();
+  private _guildMembers = new Collection<string, GuildProfile>();
 
   constructor(options: ClientOptions) {
     super(options);
@@ -30,6 +30,6 @@ export default class DiscordClient extends Client {
   get modules(): Collection<string, BaseModule> { return this._modules; }
   get guildConfigs(): Collection<Snowflake, GuildConfig> { return this._guildConfigs; }
   get profiles(): Collection<Snowflake, Profile> { return this._profiles; }
-  get guildMembers(): Collection<string, GuildMember> { return this._guildMembers; }
+  get guildMembers(): Collection<string, GuildProfile> { return this._guildMembers; }
 
 }

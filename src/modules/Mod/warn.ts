@@ -1,7 +1,7 @@
 import { Snowflake } from "discord-api-types";
 
 import Guilds from "../Guilds";
-import { GuildMemberModel } from "../../database/schemas/GuildMembers";
+import { GuildProfileModel } from "../../database/schemas/GuildProfile";
 import { generateId } from "../../database/utils";
 import { translate } from "../../utils/languages/languages";
 
@@ -9,7 +9,7 @@ export const Warn = {
     add: async (guildId: Snowflake, userId: Snowflake, reason?: string, by?: Snowflake) => {
         if(!guildId) return;
         const id = await generateId();
-        await GuildMemberModel.findOneAndUpdate({guildId, userId}, {
+        await GuildProfileModel.findOneAndUpdate({guildId, userId}, {
             $push: {
                 warns: {reason, by, id}
             }
@@ -21,7 +21,7 @@ export const Warn = {
     remove: async (guildId: Snowflake, id: string, by: Snowflake) => {
         if(!guildId) return;
         if(id === 'all') {
-            await GuildMemberModel.updateMany({ guildId }, {
+            await GuildProfileModel.updateMany({ guildId }, {
                 $set: {
                     warns: []
                 } 
@@ -29,7 +29,7 @@ export const Warn = {
             return { action: 'all' };
         }
 
-        const result = await GuildMemberModel.findOneAndUpdate({ guildId, 'warns.id': id }, {
+        const result = await GuildProfileModel.findOneAndUpdate({ guildId, 'warns.id': id }, {
             $pull: {
                 warns: { id }
             }
@@ -47,12 +47,12 @@ export const Warn = {
         if(!guildConfig) return
         const language = guildConfig.language
         if(userId) {
-            const result = await GuildMemberModel.findOne({ guildId, userId });
+            const result = await GuildProfileModel.findOne({ guildId, userId });
             if(!result?.warns.length) return { error: translate(language, 'general.none') };
             return { warns: result.warns };
         }
 
-        let warns = await GuildMemberModel.find({ guildId }).select(['-muted', '-_id', '-guildId', '-__v']);
+        let warns = await GuildProfileModel.find({ guildId }).select(['-muted', '-_id', '-guildId', '-__v']);
         warns = warns.filter(v => v.warns.length > 0);
         if(!warns.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return { error: translate(language, 'general.none') };
         
