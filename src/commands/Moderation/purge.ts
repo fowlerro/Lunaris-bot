@@ -61,7 +61,7 @@ export default class TestCommand extends BaseCommand {
 
         const embed = new MessageEmbed()
             .setColor(palette.success)
-            .setDescription(`✅ ${translate(language, `cmd.purge.success.${descriptionType}`, deletedMessages.size, user?.id, channel.id)}`)
+            .setDescription(`✅ ${translate(language, `cmd.purge.success.${descriptionType}`, deletedMessages.size || 1, user?.id, channel.id)}`)
 
         interaction.reply({
             embeds: [embed]

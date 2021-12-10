@@ -10,7 +10,7 @@ import { Profile, ProfileModel } from "../../database/schemas/Profile";
 import { palette } from "../../utils/utils";
 import { translate } from "../../utils/languages/languages";
 
-
+// TODO Add level rewards
 class XpSystemModule extends BaseModule {
     constructor() {
         super('XpSystem', true)
