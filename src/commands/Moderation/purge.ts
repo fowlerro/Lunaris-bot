@@ -1,4 +1,4 @@
-import { Channel, CommandInteraction, MessageEmbed, TextChannel } from "discord.js";
+import { ApplicationCommandOption, CommandInteraction, MessageEmbed, TextChannel } from "discord.js";
 import Guilds from "../../modules/Guilds";
 import { translate } from "../../utils/languages/languages";
 
@@ -20,6 +20,7 @@ export default class TestCommand extends BaseCommand {
                     description: 'How many messages should be removed',
                     type: 'INTEGER',
                     required: true,
+                    // TODO minValue: 1, maxValue: 100
                 },
                 {
                     name: 'user',
@@ -29,7 +30,8 @@ export default class TestCommand extends BaseCommand {
                 {
                     name: 'channel',
                     description: 'A text channel in which messages will be removed',
-                    type: 'CHANNEL'
+                    type: 'CHANNEL',
+                    channelTypes: ["GUILD_TEXT"]
                 }
             ]
         );
@@ -38,14 +40,13 @@ export default class TestCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         let count = interaction.options.getInteger('count')!
         const user = interaction.options.getUser('user')
-        const channel = interaction.options.getChannel('channel') || interaction.channel!
+        const channel = interaction.options.getChannel('channel') as TextChannel || interaction.channel! as TextChannel
 
         if(count > 100) count = 100
         if(count < 1) count = 1
 
         const { language } = await Guilds.config.get(interaction.guildId!)
-        // if(channel.type !== 'GUILD_TEXT') return interaction.reply({ content: translate(language, 'cmd.purge.wrongChannel'), ephemeral: true })
-        if(!(channel instanceof TextChannel)) return interaction.reply({ content: translate(language, 'cmd.purge.wrongChannel'), ephemeral: true })
+        // if(!(channel instanceof TextChannel)) return interaction.reply({ content: translate(language, 'cmd.purge.wrongChannel'), ephemeral: true })
 
         let fetched = await channel.messages.fetch({ limit: user ? 100 : count }, { cache: false });
         if(user) {

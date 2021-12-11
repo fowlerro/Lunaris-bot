@@ -45,6 +45,7 @@
         "helpTitle": "Pomoc",
         "helpFooter": "Aby sprawdzić dokładną pomoc komendy, wpisz %VAR%help <cmd>",
         "cmdHelpTitle": "Informacje o %VAR%",
+        "pingInfo": "Slash komendy są nadal w trakcie pracy, ale niedługo powinny być dostępne",
         "ranking": {
             "text": "Tekstowy",
             "voice": "Głosowy",

@@ -15,6 +15,7 @@ export default class TestCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
+
         interaction.reply({
             content: 'ok',
             ephemeral: true

@@ -1,4 +1,4 @@
-import { ButtonInteraction, Message, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextChannel } from "discord.js"
+import { ButtonInteraction, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextChannel } from "discord.js"
 import { Snowflake } from "discord-api-types"
 
 import BaseModule from "../../utils/structures/BaseModule"
@@ -195,12 +195,12 @@ function addSelectMenu(pages: MessageEmbed[], defaultPage: number) {
 async function createCollectors(message: Message, pages: MessageEmbed[]) {
 	const buttons = message.components.filter(row => row.components.every(component => ['firstPage', 'previousPage', 'nextPage', 'lastPage', 'pageInfo'].includes(component.customId || '')))
 	const selectMenu = message.components.filter(row => row.components.every(component => component.customId === 'pageSelectMenu'))
-	const filter = (interaction: ButtonInteraction | SelectMenuInteraction) => ['firstPage', 'previousPage', 'nextPage', 'lastPage', 'pageSelectMenu'].includes(interaction.customId)
+	const filter = (interaction: MessageComponentInteraction) => ['firstPage', 'previousPage', 'nextPage', 'lastPage', 'pageSelectMenu'].includes(interaction.customId)
 
 	const collector = await message.createMessageComponentCollector({ filter, time: 60000 })
 
 	collector.on('collect', async interaction => {
-		if(interaction.customId === 'pageSelectMenu' && interaction.componentType === 'SELECT_MENU')
+		if(interaction.customId === 'pageSelectMenu' && interaction.isSelectMenu())
 			return onSelectMenu(interaction, selectMenu[0], message, pages)
 		
 		return onButton(interaction as ButtonInteraction, buttons[0], message, pages)

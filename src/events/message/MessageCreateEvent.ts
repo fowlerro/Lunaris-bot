@@ -3,6 +3,7 @@ import { Message } from "discord.js";
 import BaseEvent from "../../utils/structures/BaseEvent";
 import Guilds from "../../modules/Guilds";
 import xpSystem from "../../modules/xpSystem";
+import { translate } from "../../utils/languages/languages";
 
 export default class MessageCreateEvent extends BaseEvent {
     constructor() {
@@ -12,10 +13,12 @@ export default class MessageCreateEvent extends BaseEvent {
     async run(message: Message) {
         if(message.author.bot) return;
         if(!message.guild) return
-        const guildConfig = await Guilds.config.get(message.guild.id);
-        if(!guildConfig) return
-        const prefix = guildConfig.prefix
+        const { prefix, language } = await Guilds.config.get(message.guild.id);
         // CommandHandlerModule.handleCommand(client, message);
+        if(message.mentions.users?.first()?.id === client.user?.id) return message.reply({
+            content: translate(language, 'cmd.pingInfo')
+        })
+
 
         if(message.content.startsWith('!test')) {
         }

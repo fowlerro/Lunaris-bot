@@ -2,7 +2,7 @@
     "presence": {
         "status": "online",
         "activity": {
-            "name": "ts | $help",
+            "name": "/help",
             "type": "PLAYING"
         }
     }

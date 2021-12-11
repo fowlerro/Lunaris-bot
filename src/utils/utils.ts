@@ -1,5 +1,6 @@
-import { ActivityType, ChannelMention, Guild, MemberMention } from "discord.js";
+import { ChannelMention, ExcludeEnum, Guild, MemberMention } from "discord.js";
 import { Snowflake } from "discord-api-types";
+import { ActivityTypes } from "discord.js/typings/enums";
 
 export const botOwners = ["313346190995619841"];
 
@@ -68,7 +69,7 @@ export function toggleBot(state: boolean) {
     return client.isOnline;
 }
 
-export function setActivity(type: ActivityType, activity: string) {
+export function setActivity(type: ExcludeEnum<typeof ActivityTypes, "CUSTOM">, activity: string) {
     if(!type) return;
     client.customActivity = {
         name: activity,
@@ -120,4 +121,16 @@ export function capitalize(string: string) {
 export function convertLargeNumbers(number: number) {
     return number >= 1000000 ? Math.floor((number / 1000000) * 10) / 10 + "M" :
         number >= 1000 ? Math.floor((number / 1000) * 10) / 10 + "K" : number
+}
+
+export function compareArrayOfObjects(x: any, y: any): boolean {
+    if(x.length !== y.length) return false
+
+    for(const [index, obj] of x.entries()) {
+        for(const key in obj) {
+            if(x[index][key] != y[index][key]) return false
+        }
+    }
+
+    return true
 }

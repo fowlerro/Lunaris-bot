@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionData, ApplicationCommandType, CommandInteraction } from 'discord.js'
+import { ApplicationCommandOption, ApplicationCommandOptionData, ApplicationCommandType, CommandInteraction, ContextMenuInteraction } from 'discord.js'
 
 interface CommandDescription {
     pl: string
@@ -19,5 +19,5 @@ export default abstract class BaseCommand {
     get description(): CommandDescription { return this._description }
     get options(): ApplicationCommandOptionData[] { return this._options }
     get defaultPermission(): boolean { return this._defaultPermission }
-    abstract run(interaction: CommandInteraction): Promise<void>;
+    abstract run(interaction: CommandInteraction | ContextMenuInteraction): Promise<void>;
 }

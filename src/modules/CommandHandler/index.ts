@@ -1,4 +1,4 @@
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, ContextMenuInteraction } from "discord.js";
 import BaseModule from "../../utils/structures/BaseModule";
 
 class CommandsModule extends BaseModule {
@@ -10,7 +10,7 @@ class CommandsModule extends BaseModule {
       	console.log(this.getName())
     }
 
-    async handle(interaction: CommandInteraction) {
+    async handle(interaction: CommandInteraction | ContextMenuInteraction) {
         const { commandName } = interaction
 
         const command = client.commands.get(commandName)

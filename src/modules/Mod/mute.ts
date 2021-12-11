@@ -9,7 +9,7 @@ import { translate } from "../../utils/languages/languages";
 export const Mute = {
     add: async (guildId: Snowflake, userId: Snowflake, reason?: string, by?: Snowflake, time?: number) => {
             const guild = await client.guilds.fetch(guildId).catch(() => {})
-            if(!guild) return
+            if(!guild) return { error: 'missingGuild' }
             if(!guild.me?.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return { error: "missingPermission", perms: new Permissions([Permissions.FLAGS.MANAGE_ROLES]).toArray() }
 
             let timestamp = 0;
@@ -18,7 +18,7 @@ export const Mute = {
 
             const muteRole = await Mute.getRole(guild)
             const member = await guild.members.fetch(userId).catch(() => {})
-            if(!member) return 
+            if(!member) return { error: 'missingMember' }
             await member.roles.add(muteRole).catch(e => console.log(e))
             await GuildProfileModel.findOneAndUpdate({ guildId, userId }, {
                 muted: {
@@ -51,7 +51,7 @@ export const Mute = {
             // const timeString = time ? msToTime(time).toString() : "perm";
             // muteLog(client, guildId, by, userId, reason, timeString); // TODO
             
-            return true;
+            return { error: null };
     },
     remove: async (guildId: Snowflake, executorId: Snowflake, userId: Snowflake, reason?: string) => {
         const guild = await client.guilds.fetch(guildId).catch(e => {})
