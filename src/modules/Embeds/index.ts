@@ -1,8 +1,9 @@
-import { ButtonInteraction, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextChannel } from "discord.js"
+import { ButtonInteraction, CommandInteraction, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextChannel } from "discord.js"
 import { Snowflake } from "discord-api-types"
 
 import BaseModule from "../../utils/structures/BaseModule"
 import { Embed } from "../../database/schemas/Embed"
+import { APIMessage } from "discord.js/node_modules/discord-api-types"
 
 const EMBED_LIMITS = {
 	title: 256,
@@ -36,7 +37,7 @@ class EmbedsModule extends BaseModule {
 
 		return this.pageEmbeds(embedData.messageContent, pages, guildId, channelId, 1, true)
 	}
-	checkLimits(embed: MessageEmbed, pageEmbed = true, maxFields = 25) {
+	checkLimits(embed: MessageEmbed, pageEmbed = true, maxFields = 25): { error: string | null, pages: MessageEmbed[] } {
 		checkTitle(embed)
 		checkAuthor(embed)
 		checkDescription(embed)
@@ -46,7 +47,7 @@ class EmbedsModule extends BaseModule {
 		if (checkPagesTotalLimit(pages)) return { error: '6000', pages: [] }
 
 		return {
-			error: false,
+			error: null,
 			pages
 		}
 	}
@@ -56,7 +57,7 @@ class EmbedsModule extends BaseModule {
 		const channel = await (guild.channels.fetch(channelId) as Promise<TextChannel>).catch(e => {})
 		if(!channel) return
 
-		if(embeds.length === 1) return channel.send({ embeds: [embeds[0]] })
+		if(embeds.length === 1) return channel.send({ content: messageContent, embeds: [embeds[0]] })
 
 		const components = []
 		selectMenu && components.push(addSelectMenu(embeds, defaultPage))
@@ -67,6 +68,23 @@ class EmbedsModule extends BaseModule {
 		createCollectors(message, embeds)
 
 		return message
+	}
+
+	async pageInteractionEmbeds(messageContent: string | null, embeds: MessageEmbed[], interaction: CommandInteraction, defaultPage = 1, buttons = true, selectMenu = false) {
+		if(embeds.length === 1) return interaction.reply({ content: messageContent, embeds: [embeds[0]] })
+
+		const components = []
+		selectMenu && components.push(addSelectMenu(embeds, defaultPage))
+		buttons && components.push(addButtons(embeds, defaultPage))
+
+		await interaction.reply({ content: messageContent, embeds: [embeds[defaultPage] || embeds[0]], components })
+
+		const fetchedReply = await interaction.fetchReply()
+		if(!('applicationId' in fetchedReply)) return
+
+		createCollectors(fetchedReply, embeds)
+
+		return fetchedReply
 	}
 }
 
@@ -193,8 +211,8 @@ function addSelectMenu(pages: MessageEmbed[], defaultPage: number) {
 }
 
 async function createCollectors(message: Message, pages: MessageEmbed[]) {
-	const buttons = message.components.filter(row => row.components.every(component => ['firstPage', 'previousPage', 'nextPage', 'lastPage', 'pageInfo'].includes(component.customId || '')))
-	const selectMenu = message.components.filter(row => row.components.every(component => component.customId === 'pageSelectMenu'))
+	const buttons = message.components?.filter(row => row.components.every(component => ['firstPage', 'previousPage', 'nextPage', 'lastPage', 'pageInfo'].includes(component.customId || '')))
+	const selectMenu = message.components?.filter(row => row.components.every(component => component.customId === 'pageSelectMenu'))
 	const filter = (interaction: MessageComponentInteraction) => ['firstPage', 'previousPage', 'nextPage', 'lastPage', 'pageSelectMenu'].includes(interaction.customId)
 
 	const collector = await message.createMessageComponentCollector({ filter, time: 60000 })
@@ -207,9 +225,13 @@ async function createCollectors(message: Message, pages: MessageEmbed[]) {
 	})
 }
 
+
+// TODO Check for duplicated components on interaction.update()
+// TODO Check positions for each component and update them in correct one
+
 async function onSelectMenu(interaction: SelectMenuInteraction, component: MessageActionRow, message: Message, pages: MessageEmbed[]) {
 	const selectMenu = component.components[0] as MessageSelectMenu
-	const otherComponents = message.components.filter(row => row !== component)
+	const otherComponents = message.components.filter(row => row.components.every((element, index) => element.customId !== component.components[index]?.customId))
 	const selectedPage = +interaction.values[0].slice(4)
 
 	selectMenu.options.forEach(option => {
@@ -236,7 +258,8 @@ async function onButton(interaction: ButtonInteraction, component: MessageAction
 	const pageInfoButton = components.find(b => b.customId === 'pageInfo')
 	if(!pageInfoButton) return
 
-	const otherComponents = message.components.filter(row => row !== component)
+	const otherComponents = message.components.filter(row => row.components.every((element, index) => element.customId !== component.components[index]?.customId))
+	console.log({ component, otherComponents })
 	let currentPage = +(pageInfoButton.label?.split('/')[0] || 1);
 
 	if (interaction.customId === 'firstPage') 
@@ -276,7 +299,7 @@ function previousPage(firstButton: MessageButton, previousButton: MessageButton,
 		firstButton.setDisabled(true)
 	}
 
-	return --currentPage
+	return currentPage
 }
 
 function nextPage(firstButton: MessageButton, previousButton: MessageButton, nextButton: MessageButton, lastButton: MessageButton, currentPage: number, maxPage: number) {
@@ -287,7 +310,7 @@ function nextPage(firstButton: MessageButton, previousButton: MessageButton, nex
 		lastButton.setDisabled(true)
 	}
 
-	return ++currentPage
+	return currentPage
 }
 
 function lastPage(firstButton: MessageButton, previousButton: MessageButton, nextButton: MessageButton, lastButton: MessageButton, maxPage: number) {
@@ -298,3 +321,5 @@ function lastPage(firstButton: MessageButton, previousButton: MessageButton, nex
 
 	return maxPage
 }
+
+export default new EmbedsModule()

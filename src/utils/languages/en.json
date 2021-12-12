@@ -158,6 +158,7 @@
         }
     },
     "autoMod": {
+        "notManagable": "I cannot manage %VAR%",
         "censor": {
             "wordsListTitle": "Blocked words"
         },

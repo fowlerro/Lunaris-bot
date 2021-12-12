@@ -40,7 +40,7 @@ async function registerMutes() {
                 timestamp: null,
                 date: null,
                 reason: null,
-                by: null
+                executorId: null
             }
             const muteInfo = await mutedMember.save();
             // return unmuteLog(client, guild.id, muteInfo.mute.by, 'System', member.id); // TODO
@@ -54,7 +54,7 @@ async function registerMutes() {
                     timestamp: null,
                     date: null,
                     reason: null,
-                    by: null
+                    executorId: null
                 }
                 const muteInfo = await mutedMember.save();
                 // unmuteLog(client, guild.id, muteInfo.muted.by, 'System', member.id); // TODO

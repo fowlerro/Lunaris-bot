@@ -19,7 +19,7 @@ class GuildProfileMute {
     public reason?: string | null
 
     @prop()
-    public by?: Snowflake | string | null
+    public executorId?: Snowflake | string | null
 }
 
 class GuildProfileWarn {
@@ -27,7 +27,7 @@ class GuildProfileWarn {
     public id!: string
 
     @prop({ required: true })
-    public by!: string
+    public executorId!: string
 
     @prop({ default: null })
     public reason?: string
