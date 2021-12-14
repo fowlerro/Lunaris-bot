@@ -10,7 +10,7 @@ import Embeds from "../../modules/Embeds";
 
 const regex = /[0-9]+[d|h|m|s]/g
 
-export default class TestCommand extends BaseCommand {
+export default class MuteCommand extends BaseCommand {
     constructor() {
         super(
             'mute',
@@ -22,12 +22,12 @@ export default class TestCommand extends BaseCommand {
             [
                 {
                     name: 'give',
-                    description: 'Gives the mute',
+                    description: 'Mutes member',
                     type: 'SUB_COMMAND',
                     options: [
                         {
                             name: 'member',
-                            description: "Member to mute",
+                            description: "Member to be muted",
                             type: 'USER',
                             required: true
                         },
@@ -50,9 +50,10 @@ export default class TestCommand extends BaseCommand {
                     options: [
                         {
                             name: 'member',
-                            description: "Member to mute",
+                            description: "Member to be unmuted",
                             type: 'USER',
-                            required: true
+                            required: true,
+                            // TODO autocomplete: true
                         },
                         {
                             name: 'reason',
@@ -63,7 +64,7 @@ export default class TestCommand extends BaseCommand {
                 },
                 {
                     name: 'list',
-                    description: 'Shows list of all mutes in this server',
+                    description: 'Shows list of muted members of this server',
                     type: 'SUB_COMMAND',
                     options: [
                         {

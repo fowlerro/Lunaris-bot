@@ -5,31 +5,31 @@ import { translate } from "../../utils/languages/languages";
 import BaseCommand from "../../utils/structures/BaseCommand";
 import { palette } from "../../utils/utils";
 
-export default class TestCommand extends BaseCommand {
+export default class PurgeCommand extends BaseCommand {
     constructor() {
         super(
             'purge',
             'CHAT_INPUT',
             {
-                en: "Removes many messages at once",
+                en: "Deletes many messages at once",
                 pl: "Usuwa wiele wiadomości na raz"
             },
             [
                 {
                     name: 'count',
-                    description: 'How many messages should be removed',
+                    description: 'How many messages should be deleted',
                     type: 'INTEGER',
                     required: true,
                     // TODO minValue: 1, maxValue: 100
                 },
                 {
                     name: 'user',
-                    description: 'A user whose messages will be removed',
+                    description: 'A user whose messages will be deleted',
                     type: 'USER'
                 },
                 {
                     name: 'channel',
-                    description: 'A text channel in which messages will be removed',
+                    description: 'A text channel in which messages will be deleted',
                     type: 'CHANNEL',
                     channelTypes: ["GUILD_TEXT"]
                 }

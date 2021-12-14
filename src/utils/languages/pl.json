@@ -46,6 +46,7 @@
         "helpFooter": "Aby sprawdzić dokładną pomoc komendy, wpisz %VAR%help <cmd>",
         "cmdHelpTitle": "Informacje o %VAR%",
         "pingInfo": "Slash komendy są nadal w trakcie pracy, ale niedługo powinny być dostępne",
+        "wrongId": "Niepoprawne id",
         "ranking": {
             "text": "Tekstowy",
             "voice": "Głosowy",
@@ -180,7 +181,8 @@
         "ban": {
             "add": "%VAR% został zbanowany przez %VAR% %VAR%",
             "remove": "%VAR% został odbanowany przez %VAR% %VAR%",
-            "notBanned": "%VAR% nie jest zbanowany"
+            "notBanned": "%VAR% nie jest zbanowany",
+            "notFound": "Nie znaleziono użytkownika"
         }
     },
     "xp": {

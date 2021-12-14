@@ -33,7 +33,7 @@ export default class LanguageCommand extends BaseCommand {
         if(!interaction.guildId) return
 
         const member = interaction.options.getMember('user') || interaction.member
-        if(!member || !('id' in member)) return
+        if(!member || !('id' in member) || member.user.bot) return
         const isGlobal = interaction.options.getBoolean('global') || false
 
         const profile = await Profiles.get(member.id, interaction.guildId) as GuildProfile;

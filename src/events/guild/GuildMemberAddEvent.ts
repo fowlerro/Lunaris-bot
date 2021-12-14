@@ -15,7 +15,7 @@ export default class GuildMemberAddEvent extends BaseEvent {
     if(!client.isOnline) return;
     // memberJoinedLog(client, member);
     const guildConfig = await Guilds.config.get(member.guild.id);
-    if(guildConfig.modules.autoRole.status) {
+    if(guildConfig.modules.autoRole?.status) {
       autoRole.give(member)
     }
     Mod.mute.reassignRole(member.guild.id, member.id)

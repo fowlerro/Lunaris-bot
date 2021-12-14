@@ -11,13 +11,13 @@ export default class LanguageCommand extends BaseCommand {
             'language',
             'CHAT_INPUT',
             {
-                en: "Manage bot's language on this server",
+                en: "Manage bot's language in this server",
                 pl: 'Zarządzanie językiem bota na tym serwerze'
             },
             [
                 {
                     name: 'change',
-                    description: "Changes bot's language on this server",
+                    description: "Changes bot's language in this server",
                     type: 'SUB_COMMAND',
                     options: [
                         {

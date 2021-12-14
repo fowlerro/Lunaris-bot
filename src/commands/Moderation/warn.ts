@@ -5,7 +5,7 @@ import { translate } from "../../utils/languages/languages";
 import BaseCommand from "../../utils/structures/BaseCommand";
 import { palette } from "../../utils/utils";
 
-export default class TestCommand extends BaseCommand {
+export default class WarnCommand extends BaseCommand {
     constructor() {
         super(
             'warn',

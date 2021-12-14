@@ -5,24 +5,36 @@ import { Snowflake } from "discord-api-types";
 import { palette } from "../../utils/utils";
 
 class XpStatistics {
-    @prop({ required: true, default: 1 })
+    @prop({ default: 1 })
     public level!: number
 
-    @prop({ required: true, default: 0 })
+    @prop({ default: 0 })
     public xp!: number
 
-    @prop({ required: true, default: 0 })
+    @prop({ default: 0 })
     public totalXp!: number
 
-    @prop({ required: true, default: 0 })
+    @prop({ default: 0 })
     public dailyXp!: number
 
     public cooldown?: boolean
+
+    constructor(level: number, xp: number, totalXp: number, dailyXp: number) {
+        this.level = level
+        this.xp = xp
+        this.totalXp = totalXp
+        this.dailyXp = dailyXp
+    }
 }
 
 class VoiceStatistics extends XpStatistics {
-    @prop({ required: true, default: 0 })
+    @prop({ default: 0 })
     public timeSpent!: number
+
+    constructor(level: number, xp: number, totalXp: number, dailyXp: number, timeSpent: number) {
+        super(level, xp, totalXp, dailyXp)
+        this.timeSpent = timeSpent
+    }
 }
 
 export class ProfileStatistics {
