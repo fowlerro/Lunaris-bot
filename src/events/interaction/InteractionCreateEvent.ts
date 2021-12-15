@@ -14,8 +14,6 @@ export default class InteractionCreateEvent extends BaseEvent {
 
         if(interaction.isCommand() || interaction.isContextMenu()) CommandHandler.handle(interaction)
 
-        if(interaction.isAutocomplete()) {
-            console.log(interaction.options.getString('warn-id'))
-        }
+        if(interaction.isAutocomplete()) CommandHandler.autocomplete(interaction)
     }
 }
