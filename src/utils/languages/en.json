@@ -67,6 +67,12 @@
                 "channel": "Successfully purged %VAR% messages in <#%VAR%>",
                 "user-channel": "Successfully purged %VAR% <@%VAR%>'s messages in <#%VAR%>"
             }
+        },
+        "emoji": {
+            "add": "The emoji **%VAR%** has been successfully added",
+            "delete": "The emoji **%VAR%** has been successfully deleted",
+            "error": "Something went wrong :/ Check the URL and try again",
+            "notDeletable": "The emoji cannot be deleted"
         }
     },
     "logs": {

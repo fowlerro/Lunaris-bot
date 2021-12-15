@@ -66,6 +66,12 @@
                 "channel": "Pomyślnie wyczyszczono %VAR% wiadomości w <#%VAR>",
                 "user-channel": "Pomyślnie wyczyszczono %VAR% wiadomości użytkownika <@%VAR%> w <#%VAR%>"
             }
+        },
+        "emoji": {
+            "add": "Emotka **%VAR%** została pomyślnie dodana",
+            "delete": "Emotka **%VAR%** została pomyślnie usunięta",
+            "error": "Coś poszło nie tak, sprawdź czy link jest poprawny",
+            "notDeletable": "Nie mogę usunąć tej emotki"
         }
     },
     "logs": {
