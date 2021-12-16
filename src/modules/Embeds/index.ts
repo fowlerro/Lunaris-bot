@@ -1,9 +1,7 @@
-import { ButtonInteraction, CommandInteraction, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextChannel } from "discord.js"
-import { Snowflake } from "discord-api-types"
+import { ButtonInteraction, CommandInteraction, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextChannel, Snowflake } from "discord.js"
 
 import BaseModule from "../../utils/structures/BaseModule"
-import { Embed } from "../../database/schemas/Embed"
-import { APIMessage } from "discord.js/node_modules/discord-api-types"
+import { EmbedDocument } from "../../database/schemas/Embed"
 
 const EMBED_LIMITS = {
 	title: 256,
@@ -24,7 +22,7 @@ class EmbedsModule extends BaseModule {
 
 	async run() {}
 
-	async send(embedData: Embed, guildId: Snowflake, channelId: Snowflake) {
+	async send(embedData: EmbedDocument, guildId: Snowflake, channelId: Snowflake) {
 		const guild = await client.guilds.fetch(guildId).catch(e => {})
 		if(!guild) return { error: "Guild not found" }
 		const channel = await guild.channels.fetch(channelId).catch(e => {})

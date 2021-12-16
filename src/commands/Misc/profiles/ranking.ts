@@ -1,21 +1,21 @@
 import { CommandInteraction, Formatters, MessageEmbed } from "discord.js";
 import { Snowflake } from "discord-api-types";
 
-import { GuildProfile, GuildProfileModel } from "../../../database/schemas/GuildProfile";
+import { GuildProfileDocument, GuildProfileModel } from "../../../database/schemas/GuildProfile";
 import Guilds from "../../../modules/Guilds";
 import Profiles from "../../../modules/Profiles";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
-import { Profile, ProfileModel } from "../../../database/schemas/Profile";
+import { ProfileDocument, ProfileModel } from "../../../database/schemas/Profile";
 import { palette } from "../../../utils/utils";
 import { translate } from "../../../utils/languages/languages";
 
 type SortType = 'xp' | 'level' | 'coins';
 
 type SortedProfiles = {
-    text?: Profile[] | GuildProfile[],
-    voice?: Profile[] | GuildProfile[],
-    coins?: Profile[],
+    text?: ProfileDocument[] | GuildProfileDocument[],
+    voice?: ProfileDocument[] | GuildProfileDocument[],
+    coins?: ProfileDocument[],
 }
 
 export default class LanguageCommand extends BaseCommand {
@@ -63,7 +63,7 @@ export default class LanguageCommand extends BaseCommand {
         const sortType = interaction.options.getString('sortby') as SortType || 'xp'
         const isGlobal = interaction.options.getBoolean('global') || false
 
-        const executorProfile = isGlobal || sortType === 'coins' ? await Profiles.get(interaction.user.id) as Profile : await Profiles.get(interaction.user.id, interaction.guildId) as GuildProfile
+        const executorProfile = isGlobal || sortType === 'coins' ? await Profiles.get(interaction.user.id) as ProfileDocument : await Profiles.get(interaction.user.id, interaction.guildId) as GuildProfileDocument
         const { language } = await Guilds.config.get(interaction.guildId)
 
         const result = await fetchData(sortType, isGlobal, interaction.guildId)
@@ -92,21 +92,21 @@ async function fetchData(sortType: string, isGlobal: boolean, guildId: Snowflake
                 { $lookup: { from: 'profiles', localField: 'userId', foreignField: 'userId', as: 'id' } },
                 { $unwind: '$id' },
                 { $replaceRoot: { newRoot: '$id' } }
-            ]) as Profile[]
+            ]) as ProfileDocument[]
         
         return { coins: results.sort((a, b) => b.coins - a.coins) }
     }
 
-    const results = isGlobal ? await ProfileModel.find() as Profile[] : await GuildProfileModel.find({ guildId }) as GuildProfile[]
+    const results = isGlobal ? await ProfileModel.find() as ProfileDocument[] : await GuildProfileModel.find({ guildId }) as GuildProfileDocument[]
     const sortBy = sortType === 'xp' ? 'totalXp' : 'level'
 
     return {
-        text: Array.prototype.slice.call(results).sort((a, b) => b.statistics.text[sortBy] - a.statistics.text[sortBy]) as Profile[] | GuildProfile[],
-        voice: Array.prototype.slice.call(results).sort((a, b) => b.statistics.voice[sortBy] - a.statistics.voice[sortBy]) as Profile[] | GuildProfile[]
+        text: Array.prototype.slice.call(results).sort((a, b) => b.statistics.text[sortBy] - a.statistics.text[sortBy]) as ProfileDocument[] | GuildProfileDocument[],
+        voice: Array.prototype.slice.call(results).sort((a, b) => b.statistics.voice[sortBy] - a.statistics.voice[sortBy]) as ProfileDocument[] | GuildProfileDocument[]
     }
 }
 
-async function formatList(sortType: string, isGlobal: boolean, executorProfile: Profile | GuildProfile, profiles: SortedProfiles) {
+async function formatList(sortType: string, isGlobal: boolean, executorProfile: ProfileDocument | GuildProfileDocument, profiles: SortedProfiles) {
     const collection: { coins: string[], text: string[], voice: string[] } = { coins: [], text: [], voice: [] }
     const sortBy = sortType === 'xp' ? 'totalXp' : 'level';
     for await (const [key, value] of Object.entries(profiles)) {

@@ -1,21 +1,32 @@
-import { getModelForClass, modelOptions, mongoose, prop, Severity } from "@typegoose/typegoose"
-import { Snowflake } from "discord-api-types"
+import { Snowflake } from "discord.js";
+import { Document, model, Schema } from "mongoose";
 
-class Roles {
-    @prop({ required: true })
-    public roleId!: Snowflake
-
-    @prop({ required: true })
-    public time!: number
+interface AutoRoleRoles {
+    roleId: Snowflake;
+    time: number;
+}
+export interface AutoRoleDocument extends Document {
+    guildId: Snowflake;
+    roles: AutoRoleRoles[]
 }
 
-@modelOptions({ options: { allowMixed: Severity.ALLOW } })
-export class AutoRole {
-    @prop({ required: true, unique: true })
-    public guildId!: Snowflake
+const AutoRoleSchema = new Schema({
+    guildId: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    roles: [{
+        roleId: {
+            type: String,
+            required: true
+        },
+        time: {
+            type: Number
+        }
+    }]
+})
 
-    @prop({ type: mongoose.Schema.Types.Mixed, default: [] })
-    public roles!: Roles[]
-}
+AutoRoleSchema.index({ guildId: 1 })
 
-export const AutoRoleModel = getModelForClass(AutoRole)
+export const AutoRoleModel = model<AutoRoleDocument>('AutoRole', AutoRoleSchema);

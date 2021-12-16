@@ -3,9 +3,9 @@ import { Snowflake } from 'discord-api-types';
 import BaseEvent from '../utils/structures/BaseEvent';
 import BaseModule from '../utils/structures/BaseModule';
 import BaseCommand from '../utils/structures/BaseCommand';
-import { GuildConfig } from '../database/schemas/GuildConfig';
-import { Profile } from '../database/schemas/Profile';
-import { GuildProfile } from '../database/schemas/GuildProfile';
+import { GuildConfigDocument } from '../database/schemas/GuildConfig';
+import { ProfileDocument } from '../database/schemas/Profile';
+import { GuildProfileDocument } from '../database/schemas/GuildProfile';
 
 export default class DiscordClient extends Client {
 
@@ -17,9 +17,9 @@ export default class DiscordClient extends Client {
   private _commands = new Collection<string, BaseCommand>();
   private _events = new Collection<string, BaseEvent>();
   private _modules = new Collection<string, BaseModule>();
-  private _guildConfigs = new Collection<Snowflake, GuildConfig>();
-  private _profiles = new Collection<Snowflake, Profile>();
-  private _guildMembers = new Collection<string, GuildProfile>();
+  private _guildConfigs = new Collection<Snowflake, GuildConfigDocument>();
+  private _profiles = new Collection<Snowflake, ProfileDocument>();
+  private _guildMembers = new Collection<string, GuildProfileDocument>();
 
   constructor(options: ClientOptions) {
     super(options);
@@ -28,8 +28,8 @@ export default class DiscordClient extends Client {
   get commands(): Collection<string, BaseCommand> { return this._commands; }
   get events(): Collection<string, BaseEvent> { return this._events; }
   get modules(): Collection<string, BaseModule> { return this._modules; }
-  get guildConfigs(): Collection<Snowflake, GuildConfig> { return this._guildConfigs; }
-  get profiles(): Collection<Snowflake, Profile> { return this._profiles; }
-  get guildMembers(): Collection<string, GuildProfile> { return this._guildMembers; }
+  get guildConfigs(): Collection<Snowflake, GuildConfigDocument> { return this._guildConfigs; }
+  get profiles(): Collection<Snowflake, ProfileDocument> { return this._profiles; }
+  get guildMembers(): Collection<string, GuildProfileDocument> { return this._guildMembers; }
 
 }

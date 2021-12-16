@@ -1,22 +1,35 @@
-import { getModelForClass, index, prop } from "@typegoose/typegoose"
-import { Snowflake } from "discord-api-types"
+import { Snowflake } from "discord.js";
+import { Document, model, Schema } from "mongoose";
 
-@index({ guildId: 1, userId: 1 }, { unique: true })
-export class GuildBan {
-    @prop({ required: true })
-    public guildId!: Snowflake
-
-    @prop({ required: true })
-    public userId!: Snowflake
-
-    @prop({ required: true })
-    public by!: Snowflake
-
-    @prop()
-    public reason?: string
-
-    @prop()
-    public time?: number
+export interface GuildBanDocument extends Document {
+    guildId: Snowflake;
+    userId: Snowflake;
+    executorId: Snowflake;
+    reason?: string;
+    time?: number
 }
 
-export const GuildBanModel = getModelForClass(GuildBan)
+const GuildBanSchema = new Schema({
+    guildId: {
+        type: String,
+        required: true
+    },
+    userId: {
+        type: String,
+        required: true
+    },
+    executorId: {
+        type: String,
+        required: true
+    },
+    reason: {
+        type: String
+    },
+    time: {
+        type: Number
+    }
+})
+
+GuildBanSchema.index({ guildId: 1, userId: 1 }, { unique: true })
+
+export const GuildBanModel = model<GuildBanDocument>('GuildBan', GuildBanSchema)

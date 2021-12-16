@@ -13,7 +13,7 @@ export default class MessageCreateEvent extends BaseEvent {
     async run(message: Message) {
         if(message.author.bot) return;
         if(!message.guild) return
-        const { prefix, language } = await Guilds.config.get(message.guild.id);
+        const { language } = await Guilds.config.get(message.guild.id);
         // CommandHandlerModule.handleCommand(client, message);
         if(message.mentions.users?.first()?.id === client.user?.id) return message.reply({
             content: translate(language, 'cmd.pingInfo')
@@ -25,8 +25,7 @@ export default class MessageCreateEvent extends BaseEvent {
         
         if(!client.isOnline) return;
 
-        if(!message.content.startsWith(prefix)) 
-            xpSystem.addTextXp(message);
+        xpSystem.addTextXp(message);
 
     }
 };

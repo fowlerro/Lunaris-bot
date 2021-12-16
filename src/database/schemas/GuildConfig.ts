@@ -1,81 +1,62 @@
-import { getModelForClass, prop } from "@typegoose/typegoose";
-import { Snowflake } from "discord-api-types";
+import { Snowflake } from "discord.js";
+import { Document, model, Schema } from "mongoose";
 import { Language } from "../../utils/languages/types";
 
-class GuildLogs {
-    @prop()
-    public member?: Snowflake
-    
-    @prop()
-    public channel?: Snowflake
-    
-    @prop()
-    public voice?: Snowflake
-    
-    @prop()
-    public roles?: Snowflake
-    
-    @prop()
-    public message?: Snowflake
-    
-    @prop()
-    public commands?: Snowflake
-    
-    @prop()
-    public invites?: Snowflake
+interface LevelUpMessage {
+    mode: 'off' | 'currentChannel' | 'specificChannel';
+    channelId?: Snowflake;
+}
+interface GuildModuleXp {
+    levelUpMessage: LevelUpMessage;
+    multiplier: number
+}
+interface GuildModuleAutoMod {
+    muteRole?: Snowflake;
+}
+interface GuildModules {
+    autoMod: GuildModuleAutoMod;
+    xp: GuildModuleXp
+}
+export interface GuildConfigDocument extends Document {
+    guildId: Snowflake;
+    language: Language;
+    modules: GuildModules;
 }
 
-class GuildAutoRoleModule {
-    @prop({ default: false })
-    public status!: boolean
-}
+const GuildConfigSchema = new Schema({
+    guildId: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    language: {
+        type: String,
+        default: 'en'
+    },
+    modules: {
+        autoMod: {
+            muteRole: {
+                type: String
+            }
+        },
+        xp: {
+            levelUpMessage: {
+                mode: {
+                    type: String,
+                    default: 'currentChannel'
+                },
+                channelId: {
+                    type: String
+                }
+            },
+            multiplier: {
+                type: Number,
+                default: 1
+            }
+        }
+    }
+})
 
-class GuildAutoModModule {
-    @prop()
-    public muteRole?: Snowflake
-}
+GuildConfigSchema.index({ guildId: 1 })
 
-class LevelUpMessage {
-    @prop({ default: 'currentChannel' })
-    public mode!: 'off' | 'currentChannel' | 'specificChannel'
-
-    @prop()
-    public channelId?: Snowflake
-}
-
-class GuildXpModule {
-    @prop()
-    public levelUpMessage!: LevelUpMessage
-
-    @prop({ default: 1 })
-    public multiplier!: number
-}
-class GuildModules {
-    @prop()
-    public autoRole!: GuildAutoRoleModule
-    
-    @prop()
-    public autoMod?: GuildAutoModModule
-    
-    @prop()
-    public xp!: GuildXpModule
-}
-
-export class GuildConfig {
-    @prop({ required: true, unique: true })
-    public guildId!: Snowflake
-
-    @prop({ required: true, default: '$'})
-    public prefix!: string
-
-    @prop({ required: true, default: 'en' })
-    public language!: Language
-
-    @prop()
-    public logs?: GuildLogs
-
-    @prop()
-    public modules!: GuildModules
-}
-
-export const GuildConfigModel = getModelForClass(GuildConfig)
+export const GuildConfigModel = model<GuildConfigDocument>('GuildConfig', GuildConfigSchema)

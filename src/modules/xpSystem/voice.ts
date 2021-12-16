@@ -3,8 +3,8 @@ import { Snowflake } from "discord-api-types";
 
 import Guilds from "../Guilds";
 import Profiles from "../Profiles";
-import { Profile } from "../../database/schemas/Profile";
-import { GuildProfile } from "../../database/schemas/GuildProfile";
+import { ProfileDocument } from "../../database/schemas/Profile";
+import { GuildProfileDocument } from "../../database/schemas/GuildProfile";
 
 const membersInterval: {
     [x: string]: NodeJS.Timer
@@ -120,8 +120,8 @@ async function startXp(guildId: Snowflake, memberId: Snowflake) {
     if(!membersInterval[`${guildId}-${memberId}`]) {
         membersInterval[`${guildId}-${memberId}`] = setInterval(async () => {
             console.log('xp', memberId);
-            const guildProfile = await Profiles.get(memberId, guildId) as GuildProfile;
-            const globalProfile = await Profiles.get(memberId) as Profile;
+            const guildProfile = await Profiles.get(memberId, guildId) as GuildProfileDocument;
+            const globalProfile = await Profiles.get(memberId) as ProfileDocument;
             const guildConfig = await Guilds.config.get(guildId);
             const multiplier = guildConfig.modules?.xp?.multiplier || 1;
             const xpToAdd = Math.floor(Math.random() * (35 - 20) + 20);
@@ -137,7 +137,7 @@ function stopXp(guildId: Snowflake, memberId: Snowflake) {
     delete membersInterval[`${guildId}-${memberId}`] //TODO Check if delete works after clearing
 }
 
-function addGuildXp(profile: GuildProfile, xpToAdd: number) {
+function addGuildXp(profile: GuildProfileDocument, xpToAdd: number) {
     const { level, xp } = profile.statistics.voice;
     const xpNeeded = Profiles.neededXp(level);
     if(xp + xpToAdd >= xpNeeded) return levelUp(profile, xp, xpToAdd, xpNeeded);
@@ -148,7 +148,7 @@ function addGuildXp(profile: GuildProfile, xpToAdd: number) {
     profile.statistics.voice.timeSpent += 1
 }
 
-function addGlobalXp(profile: Profile, xpToAdd: number) {
+function addGlobalXp(profile: ProfileDocument, xpToAdd: number) {
     const { level, xp } = profile.statistics.voice;
     const xpNeeded = Profiles.neededXp(level);
     if(xp + xpToAdd >= xpNeeded) return levelUp(profile, xp, xpToAdd, xpNeeded, true);
@@ -159,7 +159,7 @@ function addGlobalXp(profile: Profile, xpToAdd: number) {
     profile.statistics.voice.timeSpent += 1
 }
 
-function levelUp(profile: GuildProfile | Profile, xp: number, xpToAdd: number, xpNeeded: number, isGlobal: boolean = false) {
+function levelUp(profile: GuildProfileDocument | ProfileDocument, xp: number, xpToAdd: number, xpNeeded: number, isGlobal: boolean = false) {
     const rest = (xp + xpToAdd) - xpNeeded;
 
     profile.statistics.voice.level += 1;

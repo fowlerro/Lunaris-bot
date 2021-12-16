@@ -1,10 +1,9 @@
 import BaseModule from "../../utils/structures/BaseModule"
-import { GuildProfile, GuildProfileModel } from "../../database/schemas/GuildProfile"
-import Guilds from "../Guilds"
+import { GuildProfileModel } from "../../database/schemas/GuildProfile"
 
 import { Ban, registerBans } from "./ban"
 import { Mute } from "./mute"
-import { Warn } from "./warn"
+// import { Warn } from "./warn"
 
 class ModModule extends BaseModule {
     constructor() {
@@ -17,7 +16,7 @@ class ModModule extends BaseModule {
         await registerBans()
     }
 
-    warn = Warn
+    // warn = Warn
     mute = Mute
     ban = Ban
 }

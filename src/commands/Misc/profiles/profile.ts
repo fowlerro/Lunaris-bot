@@ -2,8 +2,8 @@ import { CommandInteraction } from "discord.js";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
 import Profiles from "../../../modules/Profiles";
-import { GuildProfile } from "../../../database/schemas/GuildProfile";
-import { Profile } from "../../../database/schemas/Profile";
+import { GuildProfileDocument } from "../../../database/schemas/GuildProfile";
+import { ProfileDocument } from "../../../database/schemas/Profile";
 
 export default class LanguageCommand extends BaseCommand {
     constructor() {
@@ -36,9 +36,9 @@ export default class LanguageCommand extends BaseCommand {
         if(!member || !('id' in member) || member.user.bot) return
         const isGlobal = interaction.options.getBoolean('global') || false
 
-        const profile = await Profiles.get(member.id, interaction.guildId) as GuildProfile;
+        const profile = await Profiles.get(member.id, interaction.guildId) as GuildProfileDocument;
         if(!profile) return;
-        const globalProfile = await Profiles.get(member.id) as Profile;
+        const globalProfile = await Profiles.get(member.id) as ProfileDocument;
         if(!globalProfile) return;
 
         const profileCardBuffer = await Profiles.generateCard(member, profile, globalProfile, member.user.displayAvatarURL({ format: 'png' }), isGlobal);

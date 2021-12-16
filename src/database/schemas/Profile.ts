@@ -1,73 +1,101 @@
-import { getModelForClass, prop } from "@typegoose/typegoose";
-import { Types } from "mongoose";
-import { Snowflake } from "discord-api-types";
-
+import { Snowflake } from "discord.js";
+import mongoose, { Document, model, Schema } from "mongoose";
 import { palette } from "../../utils/utils";
 
-class XpStatistics {
-    @prop({ default: 1 })
-    public level!: number
+interface TextStatistics {
+    level: number;
+    xp: number;
+    totalXp: number;
+    dailyXp: number;
+    cooldown?: boolean;
+}
 
-    @prop({ default: 0 })
-    public xp!: number
+interface VoiceStatistics extends TextStatistics {
+    timeSpent: number;
+}
+export interface ProfileStatistics {
+    text: TextStatistics;
+    voice: VoiceStatistics;
+}
 
-    @prop({ default: 0 })
-    public totalXp!: number
+interface ProfileCard {
+    background: number;
+    customBackground?: Buffer;
+    accent: string;
+}
 
-    @prop({ default: 0 })
-    public dailyXp!: number
+export interface ProfileDocument extends Document {
+    userId: Snowflake;
+    coins: number;
+    statistics: ProfileStatistics;
+    cardAppearance: ProfileCard;
+}
 
-    public cooldown?: boolean
-
-    constructor(level: number, xp: number, totalXp: number, dailyXp: number) {
-        this.level = level
-        this.xp = xp
-        this.totalXp = totalXp
-        this.dailyXp = dailyXp
+const ProfileSchema = new Schema({
+    userId: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    coins: {
+        type: Number,
+        default: 0
+    },
+    statistics: {
+        text: {
+            level: {
+                type: Number,
+                default: 1
+            },
+            xp: {
+                type: Number,
+                default: 0
+            },
+            totalXp: {
+                type: Number,
+                default: 0
+            },
+            dailyXp: {
+                type: Number,
+                default: 0
+            }
+        },
+        voice: {
+            level: {
+                type: Number,
+                default: 1
+            },
+            xp: {
+                type: Number,
+                default: 0
+            },
+            totalXp: {
+                type: Number,
+                default: 0
+            },
+            dailyXp: {
+                type: Number,
+                default: 0
+            },
+            timeSpent: {
+                type: Number,
+                default: 0
+            }
+        }
+    },
+    cardAppearance: {
+        background: {
+            type: Number,
+            default: 0
+        },
+        customBackground: {
+            type: Buffer
+        },
+        accent: {
+            type: String,
+            default: palette.primary
+        }
     }
-}
+})
 
-class VoiceStatistics extends XpStatistics {
-    @prop({ default: 0 })
-    public timeSpent!: number
-
-    constructor(level: number, xp: number, totalXp: number, dailyXp: number, timeSpent: number) {
-        super(level, xp, totalXp, dailyXp)
-        this.timeSpent = timeSpent
-    }
-}
-
-export class ProfileStatistics {
-    @prop()
-    public text!: XpStatistics
-
-    @prop()
-    public voice!: VoiceStatistics
-}
-
-class ProfileCard {
-    @prop({ default: 0 })
-    public background!: number
-
-    @prop()
-    public customBackground?: Types.Buffer
-
-    @prop({ default: palette.primary })
-    public accent!: string
-}
-
-export class Profile {
-    @prop({ required: true, unique: true })
-    public userId!: Snowflake
-
-    @prop({ default: 0 })
-    public coins!: number
-
-    @prop()
-    public statistics!: ProfileStatistics
-
-    @prop()
-    public cardAppearance!: ProfileCard
-}
-
-export const ProfileModel = getModelForClass(Profile)
+export const ProfileModel = mongoose.model<ProfileDocument>('Profiles', ProfileSchema);

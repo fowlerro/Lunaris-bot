@@ -1,7 +1,7 @@
 import { Snowflake } from "discord-api-types";
 
 import BaseModule from "../../utils/structures/BaseModule";
-import { GuildConfig, GuildConfigModel } from "../../database/schemas/GuildConfig";
+import { GuildConfigDocument, GuildConfigModel } from "../../database/schemas/GuildConfig";
 
 class GuildsModule extends BaseModule {
     constructor() {
@@ -14,8 +14,8 @@ class GuildsModule extends BaseModule {
     }
 
     config = {
-        get: async (guildId: Snowflake): Promise<GuildConfig> => {
-            let config: GuildConfig | undefined | null = client.guildConfigs.get(guildId)
+        get: async (guildId: Snowflake): Promise<GuildConfigDocument> => {
+            let config: GuildConfigDocument | undefined | null = client.guildConfigs.get(guildId)
             if(config) return config
 
             config = await GuildConfigModel.findOne({ guildId }).select('-_id -__v')
@@ -25,13 +25,13 @@ class GuildsModule extends BaseModule {
             client.guildConfigs.set(guildId, config)
             return config
         },
-        set: async (guildId: Snowflake, toSet: any): Promise<GuildConfig> => {
+        set: async (guildId: Snowflake, toSet: any): Promise<GuildConfigDocument> => {
             const config = await GuildConfigModel.findOneAndUpdate({ guildId }, toSet, { new: true, upsert: true }).select('-_id -__v')
             client.guildConfigs.set(guildId, config);
             return config;
         },        
         create: async (guildId: Snowflake) => {
-            const config: GuildConfig = await GuildConfigModel.create({ guildId }) // TODO Remove _id and __v from returned document
+            const config: GuildConfigDocument = await GuildConfigModel.create({ guildId }) // TODO Remove _id and __v from returned document
             return config
         },
         delete: async (guildId: Snowflake) => {

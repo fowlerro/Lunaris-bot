@@ -1,154 +1,114 @@
-import { getModelForClass, index, modelOptions, prop, Severity } from "@typegoose/typegoose";
-import { Snowflake } from "discord-api-types";
-import shortid from "shortid";
+import { Snowflake } from "discord.js";
+import { Document, model, Schema } from "mongoose";
 import { ProfileStatistics } from "./Profile";
 
-
-@modelOptions({ options: { allowMixed: Severity.ALLOW } })
-class GuildProfileMute {
-    @prop({ default: false })
-    public isMuted!: boolean
-    
-    @prop()
-    public timestamp?: number | null
-
-    @prop()
-    public date?: number | null
-
-    @prop()
-    public reason?: string | null
-
-    @prop()
-    public executorId?: Snowflake | string | null
+interface GuildProfileMute {
+    isMuted: boolean;
+    timestamp?: number | null;
+    date?: number | null;
+    reason?: string | null;
+    executorId?: Snowflake | null;
 }
 
-class GuildProfileWarn {
-    @prop({ required: true, default: shortid.generate() })
-    public id!: string
-
-    @prop({ required: true })
-    public executorId!: string
-
-    @prop({ default: null })
-    public reason?: string
-
-    @prop({ required: true, default: Date.now() })
-    public date!: number
+interface GuildProfileWarn {
+    executorId: Snowflake;
+    reason: string | null;
+    date: number;
 }
 
-@index({ guildId: 1, userId: 1 }, { unique: true })
-@modelOptions({ options: { allowMixed: Severity.ALLOW } })
-export class GuildProfile {
-    @prop({ required: true })
-    public guildId!: Snowflake
-
-    @prop({ required: true })
-    public userId!: Snowflake
-
-    @prop()
-    public statistics!: ProfileStatistics
-
-    @prop()
-    public mute!: GuildProfileMute
-
-    @prop({ default: [] })
-    public warns!: GuildProfileWarn[]
+export interface GuildProfileDocument extends Document {
+    guildId: Snowflake;
+    userId: Snowflake;
+    statistics: ProfileStatistics;
+    mute: GuildProfileMute;
+    warns: GuildProfileWarn[];
 }
 
+const GuildProfileSchema = new Schema({
+    guildId: {
+        type: String,
+        required: true,
+    },
+    userId: {
+        type: String,
+        required: true,
+    },
+    statistics: {
+        text: {
+            level: {
+                type: Number,
+                default: 1
+            },
+            xp: {
+                type: Number,
+                default: 0
+            },
+            totalXp: {
+                type: Number,
+                default: 0
+            },
+            dailyXp: {
+                type: Number,
+                default: 0
+            }
+        },
+        voice: {
+            level: {
+                type: Number,
+                default: 1
+            },
+            xp: {
+                type: Number,
+                default: 0
+            },
+            totalXp: {
+                type: Number,
+                default: 0
+            },
+            dailyXp: {
+                type: Number,
+                default: 0
+            },
+            timeSpent: {
+                type: Number,
+                default: 0
+            }
+        }
+    },
+    mute: {
+        isMuted: {
+            type: Boolean,
+            default: false,
+        },
+        timestamp: {
+            type: Number,
+        },
+        date: {
+            type: Number,
+        },
+        reason: {
+            type: String,
+        },
+        executorId: {
+            type: String,
+        }
+    },
+    warns: [{
+        executorId: {
+            type: String,
+            required: true
+        },
+        reason: {
+            type: String,
+            default: null,
+        },
+        date: {
+            type: Number,
+            default: Date.now()
+        },
+    }],
+});
 
-export const GuildProfileModel = getModelForClass(GuildProfile)
+GuildProfileSchema.index({ guildId: 1, userId: 1 }, { unique: true });
 
-// const mongoose = require('mongoose');
-// const shortid = require('shortid');
-
-// const GuildMembersSchema = new mongoose.Schema({
-//     guildId: {
-//         type: mongoose.SchemaTypes.String,
-//         required: true,
-//     },
-//     userId: {
-//         type: mongoose.SchemaTypes.String,
-//         required: true,
-//     },
-//     statistics: {
-//         text: {
-//             level: {
-//                 type: mongoose.SchemaTypes.Number,
-//                 default: 1
-//             },
-//             xp: {
-//                 type: mongoose.SchemaTypes.Number,
-//                 default: 0
-//             },
-//             totalXp: {
-//                 type: mongoose.SchemaTypes.Number,
-//                 default: 0
-//             },
-//             dailyXp: {
-//                 type: mongoose.SchemaTypes.Number,
-//                 default: 0
-//             }
-//         },
-//         voice: {
-//             level: {
-//                 type: mongoose.SchemaTypes.Number,
-//                 default: 1
-//             },
-//             xp: {
-//                 type: mongoose.SchemaTypes.Number,
-//                 default: 0
-//             },
-//             totalXp: {
-//                 type: mongoose.SchemaTypes.Number,
-//                 default: 0
-//             },
-//             dailyXp: {
-//                 type: mongoose.SchemaTypes.Number,
-//                 default: 0
-//             },
-//             timeSpent: {
-//                 type: mongoose.SchemaTypes.Number,
-//                 default: 0
-//             }
-//         }
-//     },
-//     muted: {
-//         isMuted: {
-//             type: mongoose.SchemaTypes.Boolean,
-//             default: false,
-//         },
-//         timestamp: {
-//             type: mongoose.SchemaTypes.Number,
-//         },
-//         date: {
-//             type: mongoose.SchemaTypes.Number,
-//         },
-//         reason: {
-//             type: mongoose.SchemaTypes.String,
-//         },
-//         by: {
-//             type: mongoose.SchemaTypes.String,
-//         }
-//     },
-//     warns: [{
-//         id: {
-//             type: String,
-//             default: shortid.generate(),
-//         },
-//         reason: {
-//             type: mongoose.SchemaTypes.String,
-//             default: null,
-//         },
-//         by: {
-//             type: mongoose.SchemaTypes.String,
-//         },
-//         date: {
-//             type: mongoose.SchemaTypes.Number,
-//             default: Date.now()
-//         },
-//     }],
-// });
-
-// GuildMembersSchema.index({ guildId: 1, userId: 1 }, { unique: true });
-
-// module.exports = mongoose.model('GuildMembers', GuildMembersSchema);
+export const GuildProfileModel = model<GuildProfileDocument>('GuildProfile', GuildProfileSchema);

@@ -14,7 +14,6 @@
   "dependencies": {
     "@apollo/client": "^3.4.11",
     "@discordjs/voice": "^0.6.0",
-    "@typegoose/typegoose": "^9.2.0",
     "canvas": "^2.8.0",
     "chart.js": "^2.9.4",
     "chartjs-node-canvas": "^3.0.8",

@@ -1,16 +1,27 @@
-import { getModelForClass, prop } from "@typegoose/typegoose";
-import { Snowflake } from "discord-api-types";
-
-
-export class User {
-    @prop({ required: true, unique: true })
-    public discordId!: Snowflake
-
-    @prop({ required: true })
-    public discordTag!: `${string}#${number}`
-
-    @prop({ required: true })
-    public avatar!: string
+import { Snowflake } from 'discord.js'
+import { Document, Schema, model } from 'mongoose'
+export interface UserDocument extends Document {
+    discordId: Snowflake;
+    discordTag: `${string}#${number}`;
+    avatar: string;
 }
 
-export const UserModel = getModelForClass(User)
+const UserSchema = new Schema({
+    discordId: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    discordTag: {
+        type: String,
+        required: true
+    },
+    avatar: {
+        type: String,
+        required: true
+    }
+})
+
+UserSchema.index({ discordId: 1 }, { unique: true })
+
+export const UserModel = model<UserDocument>('User', UserSchema)
