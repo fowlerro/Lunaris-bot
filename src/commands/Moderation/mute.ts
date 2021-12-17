@@ -187,7 +187,7 @@ export default class MuteCommand extends BaseCommand {
             const embeds = Embeds.checkLimits(embed, true, 9)
             if(embeds.error)
                 return interaction.reply({
-                    embeds: [embed],
+                    content: 'Error',
                     ephemeral: true
                 })
 

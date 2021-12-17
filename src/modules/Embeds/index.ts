@@ -68,8 +68,11 @@ class EmbedsModule extends BaseModule {
 		return message
 	}
 
+	// TODO Ephemeral on errors
 	async pageInteractionEmbeds(messageContent: string | null, embeds: MessageEmbed[], interaction: CommandInteraction, defaultPage = 1, buttons = true, selectMenu = false) {
 		if(embeds.length === 1) return interaction.reply({ content: messageContent, embeds: [embeds[0]] })
+
+		defaultPage = defaultPage > embeds.length-1 ? embeds.length-1 : (defaultPage > 0 ? defaultPage : 1)
 
 		const components = []
 		selectMenu && components.push(addSelectMenu(embeds, defaultPage))
@@ -154,7 +157,6 @@ function checkPagesTotalLimit(pages: MessageEmbed[]) {
 }
 
 function addButtons(pages: MessageEmbed[], defaultPage: number) {
-	defaultPage = defaultPage > pages.length ? pages.length : defaultPage > 0 ? defaultPage : 1
 
 	const firstPageButton = new MessageButton()
 	    .setStyle('PRIMARY')
@@ -172,13 +174,13 @@ function addButtons(pages: MessageEmbed[], defaultPage: number) {
 		.setStyle('PRIMARY')
 		.setEmoji('▶️')
 		.setCustomId('nextPage')
-		.setDisabled(defaultPage === pages.length)
+		.setDisabled(defaultPage === pages.length-1)
 
 	const lastPageButton = new MessageButton()
 	    .setStyle('PRIMARY')
 	    .setEmoji("⏭️")
 	    .setCustomId('lastPage')
-		.setDisabled(defaultPage === pages.length)
+		.setDisabled(defaultPage === pages.length-1)
 
 	const pageInfoButton = new MessageButton()
 		.setStyle('PRIMARY')
@@ -190,7 +192,6 @@ function addButtons(pages: MessageEmbed[], defaultPage: number) {
 }
 
 function addSelectMenu(pages: MessageEmbed[], defaultPage: number) {
-	defaultPage = defaultPage > pages.length ? pages.length : (defaultPage > 0 ? defaultPage : 1)
 
 	const options = []
 	for(let i=1; i<pages.length; i++) {
@@ -257,7 +258,7 @@ async function onButton(interaction: ButtonInteraction, component: MessageAction
 	if(!pageInfoButton) return
 
 	const otherComponents = message.components.filter(row => row.components.every((element, index) => element.customId !== component.components[index]?.customId))
-	console.log({ component, otherComponents })
+	
 	let currentPage = +(pageInfoButton.label?.split('/')[0] || 1);
 
 	if (interaction.customId === 'firstPage') 

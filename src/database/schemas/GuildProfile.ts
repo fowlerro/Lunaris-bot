@@ -2,7 +2,7 @@ import { Snowflake } from "discord.js";
 import { Document, model, Schema } from "mongoose";
 import { ProfileStatistics } from "./Profile";
 
-interface GuildProfileMute {
+export interface GuildProfileMute {
     isMuted: boolean;
     timestamp?: number | null;
     date?: number | null;
@@ -10,7 +10,8 @@ interface GuildProfileMute {
     executorId?: Snowflake | null;
 }
 
-interface GuildProfileWarn {
+export interface GuildProfileWarn {
+    _id: string
     executorId: Snowflake;
     reason: string | null;
     date: number;

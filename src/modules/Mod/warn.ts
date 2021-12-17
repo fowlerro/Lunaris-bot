@@ -1,61 +1,70 @@
-// import { Snowflake } from "discord-api-types";
+import { Snowflake } from "discord-api-types";
 
-// import Guilds from "../Guilds";
-// import { GuildProfileModel } from "../../database/schemas/GuildProfile";
-// import { generateId } from "../../database/utils";
-// import { translate } from "../../utils/languages/languages";
+import Guilds from "../Guilds";
+import { GuildProfileDocument, GuildProfileModel, GuildProfileWarn } from "../../database/schemas/GuildProfile";
+import { translate } from "../../utils/languages/languages";
 
-// export const Warn = {
-//     add: async (guildId: Snowflake, userId: Snowflake, reason?: string, by?: Snowflake) => {
-//         if(!guildId) return;
-//         const id = await generateId();
-//         await GuildProfileModel.findOneAndUpdate({guildId, userId}, {
-//             $push: {
-//                 warns: {reason, by, id}
-//             }
-//         }, { upsert: true });
+export const Warn = {
+    give: async (guildId: Snowflake, targetId: Snowflake, executorId: Snowflake, reason?: string) => {
+        await GuildProfileModel.findOneAndUpdate({ guildId, userId: targetId }, {
+            $push: {
+                warns: {
+                    executorId,
+                    reason
+                }
+            }
+        }, { upsert: true });
 
-//         // warnAddLog(guildId, by, userId, reason, id); // TODO
-//         return true;
-//     },
-//     remove: async (guildId: Snowflake, id: string, by: Snowflake) => {
-//         if(!guildId) return;
-//         if(id === 'all') {
-//             await GuildProfileModel.updateMany({ guildId }, {
-//                 $set: {
-//                     warns: []
-//                 } 
-//             });
-//             return { action: 'all' };
-//         }
+        // warnAddLog(guildId, by, userId, reason, id); // TODO
+        return true;
+    },
+    remove: async (guildId: Snowflake, warnId: string, executorId: Snowflake, targetId?: Snowflake): Promise<{ action?: 'all' | 'targetAll', error?: 'warnNotFound' | 'targetNotFound', result?: GuildProfileDocument }> => {
+        if(warnId === 'all') {
+            await GuildProfileModel.updateMany({ guildId }, {
+                $set: {
+                    warns: []
+                } 
+            });
+            return { action: 'all' };
+        }
 
-//         const result = await GuildProfileModel.findOneAndUpdate({ guildId, 'warns.id': id }, {
-//             $pull: {
-//                 warns: { id }
-//             }
-//         });
+        if(warnId === 'targetAll' && targetId) {
+            const result = await GuildProfileModel.updateOne({ guildId, userId: targetId }, {
+                $set: {
+                    warns: []
+                }
+            }).catch(() => {})
 
-//         if(!result) return { error: 'warnNotFound' }
+            if(!result) return { error: 'targetNotFound' }
+            return { action: 'targetAll' }
+        }
 
-//         const warn = result.warns.filter(w => w.id === id);
-//         // warnRemoveLog(client, guildId, by, warn[0].by, result.userId, warn[0].reason, id); // TODO
-//         return result;
-//     },
-//     list: async (guildId: Snowflake, userId: Snowflake) => {
-//         if(!guildId) return;
-//         const guildConfig = await Guilds.config.get(guildId);
-//         if(!guildConfig) return
-//         const language = guildConfig.language
-//         if(userId) {
-//             const result = await GuildProfileModel.findOne({ guildId, userId });
-//             if(!result?.warns.length) return { error: translate(language, 'general.none') };
-//             return { warns: result.warns };
-//         }
+        const result = await GuildProfileModel.findOneAndUpdate({ guildId, 'warns._id': warnId }, {
+            $pull: {
+                warns: {
+                    _id: warnId
+                }
+            }
+        }).catch(() => {})
 
-//         let warns = await GuildProfileModel.find({ guildId }).select(['-muted', '-_id', '-guildId', '-__v']);
-//         warns = warns.filter(v => v.warns.length > 0);
-//         if(!warns.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return { error: translate(language, 'general.none') };
+        if(!result) return { error: 'warnNotFound' }
+
+        // const warn = result.warns.filter(w => w._id === id);
+        // warnRemoveLog(client, guildId, by, warn[0].by, result.userId, warn[0].reason, id); // TODO
+        return { result }
+    },
+    list: async (guildId: Snowflake, targetId?: Snowflake): Promise<{ warns: GuildProfileWarn[] | GuildProfileDocument[], error?: string}> => {
+        const { language } = await Guilds.config.get(guildId);
+        if(targetId) {
+            const result = await GuildProfileModel.findOne({ guildId, userId: targetId });
+            if(!result?.warns.length) return { error: translate(language, 'general.none'), warns: [] };
+            return { warns: result.warns };
+        }
+
+        let warns = await GuildProfileModel.find({ guildId }).select(['-muted', '-_id', '-guildId', '-__v']);
+        warns = warns.filter(v => v.warns.length > 0)
+        if(!warns.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return { error: translate(language, 'general.none'), warns: [] };
         
-//         return { warns };
-//     }
-// }
+        return { warns };
+    }
+}

@@ -72,6 +72,18 @@
             "delete": "Emotka **%VAR%** została pomyślnie usunięta",
             "error": "Coś poszło nie tak, sprawdź czy link jest poprawny",
             "notDeletable": "Nie mogę usunąć tej emotki"
+        },
+        "warn": {
+            "add": "%VAR% został ostrzeżony przez %VAR% %VAR%",
+            "remove": "%VAR% zdjął ostrzeżenie z użytkownika %VAR%",
+            "removeMemberAll": "%VAR% zdjął wszystkie ostrzeżenia z użytkownika %VAR%",
+            "removeAll": "%VAR% zdjął wszystkie ostrzeżenia na serwerze",
+            "list": "Lista ostrzeżeń użytkownika %VAR%",
+            "guildList": "Lista ostrzeżeń na serwerze",
+            "error": "Wystąpił problem z usunięciem ostrzeżenia",
+            "notFound": "Nie znaleziono ostrzeżenia!",
+            "targetNotFound": "Nie znaleziono użytkownika!",
+            "optionAll": "Usuń wszystkie ostrzeżenia z tego użytkownika!"
         }
     },
     "logs": {
@@ -167,14 +179,6 @@
         "notManagable": "Nie mam uprawnień do zarządzania %VAR%",
         "censor": {
             "wordsListTitle": "Lista blokowanych słów"
-        },
-        "warn": {
-            "addWarn": "%VAR% został ostrzeżony przez %VAR% %VAR%",
-            "removeWarn": "%VAR% zdjął ostrzeżenie z użytkownika %VAR%",
-            "removeAllWarns": "%VAR% zdjął wszystkie ostrzeżenia na serwerze",
-            "warnList": "Lista ostrzeżeń użytkownika %VAR%",
-            "guildWarnList": "Lista ostrzeżeń na serwerze",
-            "error": "Wystąpił problem z usunięciem ostrzeżenia"
         },
         "mute": {
             "addMute": "%VAR% został wyciszony przez %VAR% %VAR%",

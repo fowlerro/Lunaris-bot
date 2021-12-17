@@ -73,6 +73,18 @@
             "delete": "The emoji **%VAR%** has been successfully deleted",
             "error": "Something went wrong :/ Check the URL and try again",
             "notDeletable": "The emoji cannot be deleted"
+        },
+        "warn": {
+            "add": "%VAR% has been warned by %VAR% %VAR%",
+            "remove": "%VAR% removed warn from user %VAR%",
+            "removeMemberAll": "%VAR% removed all %VAR%'s warns",
+            "removeAll": "%VAR% removed all server warns",
+            "list": "%VAR% warns list",
+            "guildList": "Warns:",
+            "error": "Something went wrong! Warn couldn't be removed",
+            "notFound": "Warn not found!",
+            "targetNotFound": "Member not found!",
+            "optionAll": "Delete all warns from this member!"
         }
     },
     "logs": {
@@ -168,14 +180,6 @@
         "notManagable": "I cannot manage %VAR%",
         "censor": {
             "wordsListTitle": "Blocked words"
-        },
-        "warn": {
-            "addWarn": "%VAR% has been warned by %VAR% %VAR%",
-            "removeWarn": "%VAR% removed warn from user %VAR%",
-            "removeAllWarns": "%VAR% removed all server warns",
-            "warnList": "%VAR% warns list",
-            "guildWarnList": "Warns:",
-            "error": "Something went wrong! Warn couldn't be removed"
         },
         "mute": {
             "addMute": "%VAR% has been muted by %VAR% %VAR%",
