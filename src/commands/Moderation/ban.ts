@@ -1,4 +1,4 @@
-import { CommandInteraction, MessageEmbed, Snowflake } from "discord.js";
+import { CommandInteraction, MessageEmbed, Permissions, Snowflake } from "discord.js";
 import BaseCommand from "../../utils/structures/BaseCommand";
 import Guilds from "../../modules/Guilds";
 import Mod from "../../modules/Mod";
@@ -103,6 +103,8 @@ export default class BanCommand extends BaseCommand {
 
     async run(interaction: CommandInteraction) {
         if(!interaction.guild) return
+        if(!('id' in interaction.member)) return
+        if(!interaction.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return
         const subcommand = interaction.options.getSubcommand(true)
         const { language } = await Guilds.config.get(interaction.guildId);
 

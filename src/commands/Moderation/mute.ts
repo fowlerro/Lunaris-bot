@@ -1,4 +1,4 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { CommandInteraction, MessageEmbed, Permissions } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 import Guilds from "../../modules/Guilds";
@@ -80,6 +80,8 @@ export default class MuteCommand extends BaseCommand {
 
     async run(interaction: CommandInteraction) {
         if(!interaction.guild) return
+        if(!('id' in interaction.member)) return
+        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return
         const subcommand = interaction.options.getSubcommand(true) as 'give' | 'remove' | 'list'
         const { language } = await Guilds.config.get(interaction.guildId);
 

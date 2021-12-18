@@ -1,4 +1,4 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { CommandInteraction, MessageEmbed, Permissions } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 import Guilds from "../../modules/Guilds";
@@ -35,7 +35,9 @@ export default class LanguageCommand extends BaseCommand {
 
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId) return
-
+        if(!('id' in interaction.member)) return
+        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) return
+        
         const chosenLanguage = interaction.options.get('lang')!.value
 
         const { language } = await Guilds.config.set(interaction.guildId, { language: chosenLanguage });

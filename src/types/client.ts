@@ -9,7 +9,7 @@ import { GuildProfileDocument } from '../database/schemas/GuildProfile';
 
 export default class DiscordClient extends Client {
 
-  public isOnline = true
+  public isOnline = false
   public customActivity: ActivityOptions = {
     name: '',
     type: "PLAYING"

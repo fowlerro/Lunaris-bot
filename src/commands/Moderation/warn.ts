@@ -1,11 +1,11 @@
-import { ApplicationCommandOption, AutocompleteInteraction, Channel, CommandInteraction, EmbedFieldData, Formatters, MessageEmbed, TextChannel } from "discord.js";
-import { GuildProfileModel, GuildProfileWarn } from "../../database/schemas/GuildProfile";
+import { AutocompleteInteraction, CommandInteraction, Formatters, MessageEmbed, Permissions } from "discord.js";
+
+import BaseCommand from "../../utils/structures/BaseCommand";
+import { GuildProfileWarn } from "../../database/schemas/GuildProfile";
 import Embeds from "../../modules/Embeds";
 import Guilds from "../../modules/Guilds";
 import Mod from "../../modules/Mod";
 import { translate } from "../../utils/languages/languages";
-
-import BaseCommand from "../../utils/structures/BaseCommand";
 import { palette } from "../../utils/utils";
 
 export default class WarnCommand extends BaseCommand {
@@ -84,7 +84,9 @@ export default class WarnCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
-        
+        if(!('id' in interaction.member)) return
+        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return
+
         const subcommand = interaction.options.getSubcommand(true)
         const { language } = await Guilds.config.get(interaction.guildId);
 

@@ -13,6 +13,7 @@ export async function registerCommands(dir = '') {
 	const files = await fs.readdir(filePath);
 	const guild = await client.guilds.fetch(testGuildId)
 	if(!guild) return
+	const globalCommands = await client.application?.commands.fetch() 
 	// await guild.commands.fetch()
 	// guild.commands.cache.each(cmd => cmd.delete())
 	for await (const file of files) {
@@ -22,6 +23,9 @@ export async function registerCommands(dir = '') {
 			const { default: Command } = await import(path.join(filePath, file))
 			if(Command.prototype instanceof BaseCommand) {
 				const command: BaseCommand = new Command()
+				if(globalCommands?.get(command.name)) continue
+				const category = dir.split('/').slice(2)
+				command.category = category
 
 				const commandOptions: any = {
 					name: command.name,
@@ -32,7 +36,8 @@ export async function registerCommands(dir = '') {
 
 				if(command.type === 'CHAT_INPUT') commandOptions.description = command.description.en
 				
-				await guild.commands.create(commandOptions)
+				command.test ? await guild.commands.create(commandOptions) : await client.application?.commands.create(commandOptions)
+				// await guild.commands.create(commandOptions)
 				client.commands.set(command.name, command)
 				console.log(`Command '${command.name}' loaded!`)
 			}

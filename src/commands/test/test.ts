@@ -12,6 +12,9 @@ export default class TestCommand extends BaseCommand {
                 en: 'Testing command',
                 pl: 'Komenda testowa'
             },
+            [],
+            true,
+            true
         );
     }
 

@@ -1,4 +1,4 @@
-import { ApplicationCommandOption, CommandInteraction, MessageEmbed, TextChannel } from "discord.js";
+import { ApplicationCommandOption, CommandInteraction, MessageEmbed, Permissions, TextChannel } from "discord.js";
 import Guilds from "../../modules/Guilds";
 import { translate } from "../../utils/languages/languages";
 
@@ -38,6 +38,8 @@ export default class PurgeCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
+        if(!('id' in interaction.member)) return
+        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return
         let count = interaction.options.getInteger('count')!
         const user = interaction.options.getUser('user')
         const channel = interaction.options.getChannel('channel') as TextChannel || interaction.channel! as TextChannel

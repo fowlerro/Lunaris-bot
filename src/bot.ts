@@ -31,6 +31,7 @@ global.client = client;
 	await client.login(process.env.DISCORD_CLIENT_TOKEN);
 	await registerCommands('../commands');
 	await registerModules('../modules');
+	client.isOnline = true
 
 	// dashboard(client)
 })();

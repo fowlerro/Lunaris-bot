@@ -1,4 +1,4 @@
-import { AutocompleteInteraction, CommandInteraction, MessageEmbed } from "discord.js";
+import { AutocompleteInteraction, CommandInteraction, MessageEmbed, Permissions } from "discord.js";
 import Guilds from "../../modules/Guilds";
 import { translate } from "../../utils/languages/languages";
 
@@ -59,6 +59,8 @@ export default class EmojiCommand extends BaseCommand {
 
     async run(interaction: CommandInteraction) {
         if(!interaction.guild) return
+        if(!('id' in interaction.member)) return
+        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS)) return
         const subcommand = interaction.options.getSubcommand(true)
 
         const { language } = await Guilds.config.get(interaction.guildId)

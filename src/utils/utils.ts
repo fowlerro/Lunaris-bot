@@ -1,6 +1,8 @@
-import { ChannelMention, ExcludeEnum, Guild, MemberMention } from "discord.js";
-import { Snowflake } from "discord-api-types";
+import { ChannelMention, ExcludeEnum, Guild, MemberMention, Snowflake } from "discord.js";
 import { ActivityTypes } from "discord.js/typings/enums";
+import path from "path";
+import fs from 'fs'
+import BaseCommand from "./structures/BaseCommand";
 
 export const botOwners = ["313346190995619841"];
 
@@ -133,4 +135,17 @@ export function compareArrayOfObjects(x: any, y: any): boolean {
     }
 
     return true
+}
+
+export function getCommandCategories(): string[] {
+    const filePath = path.join(__dirname, '../commands');
+	const files = fs.readdirSync(filePath)
+    const categories = files.filter(file => {
+        const stat = fs.lstatSync(path.join(filePath, file));
+        return stat.isDirectory()
+    }).map(file => file)
+
+    categories.splice(1, 0, 'Modules')
+
+    return categories.filter(category => category !== 'test')
 }
