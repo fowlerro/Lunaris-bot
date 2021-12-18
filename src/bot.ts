@@ -8,6 +8,8 @@ import { connectDatabase } from './database/mongoose'
 import { registerCommands, registerEvents, registerModules } from './utils/registry'
 // const dashboard = require('./dashboard/app');
 
+export const testGuildId = '533385524434698260'
+
 const client = new DiscordClient({ 
   	intents: [
 		Intents.FLAGS.GUILDS,

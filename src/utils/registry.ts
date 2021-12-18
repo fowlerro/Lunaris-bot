@@ -4,9 +4,9 @@ import fs from 'fs/promises'
 import BaseEvent from './structures/BaseEvent'
 import BaseModule from './structures/BaseModule';
 import BaseCommand from './structures/BaseCommand';
+import { testGuildId } from '../bot'
 
 const clientConfig = require('../database/config.json');
-const testGuildId = '533385524434698260'
 
 export async function registerCommands(dir = '') {
 	const filePath = path.join(__dirname, dir);
@@ -23,7 +23,6 @@ export async function registerCommands(dir = '') {
 			const { default: Command } = await import(path.join(filePath, file))
 			if(Command.prototype instanceof BaseCommand) {
 				const command: BaseCommand = new Command()
-				if(globalCommands?.get(command.name)) continue
 				const category = dir.split('/').slice(2)
 				command.category = category
 
@@ -35,8 +34,10 @@ export async function registerCommands(dir = '') {
 				}
 
 				if(command.type === 'CHAT_INPUT') commandOptions.description = command.description.en
-				
-				command.test ? await guild.commands.create(commandOptions) : await client.application?.commands.create(commandOptions)
+				if(!globalCommands?.find(cmd => cmd.name === command.name)) {
+					command.test ? await guild.commands.create(commandOptions) : await client.application?.commands.create(commandOptions)
+					console.log(`Command '${command.name}' created!`)
+				}
 				// await guild.commands.create(commandOptions)
 				client.commands.set(command.name, command)
 				console.log(`Command '${command.name}' loaded!`)

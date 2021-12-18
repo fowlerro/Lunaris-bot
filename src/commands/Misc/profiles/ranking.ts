@@ -58,7 +58,7 @@ export default class LanguageCommand extends BaseCommand {
 
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId) return
-        interaction.deferReply()
+        await interaction.deferReply()
 
         const sortType = interaction.options.getString('sortby') as SortType || 'xp'
         const isGlobal = interaction.options.getBoolean('global') || false
