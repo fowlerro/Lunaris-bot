@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "sudo systemctl stop lunaris; nodemon ./src/bot.ts",
     "start": "node ./dist/bot.js",
-    "postinstall": "npm run tsc"
+    "postinstall": "tsc"
   },
   "keywords": [],
   "author": "",
