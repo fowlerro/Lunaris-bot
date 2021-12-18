@@ -34,6 +34,37 @@
         "user": "User",
         "date": "Date"
     },
+    "help": {
+        "help": {
+            "updateTitle": "Updates",
+            "updateList": "• Slash commands\n • Emojis manager (/emoji) - You can now add emoji from URL!",
+
+            "comingSoonTitle": "Coming soon",
+            "comingSoonList": "• Website dashboard (In progress, but idk when I finish it xD)\n • Level rewards - Automatically given roles to users who reach specified level",
+
+            "statTitle": "Bot stats",
+            "statList": "Commands: %VAR%\n Servers: %VAR%/75\n Profiles: %VAR%"
+        },
+        "module": {
+            "title": "Modules",
+            "autoRole": {
+                "name": "Auto Roles",
+                "value": "Its for automatic adding roles to users when they join to server, you can choose role and even time, in which role should be automatically taken from user\n__Cannot manage through commands yet__"
+            },
+            "reactionRoles": {
+                "name": "Reaction Roles",
+                "value": "You can set up message with reactions or buttons, which will add or remove roles from user, you can also specify the type of role (add/remove or verify - which will allow only to add role and not remove)\n __Cannot manage through commands yet__"
+            },
+            "xpSystem": {
+                "name": "XP System",
+                "value": "XP System works both in text and voice channels. You gain coins from leveling up. Level rewards coming soon!\n __Cannot manage through commands yet__"
+            },
+            "embedMessages": {
+                "name": "Embed Messages",
+                "value": "You can create custom embed messages\n Its hard to make with commands to work, so will be only available on web dashboard"
+            }
+        }
+    },
     "cmd": {
         "globalStatus": "Command is temporary turned off",
         "prefixMessage": "The prefix is set to: %VAR%",
@@ -42,9 +73,14 @@
         "wrongLanguage": "This language is not supported, type '%VAR%language' to see supported languages list",
         "prefixChange": "Prefix has been changed to %VAR%",
         "languageChange": "Language has been changed to %VAR%",
-        "helpTitle": "Help",
-        "helpFooter": "Type %VAR%help <cmd> for more informations about command",
-        "cmdHelpTitle": "Help for %VAR%",
+        "pingInfo": "Slash commands are still in progress, they will be available soon!",
+        "wrongId": "Wrong id",
+        "help": {
+            "title": "Help",
+            "footer": "Type /help <cmd> for more information about command",
+            "cmdTitle": "Help for %VAR%",
+            "selectMenuPlaceholder": "Select category"
+        },
         "ranking": {
             "text": "Text",
             "voice": "Voice",
@@ -56,6 +92,36 @@
             "createdAt": "Created at",
             "joinedAt": "Joined at",
             "avatar": "Avatar URL"
+        },
+        "purge": {
+            "wrongChannel": "Please provide a text channel",
+            "success": {
+                "default": "Successfully purged %VAR% messages",
+                "user": "Successfully purged %VAR% <@%VAR%>'s messages",
+                "channel": "Successfully purged %VAR% messages in <#%VAR%>",
+                "user-channel": "Successfully purged %VAR% <@%VAR%>'s messages in <#%VAR%>"
+            }
+        },
+        "emoji": {
+            "add": "The emoji **%VAR%** has been successfully added",
+            "delete": "The emoji **%VAR%** has been successfully deleted",
+            "error": "Something went wrong :/ Check the URL and try again",
+            "notDeletable": "The emoji cannot be deleted"
+        },
+        "warn": {
+            "add": "%VAR% has been warned by %VAR% %VAR%",
+            "remove": "%VAR% removed warn from user %VAR%",
+            "removeMemberAll": "%VAR% removed all %VAR%'s warns",
+            "removeAll": "%VAR% removed all server warns",
+            "list": "%VAR% warns list",
+            "guildList": "Warns:",
+            "error": "Something went wrong! Warn couldn't be removed",
+            "notFound": "Warn not found!",
+            "targetNotFound": "Member not found!",
+            "optionAll": "Delete all warns from this member!"
+        },
+        "idea": {
+            "submitted": "An idea has been submitted"
         }
     },
     "logs": {
@@ -148,16 +214,9 @@
         }
     },
     "autoMod": {
+        "notManagable": "I cannot manage %VAR%",
         "censor": {
             "wordsListTitle": "Blocked words"
-        },
-        "warn": {
-            "addWarn": "%VAR% has been warned by %VAR% %VAR%",
-            "removeWarn": "%VAR% removed warn from user %VAR%",
-            "removeAllWarns": "%VAR% removed all server warns",
-            "warnList": "%VAR% warns list",
-            "guildWarnList": "Warns:",
-            "error": "Something went wrong! Warn couldn't be removed"
         },
         "mute": {
             "addMute": "%VAR% has been muted by %VAR% %VAR%",
@@ -170,7 +229,8 @@
         "ban": {
             "add": "%VAR% has been banned by %VAR% %VAR%",
             "remove": "%VAR% has been unbanned by %VAR% %VAR%",
-            "notBanned": "%VAR% is not banned"
+            "notBanned": "%VAR% is not banned",
+            "notFound": "User not found"
         }
     },
     "xp": {

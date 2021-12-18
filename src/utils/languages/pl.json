@@ -34,6 +34,37 @@
         "user": "Użytkownik",
         "date": "Data"
     },
+    "help": {
+        "help": {
+            "updateTitle": "Aktualizacje",
+            "updateList": "• Slash komendy\n • Menedżer emotek (/emoji) - Można dodać emotkę na serwer przez link",
+
+            "comingSoonTitle": "Nadchodzące nowości",
+            "comingSoonList": "• Strona z panelem (Pracuję nad tym, ale nie wiem kiedy skończę xD)",
+
+            "statTitle": "Statystyki bota",
+            "statList": "Komendy: %VAR%\n Serwery: %VAR%/75\n Profile: %VAR%"
+        },
+        "module": {
+            "title": "Moduły",
+            "autoRole": {
+                "name": "Auto Role",
+                "value": "Moduł ten pozwala na automatyczne dodawania ról użytkownikom dołączającym na serwer, możesz wybrać wiele ról, a nawet czas, po upływie którego rola ma zostać automatycznie zdjęta z użytkownika\n __Póki co brak możliwości zarządzania poprzez komendy__"
+            },
+            "reactionRoles": {
+                "name": "Reaction Role",
+                "value": "Możesz ustawić wiadomość z reakcjami lub przyciskami, po których kliknięciu, bot doda lub usunie rolę z użytkownika, można wybrać typ reakcji (dodaj/usuń lub weryfikacja - która pozwoli jedynie na dodanie roli użytkownikowi\n __Póki co brak możliwości zarządzania poprzez komendy__"
+            },
+            "xpSystem": {
+                "name": "XP System",
+                "value": "System XP działa zarówna na kanałach tekstowych jak i głosowych. Za levelowanie dostaje się coiny. W planach dodanie nagród w postaci automatycznie nadawanych ról za levele \n __Póki co brak możliwości zarządzania poprzez komendy__"
+            },
+            "embedMessages": {
+                "name": "Wiadomości Embed",
+                "value": "Pozwala na tworzenie w pełni dostosowanych wiadomości Embed\n Ciężko jest to zrobić na komendach, więc prawdopodobnie będzie dostępne tylko przez panel na stronie"
+            }
+        }
+    },
     "cmd": {
         "globalStatus": "Komenda jest chwilowo wyłączona",
         "prefixMessage": "Prefix dla tego serwera to: %VAR%",
@@ -42,9 +73,14 @@
         "wrongLanguage": "Ten język jest nieobsługiwany, wpisz '%VAR%language', aby sprawdzić listę wspieranych języków",
         "prefixChange": "Prefix został pomyślnie zmieniony na %VAR%",
         "languageChange": "Język został pomyślnie zmieniony na %VAR%",
-        "helpTitle": "Pomoc",
-        "helpFooter": "Aby sprawdzić dokładną pomoc komendy, wpisz %VAR%help <cmd>",
-        "cmdHelpTitle": "Informacje o %VAR%",
+        "pingInfo": "Slash komendy są nadal w trakcie pracy, ale niedługo powinny być dostępne",
+        "wrongId": "Niepoprawne id",
+        "help": {
+            "title": "Pomoc",
+            "footer": "Aby zobaczyć więcej informacji na temat komendy, wpisz /help <cmd>",
+            "cmdTitle": "Informacje o %VAR%",
+            "selectMenuPlaceholder": "Wybierz kategorię"
+        },
         "ranking": {
             "text": "Tekstowy",
             "voice": "Głosowy",
@@ -55,6 +91,36 @@
             "title": "Informacje o %VAR%",
             "createdAt": "Data utworzenia",
             "joinedAt": "Data dołączenia"
+        },
+        "purge": {
+            "wrongChannel": "Musisz podać kanał tekstowy",
+            "success": {
+                "default": "Pomyślnie wyczyszczono %VAR% wiadomości",
+                "user": "Pomyślnie wyczyszczono %VAR% wiadomości użytkownika <@%VAR%>",
+                "channel": "Pomyślnie wyczyszczono %VAR% wiadomości w <#%VAR>",
+                "user-channel": "Pomyślnie wyczyszczono %VAR% wiadomości użytkownika <@%VAR%> w <#%VAR%>"
+            }
+        },
+        "emoji": {
+            "add": "Emotka **%VAR%** została pomyślnie dodana",
+            "delete": "Emotka **%VAR%** została pomyślnie usunięta",
+            "error": "Coś poszło nie tak, sprawdź czy link jest poprawny",
+            "notDeletable": "Nie mogę usunąć tej emotki"
+        },
+        "warn": {
+            "add": "%VAR% został ostrzeżony przez %VAR% %VAR%",
+            "remove": "%VAR% zdjął ostrzeżenie z użytkownika %VAR%",
+            "removeMemberAll": "%VAR% zdjął wszystkie ostrzeżenia z użytkownika %VAR%",
+            "removeAll": "%VAR% zdjął wszystkie ostrzeżenia na serwerze",
+            "list": "Lista ostrzeżeń użytkownika %VAR%",
+            "guildList": "Lista ostrzeżeń na serwerze",
+            "error": "Wystąpił problem z usunięciem ostrzeżenia",
+            "notFound": "Nie znaleziono ostrzeżenia!",
+            "targetNotFound": "Nie znaleziono użytkownika!",
+            "optionAll": "Usuń wszystkie ostrzeżenia z tego użytkownika!"
+        },
+        "idea": {
+            "submitted": "Pomysł został przesłany!"
         }
     },
     "logs": {
@@ -147,16 +213,9 @@
         }
     },
     "autoMod": {
+        "notManagable": "Nie mam uprawnień do zarządzania %VAR%",
         "censor": {
             "wordsListTitle": "Lista blokowanych słów"
-        },
-        "warn": {
-            "addWarn": "%VAR% został ostrzeżony przez %VAR% %VAR%",
-            "removeWarn": "%VAR% zdjął ostrzeżenie z użytkownika %VAR%",
-            "removeAllWarns": "%VAR% zdjął wszystkie ostrzeżenia na serwerze",
-            "warnList": "Lista ostrzeżeń użytkownika %VAR%",
-            "guildWarnList": "Lista ostrzeżeń na serwerze",
-            "error": "Wystąpił problem z usunięciem ostrzeżenia"
         },
         "mute": {
             "addMute": "%VAR% został wyciszony przez %VAR% %VAR%",
@@ -169,7 +228,8 @@
         "ban": {
             "add": "%VAR% został zbanowany przez %VAR% %VAR%",
             "remove": "%VAR% został odbanowany przez %VAR% %VAR%",
-            "notBanned": "%VAR% nie jest zbanowany"
+            "notBanned": "%VAR% nie jest zbanowany",
+            "notFound": "Nie znaleziono użytkownika"
         }
     },
     "xp": {
