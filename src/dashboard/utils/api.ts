@@ -1,11 +1,14 @@
-const fetch = require('node-fetch');
-const { decrypt } = require('./utils');
-const CryptoJS = require('crypto-js');
-const OAuth2Credentials = require('../../database/schemas/OAuth2Credentials');
+import fetch from "node-fetch";
+import CryptoJS from 'crypto-js'
+import { Snowflake } from "discord.js";
+import { APIChannel, APIGuild, APIRole } from "discord.js/node_modules/discord-api-types";
+
+import { OAuth2CredentialsModel } from "../../database/schemas/OAuth2Credentials";
+import { decrypt } from "./utils";
 
 const API = 'https://discord.com/api/v9';
 
-async function getBotGuilds() {
+export async function getBotGuilds(): Promise<APIGuild[]> {
     const response = await fetch(`${API}/users/@me/guilds`, {
         method: 'GET',
         headers: {
@@ -15,7 +18,7 @@ async function getBotGuilds() {
     return response.json();
 };
 
-async function getRolesFromGuild(guildId) {
+export async function getRolesFromGuild(guildId: Snowflake): Promise<APIRole[]> {
     const response = await fetch(`${API}/guilds/${guildId}/roles`, {
         method: 'GET',
         headers: {
@@ -25,7 +28,7 @@ async function getRolesFromGuild(guildId) {
     return response.json();
 };
 
-async function getChannelsFromGuild(guildId) {
+export async function getChannelsFromGuild(guildId: Snowflake): Promise<APIChannel[]> {
     const response = await fetch(`${API}/guilds/${guildId}/channels`, {
         method: 'GET',
         headers: {
@@ -35,8 +38,8 @@ async function getChannelsFromGuild(guildId) {
     return response.json()
 };
 
-async function getUserGuilds(discordId) {
-    const credentials = await OAuth2Credentials.findOne({ discordId });
+export async function getUserGuilds(discordId: Snowflake): Promise<APIGuild[]> {
+    const credentials = await OAuth2CredentialsModel.findOne({ discordId });
     if(!credentials) throw new Error("No credentials.");
     const encryptedAccessToken = credentials.get('accessToken');
     const decrypted = decrypt(encryptedAccessToken);
@@ -49,5 +52,3 @@ async function getUserGuilds(discordId) {
     });
     return response.json();
 }
-
-module.exports = {getBotGuilds, getRolesFromGuild, getUserGuilds, getChannelsFromGuild};

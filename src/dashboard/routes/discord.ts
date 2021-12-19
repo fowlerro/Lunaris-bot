@@ -1,12 +1,15 @@
-const {getBotGuilds, getUserGuilds, getGuildRoles} = require('../utils/api');
-const router = require('express').Router();
-const { getGuilds } = require('../utils/utils');
-const Guilds = require('../../modules/Guilds');
-const Embeds = require('../../modules/Embeds')
+import express from 'express'
+
+import { getBotGuilds, getRolesFromGuild, getUserGuilds } from '../utils/api';
+import { getGuilds } from '../utils/utils';
+import Guilds from '../../modules/Guilds';
+import Embeds from '../../modules/Embeds';
+
+const router = express.Router()
 
 router.get('/guilds', async (req, res) => {
     if(req.user) {
-        const guilds = await getBotGuilds();
+        const guilds = await getBotGuilds()
         const userGuilds = await getUserGuilds(req.user.discordId);
         const mutualGuilds = getGuilds(userGuilds, guilds);
         res.send(mutualGuilds);
@@ -19,20 +22,20 @@ router.put('/guilds/:guildId/config', async (req, res) => {
     const { config } = req.body;
     const { guildId } = req.params;
     if(!config) return res.status(400).send("Config required!");
-    const update = await Guilds.config.set(global.client, guildId, { prefix: config.prefix, 'modules.autoMod.muteRole': config.muteRole })
+    const update = await Guilds.config.set(guildId, { 'modules.autoMod.muteRole': config.muteRole })
     return update ? res.send(update) : res.status(400).send('Could not find document');
 });
 
 router.get('/guilds/:guildId/config', async (req, res) => {
     const { guildId } = req.params;
-    const config = await Guilds.config.get(global.client, guildId)
+    const config = await Guilds.config.get(guildId)
     return config ? res.send(config) : res.status(404).send("Not found");
 });
 
 router.get('/guilds/:guildId/roles', async (req, res) => {
     const { guildId } = req.params;
     try {
-        const roles = await getGuildRoles(guildId);
+        const roles = await getRolesFromGuild(guildId);
         res.send(roles);
     } catch (err) {
         console.log(err);
@@ -42,9 +45,9 @@ router.get('/guilds/:guildId/roles', async (req, res) => {
 
 router.put('/guilds/:guildId/embed/send', async (req, res) => {
     const { guildId } = req.params
-    const { channelId, messageContent, embed } = req.body
+    const { channelId, embed } = req.body
     if(!channelId || !embed) return res.status(400).send({ "msg": "ChannelId required" })
-    return Embeds.send(global.client, messageContent, embed, guildId, channelId)
+    return Embeds.send(embed, guildId, channelId)
 })
 
-module.exports = router;
+export default router

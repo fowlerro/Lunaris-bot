@@ -6,7 +6,7 @@ import { Intents } from 'discord.js'
 import DiscordClient from './types/client'
 import { connectDatabase } from './database/mongoose'
 import { registerCommands, registerEvents, registerModules } from './utils/registry'
-// const dashboard = require('./dashboard/app');
+import dashboard from './dashboard/app'
 
 export const testGuildId = '533385524434698260'
 
@@ -35,5 +35,5 @@ global.client = client;
 	await registerModules('../modules');
 	client.isOnline = true
 
-	// dashboard(client)
+	dashboard()
 })();

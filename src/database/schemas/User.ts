@@ -3,7 +3,7 @@ import { Document, Schema, model } from 'mongoose'
 export interface UserDocument extends Document {
     discordId: Snowflake;
     discordTag: `${string}#${number}`;
-    avatar: string;
+    avatar: string | null;
 }
 
 const UserSchema = new Schema({
@@ -17,8 +17,7 @@ const UserSchema = new Schema({
         required: true
     },
     avatar: {
-        type: String,
-        required: true
+        type: String
     }
 })
 
