@@ -1,12 +1,11 @@
 import path from 'path'
 import fs from 'fs/promises'
+import fsSync from 'fs'
 
 import BaseEvent from './structures/BaseEvent'
 import BaseModule from './structures/BaseModule';
 import BaseCommand from './structures/BaseCommand';
 import { testGuildId } from '../bot'
-
-const clientConfig = require('../database/config.json');
 
 export async function registerCommands(dir = '') {
 	const filePath = path.join(__dirname, dir);
@@ -77,6 +76,10 @@ export async function registerModules(dir = '') {
 }
 
 export function registerPresence() {
+
+	const json = fsSync.readFileSync(path.join(__dirname, '../database/config.json'))	
+	const clientConfig = JSON.parse(json.toString())
+
 	client.user?.setPresence({
 		status: clientConfig.presence.status || 'online',
 		activities: [{
