@@ -18,7 +18,7 @@ export async function registerCommands(dir = '') {
 	for await (const file of files) {
 		const stat = await fs.lstat(path.join(filePath, file));
 		if(stat.isDirectory()) await registerCommands(path.join(dir, file));
-		if(file.endsWith('.ts')) {
+		if(process.env.DEVELOPMENT === 'DEV' ? file.endsWith('.ts') : file.endsWith('.js')) {
 			const { default: Command } = await import(path.join(filePath, file))
 			if(Command.prototype instanceof BaseCommand) {
 				const command: BaseCommand = new Command()
@@ -51,7 +51,7 @@ export async function registerEvents(dir = '') {
     for (const file of files) {
         const stat = await fs.lstat(path.join(filePath, file));
         if (stat.isDirectory()) registerEvents(path.join(dir, file));
-        if (file.endsWith('.ts')) {
+        if (process.env.DEVELOPMENT === 'DEV' ? file.endsWith('.ts') : file.endsWith('.js')) {
             const { default: Event } = await import(path.join(dir, file))
             if (Event.prototype instanceof BaseEvent) {
                 const event = new Event();
@@ -68,7 +68,7 @@ export async function registerModules(dir = '') {
 	for(const file of files) {
 		const stat = await fs.lstat(path.join(filePath, file));
 		if(stat.isDirectory()) registerModules(path.join(dir, file));
-		if(file === 'index.ts') {
+		if(file === (process.env.DEVELOPMENT === 'DEV' ? 'index.ts' : 'index.js')) {
 			const { default: Module } = await import(path.join(filePath, file))
 			if(Module instanceof BaseModule) Module.run();
 		}
