@@ -1,6 +1,13 @@
 import fs from 'fs'
 import path from 'path'
 
+import * as pl from './pl.json'
+import * as en from './en.json'
+
+const translations: any = {
+    pl, en
+}
+
 const fallbackLanguage = 'en';
 
 export function translate(language: string, message: string, ...vars: any[]) {
@@ -30,9 +37,9 @@ export function localeList() {
 
 function readMessage(language: string, message: string): string {
     if(!localeList().includes(language)) language = fallbackLanguage;
-    const filePath = path.join(__dirname, `${language}.json`);
-    const json = JSON.parse(fs.readFileSync(filePath).toString());
+    // const filePath = path.join(__dirname, `${language}.json`);
+    // const json = JSON.parse(fs.readFileSync(filePath).toString());
     return message.split('.').reduce((prev, curr) => {
         return prev ? prev[curr] : null
-    }, json);
+    }, translations[language]);
 }
