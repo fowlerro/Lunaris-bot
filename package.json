@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "sudo systemctl stop lunaris; nodemon ./src/bot.ts",
     "start": "node ./dist/bot.js",
-    "postinstall": "tsc",
-    "codegen": "graphql-codegen --config codegen.yml"
+    "postinstall": "tsc && npm run copyassets",
+    "copyassets": "cp -r ./src/modules/Profiles/assets/ ./dist/modules/Profiles/assets/"
   },
   "keywords": [],
   "author": "",

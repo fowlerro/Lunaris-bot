@@ -15,7 +15,7 @@ interface IPalette {
 }
 
 export const palette: IPalette = {
-    primary: '#102693',
+    primary: '#1597e0',
     secondary: '',
     success: '#7BDB27',
     info: '#3C9FFC',
