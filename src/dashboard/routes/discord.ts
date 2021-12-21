@@ -5,6 +5,8 @@ import { getGuilds } from '../utils/utils';
 import Guilds from '../../modules/Guilds';
 import Embeds from '../../modules/Embeds';
 
+import { localeList } from '../../utils/languages/languages'
+
 const router = express.Router()
 
 router.get('/guilds', async (req, res) => {
@@ -26,21 +28,90 @@ router.put('/guilds/:guildId/config', async (req, res) => {
     return update ? res.send(update) : res.status(400).send('Could not find document');
 });
 
+router.put('/guilds/:guildId/settings', async (req, res) => {
+    const userId = req.user?.discordId
+    const { guildId } = req.params
+
+    const { language, nickname, muteRoleId } = req.body
+
+    if(!userId) return res.sendStatus(401)
+    if(!guildId) return res.sendStatus(404)
+
+    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    if(!guild) return res.sendStatus(404)
+    const member = await guild.members.fetch(userId).catch(() => {})
+    if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
+
+    const clientMember = guild.me
+    if(!clientMember) return res.sendStatus(404)
+    
+    const guildConfig = await Guilds.config.get(guildId)
+    if(!guildConfig) return res.sendStatus(404)
+
+    const guildRoles = await guild.roles.fetch().catch(() => {})
+    if(!guildRoles) return res.sendStatus(404)
+
+    const muteRole = guildRoles.find(role => role.id === muteRoleId)
+    const newMuteRoleId = muteRole ? muteRole.id : guildConfig.modules.autoMod.muteRole
+
+    const newLanguage = localeList().includes(language) ? language : guildConfig.language
+
+    const updatedGuildConfig = await Guilds.config.set(guildId, { language: newLanguage, 'modules.autoMod.muteRole': newMuteRoleId })
+    if(!updatedGuildConfig) return res.sendStatus(404)
+
+    const updatedClientMember = await clientMember.setNickname(nickname)
+
+    return res.send({ clientMember: updatedClientMember, guildConfig: updatedGuildConfig, guildRoles: guildRoles.filter(role => role.name !== '@everyone' && !role.managed) })
+})
+
 router.get('/guilds/:guildId/config', async (req, res) => {
+    const userId = req.user?.discordId
     const { guildId } = req.params;
-    const config = await Guilds.config.get(guildId)
-    return config ? res.send(config) : res.status(404).send("Not found");
+
+    if(!userId) return res.sendStatus(401)
+    if(!guildId) return res.sendStatus(404)
+
+    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    if(!guild) return res.sendStatus(404)
+    const member = await guild.members.fetch(userId).catch(() => {})
+    if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
+
+    const clientMember = guild.me
+    if(!clientMember) return res.sendStatus(404)
+
+    const guildConfig = await Guilds.config.get(guildId)
+    if(!guildConfig) res.sendStatus(404)
+    return res.send({ clientMember, guildConfig })
+});
+
+router.get('/guilds/:guildId/settings', async (req, res) => {
+    const userId = req.user?.discordId
+    const { guildId } = req.params;
+
+    if(!userId) return res.sendStatus(401)
+    if(!guildId) return res.sendStatus(404)
+
+    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    if(!guild) return res.sendStatus(404)
+    const member = await guild.members.fetch(userId).catch(() => {})
+    if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
+
+    const clientMember = guild.me
+    if(!clientMember) return res.sendStatus(404)
+
+    const guildRoles = await guild.roles.fetch().catch(() => {})
+    if(!guildRoles) return res.sendStatus(404)
+
+    const guildConfig = await Guilds.config.get(guildId)
+    if(!guildConfig) res.sendStatus(404)
+    return res.send({ clientMember, guildConfig, guildRoles: guildRoles.filter(role => role.name !== '@everyone' && !role.managed) })
 });
 
 router.get('/guilds/:guildId/roles', async (req, res) => {
+    const userId = req.user?.discordId
     const { guildId } = req.params;
-    try {
-        const roles = await getRolesFromGuild(guildId);
-        res.send(roles);
-    } catch (err) {
-        console.log(err);
-        res.status(500).send("Internal Server Error");
-    }
+    const roles = await getRolesFromGuild(guildId);
+    res.send(roles);
 })
 
 router.put('/guilds/:guildId/embed/send', async (req, res) => {
