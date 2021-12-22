@@ -1,10 +1,7 @@
-import { Snowflake } from 'discord.js'
 import { Document, Schema, model } from 'mongoose'
-export interface UserDocument extends Document {
-    discordId: Snowflake;
-    discordTag: `${string}#${number}`;
-    avatar: string | null;
-}
+import { User } from 'types'
+
+export interface UserDocument extends User, Document {}
 
 const UserSchema = new Schema({
     discordId: {

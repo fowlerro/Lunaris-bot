@@ -4,13 +4,15 @@ import path from 'path'
 import * as pl from './pl.json'
 import * as en from './en.json'
 
-const translations: any = {
+import { Language } from 'types'
+
+const translations = {
     pl, en
 }
 
 const fallbackLanguage = 'en';
 
-export function translate(language: string, message: string, ...vars: any[]) {
+export function translate(language: Language, message: string, ...vars: any[]) {
     let locale = readMessage(language, message);
     if(!locale) {
         const langs = localeList().filter(el => el !== language || el !== fallbackLanguage);
@@ -29,17 +31,17 @@ export function translate(language: string, message: string, ...vars: any[]) {
     return locale;
 }
 
-export function localeList() {
+export function localeList(): Language[] {
     const dirPath = path.resolve(__dirname);
     let files = fs.readdirSync(dirPath);
-    return files.filter(el => path.extname(el) === '.json').map(el => el.slice(0, -5))
+    return files.filter(el => path.extname(el) === '.json').map(el => el.slice(0, -5)) as Language[]
 }
 
-function readMessage(language: string, message: string): string {
+function readMessage(language: Language, message: string): string {
     if(!localeList().includes(language)) language = fallbackLanguage;
     // const filePath = path.join(__dirname, `${language}.json`);
     // const json = JSON.parse(fs.readFileSync(filePath).toString());
     return message.split('.').reduce((prev, curr) => {
         return prev ? prev[curr] : null
-    }, translations[language]);
+    }, translations[language] as any);
 }

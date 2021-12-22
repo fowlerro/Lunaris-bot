@@ -1,27 +1,8 @@
-import { Snowflake } from "discord.js";
 import { Document, model, Schema } from "mongoose";
-import { Language } from "../../utils/languages/types";
 
-interface LevelUpMessage {
-    mode: 'off' | 'currentChannel' | 'specificChannel';
-    channelId?: Snowflake;
-}
-interface GuildModuleXp {
-    levelUpMessage: LevelUpMessage;
-    multiplier: number
-}
-interface GuildModuleAutoMod {
-    muteRole?: Snowflake;
-}
-interface GuildModules {
-    autoMod: GuildModuleAutoMod;
-    xp: GuildModuleXp
-}
-export interface GuildConfigDocument extends Document {
-    guildId: Snowflake;
-    language: Language;
-    modules: GuildModules;
-}
+import { GuildConfig } from 'types'
+
+export interface GuildConfigDocument extends GuildConfig, Document {}
 
 const GuildConfigSchema = new Schema({
     guildId: {

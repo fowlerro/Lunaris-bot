@@ -1,9 +1,10 @@
 import CryptoJS from 'crypto-js'
-import { APIGuild } from 'discord.js/node_modules/discord-api-types'
 
-export function getGuilds(userGuilds: APIGuild[], botGuilds: APIGuild[]) {
+import { Guild, MutualGuilds } from 'types'
+
+export function getGuilds(userGuilds: Guild[], botGuilds: Guild[]): MutualGuilds {
     const validGuilds = userGuilds.filter(guild => (Number(guild.permissions) & 0x20) === 0x20)
-    const included: APIGuild[] = []
+    const included: Guild[] = []
     const excluded = validGuilds.filter(userGuild => {
         const findGuild = botGuilds.find(botGuild => botGuild.id === userGuild.id)
         if(!findGuild) return userGuild

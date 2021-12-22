@@ -1,4 +1,4 @@
-import { Snowflake } from "discord-api-types";
+import { Snowflake } from "discord.js";
 
 import BaseModule from "../../utils/structures/BaseModule";
 import { GuildConfigDocument, GuildConfigModel } from "../../database/schemas/GuildConfig";
