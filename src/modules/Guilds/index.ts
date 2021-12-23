@@ -50,7 +50,7 @@ async function createNewGuildConfigs() {
     console.log({ allGuilds, allConfigs })
     
     allGuilds.forEach(async(guild) => {
-        if(allConfigs.some(g => g.guildId !== guild.id)) await GuildConfigModel.create({ guildId: guild.id })
+        if(allConfigs.some(g => g.guildId !== guild.id)) await GuildConfigModel.create({ guildId: guild.id }) // TODO Remove guild from allGuilds after creating config for it
     })
 }
 
