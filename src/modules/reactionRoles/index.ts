@@ -1,7 +1,9 @@
 import { Message, MessageReaction, User, Snowflake } from "discord.js";
 
 import BaseModule from "../../utils/structures/BaseModule";
-import { ReactionRoleDocument, ReactionRoleModel, Reactions } from "../../database/schemas/ReactionRoles";
+import { ReactionRoleDocument, ReactionRoleModel } from "../../database/schemas/ReactionRoles";
+
+import { Reactions } from 'types'
 
 class ReactionRolesModule extends BaseModule {
     constructor() {
@@ -10,6 +12,7 @@ class ReactionRolesModule extends BaseModule {
 
     async run() {
       console.log(this.getName())
+      await this.fetchMessages()
     }
 
     async fetchMessages() {
@@ -25,7 +28,7 @@ class ReactionRolesModule extends BaseModule {
             await createEmojiCollector(msg, message)
         }
     }
-    async create(guildId: Snowflake, channelId: Snowflake, messageId: Snowflake, reactions: Reactions) {
+    async create(guildId: Snowflake, channelId: Snowflake, messageId: Snowflake, reactions: Reactions[]) {
         const reactRoles = await ReactionRoleModel.create({
             guildId,
             channelId,
@@ -47,18 +50,18 @@ class ReactionRolesModule extends BaseModule {
 async function createEmojiCollector(options: ReactionRoleDocument, message: Message) {
 
     const filter = (reaction: MessageReaction, user: User) => (
-        options.reactions.some(element => reaction.emoji.identifier === element.reaction && !user.bot)
+        options.reactions.some(element => reaction.emoji.name === element.reaction && !user.bot)
     )
     
     options.reactions.forEach(async element => {
-        await message.react(element.reaction);
+        await message.react(`${element.reaction}`)
     });
 
     const emojiCollector = message.createReactionCollector({ filter, dispose: true });
 
     emojiCollector.on('collect', async (r, user) => {
         if(!client.isOnline) return;
-        const reaction = options.reactions.find(react => react.reaction === r.emoji.identifier);
+        const reaction = options.reactions.find(react => react.reaction === r.emoji.name);
         if(!reaction) return
         const roleId = reaction.roleId;
         const member = await r.message.guild?.members.fetch(user.id).catch(() => {})
@@ -69,7 +72,7 @@ async function createEmojiCollector(options: ReactionRoleDocument, message: Mess
 
     emojiCollector.on('remove', async (r, user) => {
         if(!client.isOnline) return;
-        const reaction = options.reactions.find(react => react.reaction === r.emoji.identifier);
+        const reaction = options.reactions.find(react => react.reaction === r.emoji.name);
         if(!reaction) return
         if(reaction.mode === 'verify') return;
         const roleId = reaction.roleId;

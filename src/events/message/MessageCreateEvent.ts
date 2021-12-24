@@ -21,6 +21,7 @@ export default class MessageCreateEvent extends BaseEvent {
 
 
         if(message.content.startsWith('!test')) {
+            console.log(message.content)
         }
         
         if(!client.isOnline) return;

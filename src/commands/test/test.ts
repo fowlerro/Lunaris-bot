@@ -1,4 +1,5 @@
 import { CommandInteraction } from "discord.js";
+import { testGuildId } from "../../bot";
 import { ProfileModel } from "../../database/schemas/Profile";
 
 import BaseCommand from "../../utils/structures/BaseCommand";

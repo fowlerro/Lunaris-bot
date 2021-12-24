@@ -10,7 +10,8 @@ export default class MessageReactionAddEvent extends BaseEvent {
   
   async run(reaction: MessageReaction, user: User) {
     if(!client.isOnline) return;
-    // console.log(reaction.emoji.identifier)
-    // console.log(user);
+    console.log('identifier', reaction.emoji.identifier)
+    console.log('id', reaction.emoji.id)
+    console.log('name', reaction.emoji.name)
   }
 }

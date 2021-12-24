@@ -6,6 +6,9 @@ import Guilds from '../../modules/Guilds';
 import Embeds from '../../modules/Embeds';
 
 import { localeList } from '../../utils/languages/languages'
+import { ReactionRoleModel } from '../../database/schemas/ReactionRoles';
+import { ReactionRoleFormValues } from 'types';
+import reactionRoles from '../../modules/reactionRoles';
 
 const router = express.Router()
 
@@ -19,34 +22,6 @@ router.get('/guilds', async (req, res) => {
         return res.status(401)
     }
 });
-
-// router.get('/guilds/:guildId/config', async (req, res) => {
-//     const userId = req.user?.discordId
-//     const { guildId } = req.params;
-
-//     if(!userId) return res.sendStatus(401)
-//     if(!guildId) return res.sendStatus(404)
-
-//     const guild = await client.guilds.fetch(guildId).catch(() => {})
-//     if(!guild) return res.sendStatus(404)
-//     const member = await guild.members.fetch(userId).catch(() => {})
-//     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
-
-//     const clientMember = guild.me
-//     if(!clientMember) return res.sendStatus(404)
-
-//     const guildConfig = await (await Guilds.config.get(guildId)).toObject()
-//     if(!guildConfig) res.sendStatus(404)
-//     return res.send({ clientMember, guildConfig })
-// });
-
-// router.put('/guilds/:guildId/config', async (req, res) => {
-//     const { config } = req.body;
-//     const { guildId } = req.params;
-//     if(!config) return res.status(400)
-//     const update = await (await Guilds.config.set(guildId, { 'modules.autoMod.muteRole': config.muteRole })).toObject()
-//     return update ? res.send(update) : res.status(400)
-// });
 
 router.get('/guilds/:guildId/settings', async (req, res) => {
     const userId = req.user?.discordId
@@ -68,7 +43,7 @@ router.get('/guilds/:guildId/settings', async (req, res) => {
 
     const guildConfig = await (await Guilds.config.get(guildId)).toObject()
     if(!guildConfig) res.sendStatus(404)
-    return res.send({ clientMember, guildConfig, guildRoles: guildRoles.filter(role => role.name !== '@everyone' && !role.managed) })
+    return res.send({ clientMember, guildConfig, guildRoles: guildRoles.filter(role => role.name !== '@everyone' && !role.managed && role.editable) })
 });
 
 router.put('/guilds/:guildId/settings', async (req, res) => {
@@ -104,7 +79,61 @@ router.put('/guilds/:guildId/settings', async (req, res) => {
 
     const updatedClientMember = await clientMember.setNickname(nickname)
 
-    return res.send({ clientMember: updatedClientMember, guildConfig: updatedGuildConfig, guildRoles: guildRoles.filter(role => role.name !== '@everyone' && !role.managed) })
+    return res.send({ clientMember: updatedClientMember, guildConfig: updatedGuildConfig, guildRoles: guildRoles.filter(role => role.name !== '@everyone' && !role.managed && role.editable) })
+})
+
+
+router.get('/guilds/:guildId/reactionroles', async (req, res) => {
+    const userId = req.user?.discordId
+    const { guildId } = req.params;
+
+    if(!userId) return res.sendStatus(401)
+    if(!guildId) return res.sendStatus(404)
+
+    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    if(!guild) return res.sendStatus(404)
+    const member = await guild.members.fetch(userId).catch(() => {})
+    if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
+
+    const reactionRoles = await ReactionRoleModel.find({ guildId }).lean()
+
+    const guildChannels = await guild.channels.fetch().catch(() => {})
+    if(!guildChannels) return res.sendStatus(404)
+
+    const guildTextChannels = guildChannels.filter(guild => guild.type === 'GUILD_CATEGORY' || guild.type === 'GUILD_TEXT')
+
+    const guildRoles = await guild.roles.fetch().catch(() => {})
+    if(!guildRoles) return res.sendStatus(404)
+
+    const guildManagedRoles = guildRoles.filter(role => role.name !== '@everyone' && !role.managed && role.editable)
+
+    return res.send({ reactionRoles, guildChannels: guildTextChannels, guildRoles: guildManagedRoles })
+})
+
+router.put('/guilds/:guildId/reactionroles', async (req, res) => {
+    const userId = req.user?.discordId
+    const { guildId } = req.params;
+
+    const { channelId, messageType, messageId, reactions, buttons }: ReactionRoleFormValues = req.body
+
+    if(!userId) return res.sendStatus(401)
+    if(!guildId) return res.sendStatus(404)
+
+    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    if(!guild) return res.sendStatus(404)
+    const member = await guild.members.fetch(userId).catch(() => {})
+    if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
+
+    const channel = await guild.channels.fetch(channelId).catch(() => {})
+    if(!channel || !channel.isText()) return res.sendStatus(404)
+
+    const message = messageType === 'lastMessage' ? channel.lastMessage : await channel.messages.fetch(messageId).catch(() => {})
+    if(!message) return res.sendStatus(404)
+
+    await reactionRoles.create(guild.id, channel.id, message.id, reactions)
+    
+
+    return res.sendStatus(200)
 })
 
 router.get('/guilds/:guildId/roles', async (req, res) => {

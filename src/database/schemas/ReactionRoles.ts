@@ -1,18 +1,8 @@
-import { Snowflake } from "discord.js";
 import { Document, model, Schema } from "mongoose";
 
-export interface Reactions {
-    reaction: string,
-    roleId: Snowflake;
-    mode: string;
-}
+import { ReactionRole } from 'types'
 
-export interface ReactionRoleDocument extends Document {
-    guildId: Snowflake;
-    channelId: Snowflake;
-    messageId: Snowflake;
-    reactions: Reactions[];
-}
+export interface ReactionRoleDocument extends Omit<ReactionRole, '_id'>, Document {}
 
 const ReactionRoleSchema = new Schema({
     guildId: {
