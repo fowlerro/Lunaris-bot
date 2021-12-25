@@ -1,13 +1,10 @@
 import { Snowflake } from "discord.js";
 import { Document, model, Schema } from "mongoose";
 
-interface AutoRoleRoles {
-    roleId: Snowflake;
-    time: number;
-}
+import { AutoRoleRole } from 'types'
 export interface AutoRoleDocument extends Document {
     guildId: Snowflake;
-    roles: AutoRoleRoles[]
+    roles: AutoRoleRole[]
 }
 
 const AutoRoleSchema = new Schema({

@@ -1,14 +1,16 @@
 import express from 'express'
 
-import { getBotGuilds, getRolesFromGuild, getUserGuilds } from '../utils/api';
+import { getBotGuilds, getUserGuilds } from '../utils/api';
 import { getGuilds } from '../utils/utils';
 import Guilds from '../../modules/Guilds';
 import Embeds from '../../modules/Embeds';
 
 import { localeList } from '../../utils/languages/languages'
 import { ReactionRoleModel } from '../../database/schemas/ReactionRoles';
-import { ReactionRoleFormValues } from 'types';
 import reactionRoles from '../../modules/reactionRoles';
+import { AutoRoleModel } from '../../database/schemas/AutoRole';
+
+import { ReactionRoleFormValues, AutoRoleRole } from 'types';
 
 const router = express.Router()
 
@@ -136,11 +138,49 @@ router.put('/guilds/:guildId/reactionroles', async (req, res) => {
     return res.sendStatus(200)
 })
 
-router.get('/guilds/:guildId/roles', async (req, res) => {
+
+router.get('/guilds/:guildId/autoroles', async (req, res) => {
     const userId = req.user?.discordId
     const { guildId } = req.params;
-    const roles = await getRolesFromGuild(guildId);
-    res.send(roles);
+
+    if(!userId) return res.sendStatus(401)
+    if(!guildId) return res.sendStatus(404)
+
+    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    if(!guild) return res.sendStatus(404)
+    const member = await guild.members.fetch(userId).catch(() => {})
+    if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
+
+    const guildRoles = await guild.roles.fetch().catch(() => {})
+    if(!guildRoles) return res.sendStatus(404)
+    const guildManagedRoles = guildRoles.filter(role => role.name !== '@everyone' && !role.managed && role.editable)
+
+    const autoRoles = await AutoRoleModel.findOne({ guildId }).lean()
+
+    
+    return res.send({ autoRoles: autoRoles?.roles || [], guildRoles: guildManagedRoles })
+})
+
+router.put('/guilds/:guildId/autoroles', async (req, res) => {
+    const userId = req.user?.discordId
+    const { guildId } = req.params;
+
+    const { roles }: { roles: AutoRoleRole[] } = req.body
+
+    if(!userId) return res.sendStatus(401)
+    if(!guildId) return res.sendStatus(404)
+
+    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    if(!guild) return res.sendStatus(404)
+    const member = await guild.members.fetch(userId).catch(() => {})
+    if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
+
+    const newAutoRoles = await AutoRoleModel.findOneAndUpdate({ guildId }, {
+        roles
+    }, { new: true, upsert: true }).lean()
+    if(!newAutoRoles) return res.sendStatus(500)
+
+    return res.send({ roles: newAutoRoles.roles })
 })
 
 router.put('/guilds/:guildId/embed/send', async (req, res) => {

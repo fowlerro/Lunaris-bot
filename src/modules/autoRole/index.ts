@@ -26,13 +26,13 @@ class AutoRoleModule extends BaseModule {
             if(memberAutoRole) {
                 if(memberAutoRole.roles.find(e => e.roleId === role.roleId)) return;
                 await memberAutoRole.updateOne({
-                    $push: { roles: { roleId: role.roleId, timestamp: Date.now() + ms(role.time) } },
+                    $push: { roles: { roleId: role.roleId, time: Date.now() + role.time } },
                 }).catch(err => console.log(err));
             } else {
                 await AutoRoleTimeModel.create({
                     guildId: member.guild.id,
                     userId: member.id,
-                    roles: [{ roleId: role.roleId, timestamp: Date.now() + ms(role.time) }],
+                    roles: [{ roleId: role.roleId, time: Date.now() + role.time }],
                 }).catch(err => console.log(err));
             }
 
@@ -60,7 +60,7 @@ async function checkAutoRoles() {
         const member = await guild.members.fetch(collection.userId).catch(() => {})
         if(!member) continue
         for (const role of collection.roles) {
-            if(role.timestamp < Date.now()) {
+            if(role.time < Date.now()) {
                 member.roles.remove(role.roleId).catch(() => {});
                 const coll = await AutoRoleTimeModel.findOneAndUpdate({ guildId: collection.guildId, userId: collection.userId }, {
                     $pull: {
@@ -81,7 +81,7 @@ async function checkAutoRoles() {
                     if(coll && !coll.roles.length) {
                         coll.delete().catch(() => {});
                     }
-                }, role.timestamp - Date.now())
+                }, role.time - Date.now())
             }
         }
     }
