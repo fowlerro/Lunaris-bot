@@ -1,7 +1,7 @@
 import { ButtonInteraction, CommandInteraction, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextChannel, Snowflake } from "discord.js"
 
 import BaseModule from "../../utils/structures/BaseModule"
-import { EmbedDocument } from "../../database/schemas/Embed"
+import { Embed, EmbedMessage } from "types"
 
 const EMBED_LIMITS = {
 	title: 256,
@@ -22,18 +22,27 @@ class EmbedsModule extends BaseModule {
 
 	async run() {}
 
-	async send(embedData: EmbedDocument, guildId: Snowflake, channelId: Snowflake) {
+	async send(messageContent: string, embed: Embed, guildId: Snowflake, channelId: Snowflake) {
 		const guild = await client.guilds.fetch(guildId).catch(e => {})
 		if(!guild) return { error: "Guild not found" }
 		const channel = await guild.channels.fetch(channelId).catch(e => {})
 		if(!channel) return { error: "Channel not found" }
 
-		const e = new MessageEmbed(embedData.embed)
+		const e = new MessageEmbed(embed)
 
 		const { pages, error } = this.checkLimits(e, true)
-		if(error) return
+		if(error) return { error }
 
-		return this.pageEmbeds(embedData.messageContent, pages, guildId, channelId, 1, true)
+		return this.pageEmbeds(messageContent, pages, guildId, channelId, 1, true)
+	}
+	async edit(message: Message, messageContent: string, embed: Embed) {
+		if(!message) return
+
+		const e = new MessageEmbed(embed)
+		const { pages, error } = this.checkLimits(e, false)
+		if(error) return { error }
+		return message.edit({ content: messageContent, embeds: [pages[0]] }).catch(() => {})
+
 	}
 	checkLimits(embed: MessageEmbed, pageEmbed = true, maxFields = 25): { error: string | null, pages: MessageEmbed[] } {
 		checkTitle(embed)
@@ -55,7 +64,7 @@ class EmbedsModule extends BaseModule {
 		const channel = await (guild.channels.fetch(channelId) as Promise<TextChannel>).catch(e => {})
 		if(!channel) return
 
-		if(embeds.length === 1) return channel.send({ content: messageContent, embeds: [embeds[0]] })
+		if(embeds.length === 1) return channel.send({ content: messageContent, embeds: [embeds[0]] }).catch(() => {})
 
 		const components = []
 		selectMenu && components.push(addSelectMenu(embeds, defaultPage))

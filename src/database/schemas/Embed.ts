@@ -1,18 +1,9 @@
-import { MessageEmbed, Snowflake } from "discord.js";
 import { Document, model, Schema } from "mongoose";
 import { palette } from "../../utils/utils";
 
-interface Embed extends MessageEmbed {
-    displayTimestamp: boolean;
-}
-export interface EmbedDocument extends Document {
-    name?: string;
-    guildId: Snowflake;
-    channelId?: Snowflake;
-    messageId?: Snowflake;
-    messageContent?: string;
-    embed: Embed
-}
+import { EmbedMessage } from 'types'
+
+export interface EmbedDocument extends Omit<EmbedMessage, '_id'>, Document {}
 
 const EmbedSchema = new Schema({
     name: {

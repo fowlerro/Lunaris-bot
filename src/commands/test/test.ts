@@ -1,4 +1,4 @@
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, MessageEmbed } from "discord.js";
 import { testGuildId } from "../../bot";
 import { ProfileModel } from "../../database/schemas/Profile";
 
@@ -20,6 +20,9 @@ export default class TestCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
+
+        const embed = new MessageEmbed()
+            .setImage('https://cdn.discordapp.com/avatars/313346190995619841/4164c45f723be7ae03e665181ec7ef33.webp', )
 
 
         interaction.reply({
