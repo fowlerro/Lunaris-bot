@@ -34,7 +34,7 @@ export default class LanguageCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
-        if(!interaction.guildId) return
+        if(!interaction.guildId || !interaction.member) return
         if(!('id' in interaction.member)) return
         if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) return
         

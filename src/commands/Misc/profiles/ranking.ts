@@ -71,7 +71,7 @@ export default class LanguageCommand extends BaseCommand {
 
         const embed = new MessageEmbed()
         .setColor(palette.primary)
-        .setFooter(translate(language, 'cmd.ranking.lastUpdate'))
+        .setFooter({ text: translate(language, 'cmd.ranking.lastUpdate') })
         .setTimestamp(Profiles.lastSave);
 
         sortType === 'coins' ? embed.addField(translate(language, 'cmd.ranking.coins'), formattedData.coins.join('\n'), true) :

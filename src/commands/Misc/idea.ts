@@ -28,6 +28,7 @@ export default class IdeaCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
+        if(!interaction.guildId) return
         const { language } = await Guilds.config.get(interaction.guildId)
         const description = interaction.options.getString('description', true)
         if(!description) return

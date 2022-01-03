@@ -102,7 +102,7 @@ export default class BanCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
-        if(!interaction.guild) return
+        if(!interaction.guildId || !interaction.member) return
         if(!('id' in interaction.member)) return
         if(!interaction.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return
         const subcommand = interaction.options.getSubcommand(true)

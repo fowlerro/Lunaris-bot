@@ -20,7 +20,8 @@ export default class PurgeCommand extends BaseCommand {
                     description: 'How many messages should be deleted',
                     type: 'INTEGER',
                     required: true,
-                    // TODO minValue: 1, maxValue: 100
+                    minValue: 1,
+                    maxValue: 100
                 },
                 {
                     name: 'user',
@@ -38,6 +39,7 @@ export default class PurgeCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
+        if(!interaction.member) return
         if(!('id' in interaction.member)) return
         if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return
         let count = interaction.options.getInteger('count')!
@@ -48,7 +50,6 @@ export default class PurgeCommand extends BaseCommand {
         if(count < 1) count = 1
 
         const { language } = await Guilds.config.get(interaction.guildId!)
-        // if(!(channel instanceof TextChannel)) return interaction.reply({ content: translate(language, 'cmd.purge.wrongChannel'), ephemeral: true })
 
         let fetched = await channel.messages.fetch({ limit: user ? 100 : count }, { cache: false });
         if(user) {

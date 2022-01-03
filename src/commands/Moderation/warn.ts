@@ -84,6 +84,7 @@ export default class WarnCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
+        if(!interaction.guildId || !interaction.member) return
         if(!('id' in interaction.member)) return
         if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return
 
@@ -198,7 +199,7 @@ export default class WarnCommand extends BaseCommand {
             
             const embed = new MessageEmbed()
                 .setColor(result.error ? palette.error : palette.info)
-                .setAuthor(embedAuthor, interaction.guild?.iconURL() || undefined)
+                .setAuthor({ name: embedAuthor, iconURL: interaction.guild?.iconURL() || undefined })
                 .setTimestamp();
 
             result.error && embed.setDescription(result.error)
@@ -216,7 +217,7 @@ export default class WarnCommand extends BaseCommand {
     }
 
     async autocomplete(interaction: AutocompleteInteraction) {
-        if(!interaction.guild) return
+        if(!interaction.guildId || !interaction.guild) return
         const memberId = interaction.options.get('member', true).value as string
         const member = await interaction.guild.members.fetch(memberId).catch(() => {})
 

@@ -34,7 +34,7 @@ export default class HelpCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
-
+        if(!interaction.guildId) return
         const { language } = await Guilds.config.get(interaction.guildId)
 
         const command = interaction.options.getString('command')
@@ -47,7 +47,7 @@ export default class HelpCommand extends BaseCommand {
                 .setColor(palette.info)
                 .setTitle(translate(language, 'cmd.help.cmdTitle', `'${cmd.name}'`))
                 .setDescription(cmd.description[language]);
-            (!cmd.status || !cmd.globalStatus) && embed.setFooter(translate(language, 'cmd.globalStatus'));
+            (!cmd.status || !cmd.globalStatus) && embed.setFooter({ text: translate(language, 'cmd.globalStatus') });
             embed.setTimestamp();
 
             return interaction.reply({
@@ -98,7 +98,7 @@ export default class HelpCommand extends BaseCommand {
             const embed = new MessageEmbed()
                 .setColor(palette.info)
                 .setTitle(capitalize(category))
-                .setFooter(translate(language, 'cmd.help.footer'))
+                .setFooter({ text: translate(language, 'cmd.help.footer') })
                 .setTimestamp()
             category !== 'Help' && embed.setDescription(commands)
             fields.length && embed.addFields(fields)
@@ -109,7 +109,7 @@ export default class HelpCommand extends BaseCommand {
         const moduleEmbed = new MessageEmbed()
             .setColor(palette.info)
             .setTitle(translate(language, 'help.module.title'))
-            .setFooter(translate(language, 'cmd.help.footer'))
+            .setFooter({ text: translate(language, 'cmd.help.footer') })
             .setTimestamp()
             .addField(translate(language, 'help.module.autoRole.name'), translate(language, 'help.module.autoRole.value'))
             .addField(translate(language, 'help.module.reactionRoles.name'), translate(language, 'help.module.reactionRoles.value'))

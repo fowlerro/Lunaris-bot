@@ -79,7 +79,7 @@ export default class MuteCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
-        if(!interaction.guild) return
+        if(!interaction.guild || !interaction.guildId || !interaction.member) return
         if(!('id' in interaction.member)) return
         if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return
         const subcommand = interaction.options.getSubcommand(true) as 'give' | 'remove' | 'list'
@@ -181,7 +181,7 @@ export default class MuteCommand extends BaseCommand {
 
             const embed = new MessageEmbed()
                 .setColor(palette.info)
-                .setAuthor(translate(language, 'autoMod.mute.muteList'), interaction.guild.iconURL() || undefined)
+                .setAuthor({ name: translate(language, 'autoMod.mute.muteList'), iconURL: interaction.guild.iconURL() || undefined })
                 .setTimestamp();
 
             mutes.error ? embed.setDescription(mutes.error) : embed.addFields(formattedMutes);

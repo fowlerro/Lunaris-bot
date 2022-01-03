@@ -1,7 +1,7 @@
 import { ButtonInteraction, CommandInteraction, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextChannel, Snowflake } from "discord.js"
 
 import BaseModule from "../../utils/structures/BaseModule"
-import { Embed, EmbedMessage } from "types"
+import { Embed } from "types"
 
 const EMBED_LIMITS = {
 	title: 256,
@@ -28,7 +28,7 @@ class EmbedsModule extends BaseModule {
 		const channel = await guild.channels.fetch(channelId).catch(e => {})
 		if(!channel) return { error: "Channel not found" }
 
-		const e = new MessageEmbed(embed)
+		const e = new MessageEmbed(embed as unknown as MessageEmbed)
 
 		const { pages, error } = this.checkLimits(e, true)
 		if(error) return { error }
@@ -38,7 +38,7 @@ class EmbedsModule extends BaseModule {
 	async edit(message: Message, messageContent: string, embed: Embed) {
 		if(!message) return
 
-		const e = new MessageEmbed(embed)
+		const e = new MessageEmbed(embed as unknown as MessageEmbed)
 		const { pages, error } = this.checkLimits(e, false)
 		if(error) return { error }
 		return message.edit({ content: messageContent, embeds: [pages[0]] }).catch(() => {})
@@ -71,7 +71,6 @@ class EmbedsModule extends BaseModule {
 		buttons && components.push(addButtons(embeds, defaultPage))
 		
 		const message = await channel.send({ content: messageContent, embeds: [embeds[defaultPage] || embeds[0]], components })
-		// message.currentPage = defaultPage
 		createCollectors(message, embeds)
 
 		return message
@@ -105,7 +104,7 @@ function checkTitle(embed: MessageEmbed) {
 
 function checkAuthor(embed: MessageEmbed) {
 	if (embed.author?.name && embed.author.name.length > EMBED_LIMITS.author)
-		embed.setAuthor(embed.author.name.slice(0, EMBED_LIMITS.author - 3) + '...', embed.author.iconURL, embed.author.url)
+		embed.setAuthor({ name: embed.author.name.slice(0, EMBED_LIMITS.author - 3) + '...', iconURL: embed.author.iconURL, url: embed.author.url })
 }
 
 function checkDescription(embed: MessageEmbed) {
@@ -115,7 +114,7 @@ function checkDescription(embed: MessageEmbed) {
 
 function checkFooter(embed: MessageEmbed) {
 	if (embed.footer?.text && embed.footer.text.length > EMBED_LIMITS.footer)
-		embed.setFooter(embed.footer.text.slice(0, EMBED_LIMITS.footer - 3) + '...', embed.footer.iconURL)
+		embed.setFooter({ text: embed.footer.text.slice(0, EMBED_LIMITS.footer - 3) + '...', iconURL: embed.footer.iconURL })
 }
 
 function checkFields(embed: MessageEmbed, maxFields: number) {
@@ -169,25 +168,25 @@ function addButtons(pages: MessageEmbed[], defaultPage: number) {
 
 	const firstPageButton = new MessageButton()
 	    .setStyle('PRIMARY')
-	    .setEmoji("⏮️")
+	    .setEmoji("⏮")
 	    .setCustomId('firstPage')
 		.setDisabled(defaultPage === 1)
 
 	const previousPageButton = new MessageButton()
 		.setStyle('PRIMARY')
-		.setEmoji('◀️')
+		.setEmoji('◀')
 		.setCustomId('previousPage')
 		.setDisabled(defaultPage === 1)
 
 	const nextPageButton = new MessageButton()
 		.setStyle('PRIMARY')
-		.setEmoji('▶️')
+		.setEmoji('▶')
 		.setCustomId('nextPage')
 		.setDisabled(defaultPage === pages.length-1)
 
 	const lastPageButton = new MessageButton()
 	    .setStyle('PRIMARY')
-	    .setEmoji("⏭️")
+	    .setEmoji("⏭")
 	    .setCustomId('lastPage')
 		.setDisabled(defaultPage === pages.length-1)
 
