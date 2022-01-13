@@ -28,7 +28,7 @@ const EmbedSchema = new Schema({
             url: String,
             iconURL: String
         },
-        color: {
+        hexColor: {
             type: String,
             default: palette.info
         },

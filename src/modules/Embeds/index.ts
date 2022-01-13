@@ -28,6 +28,8 @@ class EmbedsModule extends BaseModule {
 		const channel = await guild.channels.fetch(channelId).catch(e => {})
 		if(!channel) return { error: "Channel not found" }
 
+		if(embed.hexColor) embed.color = parseInt(embed.hexColor.substring(1), 16)
+
 		const e = new MessageEmbed(embed as unknown as MessageEmbed)
 
 		const { pages, error } = this.checkLimits(e, true)
@@ -60,11 +62,12 @@ class EmbedsModule extends BaseModule {
 	}
 	async pageEmbeds(messageContent: string | undefined, embeds: MessageEmbed[], guildId: Snowflake, channelId: Snowflake, defaultPage = 1, buttons = true, selectMenu = false) {
 		const guild = await client.guilds.fetch(guildId).catch(e => {})
-		if(!guild) return
+		if(!guild) return { error: "Guild not found" }
 		const channel = await (guild.channels.fetch(channelId) as Promise<TextChannel>).catch(e => {})
-		if(!channel) return
+		if(!channel) return { error: "Channel not found" }
 
-		if(embeds.length === 1) return channel.send({ content: messageContent, embeds: [embeds[0]] }).catch(() => {})
+		console.log(embeds)
+		if(embeds.length === 1) return channel.send({ content: messageContent || null, embeds: [embeds[0]] }).catch((e) => { console.log(e) })
 
 		const components = []
 		selectMenu && components.push(addSelectMenu(embeds, defaultPage))
