@@ -17,7 +17,7 @@ export async function getBotGuilds(): Promise<Guild[]> {
             Authorization: `Bot ${process.env.DISCORD_CLIENT_TOKEN}`
         }
     });
-    return response.json();
+    return response.json() as Promise<Guild[]>
 };
 
 export async function getUserGuilds(discordId: Snowflake): Promise<Guild[]> {
@@ -32,7 +32,7 @@ export async function getUserGuilds(discordId: Snowflake): Promise<Guild[]> {
             Authorization: `Bearer ${accessToken}`
         }
     });
-    return response.json();
+    return response.json() as Promise<Guild[]>
 }
 
 export async function getRolesFromGuild(guildId: Snowflake): Promise<APIRole[]> {
@@ -41,8 +41,8 @@ export async function getRolesFromGuild(guildId: Snowflake): Promise<APIRole[]> 
         headers: {
             Authorization: `Bot ${process.env.DISCORD_CLIENT_TOKEN}`
         }
-    });
-    return response.json();
+    }) 
+    return response.json() as Promise<APIRole[]>
 };
 
 export async function getChannelsFromGuild(guildId: Snowflake): Promise<APIChannel[]> {
@@ -52,5 +52,5 @@ export async function getChannelsFromGuild(guildId: Snowflake): Promise<APIChann
             Authorization: `Bot ${process.env.DISCORD_CLIENT_TOKEN}`
         }
     });
-    return response.json()
+    return response.json() as Promise<APIChannel[]>
 };

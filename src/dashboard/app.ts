@@ -1,29 +1,23 @@
 import './strategies/discord'
 import express from 'express'
 import session from 'express-session'
-// import { graphqlHTTP } from 'express-graphql'
 import cors from 'cors'
 import mongoose from 'mongoose'
-import connectMongo from 'connect-mongo'
+import MongoStore from 'connect-mongo'
 import passport from 'passport'
 
 import routes from './routes'
-// import schema from './graphql'
 import { UserDocument } from '../database/schemas/User'
 
 declare global {
     namespace Express {
-        interface User extends UserDocument {
-            
-        }
+        interface User extends UserDocument {}
     }
 }
 
 
 const app = express();
 const PORT = process.env.PORT || 3002;
-const Store = connectMongo(session)
-
 
 export default async () => {
     app.use(express.json());
@@ -41,16 +35,14 @@ export default async () => {
         },
         resave: false,
         saveUninitialized: false,
-        store: new Store({ mongooseConnection: mongoose.connection }),
+        store: MongoStore.create({
+            // @ts-ignore
+            client: mongoose.connection.getClient()
+        })
     }))
 
     app.use(passport.initialize());
     app.use(passport.session());
-
-    // app.use('/graphql', graphqlHTTP({
-    //     graphiql: true,
-    //     schema
-    // }))
 
     app.use('/api', routes);
 
