@@ -260,7 +260,6 @@ router.put('/guilds/:guildId/embeds/send', async (req, res) => {
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
     const message = await Embeds.send(messageContent, embed, guildId, channelId)
-    console.log(message)
     if(!message || 'error' in message) return res.sendStatus(500)
 
     await EmbedModel.findOneAndUpdate({ _id, guildId }, {
