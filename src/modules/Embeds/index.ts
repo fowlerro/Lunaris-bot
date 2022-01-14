@@ -40,10 +40,11 @@ class EmbedsModule extends BaseModule {
 	async edit(message: Message, messageContent: string, embed: Embed) {
 		if(!message) return
 
+		if(embed.hexColor) embed.color = parseInt(embed.hexColor.substring(1), 16)
 		const e = new MessageEmbed(embed as unknown as MessageEmbed)
 		const { pages, error } = this.checkLimits(e, false)
 		if(error) return { error }
-		return message.edit({ content: messageContent, embeds: [pages[0]] }).catch(() => {})
+		return message.edit({ content: messageContent || null, embeds: [pages[0]] }).catch(() => {})
 
 	}
 	checkLimits(embed: MessageEmbed, pageEmbed = true, maxFields = 25): { error: string | null, pages: MessageEmbed[] } {
@@ -73,7 +74,7 @@ class EmbedsModule extends BaseModule {
 		selectMenu && components.push(addSelectMenu(embeds, defaultPage))
 		buttons && components.push(addButtons(embeds, defaultPage))
 		
-		const message = await channel.send({ content: messageContent, embeds: [embeds[defaultPage] || embeds[0]], components })
+		const message = await channel.send({ content: messageContent || null, embeds: [embeds[defaultPage] || embeds[0]], components })
 		createCollectors(message, embeds)
 
 		return message

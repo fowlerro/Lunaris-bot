@@ -223,7 +223,7 @@ router.put('/guilds/:guildId/embeds/save', async (req, res) => {
 
     const updated = _id ? await EmbedModel.findOneAndUpdate({ _id, guildId }, {
         name, messageId, channelId, messageContent, embed
-    }, { upsert: true }) : await EmbedModel.create({
+    }) : await EmbedModel.create({
         guildId,
         channelId,
         messageId,
@@ -241,7 +241,7 @@ router.put('/guilds/:guildId/embeds/save', async (req, res) => {
         if(message) await Embeds.edit(message, messageContent, embed)
     }
 
-    return res.sendStatus(204)
+    return res.send({ _id: updated._id, messageId: updated.messageId })
 })
 
 router.put('/guilds/:guildId/embeds/send', async (req, res) => {
@@ -268,7 +268,9 @@ router.put('/guilds/:guildId/embeds/send', async (req, res) => {
         })
         : await EmbedModel.create({ guildId, name, messageId: message.id, channelId, messageContent, embed })
 
-    return res.sendStatus(204)
+    if(!document) return res.sendStatus(500)
+
+    return res.send({ _id: document._id, messageId: document.messageId })
 })
 
 router.delete('/guilds/:guildId/embeds/:embedId', async (req, res) => {
