@@ -262,9 +262,11 @@ router.put('/guilds/:guildId/embeds/send', async (req, res) => {
     const message = await Embeds.send(messageContent, embed, guildId, channelId)
     if(!message || 'error' in message) return res.sendStatus(500)
 
-    await EmbedModel.findOneAndUpdate({ _id, guildId }, {
-        name, messageId: message.id, channelId, messageContent, embed
-    }, { upsert: true })
+    const document = _id ? 
+        await EmbedModel.findOneAndUpdate({ _id, guildId }, {
+            name, messageId: message.id, channelId, messageContent, embed
+        })
+        : await EmbedModel.create({ guildId, name, messageId: message.id, channelId, messageContent, embed })
 
     return res.sendStatus(204)
 })
