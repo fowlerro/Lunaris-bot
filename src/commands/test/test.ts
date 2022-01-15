@@ -1,6 +1,5 @@
-import { CommandInteraction, MessageEmbed } from "discord.js";
-import { testGuildId } from "../../bot";
-import { ProfileModel } from "../../database/schemas/Profile";
+import { CommandInteraction } from "discord.js";
+import TextFormatter from "../../utils/Formatter";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 
@@ -21,9 +20,13 @@ export default class TestCommand extends BaseCommand {
 
     async run(interaction: CommandInteraction) {
 
-        const embed = new MessageEmbed()
-            .setImage('https://cdn.discordapp.com/avatars/313346190995619841/4164c45f723be7ae03e665181ec7ef33.webp', )
+        const variables = {
+            member: interaction.member
+        }
 
+        const formatted = TextFormatter("Welcome {{username}} to {{nickname}} {{serverName}} the server {{{memberId}}} and {{{nickname}}", variables)
+        
+        console.log(formatted)
 
         interaction.reply({
             content: 'ok',
