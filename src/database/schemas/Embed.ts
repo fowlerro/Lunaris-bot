@@ -50,10 +50,6 @@ const EmbedSchema = new Schema({
         timestamp: {
             type: Number
         },
-        displayTimestamp: {
-            type: Boolean,
-            default: true
-        },
         title: String,
         url: String,
         fields: [{
