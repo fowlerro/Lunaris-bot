@@ -122,6 +122,12 @@
         },
         "idea": {
             "submitted": "An idea has been submitted"
+        },
+        "welcome": {
+            "add": "New Welcome Message has been added!",
+            "error": "Something went wrong :/",
+
+            "listEmpty": "List is empty\nAdd Welcome Message with `/welcome add`"
         }
     },
     "logs": {

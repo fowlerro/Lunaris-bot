@@ -121,6 +121,12 @@
         },
         "idea": {
             "submitted": "Pomysł został przesłany!"
+        },
+        "welcome": {
+            "add": "Nowa wiadomość powitalna została pomyślnie dodana!",
+            "error": "Coś poszło nie tak :/",
+
+            "listEmpty": "Lista jest pusta\nDodaj powitalną wiadomość za pomocą `/welcome add`"
         }
     },
     "logs": {

@@ -24,4 +24,4 @@ const WelcomeMessageSchema = new Schema({
     }]
 })
 
-export const AutoRoleModel = model<WelcomeMessageDocument>('WelcomeMessage', WelcomeMessageSchema);
+export const WelcomeMessageModel = model<WelcomeMessageDocument>('WelcomeMessage', WelcomeMessageSchema);
