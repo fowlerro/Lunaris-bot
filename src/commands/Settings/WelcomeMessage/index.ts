@@ -1,9 +1,12 @@
-import { CommandInteraction, Permissions } from "discord.js";
+import { AutocompleteInteraction, CommandInteraction, Permissions } from "discord.js";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
 
 import add from "./add";
+import _delete, { deleteAutocomplete } from "./delete";
 import list from "./list";
+import set from "./set";
+import status from "./status";
 
 export default class WelcomeMessageCommand extends BaseCommand {
     constructor() {
@@ -29,6 +32,46 @@ export default class WelcomeMessageCommand extends BaseCommand {
                     ]
                 },
                 {
+                    name: 'delete',
+                    description: "Delete welcome message",
+                    type: 'SUB_COMMAND',
+                    options: [
+                        {
+                            name: 'message',
+                            description: "Welcome Message to delete",
+                            type: 'STRING',
+                            required: true,
+                            autocomplete: true,
+                        }
+                    ]
+                },
+                {
+                    name: 'set',
+                    description: "Set channel to which Welcome Messages will be sended",
+                    type: 'SUB_COMMAND',
+                    options: [
+                        {
+                            name: 'channel',
+                            description: "Channel",
+                            type: 'CHANNEL',
+                            required: true,
+                            channelTypes: ['GUILD_TEXT']
+                        }
+                    ]
+                },
+                {
+                    name: 'status',
+                    description: "Display module status and enable/disable it",
+                    type: 'SUB_COMMAND',
+                    options: [
+                        {
+                            name: 'enable',
+                            description: "Enable/disable the module",
+                            type: 'BOOLEAN'
+                        }
+                    ]
+                },
+                {
                     name: 'list',
                     description: "List all added welcome messages",
                     type: 'SUB_COMMAND',
@@ -46,6 +89,13 @@ export default class WelcomeMessageCommand extends BaseCommand {
         const subCommand = interaction.options.getSubcommand(true)
         
         if(subCommand === 'add') return add(interaction)
+        if(subCommand === 'delete') return _delete(interaction)
+        if(subCommand === 'set') return set(interaction)
+        if(subCommand === 'status') return status(interaction)
         if(subCommand === 'list') return list(interaction)
+    }
+
+    async autocomplete(interaction: AutocompleteInteraction) {
+       return deleteAutocomplete(interaction) 
     }
 }

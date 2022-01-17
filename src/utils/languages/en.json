@@ -125,7 +125,23 @@
         },
         "welcome": {
             "add": "New Welcome Message has been added!",
+            "delete": "Welcome Message has been deleted!",
+            "set": "Channel for Welcome Messages has been set",
             "error": "Something went wrong :/",
+
+            "status": {
+                "alreadyEnabled": "Module is already enabled!",
+                "alreadyDisabled": "Module is already disabled!",
+
+                "enabled": "Module has been successfully enabled!",
+                "disabled": "Module has been successfully disabled!"
+
+            },
+
+            "info": {
+                "title": "Welcome Messages",
+                "list": "List of Welcome Messages"
+            },
 
             "listEmpty": "List is empty\nAdd Welcome Message with `/welcome add`"
         }

@@ -2,9 +2,11 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 
 import Guilds from "../../../modules/Guilds";
 import WelcomeMessage from "../../../modules/WelcomeMessage";
+
 import { translate } from "../../../utils/languages/languages";
-import { Language } from "types";
 import { palette } from "../../../utils/utils";
+
+import { Language } from "types";
 
 export default async (interaction: CommandInteraction) => {
     const { language } = await Guilds.config.get(interaction.guildId!)

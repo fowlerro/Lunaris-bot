@@ -15,6 +15,12 @@ class WelcomeMessageModule extends BaseModule {
         
     }
 
+    async get(guildId: Snowflake) {
+        if(!guildId) return
+        const config = await WelcomeMessageModel.findOne({ guildId }, {}, { upsert: true }).catch(e => { console.log(e) })
+        return config
+    }
+
     async add(guildId: Snowflake, format: string) {
         if(!guildId) return
         const config = await WelcomeMessageModel.findOneAndUpdate({ guildId }, {
@@ -24,13 +30,14 @@ class WelcomeMessageModule extends BaseModule {
         return config
     }
 
-    async delete(guildId: Snowflake, formatIndex: number) {
+    async delete(guildId: Snowflake, format: string) {
         if(!guildId) return
-        const config = await WelcomeMessageModel.findOne({ guildId }).catch(() => {})
-        if(!config) return
-        config.format.splice(formatIndex, 1)
-        const result = await config.save().catch(() => {})
-        return result
+        const config = await WelcomeMessageModel.findOneAndUpdate({ guildId, format }, {
+            $pull: {
+                format
+            }
+        }, { new: true }).catch(() => {})
+        return config
     }
 
     async set(guildId: Snowflake, textChannelId: Snowflake) {
