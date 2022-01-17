@@ -2,9 +2,9 @@
 import { GuildMember } from "discord.js";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
-import Guilds from "../../modules/Guilds";
 import autoRole from "../../modules/autoRole";
 import Mod from "../../modules/Mod";
+import WelcomeMessage from "../../modules/WelcomeMessage";
 
 export default class GuildMemberAddEvent extends BaseEvent {
   constructor() {
@@ -13,8 +13,8 @@ export default class GuildMemberAddEvent extends BaseEvent {
   
   async run(member: GuildMember) {
     if(!client.isOnline) return;
-    // memberJoinedLog(client, member);
-    
+  
+    WelcomeMessage.sendJoinMessage(member)
     autoRole.give(member)
     Mod.mute.reassignRole(member.guild.id, member.id)
   }

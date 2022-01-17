@@ -1,6 +1,7 @@
-import { Snowflake } from "discord.js";
+import { GuildMember, Snowflake } from "discord.js";
 import BaseModule from "../../utils/structures/BaseModule";
 import { WelcomeMessageModel } from "../../database/schemas/WelcomeMessage";
+import TextFormatter from "../../utils/Formatter";
 
 class WelcomeMessageModule extends BaseModule {
     constructor() {
@@ -11,8 +12,21 @@ class WelcomeMessageModule extends BaseModule {
             
     }
 
-    async message() {
-        
+    async sendJoinMessage(member: GuildMember) {
+        const { guild } = member
+
+        const welcomeConfig = await this.get(guild.id)
+        if(!welcomeConfig) return
+        const { status, channelId, format } = welcomeConfig
+        if(!status || !channelId || !format.length) return
+
+        const channel = await guild.channels.fetch(channelId).catch(() => {})
+        if(!channel || !channel.isText()) return
+
+        const welcomeMessage = format[Math.floor(Math.random()*format.length)]
+        const formattedWelcomeMessage = TextFormatter(welcomeMessage, { member, guild })
+
+        return channel.send({ content: formattedWelcomeMessage }).catch(() => {})
     }
 
     async get(guildId: Snowflake) {

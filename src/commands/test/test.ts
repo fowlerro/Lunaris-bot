@@ -1,5 +1,5 @@
 import { CommandInteraction } from "discord.js";
-import TextFormatter from "../../utils/Formatter";
+import WelcomeMessage from "../../modules/WelcomeMessage";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 
@@ -19,14 +19,9 @@ export default class TestCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
+        if(!interaction.member || !('guild' in interaction.member)) return
 
-        const variables = {
-            member: interaction.member
-        }
-
-        const formatted = TextFormatter("Welcome {{username}} to {{nickname}} {{serverName}} the server {{{memberId}}} and {{{nickname}}", variables)
-        
-        console.log(formatted)
+        await WelcomeMessage.sendJoinMessage(interaction.member)
 
         interaction.reply({
             content: 'ok',
