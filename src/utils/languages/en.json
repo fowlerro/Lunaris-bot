@@ -127,6 +127,7 @@
             "add": "New Welcome Message has been added!",
             "delete": "Welcome Message has been deleted!",
             "set": "Channel for Welcome Messages has been set",
+            "disabled": "Welcome Message action has been disabled",
             "error": "Something went wrong :/",
 
             "status": {
@@ -140,7 +141,12 @@
 
             "info": {
                 "title": "Welcome Messages",
-                "list": "List of Welcome Messages"
+                "joinChannel": "Join Messages",
+                "leaveChannel": "Leave Messages"
+            },
+            "list": {
+                "join": "List of join messages",
+                "leave": "List of leave messages"
             },
 
             "listEmpty": "List is empty\nAdd Welcome Message with `/welcome add`"

@@ -10,17 +10,27 @@ const WelcomeMessageSchema = new Schema({
         required: true,
         unique: true
     },
-    channelId: {
-        type: String,
-        default: null
+    channels: {
+        join: {
+            type: String,
+            default: null
+        },
+        leave: {
+            type: String,
+            default: null
+        }
     },
     status: {
         type: Boolean,
         default: false
     },
-    format: [{
-        type: String,
-        default: []
+    formats: [{
+        message: String,
+        action: {
+            type: String,
+            enum: ['join', 'leave'],
+            default: 'join'
+        }
     }]
 })
 

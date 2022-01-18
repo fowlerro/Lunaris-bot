@@ -126,6 +126,7 @@
             "add": "Nowa wiadomość powitalna została pomyślnie dodana!",
             "delete": "Wiadomość powitalna została pomyślnie usunięta!",
             "set": "Kanał dla wiadomości powitalnych został pomyślnie ustawiony!",
+            "disabled": "Akcja wiadomości powitalnych została wyłączona",
             "error": "Coś poszło nie tak :/",
 
             "status": {
@@ -139,7 +140,12 @@
 
             "info": {
                 "title": "Wiadomości Powitalne",
-                "list": "Lista wiadomości powitalnych"
+                "joinChannel": "Wiadomości dołączenia",
+                "leaveChannel": "Wiadomości odejścia"
+            },
+            "list": {
+                "join": "Lista wiadomości dołączenia",
+                "leave": "Lista wiadomości odejścia"
             },
 
             "listEmpty": "Lista jest pusta\nDodaj powitalną wiadomość za pomocą `/welcome add`"

@@ -14,7 +14,7 @@ export default class GuildMemberAddEvent extends BaseEvent {
   async run(member: GuildMember) {
     if(!client.isOnline) return;
   
-    WelcomeMessage.sendJoinMessage(member)
+    WelcomeMessage.sendMessage(member, 'join')
     autoRole.give(member)
     Mod.mute.reassignRole(member.guild.id, member.id)
   }

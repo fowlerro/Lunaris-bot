@@ -3,6 +3,8 @@ import WelcomeMessage from "../../modules/WelcomeMessage";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 
+import { WelcomeMessageAction } from "types";
+
 export default class TestCommand extends BaseCommand {
     constructor() {
         super(
@@ -12,7 +14,13 @@ export default class TestCommand extends BaseCommand {
                 en: 'Testing command',
                 pl: 'Komenda testowa'
             },
-            [],
+            [
+                {
+                    name: 'action',
+                    description: 'action',
+                    type: 'STRING'
+                }
+            ],
             true,
             true
         );
@@ -21,7 +29,9 @@ export default class TestCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.member || !('guild' in interaction.member)) return
 
-        await WelcomeMessage.sendJoinMessage(interaction.member)
+        const action = interaction.options.getString('action') as WelcomeMessageAction
+
+        await WelcomeMessage.sendMessage(interaction.member, action || 'join')
 
         interaction.reply({
             content: 'ok',

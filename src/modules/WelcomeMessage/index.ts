@@ -1,74 +1,94 @@
 import { GuildMember, Snowflake } from "discord.js";
+
 import BaseModule from "../../utils/structures/BaseModule";
+
 import { WelcomeMessageModel } from "../../database/schemas/WelcomeMessage";
 import TextFormatter from "../../utils/Formatter";
 
+import { GroupedWelcomeMessageFormats, WelcomeMessageAction, WelcomeMessageFormat } from "types";
+
 class WelcomeMessageModule extends BaseModule {
     constructor() {
-       super('Welcome Message', true)
-    } 
+        super('Welcome Message', true)
+    }
+    
+    supportedActions = ['join', 'leave']
 
     async run() {
             
     }
 
-    async sendJoinMessage(member: GuildMember) {
+    async sendMessage(member: GuildMember, action: WelcomeMessageAction) {
         const { guild } = member
 
         const welcomeConfig = await this.get(guild.id)
         if(!welcomeConfig) return
-        const { status, channelId, format } = welcomeConfig
-        if(!status || !channelId || !format.length) return
+        const { status, channels, formats} = welcomeConfig
+        if(!status || !channels[action]) return
 
-        const channel = await guild.channels.fetch(channelId).catch(() => {})
+        const actionFormats = formats.filter(format => format.action === action)
+        if(!actionFormats.length) return
+
+        const channel = await guild.channels.fetch(channels[action]).catch(() => {})
         if(!channel || !channel.isText()) return
 
-        const welcomeMessage = format[Math.floor(Math.random()*format.length)]
-        const formattedWelcomeMessage = TextFormatter(welcomeMessage, { member, guild })
+        const welcomeMessage = actionFormats[Math.floor(Math.random() * actionFormats.length)]
+        const formattedWelcomeMessage = TextFormatter(welcomeMessage.message, { member, guild })
 
         return channel.send({ content: formattedWelcomeMessage }).catch(() => {})
     }
 
     async get(guildId: Snowflake) {
         if(!guildId) return
-        const config = await WelcomeMessageModel.findOne({ guildId }, {}, { upsert: true }).catch(e => { console.log(e) })
+        let config = await WelcomeMessageModel.findOne({ guildId }).catch(() => {})
+        if(!config) config = await WelcomeMessageModel.create({ guildId }).catch(() => {})
         return config
     }
 
-    async add(guildId: Snowflake, format: string) {
+    async add(guildId: Snowflake, format: WelcomeMessageFormat) {
         if(!guildId) return
         const config = await WelcomeMessageModel.findOneAndUpdate({ guildId }, {
-            $push: { format }
+            $push: { formats: format }
         }, { upsert: true, new: true }).catch(() => {})
 
         return config
     }
 
-    async delete(guildId: Snowflake, format: string) {
+    async delete(guildId: Snowflake, format: WelcomeMessageFormat) {
         if(!guildId) return
-        const config = await WelcomeMessageModel.findOneAndUpdate({ guildId, format }, {
+        console.log({ format })
+        const config = await WelcomeMessageModel.findOneAndUpdate({ guildId, 'formats.message': format.message, 'formats.action': format.action }, {
             $pull: {
-                format
+                formats: {
+                    message: format.message,
+                    action: format.action
+                }
             }
         }, { new: true }).catch(() => {})
         return config
     }
 
-    async set(guildId: Snowflake, textChannelId: Snowflake) {
+    async set(guildId: Snowflake, action: WelcomeMessageAction, textChannelId?: Snowflake) {
         if(!guildId) return
+        const channel = `channels.${action}`
         const config = await WelcomeMessageModel.findOneAndUpdate({ guildId }, {
-            channelId: textChannelId
+            [channel]: textChannelId || null
         }, { upsert: true, new: true }).catch(() => {})
 
         return config
     }
 
-    async list(guildId: Snowflake) {
+    async list(guildId: Snowflake, action?: WelcomeMessageAction | null): Promise<WelcomeMessageFormat[] | GroupedWelcomeMessageFormats | undefined> {
         if(!guildId) return
         const config = await WelcomeMessageModel.findOne({ guildId }).catch(() => {})
-        if(!config) return []
+        if(!config) return action ? [] as WelcomeMessageFormat[] : {} as GroupedWelcomeMessageFormats
+        if(action) return config.formats.filter(format => format.action === action)
 
-        return config.format
+        return config.formats.reduce((prev, curr) => {
+            if(!prev[curr.action]) prev[curr.action] = []
+            prev[curr.action].push(curr)
+            return prev
+        }, {} as GroupedWelcomeMessageFormats)
     }
 }
 

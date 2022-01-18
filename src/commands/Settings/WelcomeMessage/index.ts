@@ -1,6 +1,10 @@
-import { AutocompleteInteraction, CommandInteraction, Permissions } from "discord.js";
+import { AutocompleteInteraction, CommandInteraction, MessageEmbed, Permissions } from "discord.js";
+import { Language } from "types";
+import WelcomeMessage from "../../../modules/WelcomeMessage";
+import { translate } from "../../../utils/languages/languages";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
+import { capitalize, palette } from "../../../utils/utils";
 
 import add from "./add";
 import _delete, { deleteAutocomplete } from "./delete";
@@ -24,6 +28,13 @@ export default class WelcomeMessageCommand extends BaseCommand {
                     type: 'SUB_COMMAND',
                     options: [
                         {
+                            name: 'action',
+                            description: 'When the message will be sent',
+                            type: 'STRING',
+                            choices: WelcomeMessage.supportedActions.map(action => ({ name: capitalize(action), value: action })),
+                            required: true
+                        },
+                        {
                             name: 'format',
                             description: 'Message format (Available formats are listed in module help page `/help welcome`)',
                             type: 'STRING',
@@ -37,6 +48,13 @@ export default class WelcomeMessageCommand extends BaseCommand {
                     type: 'SUB_COMMAND',
                     options: [
                         {
+                            name: 'action',
+                            description: "Action of message to delete",
+                            type: 'STRING',
+                            choices: WelcomeMessage.supportedActions.map(action => ({ name: capitalize(action), value: action })),
+                            required: true
+                        },
+                        {
                             name: 'message',
                             description: "Welcome Message to delete",
                             type: 'STRING',
@@ -47,16 +65,22 @@ export default class WelcomeMessageCommand extends BaseCommand {
                 },
                 {
                     name: 'set',
-                    description: "Set channel to which Welcome Messages will be sended",
+                    description: "Set channel for Welcome Messages",
                     type: 'SUB_COMMAND',
                     options: [
+                        {
+                            name: 'action',
+                            description: 'Messages for whose channel will be set (Not choosing a channel will disable this action)',
+                            type: 'STRING',
+                            choices: WelcomeMessage.supportedActions.map(action => ({ name: capitalize(action), value: action })),
+                            required: true
+                        },
                         {
                             name: 'channel',
                             description: "Channel",
                             type: 'CHANNEL',
-                            required: true,
                             channelTypes: ['GUILD_TEXT']
-                        }
+                        },
                     ]
                 },
                 {
@@ -75,6 +99,14 @@ export default class WelcomeMessageCommand extends BaseCommand {
                     name: 'list',
                     description: "List all added welcome messages",
                     type: 'SUB_COMMAND',
+                    options: [
+                        {
+                            name: 'action',
+                            description: "List of added messages with specified action",
+                            type: 'STRING',
+                            choices: WelcomeMessage.supportedActions.map(action => ({ name: capitalize(action), value: action })),
+                        }
+                    ]
                 }
             ],
             true, true
@@ -98,4 +130,15 @@ export default class WelcomeMessageCommand extends BaseCommand {
     async autocomplete(interaction: AutocompleteInteraction) {
        return deleteAutocomplete(interaction) 
     }
+}
+
+export function handleError(interaction: CommandInteraction, language: Language) {
+    const embed = new MessageEmbed()
+        .setColor(palette.error)
+        .setDescription(translate(language, 'cmd.welcome.error'));
+
+    return interaction.reply({
+        embeds: [embed],
+        ephemeral: true
+    })
 }
