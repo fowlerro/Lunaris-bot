@@ -106,7 +106,8 @@ export default function TextFormatter(format: string, variables: IVariables) {
         const valueName = value.substring(2, value.length-2)
         const supportedVariable = supportedFormatters.find(format => format.name === valueName)!
         const variable = supportedVariable.path.split('.').reduce((a, prop) => a[prop], variables)
-        format = format.replace(value, (typeof variable === 'string' || typeof variable === 'number') ? variable : value)
+        format = format.replace(value, (typeof variable === 'string' || typeof variable === 'number') ? variable
+            : (variable instanceof Date ? variable.toUTCString() : value))
     })
 
     return format

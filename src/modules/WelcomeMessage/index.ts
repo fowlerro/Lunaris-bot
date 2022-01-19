@@ -56,7 +56,6 @@ class WelcomeMessageModule extends BaseModule {
 
     async delete(guildId: Snowflake, format: WelcomeMessageFormat) {
         if(!guildId) return
-        console.log({ format })
         const config = await WelcomeMessageModel.findOneAndUpdate({ guildId, 'formats.message': format.message, 'formats.action': format.action }, {
             $pull: {
                 formats: {
