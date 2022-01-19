@@ -109,7 +109,6 @@ export default class WelcomeMessageCommand extends BaseCommand {
                     ]
                 }
             ],
-            true, true
         );
     }
 
