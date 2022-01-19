@@ -1,0 +1,22 @@
+name: Jest
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: webfactory/ssh-agent@v0.4.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v2.5.1
+        with:
+          node-version: "16"
+
+      # Install required deps for action
+      - name: Install Dependencies
+        run: npm install
+
+      # Finally, run our tests
+      - name: Run the tests
+        run: npm ci

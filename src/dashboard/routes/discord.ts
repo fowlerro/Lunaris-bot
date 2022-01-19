@@ -14,7 +14,11 @@ import { ReactionRoleFormValues, AutoRoleRole, Embed } from 'types';
 import { EmbedModel } from '../../database/schemas/Embed';
 import { Snowflake } from 'discord.js';
 
+import moduleRoutes from './modules'
+
 const router = express.Router()
+
+router.use('/guilds/:guildId', moduleRoutes)
 
 router.get('/guilds', async (req, res) => {
     if(req.user) {
@@ -289,5 +293,7 @@ router.delete('/guilds/:guildId/embeds/:embedId', async (req, res) => {
 
     return res.sendStatus(204)
 })
+
+
 
 export default router

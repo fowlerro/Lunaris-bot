@@ -115,6 +115,7 @@ export default class HelpCommand extends BaseCommand {
             .addField(translate(language, 'help.module.reactionRoles.name'), translate(language, 'help.module.reactionRoles.value'))
             .addField(translate(language, 'help.module.xpSystem.name'), translate(language, 'help.module.xpSystem.value'))
             .addField(translate(language, 'help.module.embedMessages.name'), translate(language, 'help.module.embedMessages.value'))
+            .addField(translate(language, 'help.module.welcomeMessages.name'), translate(language, 'help.module.welcomeMessages.value'))
 
         embeds.splice(1, 0, moduleEmbed)
 

@@ -1,4 +1,9 @@
 module.exports = {
+    preset: 'ts-jest',
     testEnvironment: 'node',
-    preset: '@shelf/jest-mongodb'
+    globals: {
+        'ts-jest': {
+            isolatedModules: true
+        }
+    }
 }

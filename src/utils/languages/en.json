@@ -37,10 +37,10 @@
     "help": {
         "help": {
             "updateTitle": "Updates",
-            "updateList": "• Slash commands\n • Emojis manager (/emoji) - You can now add emoji from URL!",
+            "updateList": "• Welcome Messages! More info on modules page!",
 
             "comingSoonTitle": "Coming soon",
-            "comingSoonList": "• Website dashboard (In progress, but idk when I finish it xD)\n • Level rewards - Automatically given roles to users who reach specified level",
+            "comingSoonList": "• Website dashboard (In progress, but idk when I finish it xD)\n • Level rewards - Automatically given roles to users who reach specified level\n • Statistic channels - Display various stats within a name of a channel",
 
             "statTitle": "Bot stats",
             "statList": "Commands: %VAR%\n Servers: %VAR%/75\n Profiles: %VAR%"
@@ -62,6 +62,10 @@
             "embedMessages": {
                 "name": "Embed Messages",
                 "value": "You can create custom embed messages\n Its hard to make with commands to work, so will be only available on web dashboard"
+            },
+            "welcomeMessages": {
+                "name": "Welcome Messages",
+                "value": "Automated messages that are sent when a user joins/leaves a server!\nYou can use many variables such as `username` or `serverName` to make your own custom and dynamic messages\nUse `/welcome add <action> <format>` to add Welcome Message\nYou can choose one of 2 actions: **join** - triggers when user join a server, or **leave** - triggers when user leave a server\nExample format: `Welcome {{username}} to server {{serverName}}!`, variables inside `{{ }}` are replaces with data related to your server and user who join/leave\nFor full list of available formats check `/format list` (Inside messages use can also use emojis as well as mentions (@user, #channel)"
             }
         }
     },
@@ -122,6 +126,34 @@
         },
         "idea": {
             "submitted": "An idea has been submitted"
+        },
+        "welcome": {
+            "add": "New Welcome Message has been added!",
+            "delete": "Welcome Message has been deleted!",
+            "set": "Channel for Welcome Messages has been set",
+            "disabled": "Welcome Message action has been disabled",
+            "error": "Something went wrong :/",
+
+            "status": {
+                "alreadyEnabled": "Module is already enabled!",
+                "alreadyDisabled": "Module is already disabled!",
+
+                "enabled": "Module has been successfully enabled!",
+                "disabled": "Module has been successfully disabled!"
+
+            },
+
+            "info": {
+                "title": "Welcome Messages",
+                "joinChannel": "Join Messages",
+                "leaveChannel": "Leave Messages"
+            },
+            "list": {
+                "join": "List of join messages",
+                "leave": "List of leave messages"
+            },
+
+            "listEmpty": "List is empty\nAdd Welcome Message with `/welcome add`"
         }
     },
     "logs": {
