@@ -10,6 +10,10 @@ const WelcomeMessageSchema = new Schema({
         required: true,
         unique: true
     },
+    status: {
+        type: Boolean,
+        default: false
+    },
     channels: {
         join: {
             type: String,
@@ -19,10 +23,6 @@ const WelcomeMessageSchema = new Schema({
             type: String,
             default: null
         }
-    },
-    status: {
-        type: Boolean,
-        default: false
     },
     formats: [{
         message: String,
