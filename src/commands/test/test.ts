@@ -29,12 +29,8 @@ export default class TestCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.member || !('guild' in interaction.member)) return
 
-        const action = interaction.options.getString('action') as WelcomeMessageAction
-
-        await WelcomeMessage.sendMessage(interaction.member, action || 'join')
-
         interaction.reply({
-            content: 'ok',
+            content: t('general.d', interaction.guild?.preferredLocale, { number: '2' }),
             ephemeral: true
         })
     }
