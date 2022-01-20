@@ -1,17 +1,14 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 
-import Guilds from "../../../modules/Guilds";
 import Embeds from "../../../modules/Embeds";
 import WelcomeMessage from "../../../modules/WelcomeMessage";
-
 import { handleError } from "./index";
-import { translate } from "../../../utils/languages/languages";
 import { palette } from "../../../utils/utils";
 
 import { GroupedWelcomeMessageFormats, Language, WelcomeMessageAction, WelcomeMessageFormat } from "types";
 
 export default async (interaction: CommandInteraction) => {
-    const { language } = await Guilds.config.get(interaction.guildId!)
+    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
 
     const action = interaction.options.getString('action') as WelcomeMessageAction | null
     if(action) return selectedAction(interaction, language, action)
@@ -24,8 +21,8 @@ export default async (interaction: CommandInteraction) => {
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
-        .addField(translate(language, 'cmd.welcome.list.join'), formattedList.join)
-        .addField(translate(language, 'cmd.welcome.list.leave'), formattedList.leave)
+        .addField(t('command.welcome.list.join', language), formattedList.join)
+        .addField(t('command.welcome.list.leave', language), formattedList.leave)
 
     return interaction.reply({
         embeds: [embed]
@@ -40,7 +37,7 @@ async function selectedAction(interaction: CommandInteraction, language: Languag
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
-        .addField(translate(language, `cmd.welcome.list.${action}`), formattedList)
+        .addField(t(`command.welcome.list.${action}`, language), formattedList)
 
     const checkedEmbed = await Embeds.checkLimits(embed, false)
     if(checkedEmbed.error || !checkedEmbed.pages[0]) return handleError(interaction, language)
@@ -53,13 +50,13 @@ async function selectedAction(interaction: CommandInteraction, language: Languag
 
 export function formatWelcomeMessageList(list: WelcomeMessageFormat[] | GroupedWelcomeMessageFormats, language: Language) {
     if(Array.isArray(list)) {
-        if(!list.length) return translate(language, "cmd.welcome.listEmpty")
+        if(!list.length) return t("command.welcome.listEmpty", language)
     
         return list.reduce((prev, curr, index) => prev + `${index+1}. ${curr.message}\n`, "")
     }
 
     return {
-        join: list.join?.length ? list.join.reduce((prev, curr, index) => prev + `${index+1}. ${curr.message}\n`, "") : translate(language, 'cmd.welcome.listEmpty'),
-        leave: list.leave?.length ? list.leave.reduce((prev, curr, index) => prev + `${index+1}. ${curr.message}\n`, "") : translate(language, 'cmd.welcome.listEmpty'),
+        join: list.join?.length ? list.join.reduce((prev, curr, index) => prev + `${index+1}. ${curr.message}\n`, "") : t('command.welcome.listEmpty', language),
+        leave: list.leave?.length ? list.leave.reduce((prev, curr, index) => prev + `${index+1}. ${curr.message}\n`, "") : t('command.welcome.listEmpty', language),
     }
 }

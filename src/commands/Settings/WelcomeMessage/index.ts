@@ -1,9 +1,7 @@
 import { AutocompleteInteraction, CommandInteraction, MessageEmbed, Permissions } from "discord.js";
-import { Language } from "types";
-import WelcomeMessage from "../../../modules/WelcomeMessage";
-import { translate } from "../../../utils/languages/languages";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
+import WelcomeMessage from "../../../modules/WelcomeMessage";
 import { capitalize, palette } from "../../../utils/utils";
 
 import add from "./add";
@@ -11,6 +9,8 @@ import _delete, { deleteAutocomplete } from "./delete";
 import list from "./list";
 import set from "./set";
 import status from "./status";
+
+import { Language } from "types";
 
 export default class WelcomeMessageCommand extends BaseCommand {
     constructor() {
@@ -134,7 +134,7 @@ export default class WelcomeMessageCommand extends BaseCommand {
 export function handleError(interaction: CommandInteraction, language: Language) {
     const embed = new MessageEmbed()
         .setColor(palette.error)
-        .setDescription(translate(language, 'cmd.welcome.error'));
+        .setDescription(t('command.welcome.error', language));
 
     return interaction.reply({
         embeds: [embed],

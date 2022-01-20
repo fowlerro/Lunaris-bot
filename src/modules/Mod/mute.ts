@@ -1,9 +1,7 @@
-import { Guild, Permissions, Role } from "discord.js";
-import { Snowflake } from "discord-api-types";
+import { Guild, Permissions, Role, Snowflake } from "discord.js";
 
 import Guilds from "../Guilds";
 import { GuildProfileModel } from "../../database/schemas/GuildProfile";
-import { translate } from "../../utils/languages/languages";
 
 // TODO: Remove mute if someone take role from a member
 export const Mute = {
@@ -88,9 +86,6 @@ export const Mute = {
 
         if(!guild.me?.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return { error: 'missingPermission', perms: Permissions.FLAGS.MANAGE_ROLES }
 
-        const guildConfig = await Guilds.config.get(guildId);
-        const language = guildConfig.language
-
 
         const muteRole = await Mute.getRole(guild)
 
@@ -116,9 +111,11 @@ export const Mute = {
         return { results: guildMutes }
     },
     list: async (guildId: Snowflake) => {
-        const { language } = await Guilds.config.get(guildId);
+        const guild = await client.guilds.fetch(guildId).catch(() => {})
+        if(!guild) return { error: t('autoMod.mute.error', 'en') }
+        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
         const guildMembers = await GuildProfileModel.find({ guildId, 'mute.isMuted': true }).select(['-warns', '-_id', '-guildId', '-__v']);
-        if(!guildMembers.length) return { error: translate(language, 'general.none') };
+        if(!guildMembers.length) return { error: t('general.none', language) };
         return { mutedMembers: guildMembers, error: null };
     },
     reassignRole: async (guildId: Snowflake, userId: Snowflake) => {

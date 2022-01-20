@@ -43,7 +43,7 @@
             "comingSoonList": "• Strona z panelem (Pracuję nad tym, ale nie wiem kiedy skończę xD)",
 
             "statTitle": "Statystyki bota",
-            "statList": "Komendy: %VAR%\n Serwery: %VAR%/75\n Profile: %VAR%"
+            "statList": "Komendy: {{commandCount}}\n Serwery: {{guildCount}}/75\n Profile: {{profileCount}}"
         },
         "module": {
             "title": "Moduły",
@@ -69,7 +69,7 @@
             }
         }
     },
-    "cmd": {
+    "command": {
         "globalStatus": "Komenda jest chwilowo wyłączona",
         "prefixMessage": "Prefix dla tego serwera to: %VAR%",
         "languageListMessage": "Wspierane języki",
@@ -81,8 +81,8 @@
         "wrongId": "Niepoprawne id",
         "help": {
             "title": "Pomoc",
+            "cmdTitle": "Informacje o {{commandName}}",
             "footer": "Aby zobaczyć więcej informacji na temat komendy, wpisz /help <cmd>",
-            "cmdTitle": "Informacje o %VAR%",
             "selectMenuPlaceholder": "Wybierz kategorię"
         },
         "ranking": {
@@ -92,31 +92,31 @@
             "lastUpdate": "Ostatni zapis"
         },
         "userInfo": {
-            "title": "Informacje o %VAR%",
+            "title": "Informacje o {{memberTag}}",
             "createdAt": "Data utworzenia",
             "joinedAt": "Data dołączenia"
         },
         "purge": {
             "wrongChannel": "Musisz podać kanał tekstowy",
             "success": {
-                "default": "Pomyślnie wyczyszczono %VAR% wiadomości",
-                "user": "Pomyślnie wyczyszczono %VAR% wiadomości użytkownika <@%VAR%>",
-                "channel": "Pomyślnie wyczyszczono %VAR% wiadomości w <#%VAR>",
-                "user-channel": "Pomyślnie wyczyszczono %VAR% wiadomości użytkownika <@%VAR%> w <#%VAR%>"
+                "default": "Pomyślnie wyczyszczono {{deletedCount}} wiadomości",
+                "user": "Pomyślnie wyczyszczono {{deletedCount}} wiadomości użytkownika <@{{userId}}>",
+                "channel": "Pomyślnie wyczyszczono {{deletedCount}} wiadomości w <#{{channelId}}>",
+                "user-channel": "Pomyślnie wyczyszczono {{deletedCount}} wiadomości użytkownika <@{{userId}}> w <#{{channelId}}>"
             }
         },
         "emoji": {
-            "add": "Emotka **%VAR%** została pomyślnie dodana",
-            "delete": "Emotka **%VAR%** została pomyślnie usunięta",
+            "add": "Emotka **{{emojiName}}** została pomyślnie dodana",
+            "delete": "Emotka **{{emojiName}}** została pomyślnie usunięta",
             "error": "Coś poszło nie tak, sprawdź czy link jest poprawny",
             "notDeletable": "Nie mogę usunąć tej emotki"
         },
         "warn": {
-            "add": "%VAR% został ostrzeżony przez %VAR% %VAR%",
-            "remove": "%VAR% zdjął ostrzeżenie z użytkownika %VAR%",
-            "removeMemberAll": "%VAR% zdjął wszystkie ostrzeżenia z użytkownika %VAR%",
-            "removeAll": "%VAR% zdjął wszystkie ostrzeżenia na serwerze",
-            "list": "Lista ostrzeżeń użytkownika %VAR%",
+            "add": "{{member}} został ostrzeżony przez {{executor}} {{reason}}",
+            "remove": "{{executor}} zdjął ostrzeżenie z użytkownika {{member}}",
+            "removeMemberAll": "{{executor}} zdjął wszystkie ostrzeżenia z użytkownika {{member}}",
+            "removeAll": "{{executor}} zdjął wszystkie ostrzeżenia na serwerze",
+            "list": "Lista ostrzeżeń użytkownika {{userTag}}",
             "guildList": "Lista ostrzeżeń na serwerze",
             "error": "Wystąpił problem z usunięciem ostrzeżenia",
             "notFound": "Nie znaleziono ostrzeżenia!",
@@ -250,22 +250,23 @@
             "wordsListTitle": "Lista blokowanych słów"
         },
         "mute": {
-            "addMute": "%VAR% został wyciszony przez %VAR% %VAR%",
-            "removeMute": "%VAR% został odciszony przez %VAR%",
+            "addMute": "{{member}} został wyciszony przez {{executor}} {{reason}}",
+            "removeMute": "{{member}} został odciszony przez {{executor}}",
             "removeMuteAll": "Wszyscy użytkownicy zostali odciszeni",
             "removeAllMutesReason": "Odciszono wszystkich użytkowników",
-            "notMuted": "%VAR% nie jest wyciszony",
-            "muteList": "Lista mute'ów na serwerze"
+            "notMuted": "{{member}} nie jest wyciszony",
+            "muteList": "Lista mute'ów na serwerze",
+            "error": "Coś poszło nie tak :/ Spróbuj ponownie!"
         },
         "ban": {
-            "add": "%VAR% został zbanowany przez %VAR% %VAR%",
-            "remove": "%VAR% został odbanowany przez %VAR% %VAR%",
-            "notBanned": "%VAR% nie jest zbanowany",
+            "add": "{{member}} został zbanowany przez {{executor}} {{reason}}",
+            "remove": "{{member}} został odbanowany przez {{executor}} {{reason}}",
+            "notBanned": "{{member}} nie jest zbanowany",
             "notFound": "Nie znaleziono użytkownika"
         }
     },
     "xp": {
-        "levelUpMessage": "Właśnie zdobyłeś **%VAR% lvl** %VAR%!"
+        "levelUpMessage": "Właśnie zdobyłeś **{{level}} lvl** {{user}}!"
     },
     "dashboard": {
         "embeds": {

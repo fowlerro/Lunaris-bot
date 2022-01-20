@@ -1,6 +1,4 @@
-import { ApplicationCommandOption, CommandInteraction, MessageEmbed, Permissions, TextChannel } from "discord.js";
-import Guilds from "../../modules/Guilds";
-import { translate } from "../../utils/languages/languages";
+import { CommandInteraction, MessageEmbed, Permissions, TextChannel } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 import { palette } from "../../utils/utils";
@@ -49,7 +47,7 @@ export default class PurgeCommand extends BaseCommand {
         if(count > 100) count = 100
         if(count < 1) count = 1
 
-        const { language } = await Guilds.config.get(interaction.guildId!)
+        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
 
         let fetched = await channel.messages.fetch({ limit: user ? 100 : count }, { cache: false });
         if(user) {
@@ -65,7 +63,7 @@ export default class PurgeCommand extends BaseCommand {
 
         const embed = new MessageEmbed()
             .setColor(palette.success)
-            .setDescription(`✅ ${translate(language, `cmd.purge.success.${descriptionType}`, deletedMessages.size || 1, user?.id, channel.id)}`)
+            .setDescription(`✅ ${t(`command.purge.success.${descriptionType}`, language, { deletedCount: deletedMessages.size.toString() || "1", userId: user?.id || "", channelId: channel.id })}`)
 
         interaction.reply({
             embeds: [embed]

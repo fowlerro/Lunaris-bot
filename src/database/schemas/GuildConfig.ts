@@ -10,10 +10,6 @@ const GuildConfigSchema = new Schema({
         required: true,
         unique: true
     },
-    language: {
-        type: String,
-        default: 'en'
-    },
     modules: {
         autoMod: {
             muteRole: {

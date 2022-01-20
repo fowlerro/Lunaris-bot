@@ -1,11 +1,9 @@
 import { AutocompleteInteraction, CommandInteraction, Formatters, MessageEmbed, Permissions } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
-import { GuildProfileWarn } from "../../database/schemas/GuildProfile";
 import Embeds from "../../modules/Embeds";
-import Guilds from "../../modules/Guilds";
 import Mod from "../../modules/Mod";
-import { translate } from "../../utils/languages/languages";
+import { GuildProfileWarn } from "../../database/schemas/GuildProfile";
 import { palette } from "../../utils/utils";
 
 export default class WarnCommand extends BaseCommand {
@@ -89,7 +87,7 @@ export default class WarnCommand extends BaseCommand {
         if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return
 
         const subcommand = interaction.options.getSubcommand(true)
-        const { language } = await Guilds.config.get(interaction.guildId);
+        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
 
         if(subcommand === 'give') {
             const member = interaction.options.getMember('member', true)
@@ -101,7 +99,7 @@ export default class WarnCommand extends BaseCommand {
 
             const embed = new MessageEmbed()
                 .setColor(palette.error)
-                .setDescription(translate(language, 'cmd.warn.add', `<@${member.id}>`, `<@${interaction.user.id}>`, reason ? `| ${reason}` : ""));
+                .setDescription(t('command.warn.add', language, { member: `<@${member.id}>`, executor: `<@${interaction.user.id}>`, reason: reason ? `| ${reason}` : "" }));
             
             return interaction.reply({
                 embeds: [embed]
@@ -116,11 +114,11 @@ export default class WarnCommand extends BaseCommand {
             const warn = await Mod.warn.remove(interaction.guildId, warnId, interaction.user.id, member.id)
             
             const description = warn.error === 'warnNotFound' ?
-                translate(language, 'cmd.warn.notFound')
-                : warn.error === 'targetNotFound' ? translate(language, 'cmd.warn.targetNotFound')
-                : warn.action === 'all' ? translate(language, 'cmd.warn.removeAll', Formatters.memberNicknameMention(interaction.user.id))
-                : warn.action === 'targetAll' ? translate(language, 'cmd.warn.removeMemberAll', Formatters.memberNicknameMention(interaction.user.id), Formatters.memberNicknameMention(member.id))
-                : translate(language, 'cmd.warn.remove', Formatters.memberNicknameMention(interaction.user.id), Formatters.memberNicknameMention(member.id))
+                t('command.warn.notFound', language)
+                : warn.error === 'targetNotFound' ? t('command.warn.targetNotFound', language)
+                : warn.action === 'all' ? t('command.warn.removeAll', language,  { executor: Formatters.memberNicknameMention(interaction.user.id) })
+                : warn.action === 'targetAll' ? t('command.warn.removeMemberAll', language, { executor: Formatters.memberNicknameMention(interaction.user.id), member: Formatters.memberNicknameMention(member.id) })
+                : t('command.warn.remove', language, { executor: Formatters.memberNicknameMention(interaction.user.id), member: Formatters.memberNicknameMention(member.id) })
 
             const embed = new MessageEmbed()
                 .setColor(warn.error ? palette.error : palette.success)
@@ -137,7 +135,7 @@ export default class WarnCommand extends BaseCommand {
 
             const embed = new MessageEmbed()
                 .setColor(palette.success)
-                .setDescription(translate(language, 'cmd.warn.removeAll', Formatters.memberNicknameMention(interaction.user.id)))
+                .setDescription(t('command.warn.removeAll', language, { executor: Formatters.memberNicknameMention(interaction.user.id) }))
 
             return interaction.reply({
                 embeds: [embed]
@@ -171,8 +169,8 @@ export default class WarnCommand extends BaseCommand {
                         return {
                             name: `Nick: ${userNick}`,
                             value: `**Mod**: ${executor}
-                                    **${translate(language, 'general.reason')}**: ${warn.reason}
-                                    **${translate(language, 'general.date')}**: ${date}`,
+                                    **${t('general.reason', language)}**: ${warn.reason}
+                                    **${t('general.date', language)}**: ${date}`,
                             inline: true
                         }
                     }));
@@ -188,14 +186,14 @@ export default class WarnCommand extends BaseCommand {
     
                     return {
                         name: `Mod: ${executor}`,
-                        value: `**${translate(language, 'general.reason')}**: ${profile.reason}
-                                **${translate(language, 'general.date')}**: ${date}`,
+                        value: `**${t('general.reason', language)}**: ${profile.reason}
+                                **${t('general.date', language)}**: ${date}`,
                         inline: true
                     }
                 }))).flat();
             }
 
-            const embedAuthor = user ? translate(language, 'cmd.warn.list', user.tag) : translate(language, 'cmd.warn.guildList');
+            const embedAuthor = user ? t('command.warn.list', language, { userTag: user.tag }) : t('command.warn.guildList', language);
             
             const embed = new MessageEmbed()
                 .setColor(result.error ? palette.error : palette.info)
@@ -221,7 +219,7 @@ export default class WarnCommand extends BaseCommand {
         const memberId = interaction.options.get('member', true).value as string
         const member = await interaction.guild.members.fetch(memberId).catch(() => {})
 
-        const { language } = await Guilds.config.get(interaction.guildId)
+        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
 
         const input = interaction.options.getString('warn', true)
         if(!member || !('id' in member)) return
@@ -234,7 +232,7 @@ export default class WarnCommand extends BaseCommand {
             value: warn._id
         }))
 
-        options.unshift({ name: translate(language, 'cmd.warn.optionAll'), value: 'targetAll' })
+        options.unshift({ name: t('command.warn.optionAll', language), value: 'targetAll' })
 
         return interaction.respond(options.splice(0, 25))
     }

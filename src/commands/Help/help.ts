@@ -1,10 +1,8 @@
 import { AutocompleteInteraction, CommandInteraction, EmbedFieldData, Formatters, MessageActionRow, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, SelectMenuInteraction } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
-import Guilds from "../../modules/Guilds";
-import { translate } from "../../utils/languages/languages";
-import { assignNestedObjects, capitalize, getCommandCategories, palette } from "../../utils/utils";
 import { ProfileModel } from "../../database/schemas/Profile";
+import { assignNestedObjects, capitalize, getCommandCategories, palette } from "../../utils/utils";
 
 export default class HelpCommand extends BaseCommand {
     
@@ -35,7 +33,7 @@ export default class HelpCommand extends BaseCommand {
 
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId) return
-        const { language } = await Guilds.config.get(interaction.guildId)
+        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
 
         const command = interaction.options.getString('command')
 
@@ -45,9 +43,9 @@ export default class HelpCommand extends BaseCommand {
             
             const embed = new MessageEmbed()
                 .setColor(palette.info)
-                .setTitle(translate(language, 'cmd.help.cmdTitle', `'${cmd.name}'`))
+                .setTitle(t('command.help.cmdTitle', language, { commandName: `'${cmd.name}'` }))
                 .setDescription(cmd.description[language]);
-            (!cmd.status || !cmd.globalStatus) && embed.setFooter({ text: translate(language, 'cmd.globalStatus') });
+            (!cmd.status || !cmd.globalStatus) && embed.setFooter({ text: t('command.globalStatus', language) });
             embed.setTimestamp();
 
             return interaction.reply({
@@ -67,21 +65,21 @@ export default class HelpCommand extends BaseCommand {
         for await(const category of Object.keys(categories)) {
             const fields: EmbedFieldData[] = [];
             if(category === 'Help') {
-                const commandCount = client.application?.commands.cache.size
-                const guildCount = (await client.guilds.fetch()).size
-                const profileCount = await ProfileModel.countDocuments()
+                const commandCount = client.application?.commands.cache.size.toString() || "0"
+                const guildCount = (await client.guilds.fetch()).size.toString()
+                const profileCount = await (await ProfileModel.countDocuments()).toString()
                 
                 fields.push({
-                    name: translate(language, 'help.help.updateTitle'),
-                    value: translate(language, 'help.help.updateList')
+                    name: t('help.help.updateTitle', language),
+                    value: t('help.help.updateList', language)
                 })
                 fields.push({
-                    name: translate(language, 'help.help.comingSoonTitle'),
-                    value: translate(language, 'help.help.comingSoonList')
+                    name: t('help.help.comingSoonTitle', language),
+                    value: t('help.help.comingSoonList', language)
                 })
                 fields.push({
-                    name: translate(language, 'help.help.statTitle'),
-                    value: translate(language, 'help.help.statList', commandCount, guildCount, profileCount)
+                    name: t('help.help.statTitle', language),
+                    value: t('help.help.statList', language, { commandCount, guildCount, profileCount })
                 })
             }
             const subcategories = Object.keys(categories[category]);
@@ -98,7 +96,7 @@ export default class HelpCommand extends BaseCommand {
             const embed = new MessageEmbed()
                 .setColor(palette.info)
                 .setTitle(capitalize(category))
-                .setFooter({ text: translate(language, 'cmd.help.footer') })
+                .setFooter({ text: t('command.help.footer', language) })
                 .setTimestamp()
             category !== 'Help' && embed.setDescription(commands)
             fields.length && embed.addFields(fields)
@@ -108,14 +106,14 @@ export default class HelpCommand extends BaseCommand {
 
         const moduleEmbed = new MessageEmbed()
             .setColor(palette.info)
-            .setTitle(translate(language, 'help.module.title'))
-            .setFooter({ text: translate(language, 'cmd.help.footer') })
+            .setTitle(t('help.module.title', language))
+            .setFooter({ text: t('command.help.footer', language) })
             .setTimestamp()
-            .addField(translate(language, 'help.module.autoRole.name'), translate(language, 'help.module.autoRole.value'))
-            .addField(translate(language, 'help.module.reactionRoles.name'), translate(language, 'help.module.reactionRoles.value'))
-            .addField(translate(language, 'help.module.xpSystem.name'), translate(language, 'help.module.xpSystem.value'))
-            .addField(translate(language, 'help.module.embedMessages.name'), translate(language, 'help.module.embedMessages.value'))
-            .addField(translate(language, 'help.module.welcomeMessages.name'), translate(language, 'help.module.welcomeMessages.value'))
+            .addField(t('help.module.autoRole.name', language), t('help.module.autoRole.value', language))
+            .addField(t('help.module.reactionRoles.name', language), t('help.module.reactionRoles.value', language))
+            .addField(t('help.module.xpSystem.name', language), t('help.module.xpSystem.value', language))
+            .addField(t('help.module.embedMessages.name', language), t('help.module.embedMessages.value', language))
+            .addField(t('help.module.welcomeMessages.name', language), t('help.module.welcomeMessages.value', language))
 
         embeds.splice(1, 0, moduleEmbed)
 
@@ -127,7 +125,7 @@ export default class HelpCommand extends BaseCommand {
 
         const menuComponent = new MessageSelectMenu()
             .addOptions(menuOptions)
-            .setPlaceholder(translate(language, 'cmd.help.selectMenuPlaceholder'))
+            .setPlaceholder(t('command.help.selectMenuPlaceholder', language))
             .setCustomId('helpMenu');
 
         const component = new MessageActionRow()

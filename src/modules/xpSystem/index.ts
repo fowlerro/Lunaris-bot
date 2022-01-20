@@ -1,5 +1,4 @@
-import { Message, MessageEmbed, TextChannel, VoiceState } from "discord.js";
-import { Snowflake } from "discord-api-types";
+import { Message, MessageEmbed, TextChannel, VoiceState, Snowflake } from "discord.js";
 
 import BaseModule from "../../utils/structures/BaseModule";
 import Guilds from "../Guilds";
@@ -8,7 +7,6 @@ import { handleVoiceXp } from "./voice";
 import { GuildProfileDocument, GuildProfileModel } from "../../database/schemas/GuildProfile";
 import { ProfileDocument, ProfileModel } from "../../database/schemas/Profile";
 import { palette } from "../../utils/utils";
-import { translate } from "../../utils/languages/languages";
 
 // TODO Add level rewards
 class XpSystemModule extends BaseModule {
@@ -114,12 +112,12 @@ async function sendLevelUpMessage(profile: GuildProfileDocument, channelId: Snow
     const configChannelId = guildConfig.modules.xp.levelUpMessage.channelId
     const channel = messageMode === 'currentChannel' ? await guild.channels.fetch(channelId) as TextChannel : configChannelId && await guild.channels.fetch(configChannelId) as TextChannel;
     if(!channel) return
-    const language = guildConfig.language;
+    const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
 
 
     const embed = new MessageEmbed()
         .setColor(palette.primary)
-        .setDescription(translate(language, 'xp.levelUpMessage', profile.statistics.text.level, `<@${profile.userId}>`));
+        .setDescription(t('xp.levelUpMessage', language, { level: profile.statistics.text.level.toString(), user: `<@${profile.userId}>` }));
 
     channel.send({ embeds: [embed] });
 }

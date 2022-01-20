@@ -43,7 +43,7 @@
             "comingSoonList": "• Website dashboard (In progress, but idk when I finish it xD)\n • Level rewards - Automatically given roles to users who reach specified level\n • Statistic channels - Display various stats within a name of a channel",
 
             "statTitle": "Bot stats",
-            "statList": "Commands: %VAR%\n Servers: %VAR%/75\n Profiles: %VAR%"
+            "statList": "Commands: {{commandCount}}\n Servers: {{guildCount}}/75\n Profiles: {{profileCount}}"
         },
         "module": {
             "title": "Modules",
@@ -69,9 +69,8 @@
             }
         }
     },
-    "cmd": {
+    "command": {
         "globalStatus": "Command is temporary turned off",
-        "prefixMessage": "The prefix is set to: %VAR%",
         "languageListMessage": "Supported languages",
         "languageListFooter": "Type %VAR% language <language> to change it",
         "wrongLanguage": "This language is not supported, type '%VAR%language' to see supported languages list",
@@ -81,8 +80,8 @@
         "wrongId": "Wrong id",
         "help": {
             "title": "Help",
+            "cmdTitle": "Help for {{commandName}}",
             "footer": "Type /help <cmd> for more information about command",
-            "cmdTitle": "Help for %VAR%",
             "selectMenuPlaceholder": "Select category"
         },
         "ranking": {
@@ -92,7 +91,7 @@
             "lastUpdate": "last update"
         },
         "userInfo": {
-            "title": "%VAR%'s informations",
+            "title": "{{memberTag}}'s informations",
             "createdAt": "Created at",
             "joinedAt": "Joined at",
             "avatar": "Avatar URL"
@@ -100,24 +99,24 @@
         "purge": {
             "wrongChannel": "Please provide a text channel",
             "success": {
-                "default": "Successfully purged %VAR% messages",
-                "user": "Successfully purged %VAR% <@%VAR%>'s messages",
-                "channel": "Successfully purged %VAR% messages in <#%VAR%>",
-                "user-channel": "Successfully purged %VAR% <@%VAR%>'s messages in <#%VAR%>"
+                "default": "Successfully purged {{deletedCount}} messages",
+                "user": "Successfully purged {{deletedCount}} <@{{userId}}>'s messages",
+                "channel": "Successfully purged {{deletedCount}} messages in <#{{channelId}}>",
+                "user-channel": "Successfully purged {{deletedCount}} <@{{userId}}>'s messages in <#{{channelId}}>"
             }
         },
         "emoji": {
-            "add": "The emoji **%VAR%** has been successfully added",
-            "delete": "The emoji **%VAR%** has been successfully deleted",
+            "add": "The emoji **{{emojiName}}** has been successfully added",
+            "delete": "The emoji **{{emojiName}}** has been successfully deleted",
             "error": "Something went wrong :/ Check the URL and try again",
             "notDeletable": "The emoji cannot be deleted"
         },
         "warn": {
-            "add": "%VAR% has been warned by %VAR% %VAR%",
-            "remove": "%VAR% removed warn from user %VAR%",
-            "removeMemberAll": "%VAR% removed all %VAR%'s warns",
-            "removeAll": "%VAR% removed all server warns",
-            "list": "%VAR% warns list",
+            "add": "{{member}} has been warned by {{executor}} {{reason}}",
+            "remove": "{{executor}} removed warn from user {{member}}",
+            "removeMemberAll": "{{executor}} removed all {{member}}'s warns",
+            "removeAll": "{{executor}} removed all server warns",
+            "list": "{{userTag}}'s warn list",
             "guildList": "Warns:",
             "error": "Something went wrong! Warn couldn't be removed",
             "notFound": "Warn not found!",
@@ -251,22 +250,23 @@
             "wordsListTitle": "Blocked words"
         },
         "mute": {
-            "addMute": "%VAR% has been muted by %VAR% %VAR%",
-            "removeMute": "%VAR% has been unmuted by %VAR%",
+            "addMute": "{{member}} has been muted by {{executor}} {{reason}}",
+            "removeMute": "{{member}} has been unmuted by {{executor}}",
             "removeMuteAll": "All members have been unmuted",
             "removeAllMutesReason": "Unmute all members",
-            "notMuted": "%VAR% is not muted",
-            "muteList": "Muted users:"
+            "notMuted": "{{member}} is not muted",
+            "muteList": "Muted users:",
+            "error": "Something went wrong :/ Try again!"
         },
         "ban": {
-            "add": "%VAR% has been banned by %VAR% %VAR%",
-            "remove": "%VAR% has been unbanned by %VAR% %VAR%",
-            "notBanned": "%VAR% is not banned",
+            "add": "{{member}} has been banned by {{executor}} {{reason}}",
+            "remove": "{{member}} has been unbanned by {{executor}} {{reason}}",
+            "notBanned": "{{member}} is not banned",
             "notFound": "User not found"
         }
     },
     "xp": {
-        "levelUpMessage": "You've just leveled up to **%VAR% lvl** %VAR%!"
+        "levelUpMessage": "You've just leveled up to **{{level}} lvl** {{user}}!"
     },
     "dashboard": {
         "embeds": {
