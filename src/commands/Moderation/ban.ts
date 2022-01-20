@@ -1,11 +1,9 @@
-import { CommandInteraction, MessageEmbed, Permissions, Snowflake } from "discord.js";
-import BaseCommand from "../../utils/structures/BaseCommand";
-import Guilds from "../../modules/Guilds";
-import Mod from "../../modules/Mod";
-import { translate } from "../../utils/languages/languages";
-import { palette } from "../../utils/utils";
+import { CommandInteraction, MessageEmbed, Permissions } from "discord.js";
 import ms from "ms";
-import Embeds from "../../modules/Embeds";
+
+import BaseCommand from "../../utils/structures/BaseCommand";
+import Mod from "../../modules/Mod";
+import { palette } from "../../utils/utils";
 
 const regex = /[0-9]+[d|h|m|s]/g
 
@@ -106,14 +104,14 @@ export default class BanCommand extends BaseCommand {
         if(!('id' in interaction.member)) return
         if(!interaction.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return
         const subcommand = interaction.options.getSubcommand(true)
-        const { language } = await Guilds.config.get(interaction.guildId);
+        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
 
         if(subcommand === 'give' || subcommand === 'give-by-id') {
             const userId = interaction.options.getString('user-id')
             if(userId && (isNaN(+userId) || userId.length !== 18)) {
                 const embed = new MessageEmbed()
                     .setColor(palette.error)
-                    .setDescription(translate(language, 'cmd.wrongId'))
+                    .setDescription(t('command.wrongId', language))
     
                 return interaction.reply({
                     embeds: [embed],
@@ -124,7 +122,7 @@ export default class BanCommand extends BaseCommand {
             if(!member || !('id' in member)) {
                 const embed = new MessageEmbed()
                     .setColor(palette.error)
-                    .setDescription(translate(language, 'autoMod.ban.notFound'))
+                    .setDescription(t('autoMod.ban.notFound', language))
 
                 return interaction.reply({
                     embeds: [embed],
@@ -140,9 +138,9 @@ export default class BanCommand extends BaseCommand {
             const result = await Mod.ban.add(member.id, interaction.guildId, interaction.user.id, reason, time);
 
             const description = result.error === 'missingPermission' ?
-                `${translate(language, 'permissions.missingPermission')}: ${result.perms}`
-                : result.error === 'targetNotManagable' ? translate(language, 'autoMod.notManagable', `<@${member.id}>`)
-                : translate(language, 'autoMod.ban.add', `<@${member.id}>`, `<@${interaction.user.id}>`, reason ? `| ${reason}` : "")
+                `${t('permissions.missingPermission', language)}: ${result.perms}`
+                : result.error === 'targetNotManagable' ? t('autoMod.notManagable', `<@${member.id}>`)
+                : t('autoMod.ban.add', language, { member: `<@${member.id}>`, executor: `<@${interaction.user.id}>`, reason: reason ? `| ${reason}` : "" })
 
             const embed = new MessageEmbed()
                 .setColor(result.error ? palette.error : palette.success)
@@ -159,7 +157,7 @@ export default class BanCommand extends BaseCommand {
             if(isNaN(+userId) || userId.length !== 18) {
                 const embed = new MessageEmbed()
                     .setColor(palette.error)
-                    .setDescription(translate(language, 'cmd.wrongId'))
+                    .setDescription(t('command.wrongId', language))
     
                 return interaction.reply({
                     embeds: [embed],
@@ -170,7 +168,7 @@ export default class BanCommand extends BaseCommand {
             if(!member || !('id' in member)) {
                 const embed = new MessageEmbed()
                     .setColor(palette.error)
-                    .setDescription(translate(language, 'autoMod.ban.notFound'))
+                    .setDescription(t('autoMod.ban.notFound', language))
 
                 return interaction.reply({
                     embeds: [embed],
@@ -182,9 +180,9 @@ export default class BanCommand extends BaseCommand {
             const result = await Mod.ban.remove(member.id, interaction.guildId, interaction.user.id, reason);
 
             const description = result.error === 'missingPermission' ?
-                `${translate(language, 'permissions.missingPermission')}: ${result.perms}`
-                : result.error === 'notBanned' ? translate(language, 'autoMod.ban.notBanned', `<@${member.id}>`)
-                : translate(language, 'autoMod.ban.remove', `<@${member.id}>`, `<@${interaction.user.id}>`, reason ? `| ${reason}` : "")
+                `${t('permissions.missingPermission', language)}: ${result.perms}`
+                : result.error === 'notBanned' ? t('autoMod.ban.notBanned', language, { member: `<@${member.id}>` })
+                : t('autoMod.ban.remove', language, { member: `<@${member.id}>`, executor: `<@${interaction.user.id}>`, reason: reason ? `| ${reason}` : "" })
 
             const embed = new MessageEmbed()
                 .setColor(result.error ? palette.error : palette.success)

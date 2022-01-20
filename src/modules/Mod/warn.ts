@@ -1,8 +1,7 @@
-import { Snowflake } from "discord-api-types";
+import { Snowflake } from 'discord.js'
 
 import Guilds from "../Guilds";
 import { GuildProfileDocument, GuildProfileModel, GuildProfileWarn } from "../../database/schemas/GuildProfile";
-import { translate } from "../../utils/languages/languages";
 
 export const Warn = {
     give: async (guildId: Snowflake, targetId: Snowflake, executorId: Snowflake, reason?: string) => {
@@ -54,16 +53,19 @@ export const Warn = {
         return { result }
     },
     list: async (guildId: Snowflake, targetId?: Snowflake): Promise<{ warns: GuildProfileWarn[] | GuildProfileDocument[], error?: string}> => {
-        const { language } = await Guilds.config.get(guildId);
+        const guild = await client.guilds.fetch(guildId).catch(() => {})
+        if(!guild) return { error: 'guildNotFound', warns: [] }
+        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+
         if(targetId) {
             const result = await GuildProfileModel.findOne({ guildId, userId: targetId });
-            if(!result?.warns.length) return { error: translate(language, 'general.none'), warns: [] };
+            if(!result?.warns.length) return { error: t('general.none', language), warns: [] };
             return { warns: result.warns };
         }
 
         let warns = await GuildProfileModel.find({ guildId }).select(['-muted', '-_id', '-guildId', '-__v']);
         warns = warns.filter(v => v.warns.length > 0)
-        if(!warns.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return { error: translate(language, 'general.none'), warns: [] };
+        if(!warns.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return { error: t('general.none', language), warns: [] };
         
         return { warns };
     }

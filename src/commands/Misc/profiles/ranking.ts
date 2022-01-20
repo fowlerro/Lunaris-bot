@@ -1,14 +1,10 @@
-import { CommandInteraction, Formatters, MessageEmbed } from "discord.js";
-import { Snowflake } from "discord-api-types";
-
-import { GuildProfileDocument, GuildProfileModel } from "../../../database/schemas/GuildProfile";
-import Guilds from "../../../modules/Guilds";
-import Profiles from "../../../modules/Profiles";
+import { CommandInteraction, Formatters, MessageEmbed, Snowflake } from "discord.js";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
+import Profiles from "../../../modules/Profiles";
+import { GuildProfileDocument, GuildProfileModel } from "../../../database/schemas/GuildProfile";
 import { ProfileDocument, ProfileModel } from "../../../database/schemas/Profile";
 import { palette } from "../../../utils/utils";
-import { translate } from "../../../utils/languages/languages";
 
 type SortType = 'xp' | 'level' | 'coins';
 
@@ -59,24 +55,24 @@ export default class LanguageCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId) return
         await interaction.deferReply()
+        
+        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
 
         const sortType = interaction.options.getString('sortby') as SortType || 'xp'
         const isGlobal = interaction.options.getBoolean('global') || false
 
         const executorProfile = isGlobal || sortType === 'coins' ? await Profiles.get(interaction.user.id) as ProfileDocument : await Profiles.get(interaction.user.id, interaction.guildId) as GuildProfileDocument
-        const { language } = await Guilds.config.get(interaction.guildId)
-
         const result = await fetchData(sortType, isGlobal, interaction.guildId)
         const formattedData = await formatList(sortType, isGlobal, executorProfile, result)
 
         const embed = new MessageEmbed()
         .setColor(palette.primary)
-        .setFooter({ text: translate(language, 'cmd.ranking.lastUpdate') })
+        .setFooter({ text: t('command.ranking.lastUpdate', language) })
         .setTimestamp(Profiles.lastSave);
 
-        sortType === 'coins' ? embed.addField(translate(language, 'cmd.ranking.coins'), formattedData.coins.join('\n'), true) :
-            embed.addField(translate(language, 'cmd.ranking.text'), formattedData.text.join('\n'), true)
-                .addField(translate(language, 'cmd.ranking.voice'), formattedData.voice.join('\n'), true)
+        sortType === 'coins' ? embed.addField(t('command.ranking.coins', language), formattedData.coins.join('\n'), true) :
+            embed.addField(t('command.ranking.text', language), formattedData.text.join('\n'), true)
+                .addField(t('command.ranking.voice', language), formattedData.voice.join('\n'), true)
 
         interaction.editReply({
             embeds: [embed]

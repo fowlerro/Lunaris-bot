@@ -1,16 +1,13 @@
 import { AutocompleteInteraction, CommandInteraction, MessageEmbed } from "discord.js";
 
-import Guilds from "../../../modules/Guilds";
 import WelcomeMessage from "../../../modules/WelcomeMessage";
-
-import { translate } from "../../../utils/languages/languages";
+import { handleError } from "./index";
 import { palette } from "../../../utils/utils";
 
 import type { WelcomeMessageAction } from 'types'
-import { handleError } from ".";
 
 export default async (interaction: CommandInteraction) => {
-    const { language } = await Guilds.config.get(interaction.guildId!)
+    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
     const action = interaction.options.getString('action', true) as WelcomeMessageAction
     const message = interaction.options.getString('message', true)
 
@@ -19,7 +16,7 @@ export default async (interaction: CommandInteraction) => {
 
     const embed = new MessageEmbed()
         .setColor(palette.success)
-        .setDescription(translate(language, 'cmd.welcome.delete'));
+        .setDescription(t('command.welcome.delete', language));
 
     return interaction.reply({
         embeds: [embed]

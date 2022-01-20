@@ -2,7 +2,6 @@ import { WelcomeMessageFormat } from "types"
 import { formatWelcomeMessageList } from "../../commands/Settings/WelcomeMessage/list"
 import { WelcomeMessageModel } from "../../database/schemas/WelcomeMessage"
 import WelcomeMessage from "../../modules/WelcomeMessage"
-import { translate } from "../../utils/languages/languages"
 
 jest.mock('../../database/schemas/WelcomeMessage', () => ({
     WelcomeMessageModel: {
@@ -42,7 +41,7 @@ describe('Welcome Message Module', () => {
             const language = "en"
 
             const formatted = formatWelcomeMessageList(list, language)
-            expect(formatted).toBe(translate(language, 'cmd.welcome.listEmpty'))
+            expect(formatted).toBe(t('command.welcome.listEmpty', language))
         })
 
         it('Should format list', () => {

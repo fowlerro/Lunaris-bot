@@ -1,4 +1,4 @@
-import { CommandInteraction, ContextMenuInteraction } from "discord.js";
+import { ContextMenuInteraction } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 

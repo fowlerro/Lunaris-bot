@@ -1,9 +1,6 @@
 import { CommandInteraction } from "discord.js";
-import WelcomeMessage from "../../modules/WelcomeMessage";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
-
-import { WelcomeMessageAction } from "types";
 
 export default class TestCommand extends BaseCommand {
     constructor() {
@@ -28,9 +25,9 @@ export default class TestCommand extends BaseCommand {
 
     async run(interaction: CommandInteraction) {
         if(!interaction.member || !('guild' in interaction.member)) return
-
+        
         interaction.reply({
-            content: t('general.d', interaction.guild?.preferredLocale, { number: '2' }),
+            content: 'ok', 
             ephemeral: true
         })
     }

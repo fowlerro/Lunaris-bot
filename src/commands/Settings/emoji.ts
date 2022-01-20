@@ -1,6 +1,4 @@
 import { AutocompleteInteraction, CommandInteraction, MessageEmbed, Permissions } from "discord.js";
-import Guilds from "../../modules/Guilds";
-import { translate } from "../../utils/languages/languages";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 import { palette } from "../../utils/utils";
@@ -63,7 +61,7 @@ export default class EmojiCommand extends BaseCommand {
         if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS)) return
         const subcommand = interaction.options.getSubcommand(true)
 
-        const { language } = await Guilds.config.get(interaction.guildId)
+        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
 
         if(subcommand === 'add') {
             const url = interaction.options.getString('url', true)
@@ -72,8 +70,8 @@ export default class EmojiCommand extends BaseCommand {
             const newEmoji = await interaction.guild.emojis.create(url, name).catch(() => {})
 
             const description = newEmoji ?
-                translate(language, 'cmd.emoji.add', name)
-                : translate(language, 'cmd.emoji.error')
+                t('command.emoji.add', language, { emojiName: name })
+                : t('command.emoji.error', language)
 
             const embed = new MessageEmbed()
                 .setColor(newEmoji ? palette.success : palette.error)
@@ -93,7 +91,7 @@ export default class EmojiCommand extends BaseCommand {
             if(!emoji || !emoji.deletable) {
                 const embed = new MessageEmbed()
                     .setColor(palette.error)
-                    .setDescription(translate(language, 'cmd.emoji.notDeletable'))
+                    .setDescription(t('command.emoji.notDeletable', language))
 
                 return interaction.reply({
                     embeds: [embed],
@@ -103,8 +101,8 @@ export default class EmojiCommand extends BaseCommand {
 
             const deletedEmoji = await emoji.delete(reason).catch(() => {})
             const description = deletedEmoji ? 
-                translate(language, 'cmd.emoji.delete', deletedEmoji.name)
-                : translate(language, 'cmd.emoji.error')
+                t('command.emoji.delete', language, { emojiName: deletedEmoji.name || "" })
+                : t('command.emoji.error', language)
 
             const embed = new MessageEmbed()
                 .setColor(deletedEmoji ? palette.success : palette.error)

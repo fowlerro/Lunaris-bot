@@ -8,9 +8,10 @@ export default {
     defaultLocale: 'en',
     directory: path.join(__dirname, '../locales'),
     retryInDefaultLocale: true,
-    objectNotation: true
+    objectNotation: true,
+    updateFiles: false
 } as ConfigurationOptions
 
-export function translate(phrase: LocalePhrase, locale: string | undefined = 'en', variables: Replacements = {}) {
+export function translate(phrase: LocalePhrase, locale: string, variables: Replacements = {}) {
     return i18n.__({ phrase, locale }, variables)
 }

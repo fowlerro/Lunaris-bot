@@ -1,12 +1,10 @@
 import { CommandInteraction, MessageEmbed, Permissions } from "discord.js";
+import ms from "ms";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
-import Guilds from "../../modules/Guilds";
 import Mod from "../../modules/Mod";
-import { translate } from "../../utils/languages/languages";
-import { palette } from "../../utils/utils";
-import ms from "ms";
 import Embeds from "../../modules/Embeds";
+import { palette } from "../../utils/utils";
 
 const regex = /[0-9]+[d|h|m|s]/g
 
@@ -83,7 +81,7 @@ export default class MuteCommand extends BaseCommand {
         if(!('id' in interaction.member)) return
         if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return
         const subcommand = interaction.options.getSubcommand(true) as 'give' | 'remove' | 'list'
-        const { language } = await Guilds.config.get(interaction.guildId);
+        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
 
         if(subcommand === 'give') {
             const member = interaction.options.getMember('member', true)
@@ -94,13 +92,12 @@ export default class MuteCommand extends BaseCommand {
             if(userTime && userTime.match(regex))
                 for(const entry of userTime.match(regex)!) time += ms(entry)
 
-
             const result = await Mod.mute.add(interaction.guildId, member.id, reason, interaction.user.id, time);
 
             const description = result.error === 'missingPermission' ? 
-                `${translate(language, 'permissions.missingPermission')}: ${result.perms}`
-                : result.error === 'targetNotManagable' ? translate(language, 'autoMod.notManagable', `<@${member.id}>`)
-                : translate(language, 'autoMod.mute.addMute', `<@${member.id}>`, `<@${interaction.user.id}>`, reason ? `| ${reason}` : "")
+                `${t('permissions.missingPermission', language)}: ${result.perms}`
+                : result.error === 'targetNotManagable' ? t('autoMod.notManagable', language, {member: `<@${member.id}>` })
+                : t('autoMod.mute.addMute', language, { member: `<@${member.id}>`, executor: `<@${interaction.user.id}>`, reason: reason ? `| ${reason}` : "" })
 
             const embed = new MessageEmbed()
                 .setColor(result.error ? palette.error : palette.success)
@@ -122,7 +119,7 @@ export default class MuteCommand extends BaseCommand {
             if(result.error === "notMuted") {
                 const embed = new MessageEmbed()
                     .setColor(palette.error)
-                    .setDescription(translate(language, 'autoMod.mute.notMuted', `<@${member.id}>`));
+                    .setDescription(t('autoMod.mute.notMuted', language, { member: `<@${member.id}>` }));
     
                 return interaction.reply({
                     embeds: [embed],
@@ -131,9 +128,9 @@ export default class MuteCommand extends BaseCommand {
             }
 
             const description = result.error === 'missingPermission' ?
-                `${translate(language, 'permissions.missingPermission')}: ${result.perms}`
-                : result.error === 'targetNotManagable' ? translate(language, 'autoMod.notManagable', `<@${member.id}>`)
-                : translate(language, 'autoMod.mute.removeMute', `<@${member.id}>`, `<@${interaction.user.id}>`)
+                `${t('permissions.missingPermission', language)}: ${result.perms}`
+                : result.error === 'targetNotManagable' ? t('autoMod.notManagable', language, { member: `<@${member.id}>` })
+                : t('autoMod.mute.removeMute', language, { member: `<@${member.id}>`, executor: `<@${interaction.user.id}>` })
             
             const embed = new MessageEmbed()
                 .setColor(result.error ? palette.error : palette.success)
@@ -146,14 +143,13 @@ export default class MuteCommand extends BaseCommand {
         }
 
         if(subcommand === 'list') {
-            const { language } = await Guilds.config.get(interaction.guildId);
             const mutes = await Mod.mute.list(interaction.guildId)
             let formattedMutes: any;
             const page = interaction.options.getInteger('page') || 1
 
             if(!mutes.error && mutes.mutedMembers) {
                 const mutesPromises = await mutes.mutedMembers.map(async member => {
-                    const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(member.mute.date!);
+                    const date = new Intl.DateTimeFormat(language, { dateStyle: 'short', timeStyle: 'short' }).format(member.mute.date!);
                     let executor = member.mute.executorId!
                     if(!isNaN(+executor)) {
                         const executorUser = await client.users.fetch(executor).catch(() => {})
@@ -168,8 +164,8 @@ export default class MuteCommand extends BaseCommand {
                     return {
                         name: `Nick: ${userNick}`,
                         value: `**Mod**: ${executor}
-                                **${translate(language, 'general.reason')}**: ${member.mute.reason ? member.mute.reason : translate(language, 'general.none')}
-                                **${translate(language, 'general.date')}**: ${date}`,
+                                **${t('general.reason', language)}**: ${member.mute.reason ? member.mute.reason : t('general.none', language)}
+                                **${t('general.date', language)}**: ${date}`,
                         inline: true
                     }
                 });
@@ -181,7 +177,7 @@ export default class MuteCommand extends BaseCommand {
 
             const embed = new MessageEmbed()
                 .setColor(palette.info)
-                .setAuthor({ name: translate(language, 'autoMod.mute.muteList'), iconURL: interaction.guild.iconURL() || undefined })
+                .setAuthor({ name: t('autoMod.mute.muteList', language), iconURL: interaction.guild.iconURL() || undefined })
                 .setTimestamp();
 
             mutes.error ? embed.setDescription(mutes.error) : embed.addFields(formattedMutes);

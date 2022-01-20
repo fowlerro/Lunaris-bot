@@ -1,16 +1,13 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 
-import Guilds from "../../../modules/Guilds";
 import WelcomeMessage from "../../../modules/WelcomeMessage";
 import { handleError } from "./index";
-
-import { translate } from "../../../utils/languages/languages";
 import { palette } from "../../../utils/utils";
 
 import type { WelcomeMessageAction } from "types";
 
 export default async (interaction: CommandInteraction) => {
-    const { language } = await Guilds.config.get(interaction.guildId!)
+    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
     const action = interaction.options.getString('action', true) as WelcomeMessageAction
     const channel = interaction.options.getChannel('channel')
 
@@ -19,7 +16,7 @@ export default async (interaction: CommandInteraction) => {
 
     const embed = new MessageEmbed()
         .setColor(palette.success)
-        .setDescription(translate(language, channel ? 'cmd.welcome.set' : 'cmd.welcome.disabled'));
+        .setDescription(t(channel ? 'command.welcome.set' : 'command.welcome.disabled', language));
 
     return interaction.reply({
         embeds: [embed]

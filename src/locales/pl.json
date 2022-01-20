@@ -1,7 +1,322 @@
 {
-	"name": "Polski",
-	"general": {
-		"channel": "Kanał",
-		"d": "Liczba {{number}}"
-	}
+    "name": "Polski",
+    "general": {
+        "name": "Nazwa",
+        "description": "Opis",
+        "slowMode": "Tryb powolny",
+        "on": "Włączone",
+        "off": "Wyłączone",
+        "reason": "Powód",
+        "role": "Rola",
+        "roles": "Role",
+        "by": "Przez",
+        "createdAt": "Konto utworzone",
+        "joinedAt": "Dołączył",
+        "channel": "Kanał",
+        "content": "Treść",
+        "before": "Przed",
+        "after": "Po",
+        "code": "Kod",
+        "old": {
+            "a": "Stary",
+            "b": "Stara"
+        },
+        "new": {
+            "a": "Nowy",
+            "b": "Nowa"
+        },
+        "color": "Kolor",
+        "none": "Brak",
+        "forTime": "Na czas",
+        "aliases": "Aliasy",
+        "syntax": "Składnia",
+        "example": "Przykład",
+        "user": "Użytkownik",
+        "date": "Data"
+    },
+    "help": {
+        "help": {
+            "updateTitle": "Aktualizacje",
+            "updateList": "• Slash komendy\n • Menedżer emotek (/emoji) - Można dodać emotkę na serwer przez link",
+
+            "comingSoonTitle": "Nadchodzące nowości",
+            "comingSoonList": "• Strona z panelem (Pracuję nad tym, ale nie wiem kiedy skończę xD)",
+
+            "statTitle": "Statystyki bota",
+            "statList": "Komendy: {{commandCount}}\n Serwery: {{guildCount}}/75\n Profile: {{profileCount}}"
+        },
+        "module": {
+            "title": "Moduły",
+            "autoRole": {
+                "name": "Auto Role",
+                "value": "Moduł ten pozwala na automatyczne dodawania ról użytkownikom dołączającym na serwer, możesz wybrać wiele ról, a nawet czas, po upływie którego rola ma zostać automatycznie zdjęta z użytkownika\n __Póki co brak możliwości zarządzania poprzez komendy__"
+            },
+            "reactionRoles": {
+                "name": "Reaction Role",
+                "value": "Możesz ustawić wiadomość z reakcjami lub przyciskami, po których kliknięciu, bot doda lub usunie rolę z użytkownika, można wybrać typ reakcji (dodaj/usuń lub weryfikacja - która pozwoli jedynie na dodanie roli użytkownikowi\n __Póki co brak możliwości zarządzania poprzez komendy__"
+            },
+            "xpSystem": {
+                "name": "XP System",
+                "value": "System XP działa zarówna na kanałach tekstowych jak i głosowych. Za levelowanie dostaje się coiny. W planach dodanie nagród w postaci automatycznie nadawanych ról za levele \n __Póki co brak możliwości zarządzania poprzez komendy__"
+            },
+            "embedMessages": {
+                "name": "Wiadomości Embed",
+                "value": "Pozwala na tworzenie w pełni dostosowanych wiadomości Embed\n Ciężko jest to zrobić na komendach, więc prawdopodobnie będzie dostępne tylko przez panel na stronie"
+            },
+            "welcomeMessages": {
+                "name": "Wiadomości Powitalne",
+                "value": "Wiadomości automatycznie wysyłane, gdy użytkownik dołączy/opuści serwer!\nMożesz użyć różnych zmiennych, takich jak `username` lub `serverName`, które pozwolą na stworzenie dynamicznych wiadomości\nUżyj `/welcome add <akcja> <format>` aby dodać wiadomość powitalną\nMożesz wybrać jedną z 2 akcji: **join** - wiadomość zostanie wysłana przy każdym dołączeniu nowego użytkownika, **leave** - wiadomość zostanie wysłana po opuszczeniu użytkownika\nPrzykładowy format wiadomości: `Witaj {{username}} na serwerze {{serverName}}!`, zmienne wewnątrz `{{ }}` zostaną zamienione danymi dotyczącymi serwera oraz użytkownika, który dołączył bądź opuścił serwer\nPełną listę dostępnych zmiennych sprawdzisz używając `/format list` (We wiadomościach możesz również używać emotek oraz pingów (@user, #kanał)"
+            }
+        }
+    },
+    "command": {
+        "globalStatus": "Komenda jest chwilowo wyłączona",
+        "prefixMessage": "Prefix dla tego serwera to: %VAR%",
+        "languageListMessage": "Wspierane języki",
+        "languageListFooter": "Wpisz %VAR%language <język>, aby zmienić język",
+        "wrongLanguage": "Ten język jest nieobsługiwany, wpisz '%VAR%language', aby sprawdzić listę wspieranych języków",
+        "prefixChange": "Prefix został pomyślnie zmieniony na %VAR%",
+        "languageChange": "Język został pomyślnie zmieniony na %VAR%",
+        "pingInfo": "Slash komendy są nadal w trakcie pracy, ale niedługo powinny być dostępne",
+        "wrongId": "Niepoprawne id",
+        "help": {
+            "title": "Pomoc",
+            "cmdTitle": "Informacje o {{commandName}}",
+            "footer": "Aby zobaczyć więcej informacji na temat komendy, wpisz /help <cmd>",
+            "selectMenuPlaceholder": "Wybierz kategorię"
+        },
+        "ranking": {
+            "text": "Tekstowy",
+            "voice": "Głosowy",
+            "coins": "Monety",
+            "lastUpdate": "Ostatni zapis"
+        },
+        "userInfo": {
+            "title": "Informacje o {{memberTag}}",
+            "createdAt": "Data utworzenia",
+            "joinedAt": "Data dołączenia"
+        },
+        "purge": {
+            "wrongChannel": "Musisz podać kanał tekstowy",
+            "success": {
+                "default": "Pomyślnie wyczyszczono {{deletedCount}} wiadomości",
+                "user": "Pomyślnie wyczyszczono {{deletedCount}} wiadomości użytkownika <@{{userId}}>",
+                "channel": "Pomyślnie wyczyszczono {{deletedCount}} wiadomości w <#{{channelId}}>",
+                "user-channel": "Pomyślnie wyczyszczono {{deletedCount}} wiadomości użytkownika <@{{userId}}> w <#{{channelId}}>"
+            }
+        },
+        "emoji": {
+            "add": "Emotka **{{emojiName}}** została pomyślnie dodana",
+            "delete": "Emotka **{{emojiName}}** została pomyślnie usunięta",
+            "error": "Coś poszło nie tak, sprawdź czy link jest poprawny",
+            "notDeletable": "Nie mogę usunąć tej emotki"
+        },
+        "warn": {
+            "add": "{{member}} został ostrzeżony przez {{executor}} {{reason}}",
+            "remove": "{{executor}} zdjął ostrzeżenie z użytkownika {{member}}",
+            "removeMemberAll": "{{executor}} zdjął wszystkie ostrzeżenia z użytkownika {{member}}",
+            "removeAll": "{{executor}} zdjął wszystkie ostrzeżenia na serwerze",
+            "list": "Lista ostrzeżeń użytkownika {{userTag}}",
+            "guildList": "Lista ostrzeżeń na serwerze",
+            "error": "Wystąpił problem z usunięciem ostrzeżenia",
+            "notFound": "Nie znaleziono ostrzeżenia!",
+            "targetNotFound": "Nie znaleziono użytkownika!",
+            "optionAll": "Usuń wszystkie ostrzeżenia z tego użytkownika!"
+        },
+        "idea": {
+            "submitted": "Pomysł został przesłany!"
+        },
+        "welcome": {
+            "add": "Nowa wiadomość powitalna została pomyślnie dodana!",
+            "delete": "Wiadomość powitalna została pomyślnie usunięta!",
+            "set": "Kanał dla wiadomości powitalnych został pomyślnie ustawiony!",
+            "disabled": "Akcja wiadomości powitalnych została wyłączona",
+            "error": "Coś poszło nie tak :/",
+
+            "status": {
+                "alreadyEnabled": "Moduł jest już włączony!",
+                "alreadyDisabled": "Moduł jest już wyłączony!",
+
+                "enabled": "Pomyślnie włączono moduł!",
+                "disabled": "Pomyślnie wyłączono moduł!"
+
+            },
+
+            "info": {
+                "title": "Wiadomości Powitalne",
+                "joinChannel": "Wiadomości dołączenia",
+                "leaveChannel": "Wiadomości odejścia"
+            },
+            "list": {
+                "join": "Lista wiadomości dołączenia",
+                "leave": "Lista wiadomości odejścia"
+            },
+
+            "listEmpty": "Lista jest pusta\nDodaj powitalną wiadomość za pomocą `/welcome add`"
+        }
+    },
+    "logs": {
+        "general": {
+            "allowedPerms": "Dodane permisje",
+            "deniedPerms": "Zabrane permisje",
+            "resetPerms": "Zresetowane permisje"
+        },
+        "member": {
+            "joinedTitle": "%VAR% dołączył",
+            "leavedTitle": "%VAR% opuścił serwer",
+
+            "nicknameChangedTitle": "Nickname %VAR% został zmieniony",
+            "nicknameCreatedTitle": "Nickname %VAR% został ustawiony",
+            "nicknameRemovedTitle": "Nickname %VAR% został usunięty",
+            "nicknameChangedDesc": "%VAR% zmienił nick użytkownikowi %VAR%",
+            "nicknameCreatedDesc": "%VAR% stworzył nick użytkownikowi %VAR%",
+            "nicknameRemovedDesc": "%VAR% usunął nick użytkownikowi %VAR%",
+            "nicknameChangedBy": "Zmieniony przez",
+            "nicknameOld": "Stary nickname",
+            "nicknameNew": "Nowy nickname",
+
+            "kickedTitle": "%VAR% został wyrzucony",
+            "kickedDesc": "%VAR% został wyrzucony przez %VAR%",
+            "kickedAt": "W czasie",
+            "kickedTarget": "Wyrzucony",
+
+            "bannedTitle": "%VAR% został zbanowany",
+            "bannedDesc": "%VAR% został zbanowany przez %VAR%",
+            "bannedAt": "W czasie",
+            "bannedTarget": "Zbanowany",
+
+            "unbannedTitle": "%VAR% został odbanowany",
+            "unbannedDesc": "%VAR% został odbanowany przez %VAR%",
+            "unbannedAt": "W czasie",
+            "unbannedTarget": "Odbanowany",
+
+            "addRoleTitle": "%VAR% otrzymał rolę",
+            "removeRoleTitle": "%VAR% stracił rolę"
+        },
+        "channel": {
+            "createdTitle": "Nowy kanał został stworzony",
+            "createdAt": "W czasie",
+            
+            "deletedTitle": "Kanał #%VAR% został usunięty",
+            "deletedAt": "W czasie",
+
+            "changedTitle": "Kanał #%VAR% został zmodyfikowany",
+            "changedOld": "Stary",
+            "changedNew": "Nowy"
+        },
+        "message": {
+            "deletedTitle": "Wiadomość została usunięta",
+
+            "editedTitle": "Wiadomość została edytowana",
+            "editedLink": "[Skocz do wiadomości](%VAR%)",
+            "target": "Autor wiadomości"
+        },
+        "invite": {
+            "createdTitle": "Zaproszenie zostało utworzone",
+            "deletedTitle": "Zaproszenie zostało usunięte",
+            "createdBy": "Stworzone przez",
+            "createdAt": "Stworzone",
+            "expiresAt": "Straci ważność",
+            "maxUses": "Użyć"
+        },
+        "cmd": {
+            "triggerTitle": "Komenda '%VAR%' została wykonana"
+        },
+        "role": {
+            "createdTitle": "Nowa rola została stworzona",
+            "deletedTitle": "Rola @%VAR% została usunięta",
+            "changedTitle": "Rola @%VAR% została zmodyfikowana",
+
+            "hoist": "Wyświetlanie osobno",
+            "mentionable": "Zezwolenie na wzmianki"
+        },
+        "warn": {
+            "addWarn": "%VAR% otrzymał ostrzeżenie",
+            "removeWarn": "Ostrzeżenie użytkownika %VAR% zostało zdjęte",
+            "removeAllWarns": "Wszystkie ostrzeżenia na serwerze zostały usunięte",
+            "addedBy": "Nadane przez",
+            "removedBy": "Zdjęte przez"
+        },
+        "mute": {
+            "muted": "%VAR% został wyciszony",
+            "unmuted": "%VAR% znów może pisać",
+            "addedBy": "Nadane przez",
+            "removedBy": "Zdjęte przez"
+        }
+    },
+    "autoMod": {
+        "notManagable": "Nie mam uprawnień do zarządzania %VAR%",
+        "censor": {
+            "wordsListTitle": "Lista blokowanych słów"
+        },
+        "mute": {
+            "addMute": "{{member}} został wyciszony przez {{executor}} {{reason}}",
+            "removeMute": "{{member}} został odciszony przez {{executor}}",
+            "removeMuteAll": "Wszyscy użytkownicy zostali odciszeni",
+            "removeAllMutesReason": "Odciszono wszystkich użytkowników",
+            "notMuted": "{{member}} nie jest wyciszony",
+            "muteList": "Lista mute'ów na serwerze",
+            "error": "Coś poszło nie tak :/ Spróbuj ponownie!"
+        },
+        "ban": {
+            "add": "{{member}} został zbanowany przez {{executor}} {{reason}}",
+            "remove": "{{member}} został odbanowany przez {{executor}} {{reason}}",
+            "notBanned": "{{member}} nie jest zbanowany",
+            "notFound": "Nie znaleziono użytkownika"
+        }
+    },
+    "xp": {
+        "levelUpMessage": "Właśnie zdobyłeś **{{level}} lvl** {{user}}!"
+    },
+    "dashboard": {
+        "embeds": {
+            "newEmbed": "Nowy Embed"
+        }
+    },
+    "permissions": {
+        "missingPermission": "Brak permisji",
+
+        "CREATE_INSTANT_INVITE": "Tworzenie zaproszenia",
+        "KICK_MEMBERS": "Wyrzucanie członków",
+        "BAN_MEMBERS": "Banowanie członków",
+
+        "MANAGE_CHANNELS": "Zarządzanie kanałami",
+        "MANAGE_GUILD": "Zarządzanie serwerem",
+        "ADD_REACTIONS": "Dodawanie reakcji",
+        "VIEW_AUDIT_LOG": "Wyświetlanie dziennika zdarzeń",
+        "PRIORITY_SPEAKER": "Priorytetowy rozmówca",
+        "STREAM": "Wideo",
+        "VIEW_CHANNEL": "Czytanie wiadomości",
+        "SEND_MESSAGES": "Wysyłanie wiadomości",
+        "SEND_TTS_MESSAGES": "Wysyłanie wiadomości TTS",
+        "MANAGE_MESSAGES": "Zarządzanie wiadomościami",
+        "EMBED_LINKS": "Wyświetlanie podglądu linku",
+        "ATTACH_FILES": "Załączanie plików",
+        "READ_MESSAGE_HISTORY": "Czytanie historii czatu",
+        "MENTION_EVERYONE": "Zamieść wzmiankę @everyone, @here",
+        "USE_EXTERNAL_EMOJIS": "Używanie zewnętrznych emoji",
+        "VIEW_GUILD_INSIGHTS": "Pokaż przegląd serwera",
+        "CONNECT": "Łączenie",
+        "SPEAK": "Mówienie",
+        "MUTE_MEMBERS": "Wyciszanie członków",
+        "DEAFEN_MEMBERS": "Wyłączanie dźwięku członkom",
+        "MOVE_MEMBERS": "Przenoszenie członków",
+        "USE_VAD": "Używanie Aktywności Głosowej",
+        "CHANGE_NICKNAME": "Zmiana pseudonimu",
+        "MANAGE_NICKNAMES": "Zarządzanie pseudonimami",
+        "MANAGE_ROLES": "Zarządzanie rolami",
+        "MANAGE_WEBHOOKS": "Zarządzanie webhookami",
+        "MANAGE_EMOJIS": "Zarządzanie emoji"
+    },
+    "date": {
+        "days": {
+            "monday": "Poniedziałek",
+            "tuesday": "Wtorek",
+            "wednesday": "Środa",
+            "thursday": "Czwartek",
+            "friday": "Piątek",
+            "saturday": "Sobota",
+            "sunday": "Niedziela"
+        }
+    }
 }

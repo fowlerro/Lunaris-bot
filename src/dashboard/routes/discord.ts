@@ -5,7 +5,6 @@ import { getGuilds } from '../utils/utils';
 import Guilds from '../../modules/Guilds';
 import Embeds from '../../modules/Embeds';
 
-import { localeList } from '../../utils/languages/languages'
 import { ReactionRoleModel } from '../../database/schemas/ReactionRoles';
 import reactionRoles from '../../modules/reactionRoles';
 import { AutoRoleModel } from '../../database/schemas/AutoRole';
@@ -58,7 +57,7 @@ router.put('/guilds/:guildId/settings', async (req, res) => {
     const userId = req.user?.discordId
     const { guildId } = req.params
 
-    const { language, nickname, muteRoleId } = req.body
+    const { nickname, muteRoleId } = req.body
 
     if(!userId) return res.sendStatus(401)
     if(!guildId) return res.sendStatus(404)
@@ -80,9 +79,7 @@ router.put('/guilds/:guildId/settings', async (req, res) => {
     const muteRole = guildRoles.find(role => role.id === muteRoleId)
     const newMuteRoleId = muteRole ? muteRole.id : guildConfig.modules.autoMod.muteRole
 
-    const newLanguage = localeList().includes(language) ? language : guildConfig.language
-
-    const updatedGuildConfig = await (await Guilds.config.set(guildId, { language: newLanguage, 'modules.autoMod.muteRole': newMuteRoleId })).toObject()
+    const updatedGuildConfig = await (await Guilds.config.set(guildId, { 'modules.autoMod.muteRole': newMuteRoleId })).toObject()
     if(!updatedGuildConfig) return res.sendStatus(404)
 
     const updatedClientMember = await clientMember.setNickname(nickname)

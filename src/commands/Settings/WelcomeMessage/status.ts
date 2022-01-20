@@ -3,17 +3,15 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 import { WelcomeMessageDocument } from "../../../database/schemas/WelcomeMessage";
 import WelcomeMessage from "../../../modules/WelcomeMessage";
 import Embeds from "../../../modules/Embeds";
-import Guilds from "../../../modules/Guilds";
 import { handleError } from './index'
-
-import { translate } from "../../../utils/languages/languages";
 import { palette } from "../../../utils/utils";
 
-import { Language } from "types";
 import { formatWelcomeMessageList } from "./list";
 
+import { Language } from "types";
+
 export default async (interaction: CommandInteraction) => {
-    const { language } = await Guilds.config.get(interaction.guildId!)
+    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
     const status = interaction.options.getBoolean('enable')
     const welcomeConfig = await WelcomeMessage.get(interaction.guildId!)
 
@@ -34,7 +32,7 @@ export default async (interaction: CommandInteraction) => {
 function alreadySet(interaction: CommandInteraction, language: Language, status: boolean) {
     const embed = new MessageEmbed()
         .setColor(palette.info)
-        .setDescription(translate(language, `cmd.welcome.status.already${status ? 'Enabled' : 'Disabled'}`));
+        .setDescription(t(`command.welcome.status.already${status ? 'Enabled' : 'Disabled'}`, language));
     
     return interaction.reply({
         embeds: [embed]
@@ -44,7 +42,7 @@ function alreadySet(interaction: CommandInteraction, language: Language, status:
 function set(interaction: CommandInteraction, language: Language, status: boolean) {
     const embed = new MessageEmbed()
         .setColor(palette.success)
-        .setDescription(translate(language, `cmd.welcome.status.${status ? 'enabled' : 'disabled'}`));
+        .setDescription(t(`command.welcome.status.${status ? 'enabled' : 'disabled'}`, language));
 
     return interaction.reply({
         embeds: [embed]
@@ -61,12 +59,12 @@ async function displayStatus(interaction: CommandInteraction, language: Language
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
-        .setTitle(translate(language, 'cmd.welcome.info.title'))
-        .addField('Status', translate(language, welcomeConfig.status ? 'general.on' : 'general.off'))
-        .addField(translate(language, 'cmd.welcome.info.joinChannel'), channelJoin?.toString() || translate(language, 'general.off'))
-        .addField(translate(language, 'cmd.welcome.info.leaveChannel'), channelLeave?.toString() || translate(language, 'general.off'))
-        .addField(translate(language, 'cmd.welcome.list.join'), formattedList.join)
-        .addField(translate(language, 'cmd.welcome.list.leave'), formattedList.leave)
+        .setTitle(t('command.welcome.info.title', language))
+        .addField('Status', t(welcomeConfig.status ? 'general.on' : 'general.off', language))
+        .addField(t('command.welcome.info.joinChannel', language), channelJoin?.toString() || t('general.off', language))
+        .addField(t('command.welcome.info.leaveChannel', language), channelLeave?.toString() || t('general.off', language))
+        .addField(t('command.welcome.list.join', language), formattedList.join)
+        .addField(t('command.welcome.list.leave', language), formattedList.leave)
 
     const checkedEmbed = await Embeds.checkLimits(embed, false)
     if(checkedEmbed.error || !checkedEmbed.pages[0]) return handleError(interaction, language)

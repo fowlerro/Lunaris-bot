@@ -2,10 +2,8 @@ import { CommandInteraction, MessageEmbed, TextChannel } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 import { IdeaModel } from "../../database/schemas/Ideas";
-import Guilds from "../../modules/Guilds";
-import { translate } from "../../utils/languages/languages";
-import { testGuildId } from "../../bot";
 import { palette } from "../../utils/utils";
+import { testGuildId } from "../../bot";
 
 export default class IdeaCommand extends BaseCommand {
     constructor() {
@@ -29,7 +27,7 @@ export default class IdeaCommand extends BaseCommand {
 
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId) return
-        const { language } = await Guilds.config.get(interaction.guildId)
+        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
         const description = interaction.options.getString('description', true)
         if(!description) return
 
@@ -37,7 +35,7 @@ export default class IdeaCommand extends BaseCommand {
         if(!newIdea) return
 
         interaction.reply({
-            content: translate(language, 'cmd.idea.submitted')
+            content: t('command.idea.submitted', language)
         })
 
         const testGuild = await client.guilds.fetch(testGuildId)

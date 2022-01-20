@@ -1,9 +1,7 @@
 import { Message } from "discord.js";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
-import Guilds from "../../modules/Guilds";
 import xpSystem from "../../modules/xpSystem";
-import { translate } from "../../utils/languages/languages";
 
 export default class MessageCreateEvent extends BaseEvent {
     constructor() {
@@ -13,20 +11,12 @@ export default class MessageCreateEvent extends BaseEvent {
     async run(message: Message) {
         if(message.author.bot) return;
         if(!message.guild) return
-        const { language } = await Guilds.config.get(message.guild.id);
-        // CommandHandlerModule.handleCommand(client, message);
+        const language = message.guild.preferredLocale === 'pl' ? 'pl' : 'en'
         if(message.mentions.users?.first()?.id === client.user?.id) return message.reply({
-            content: translate(language, 'cmd.pingInfo')
+            content: t('command.pingInfo', language)
         })
-
-
-        if(message.content.startsWith('!test')) {
-            console.log(message.content)
-        }
-        
         if(!client.isOnline) return;
 
         xpSystem.addTextXp(message);
-
     }
 };
