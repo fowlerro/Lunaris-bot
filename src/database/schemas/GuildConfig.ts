@@ -8,7 +8,9 @@ const GuildConfigSchema = new Schema({
     guildId: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        minlength: 18,
+        maxlength: 18
     },
     modules: {
         autoMod: {
@@ -23,7 +25,9 @@ const GuildConfigSchema = new Schema({
                     default: 'currentChannel'
                 },
                 channelId: {
-                    type: String
+                    type: String,
+                    minlength: 18,
+                    maxlength: 18
                 }
             },
             multiplier: {

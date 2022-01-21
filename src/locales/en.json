@@ -34,6 +34,20 @@
         "user": "User",
         "date": "Date"
     },
+    "module": {
+        "welcomeMessages": {
+            "errors": {
+                "general": "Something went wrong :/ Try again!",
+                "messageMaxLength": "Message cannot exceed 256 characters!",
+                "maxMessages": "Sorry, cannot add more than 5 messages per action!"
+            }
+        },
+        "embeds": {
+            "errors": {
+                "limit": "Cannot add more than 15 embeds!"
+            }
+        }
+    },
     "help": {
         "help": {
             "updateTitle": "Updates",

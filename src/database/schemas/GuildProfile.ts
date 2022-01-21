@@ -29,10 +29,14 @@ const GuildProfileSchema = new Schema({
     guildId: {
         type: String,
         required: true,
+        minlength: 18,
+        maxlength: 18
     },
     userId: {
         type: String,
         required: true,
+        minlength: 18,
+        maxlength: 18
     },
     statistics: {
         text: {
@@ -97,11 +101,14 @@ const GuildProfileSchema = new Schema({
     warns: [{
         executorId: {
             type: String,
-            required: true
+            required: true,
+            minlength: 18,
+            maxlength: 18
         },
         reason: {
             type: String,
             default: null,
+            maxlength: 1000
         },
         date: {
             type: Number,

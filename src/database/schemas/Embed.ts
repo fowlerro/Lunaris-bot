@@ -1,4 +1,5 @@
 import { Document, model, Schema } from "mongoose";
+
 import { palette } from "../../utils/utils";
 
 import { EmbedMessage } from 'types'
@@ -12,49 +13,92 @@ const EmbedSchema = new Schema({
     guildId: {
         type: String,
         required: true,
+        minlength: 18,
+        maxlength: 18
     },
     channelId: {
-        type: String
+        type: String,
+        minlength: 18,
+        maxlength: 18
     },
     messageId: {
-        type: String
+        type: String,
+        minlength: 18,
+        maxlength: 18
     },
     messageContent: {
         type: String,
+        maxlength: 2000
     },
     embed: {
         author: {
-            name: String,
-            url: String,
-            iconURL: String
+            name: {
+                type: String,
+                maxlength: 256
+            },
+            url: {
+                type: String,
+                maxlength: 1000
+            },
+            iconURL: {
+                type: String,
+                maxlength: 1000
+            } 
         },
         hexColor: {
             type: String,
             default: palette.info
         },
-        description: String,
+        description: {
+            type: String,
+            maxlength: 4096
+        },
         footer: {
-            text: String,
-            iconURL: String
+            text: {
+                type: String,
+                maxlength: 2048
+            },
+            iconURL: {
+                type: String,
+                maxlength: 1000
+            }
         },
         image: {
-            url: String,
+            url: {
+                type: String,
+                maxlength: 1000
+            },
             width: Number,
             height: Number
         },
         thumbnail: {
-            url: String,
+            url: {
+                type: String,
+                maxlength: 1000
+            },
             width: Number,
             height: Number
         },
         timestamp: {
             type: Number
         },
-        title: String,
-        url: String,
+        title: {
+            type: String,
+            maxlength: 256 
+        },
+        url: {
+            type: String,
+            maxlength: 1000   
+        },
         fields: [{
-            name: String,
-            value: String,
+            name: {
+                type: String,
+                maxlength: 256
+            },
+            value: {
+                type: String,
+                maxlength: 1024
+            },
             inline: {
                 type: Boolean,
                 default: false

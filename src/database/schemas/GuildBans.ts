@@ -12,18 +12,25 @@ export interface GuildBanDocument extends Document {
 const GuildBanSchema = new Schema({
     guildId: {
         type: String,
-        required: true
+        required: true,
+        minlength: 18,
+        maxlength: 18
     },
     userId: {
         type: String,
-        required: true
+        required: true,
+        minlength: 18,
+        maxlength: 18
     },
     executorId: {
         type: String,
-        required: true
+        required: true,
+        minlength: 18,
+        maxlength: 18
     },
     reason: {
-        type: String
+        type: String,
+        maxlength: 1000
     },
     time: {
         type: Number

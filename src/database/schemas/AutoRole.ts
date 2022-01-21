@@ -11,12 +11,16 @@ const AutoRoleSchema = new Schema({
     guildId: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        minlength: 18,
+        maxlength: 18
     },
     roles: [{
         roleId: {
             type: String,
-            required: true
+            required: true,
+            minlength: 18,
+            maxlength: 18
         },
         time: {
             type: Number

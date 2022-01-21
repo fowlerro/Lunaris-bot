@@ -34,6 +34,20 @@
         "user": "Użytkownik",
         "date": "Data"
     },
+    "module": {
+        "welcomeMessages": {
+            "errors": {
+                "general": "Coś poszło nie tak :/ Spróbuj ponownie!",
+                "messageMaxLength": "Wiadomość nie może przekraczać 256 znaków!",
+                "maxMessages": "Nie można dodać więcej niż 5 wiadomości na akcję!"
+            }
+        },
+        "embeds": {
+            "errors": {
+                "limit": "Nie można dodać więcej niż 15 embedów!"
+            }
+        }
+    },
     "help": {
         "help": {
             "updateTitle": "Aktualizacje",

@@ -222,9 +222,14 @@ router.put('/guilds/:guildId/embeds/save', async (req, res) => {
     const member = await guild.members.fetch(userId).catch(() => {})
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
+    const allEmbeds = await EmbedModel.find({ guildId }).catch(() => {})
+    if(!allEmbeds) return res.sendStatus(500)
+
+    const embedCount = allEmbeds.length
+
     const updated = _id ? await EmbedModel.findOneAndUpdate({ _id, guildId }, {
         name, messageId, channelId, messageContent, embed
-    }) : await EmbedModel.create({
+    }, { new: true, runValidators: true }) : embedCount >= 15 ? 'error' : await EmbedModel.create({
         guildId,
         channelId,
         messageId,
@@ -234,6 +239,7 @@ router.put('/guilds/:guildId/embeds/save', async (req, res) => {
     })
 
     if(!updated) return res.sendStatus(500)
+    if(updated === 'error') return res.send(t('module.embeds.errors.limit', guild.preferredLocale === 'pl' ? 'pl' : 'en'))
 
     if(updated.messageId) {
         const channel = await guild.channels.fetch(channelId).catch(() => {})
@@ -266,7 +272,7 @@ router.put('/guilds/:guildId/embeds/send', async (req, res) => {
     const document = _id ? 
         await EmbedModel.findOneAndUpdate({ _id, guildId }, {
             name, messageId: message.id, channelId, messageContent, embed
-        })
+        }, { new: true, runValidators: true })
         : await EmbedModel.create({ guildId, name, messageId: message.id, channelId, messageContent, embed })
 
     if(!document) return res.sendStatus(500)

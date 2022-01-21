@@ -14,6 +14,16 @@ export default async (interaction: CommandInteraction) => {
 
     const welcomeConfig = await WelcomeMessage.add(interaction.guildId!, { message: format, action: action as WelcomeMessageFormat['action'] })
     if(!welcomeConfig) return handleError(interaction, language)
+    if(welcomeConfig.error) {
+        const embed = new MessageEmbed()
+            .setColor(palette.error)
+            .setDescription(t(welcomeConfig.error, language));
+
+        return interaction.reply({
+            embeds: [embed],
+            ephemeral: true
+        })
+    }
 
     const embed = new MessageEmbed()
         .setColor(palette.success)

@@ -7,28 +7,38 @@ export interface ReactionRoleDocument extends Omit<ReactionRole, '_id'>, Documen
 const ReactionRoleSchema = new Schema({
     guildId: {
         type: String,
-        required: true
+        required: true,
+        minlength: 18,
+        maxlength: 18
     },
     channelId: {
         type: String,
-        required: true
+        required: true,
+        minlength: 18,
+        maxlength: 18
     },
     messageId: {
         type: String,
-        required: true
+        required: true,
+        minlength: 18,
+        maxlength: 18
     },
     reactions: [{
         reaction: {
             type: String,
-            required: true
+            required: true,
+            maxlength: 100
         },
         roleId: {
             type: String,
-            required: true
+            required: true,
+            minlength: 18,
+            maxlength: 18
         },
         mode: {
             type: String,
-            required: true
+            required: true,
+            enum: ['normal', 'verify']
         }
     }]
 })

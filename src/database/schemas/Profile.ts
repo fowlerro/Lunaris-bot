@@ -35,7 +35,9 @@ const ProfileSchema = new Schema({
     userId: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        minlength: 18,
+        maxlength: 18
     },
     coins: {
         type: Number,

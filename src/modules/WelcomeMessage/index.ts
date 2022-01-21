@@ -2,10 +2,11 @@ import { GuildMember, Snowflake } from "discord.js";
 
 import BaseModule from "../../utils/structures/BaseModule";
 
-import { WelcomeMessageModel } from "../../database/schemas/WelcomeMessage";
+import { WelcomeMessageDocument, WelcomeMessageModel } from "../../database/schemas/WelcomeMessage";
 import TextFormatter from "../../utils/Formatter";
 
 import { GroupedWelcomeMessageFormats, WelcomeMessageAction, WelcomeMessageFormat } from "types";
+import { LocalePhrase } from "../../types/locales";
 
 class WelcomeMessageModule extends BaseModule {
     constructor() {
@@ -45,13 +46,19 @@ class WelcomeMessageModule extends BaseModule {
         return config
     }
 
-    async add(guildId: Snowflake, format: WelcomeMessageFormat) {
-        if(!guildId) return
-        const config = await WelcomeMessageModel.findOneAndUpdate({ guildId }, {
-            $push: { formats: format }
-        }, { upsert: true, new: true }).catch(() => {})
+    async add(guildId: Snowflake, format: WelcomeMessageFormat): Promise<{ config: WelcomeMessageDocument | null, error: LocalePhrase | null }> {
+        if(!guildId) return { config: null, error: 'module.welcomeMessages.errors.general' }
+        if(format.message.length > 256) return { config: null, error: 'module.welcomeMessages.errors.messageMaxLength' }
+        const WelcomeMessages = await this.get(guildId)
+        if(!WelcomeMessages) return { config: null, error: 'module.welcomeMessages.errors.general' }
+        const messageCount = WelcomeMessages.formats.filter(msg => msg.action === format.action).length
+        if(messageCount >= 5) return { config: null, error: 'module.welcomeMessages.errors.maxMessages' }
 
-        return config
+        WelcomeMessages.formats.push(format)
+        const saved = await WelcomeMessages.save().catch(() => {})
+        if(!saved) return { config: null, error: 'module.welcomeMessages.errors.general' }
+
+        return { config: saved, error: null }
     }
 
     async delete(guildId: Snowflake, format: WelcomeMessageFormat) {
@@ -63,7 +70,7 @@ class WelcomeMessageModule extends BaseModule {
                     action: format.action
                 }
             }
-        }, { new: true }).catch(() => {})
+        }, { new: true, runValidators: true }).catch(() => {})
         return config
     }
 

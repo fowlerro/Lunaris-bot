@@ -1,6 +1,6 @@
 import { Document, model, Schema } from "mongoose";
 
-import { WelcomeMessage } from 'types'
+import { WelcomeMessage, WelcomeMessageFormat } from 'types'
 
 export interface WelcomeMessageDocument extends WelcomeMessage, Document {}
 
@@ -8,7 +8,9 @@ const WelcomeMessageSchema = new Schema({
     guildId: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        minlength: 18,
+        maxlength: 18
     },
     status: {
         type: Boolean,
@@ -17,15 +19,23 @@ const WelcomeMessageSchema = new Schema({
     channels: {
         join: {
             type: String,
-            default: null
+            default: null,
+            minlength: 18,
+            maxlength: 18
         },
         leave: {
             type: String,
-            default: null
+            default: null,
+            minlength: 18,
+            maxlength: 18
         }
     },
     formats: [{
-        message: String,
+        message: {
+            type: String,
+            required: true,
+            maxlength: [256, 'Message cannot exceed 256 characters!']
+        },
         action: {
             type: String,
             enum: ['join', 'leave'],
