@@ -8,6 +8,8 @@ import { GuildProfileDocument, GuildProfileModel } from "../../database/schemas/
 import { ProfileDocument, ProfileModel } from "../../database/schemas/Profile";
 import { palette } from "../../utils/utils";
 
+const cooldowns = new Map<string, boolean>()
+
 // TODO Add level rewards
 class XpSystemModule extends BaseModule {
     constructor() {
@@ -42,21 +44,21 @@ class XpSystemModule extends BaseModule {
             'statistics.text.dailyXp': 0,
             'statistics.voice.dailyXp': 0,
         });
-        client.guildMembers.clear();
-        client.profiles.clear();
+        await redis.profiles.flushAll()
+        await redis.guildProfiles.flushAll()
     }
 
 }
 
 async function addGuildTextXp(guildId: Snowflake, channelId: Snowflake, userId: Snowflake, xpToAdd: number, multiplier: number) {
     const guildProfile = await Profiles.get(userId, guildId) as GuildProfileDocument;
-    const { level, xp, cooldown } = guildProfile.statistics.text;
-    if(cooldown) return;
-    guildProfile.statistics.text.cooldown = true;
+    const { level, xp } = guildProfile.statistics.text;
+    if(cooldowns.get(`${guildId}-${userId}`)) return;
+    cooldowns.set(`${guildId}-${userId}`, true)
     const xpNeeded = Profiles.neededXp(level);
 
     setTimeout(() => {
-        guildProfile.statistics.text.cooldown = false
+        cooldowns.set(`${guildId}-${userId}`, false)
     }, 60000);
 
     if(xp + (xpToAdd * multiplier) >= xpNeeded) return levelUp(guildProfile, channelId, xp, (xpToAdd * multiplier), xpNeeded);
@@ -65,18 +67,20 @@ async function addGuildTextXp(guildId: Snowflake, channelId: Snowflake, userId: 
     guildProfile.statistics.text.totalXp += xpToAdd * multiplier
     guildProfile.statistics.text.dailyXp += xpToAdd * multiplier
 
+    await Profiles.set(guildProfile)
+
     return guildProfile
 }
 
 async function addGlobalTextXp(userId: Snowflake, xpToAdd: number) {
     const globalProfile = await Profiles.get(userId) as ProfileDocument;
-    const { level, xp, cooldown } = globalProfile.statistics.text;
-    if(cooldown) return;
-    globalProfile.statistics.text.cooldown = true;
+    const { level, xp } = globalProfile.statistics.text;
+    if(cooldowns.get(userId)) return;
+    cooldowns.set(userId, true)
     const xpNeeded = Profiles.neededXp(level);
 
     setTimeout(() => {
-        globalProfile.statistics.text.cooldown = false;
+        cooldowns.set(userId, false)
     }, 60000);
 
     if(xp + xpToAdd >= xpNeeded) return levelUp(globalProfile, null, xp, xpToAdd, xpNeeded, true);
@@ -84,6 +88,8 @@ async function addGlobalTextXp(userId: Snowflake, xpToAdd: number) {
     globalProfile.statistics.text.xp += xpToAdd
     globalProfile.statistics.text.totalXp += xpToAdd
     globalProfile.statistics.text.dailyXp += xpToAdd
+
+    await Profiles.set(globalProfile)
 
     return globalProfile;
 }
@@ -99,6 +105,8 @@ async function levelUp(profile: GuildProfileDocument | ProfileDocument, channelI
 
     'coins' in profile && (profile.coins += profile.statistics.text.level * (10 + profile.statistics.text.level * 2))
     'guildId' in profile && channelId && sendLevelUpMessage(profile, channelId);
+
+    await Profiles.set(profile)
 
     return profile;
 }

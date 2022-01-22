@@ -2,10 +2,10 @@ import { GuildMember, Snowflake } from "discord.js";
 
 import BaseModule from "../../utils/structures/BaseModule";
 
-import { WelcomeMessageModel } from "../../database/schemas/WelcomeMessage";
+import { WelcomeMessageDocument, WelcomeMessageModel } from "../../database/schemas/WelcomeMessage";
 import TextFormatter from "../../utils/Formatter";
 
-import { GroupedWelcomeMessageFormats, WelcomeMessageAction, WelcomeMessageFormat } from "types";
+import { GroupedWelcomeMessageFormats, WelcomeMessage, WelcomeMessageAction, WelcomeMessageFormat } from "types";
 
 class WelcomeMessageModule extends BaseModule {
     constructor() {
@@ -40,9 +40,14 @@ class WelcomeMessageModule extends BaseModule {
 
     async get(guildId: Snowflake) {
         if(!guildId) return
-        let config = await WelcomeMessageModel.findOne({ guildId }).catch(() => {})
-        if(!config) config = await WelcomeMessageModel.create({ guildId }).catch(() => {})
-        return config
+        const json = await redis.welcomeMessages.getEx(guildId, { EX: 60 * 10 })
+        if(json) return JSON.parse(json) as WelcomeMessage
+
+        const document = await WelcomeMessageModel.findOne({ guildId }).catch((e) => { console.log(e) })
+        if(!document) return this.create(guildId)
+
+        await this.setCache(document)
+        return document.toObject() as WelcomeMessage
     }
 
     async add(guildId: Snowflake, format: WelcomeMessageFormat) {
@@ -50,7 +55,9 @@ class WelcomeMessageModule extends BaseModule {
         const config = await WelcomeMessageModel.findOneAndUpdate({ guildId }, {
             $push: { formats: format }
         }, { upsert: true, new: true }).catch(() => {})
+        if(!config) return
 
+        await this.setCache(config)
         return config
     }
 
@@ -64,6 +71,8 @@ class WelcomeMessageModule extends BaseModule {
                 }
             }
         }, { new: true }).catch(() => {})
+        if(!config) return
+        await this.setCache(config)
         return config
     }
 
@@ -73,13 +82,22 @@ class WelcomeMessageModule extends BaseModule {
         const config = await WelcomeMessageModel.findOneAndUpdate({ guildId }, {
             [channel]: textChannelId || null
         }, { upsert: true, new: true }).catch(() => {})
-
+        if(!config) return
+        await this.setCache(config)
         return config
+    }
+
+    async setCache(document: WelcomeMessageDocument) {
+        const config = document.toObject()
+        delete config._id
+        delete config.__v
+
+        return redis.welcomeMessages.setEx(config.guildId, 60 * 10, JSON.stringify(config))
     }
 
     async list(guildId: Snowflake, action?: WelcomeMessageAction | null): Promise<WelcomeMessageFormat[] | GroupedWelcomeMessageFormats | undefined> {
         if(!guildId) return
-        const config = await WelcomeMessageModel.findOne({ guildId }).catch(() => {})
+        const config = await this.get(guildId)
         if(!config) return action ? [] as WelcomeMessageFormat[] : {} as GroupedWelcomeMessageFormats
         if(action) return config.formats.filter(format => format.action === action)
 
@@ -88,6 +106,14 @@ class WelcomeMessageModule extends BaseModule {
             prev[curr.action].push(curr)
             return prev
         }, {} as GroupedWelcomeMessageFormats)
+    }
+
+    async create(guildId: Snowflake) {
+        const document = await WelcomeMessageModel.create({ guildId }).catch(e => { console.log(e) })
+        if(!document) return
+
+        await this.setCache(document)
+        return document.toObject() as WelcomeMessage
     }
 }
 
