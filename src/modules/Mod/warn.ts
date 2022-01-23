@@ -1,20 +1,21 @@
 import { Snowflake } from 'discord.js'
 
-import Guilds from "../Guilds";
 import { GuildProfileDocument, GuildProfileModel, GuildProfileWarn } from "../../database/schemas/GuildProfile";
+import Profiles from '../Profiles';
 
 export const Warn = {
     give: async (guildId: Snowflake, targetId: Snowflake, executorId: Snowflake, reason?: string) => {
-        await GuildProfileModel.findOneAndUpdate({ guildId, userId: targetId }, {
+        const document = await GuildProfileModel.findOneAndUpdate({ guildId, userId: targetId }, {
             $push: {
                 warns: {
                     executorId,
                     reason
                 }
             }
-        }, { upsert: true });
+        }, { upsert: true, new: true, runValidators: true }).catch(() => {})
+        if(!document) return
+        await Profiles.set(document)
 
-        // warnAddLog(guildId, by, userId, reason, id); // TODO
         return true;
     },
     remove: async (guildId: Snowflake, warnId: string, executorId: Snowflake, targetId?: Snowflake): Promise<{ action?: 'all' | 'targetAll', error?: 'warnNotFound' | 'targetNotFound', result?: GuildProfileDocument }> => {
@@ -24,17 +25,23 @@ export const Warn = {
                     warns: []
                 } 
             });
+            const guildProfileList = await redis.guildProfiles.scan(0, { MATCH: `${guildId}-*` })
+            console.log(guildProfileList)
+            for await (const key of guildProfileList.keys) {
+                console.log(key)
+                await redis.guildProfiles.del(key)
+            }
             return { action: 'all' };
         }
 
         if(warnId === 'targetAll' && targetId) {
-            const result = await GuildProfileModel.updateOne({ guildId, userId: targetId }, {
+            const result = await GuildProfileModel.findOneAndUpdate({ guildId, userId: targetId }, {
                 $set: {
                     warns: []
                 }
-            }).catch(() => {})
-
+            }, { upsert: true, new: true, runValidators: true }).catch(() => {})
             if(!result) return { error: 'targetNotFound' }
+            await Profiles.set(result)
             return { action: 'targetAll' }
         }
 
@@ -44,12 +51,10 @@ export const Warn = {
                     _id: warnId
                 }
             }
-        }).catch(() => {})
-
+        }, { upsert: true, new: true, runValidators: true }).catch(() => {})
         if(!result) return { error: 'warnNotFound' }
+        await Profiles.set(result)
 
-        // const warn = result.warns.filter(w => w._id === id);
-        // warnRemoveLog(client, guildId, by, warn[0].by, result.userId, warn[0].reason, id); // TODO
         return { result }
     },
     list: async (guildId: Snowflake, targetId?: Snowflake): Promise<{ warns: GuildProfileWarn[] | GuildProfileDocument[], error?: string}> => {

@@ -5,6 +5,7 @@ const profiles = createClient({ database: 1 })
 const guildProfiles = createClient({ database: 2 })
 const autoRoles = createClient({ database: 3 })
 const welcomeMessages = createClient({ database: 4 })
+const levelConfigs = createClient({ database: 5 })
 
 export async function initializeCache() {
     await guildConfigs.connect()
@@ -12,6 +13,7 @@ export async function initializeCache() {
     await guildProfiles.connect()
     await autoRoles.connect()
     await welcomeMessages.connect()
+    await levelConfigs.connect()
 }
 
 export type Cache = {
@@ -20,6 +22,7 @@ export type Cache = {
     guildProfiles: RedisClientType<RedisModules, RedisScripts>
     autoRoles: RedisClientType<RedisModules, RedisScripts>
     welcomeMessages: RedisClientType<RedisModules, RedisScripts>
+    levelConfigs: RedisClientType<RedisModules, RedisScripts>
 }
 
 export default {
@@ -27,5 +30,6 @@ export default {
     profiles,
     guildProfiles,
     autoRoles,
-    welcomeMessages
+    welcomeMessages,
+    levelConfigs,
 }

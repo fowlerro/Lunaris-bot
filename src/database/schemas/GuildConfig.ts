@@ -10,27 +10,20 @@ const GuildConfigSchema = new Schema({
         required: true,
         unique: true
     },
+    muteRole: {
+        type: String,
+        minlength: 18,
+        maxlength: 18
+    },
     modules: {
-        autoMod: {
-            muteRole: {
-                type: String
-            }
+        autoRole: {
+            type: Boolean,
+            default: false
         },
-        xp: {
-            levelUpMessage: {
-                mode: {
-                    type: String,
-                    default: 'currentChannel'
-                },
-                channelId: {
-                    type: String
-                }
-            },
-            multiplier: {
-                type: Number,
-                default: 1
-            }
-        }
+        welcomeMessage: {
+            type: Boolean,
+            default: false
+        },
     }
 })
 

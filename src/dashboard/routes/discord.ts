@@ -48,7 +48,7 @@ router.get('/guilds/:guildId/settings', async (req, res) => {
     const guildRoles = await guild.roles.fetch().catch(() => {})
     if(!guildRoles) return res.sendStatus(404)
 
-    const guildConfig = await (await Guilds.config.get(guildId)).toObject()
+    const guildConfig = await Guilds.config.get(guildId)
     if(!guildConfig) res.sendStatus(404)
     return res.send({ clientMember, guildConfig, guildRoles: guildRoles.filter(role => role.name !== '@everyone' && !role.managed && role.editable) })
 });
@@ -77,9 +77,9 @@ router.put('/guilds/:guildId/settings', async (req, res) => {
     if(!guildRoles) return res.sendStatus(404)
 
     const muteRole = guildRoles.find(role => role.id === muteRoleId)
-    const newMuteRoleId = muteRole ? muteRole.id : guildConfig.modules.autoMod.muteRole
+    const newMuteRoleId = muteRole ? muteRole.id : guildConfig.muteRole
 
-    const updatedGuildConfig = await (await Guilds.config.set(guildId, { 'modules.autoMod.muteRole': newMuteRoleId })).toObject()
+    const updatedGuildConfig = await Guilds.config.set(guildId, { muteRole: newMuteRoleId })
     if(!updatedGuildConfig) return res.sendStatus(404)
 
     const updatedClientMember = await clientMember.setNickname(nickname)

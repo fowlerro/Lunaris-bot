@@ -96,7 +96,8 @@ export default class MuteCommand extends BaseCommand {
 
             const description = result.error === 'missingPermission' ? 
                 `${t('permissions.missingPermission', language)}: ${result.perms}`
-                : result.error === 'targetNotManagable' ? t('autoMod.notManagable', language, {member: `<@${member.id}>` })
+                : result.error === 'targetNotManagable' ? t('autoMod.notManagable', language, { member: `<@${member.id}>` })
+                : result.error ? t('autoMod.mute.error', language)
                 : t('autoMod.mute.addMute', language, { member: `<@${member.id}>`, executor: `<@${interaction.user.id}>`, reason: reason ? `| ${reason}` : "" })
 
             const embed = new MessageEmbed()
@@ -116,20 +117,11 @@ export default class MuteCommand extends BaseCommand {
 
             const result = await Mod.mute.remove(interaction.guildId, interaction.user.id, member.id, reason);
 
-            if(result.error === "notMuted") {
-                const embed = new MessageEmbed()
-                    .setColor(palette.error)
-                    .setDescription(t('autoMod.mute.notMuted', language, { member: `<@${member.id}>` }));
-    
-                return interaction.reply({
-                    embeds: [embed],
-                    ephemeral: true
-                })
-            }
-
             const description = result.error === 'missingPermission' ?
                 `${t('permissions.missingPermission', language)}: ${result.perms}`
                 : result.error === 'targetNotManagable' ? t('autoMod.notManagable', language, { member: `<@${member.id}>` })
+                : result.error === 'notMuted' ? t('autoMod.mute.notMuted', language, { member: `<@${member.id}>`})
+                : result.error ? t('autoMod.mute.error', language)
                 : t('autoMod.mute.removeMute', language, { member: `<@${member.id}>`, executor: `<@${interaction.user.id}>` })
             
             const embed = new MessageEmbed()
