@@ -3,7 +3,7 @@ import { GuildMember, Snowflake } from "discord.js";
 import BaseModule from "../../utils/structures/BaseModule";
 
 import { WelcomeMessageDocument, WelcomeMessageModel } from "../../database/schemas/WelcomeMessage";
-import TextFormatter from "../../utils/Formatter";
+import TextFormatter from "../../utils/Formatters/Formatter";
 
 import { GroupedWelcomeMessageFormats, WelcomeMessage, WelcomeMessageAction, WelcomeMessageFormat } from "types";
 

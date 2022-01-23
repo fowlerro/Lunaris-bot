@@ -153,6 +153,9 @@
             },
 
             "listEmpty": "List is empty\nAdd Welcome Message with `/welcome add`"
+        },
+        "formatters": {
+            "title": "{{category}} formatters"
         }
     },
     "logs": {

@@ -1,4 +1,4 @@
-import TextFormatter from '../../utils/Formatter'
+import TextFormatter from '../../utils/Formatters/Formatter'
 
 describe('TextFormatter function', () => {
     test('without variables', () => {
