@@ -30,6 +30,7 @@ async function registerMutes() {
         if(!member) continue
 
         const muteRole = await Mute.getRole(guild)
+        if(!muteRole) return
         const hasRole = member.roles.cache.has(muteRole.id);
         if((mutedMember.mute.timestamp && mutedMember.mute.timestamp < Date.now()) || !hasRole) {
             await member.roles.remove(muteRole).catch(err => console.log(err));
@@ -41,8 +42,7 @@ async function registerMutes() {
                 reason: null,
                 executorId: null
             }
-            const muteInfo = await mutedMember.save();
-            // return unmuteLog(client, guild.id, muteInfo.mute.by, 'System', member.id); // TODO
+            await mutedMember.save();
             return
         }
         if(mutedMember.mute.timestamp) {
@@ -55,8 +55,7 @@ async function registerMutes() {
                     reason: null,
                     executorId: null
                 }
-                const muteInfo = await mutedMember.save();
-                // unmuteLog(client, guild.id, muteInfo.muted.by, 'System', member.id); // TODO
+                await mutedMember.save();
       
             }, mutedMember.mute.timestamp - Date.now())
         }

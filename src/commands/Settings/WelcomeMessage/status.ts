@@ -1,6 +1,6 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 
-import { WelcomeMessageDocument } from "../../../database/schemas/WelcomeMessage";
+import { WelcomeMessageModel } from "../../../database/schemas/WelcomeMessage";
 import WelcomeMessage from "../../../modules/WelcomeMessage";
 import Embeds from "../../../modules/Embeds";
 import { handleError } from './index'
@@ -8,7 +8,7 @@ import { palette } from "../../../utils/utils";
 
 import { formatWelcomeMessageList } from "./list";
 
-import { Language } from "types";
+import { Language, WelcomeMessage as WelcomeMessageType } from "types";
 
 export default async (interaction: CommandInteraction) => {
     const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
@@ -19,10 +19,12 @@ export default async (interaction: CommandInteraction) => {
 
     if(typeof status === 'boolean') {
         if(welcomeConfig.status === status) return alreadySet(interaction, language, status)
-        
         welcomeConfig.status = status
-        const saved = welcomeConfig.save().catch(() => {})
+        const saved = await WelcomeMessageModel.findOneAndUpdate({ guildId: interaction.guildId }, { 
+            status
+        }, { new: true, upsert: true, runValidators: true }).catch(() => {})
         if(!saved) return handleError(interaction, language)
+        await WelcomeMessage.setCache(saved)
         return set(interaction, language, status)
     }
 
@@ -49,7 +51,7 @@ function set(interaction: CommandInteraction, language: Language, status: boolea
     })
 }
 
-async function displayStatus(interaction: CommandInteraction, language: Language, welcomeConfig: WelcomeMessageDocument) {
+async function displayStatus(interaction: CommandInteraction, language: Language, welcomeConfig: WelcomeMessageType) {
     const channelJoin = welcomeConfig.channels.join && await interaction.guild?.channels.fetch(welcomeConfig.channels.join).catch(() => {})
     const channelLeave = welcomeConfig.channels.leave && await interaction.guild?.channels.fetch(welcomeConfig.channels.leave).catch(() => {})
     const list = await WelcomeMessage.list(interaction.guildId!)

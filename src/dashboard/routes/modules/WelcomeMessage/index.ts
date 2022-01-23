@@ -21,7 +21,7 @@ router.get('/get', async (req: Request<{ guildId: string }>, res) => {
     const welcomeMessageConfig = await WelcomeMessage.get(guildId)
     if(!welcomeMessageConfig) return res.sendStatus(500)
 
-    return res.send(welcomeMessageConfig.toObject())
+    return res.send(welcomeMessageConfig)
 })
 
 router.put('/update', async (req: Request<{ guildId: string }>, res) => {
@@ -48,6 +48,8 @@ router.put('/update', async (req: Request<{ guildId: string }>, res) => {
     }, { upsert: true, new: true }).catch(() => {})
     if(!updated) return res.sendStatus(500)
 
+    await WelcomeMessage.setCache(updated)
+
     return res.send(updated.toObject())
 })
 
@@ -66,9 +68,12 @@ router.put('/switch', async (req: Request<{ guildId: string }>, res) => {
     const updated = await WelcomeMessage.get(guildId)
     if(!updated) return res.sendStatus(500)
 
-    updated.status = status
-    const saved = updated.save().catch(() => {})
+    const saved = await WelcomeMessageModel.findOneAndUpdate({ guildId }, {
+        status
+    }, { new: true, upsert: true, runValidators: true }).catch(e => console.log(e))
     if(!saved) return res.sendStatus(500)
+
+    await WelcomeMessage.setCache(saved)
 
     return res.sendStatus(204)
 })

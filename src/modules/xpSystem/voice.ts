@@ -5,6 +5,7 @@ import Guilds from "../Guilds";
 import Profiles from "../Profiles";
 import { ProfileDocument } from "../../database/schemas/Profile";
 import { GuildProfileDocument } from "../../database/schemas/GuildProfile";
+import xpSystem from ".";
 
 const membersInterval: {
     [x: string]: NodeJS.Timer
@@ -122,8 +123,9 @@ async function startXp(guildId: Snowflake, memberId: Snowflake) {
             console.log('xp', memberId);
             const guildProfile = await Profiles.get(memberId, guildId) as GuildProfileDocument;
             const globalProfile = await Profiles.get(memberId) as ProfileDocument;
-            const guildConfig = await Guilds.config.get(guildId);
-            const multiplier = guildConfig.modules?.xp?.multiplier || 1;
+            const levelConfig = await xpSystem.get(guildId);
+            if(!levelConfig) return
+            const multiplier = levelConfig.multiplier || 1;
             const xpToAdd = Math.floor(Math.random() * (35 - 20) + 20);
 
             addGuildXp(guildProfile, (xpToAdd * multiplier));

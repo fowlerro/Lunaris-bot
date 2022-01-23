@@ -1,9 +1,10 @@
-import { GuildMember } from "discord.js";
-import ms from 'ms'
+import { GuildMember, Snowflake } from "discord.js";
 
 import BaseModule from "../../utils/structures/BaseModule";
 import { AutoRoleModel } from "../../database/schemas/AutoRole";
 import { AutoRoleTimeModel } from "../../database/schemas/AutoRoleTime";
+
+import { AutoRole } from "types";
 
 class AutoRoleModule extends BaseModule {
     constructor() {
@@ -16,7 +17,7 @@ class AutoRoleModule extends BaseModule {
     }
 
     async give(member: GuildMember) {
-        const config = await AutoRoleModel.findOne({ guildId: member.guild.id });
+        const config = await this.get(member.guild.id)
         if(!config) return
         for(const role of config.roles) {
             await member.roles.add(role.roleId).catch(err => console.log(err));
@@ -49,6 +50,39 @@ class AutoRoleModule extends BaseModule {
 
             }, role.time)
         };
+    }
+
+    async get(guildId: Snowflake) {
+        const json = await redis.autoRoles.getEx(guildId, { EX: 60 * 10 })
+        if(json) return JSON.parse(json) as AutoRole
+        
+        const configDocument = await AutoRoleModel.findOne({ guildId }, '-_id -__v').catch((e) => { console.log(e) })
+        if(!configDocument) return this.create(guildId)
+
+        await redis.autoRoles.setEx(guildId, 60 * 10, JSON.stringify(configDocument.toObject()))
+
+        return configDocument.toObject() as AutoRole
+    }
+
+    async set(autoRole: AutoRole) {
+        const document = await AutoRoleModel.findOneAndUpdate({ guildId: autoRole.guildId }, autoRole, { new: true, upsert: true, runValidators: true }).catch((e) => { console.log(e) })
+        if(!document) return
+        const config = document.toObject()
+        delete config._id
+        delete config.__v
+        const res = await redis.autoRoles.setEx(autoRole.guildId, 60 * 10, JSON.stringify(config))
+        return res
+    }
+
+    async create(guildId: Snowflake): Promise<AutoRole | undefined> {
+        const document = await AutoRoleModel.create({ guildId }).catch((e) => { console.log(e) })
+        if(!document) return
+
+        const config = document.toObject()
+        delete config._id
+        delete config.__v
+        await redis.autoRoles.setEx(guildId, 60 * 10, JSON.stringify(config))
+        return config as AutoRole
     }
 }
 

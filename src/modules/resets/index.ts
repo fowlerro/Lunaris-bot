@@ -20,7 +20,7 @@ async function dailyReset() {
 }
 
 function daily() {
-    cron.schedule('0 0 * * *', (() => {
+    cron.schedule('1 0 * * *', (() => {
         dailyReset();
     }),
     {

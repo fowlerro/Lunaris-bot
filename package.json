@@ -30,7 +30,8 @@
     "node-fetch": "^2.6.6",
     "nodemon": "^2.0.15",
     "passport": "^0.5.2",
-    "passport-discord": "^0.1.4"
+    "passport-discord": "^0.1.4",
+    "redis": "^4.0.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
