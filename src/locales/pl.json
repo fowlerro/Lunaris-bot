@@ -153,6 +153,9 @@
             },
 
             "listEmpty": "Lista jest pusta\nDodaj powitalną wiadomość za pomocą `/welcome add`"
+        },
+        "formatters": {
+            "title": "Formatowanie dla {{category}}"
         }
     },
     "logs": {
