@@ -156,6 +156,25 @@
         },
         "formatters": {
             "title": "Formatowanie dla {{category}}"
+        },
+        "level": {
+            "levelUpMessage": {
+                "error": "❌ Coś poszło nie tak :/ Spróbuj ponownie!",
+                "formatTooLong": "❌ Format może mieć maksymalnie 256 znaków!",
+
+                "set": "✅ Pomyślnie ustawiono wiadomość level up!",
+                "unset": "✅ Pomyślnie usunięto wiadomość level up!"
+            },
+            "rewards": {
+                "add": "✅ Pomyślnie dodano nagrodę za level!",
+                "limitError": "❌ Możesz dodać jedynie po 20 nagród dla tekstowych lub głosowych leveli!"
+            }
+        }
+    },
+    "modules": {
+        "level": {
+            "rewardRoleAddReason": "Rola za level",
+            "rewardRoleRemoveReason": "Usunięto rolę z poprzedniej nagrody za level"
         }
     },
     "logs": {

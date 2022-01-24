@@ -32,7 +32,8 @@
         "syntax": "Syntax",
         "example": "Example",
         "user": "User",
-        "date": "Date"
+        "date": "Date",
+        "error": "❌ Something went wrong :/ Try again!"
     },
     "help": {
         "help": {
@@ -156,6 +157,25 @@
         },
         "formatters": {
             "title": "{{category}} formatters"
+        },
+        "level": {
+            "levelUpMessage": {
+                "error": "❌ Something went wrong :/ Try again!",
+                "formatTooLong": "❌ Format message can be up to 256 characters!",
+
+                "set": "✅ Custom Level Up message has been set successfully!",
+                "unset": "✅ Custom Level Up message has been unset successfully!"
+            },
+            "rewards": {
+                "add": "✅ Level Rewards has been added successfully!",
+                "limitError": "❌ You can add only up to 20 rewards for each scope (text and voice)!"
+            }
+        }
+    },
+    "modules": {
+        "level": {
+            "rewardRoleAddReason": "Level reward role",
+            "rewardRoleRemoveReason": "Remove previous reward role"            
         }
     },
     "logs": {

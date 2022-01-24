@@ -17,6 +17,6 @@ export default class MessageCreateEvent extends BaseEvent {
         })
         if(!client.isOnline) return;
 
-        xpSystem.addTextXp(message);
+        xpSystem.handleTextXp(message)
     }
 };

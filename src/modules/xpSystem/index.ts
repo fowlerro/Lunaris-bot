@@ -1,15 +1,14 @@
 import { Message, VoiceState, Snowflake } from "discord.js";
 
 import BaseModule from "../../utils/structures/BaseModule";
-import Profiles from "../Profiles";
-import { handleVoiceXp } from "./voice";
-import { GuildProfileDocument, GuildProfileModel } from "../../database/schemas/GuildProfile";
-import { ProfileDocument, ProfileModel } from "../../database/schemas/Profile";
-import { LevelConfig } from "types";
+import { GuildProfileModel } from "../../database/schemas/GuildProfile";
+import { ProfileModel } from "../../database/schemas/Profile";
 import { LevelConfigModel } from "../../database/schemas/LevelConfig";
-import { levelUp } from "./levelUp";
 
-const cooldowns = new Map<string, boolean>()
+import { handleTextXp } from "./text";
+import { handleVoiceXp } from "./voice";
+
+import { LevelConfig, LevelReward } from "types";
 
 class XpSystemModule extends BaseModule {
     constructor() {
@@ -40,24 +39,47 @@ class XpSystemModule extends BaseModule {
         return config
     }
 
-    async addTextXp(message: Message) {
-        const guildId = message.guild?.id;
-        if(!guildId) return
-        const channelId = message.channel.id
-        const userId = message.author.id;
+    async setLevelUpMessage(guildId: Snowflake, format?: string | null): Promise<LevelConfig | undefined> {
+        const document = await LevelConfigModel.findOneAndUpdate({ guildId }, {
+            levelUpMessage: {
+                messageFormat: format
+            }
+        }, { upsert: true, new: true, runValidators: true }).catch(() => {})
+        if(!document) return
 
-        const levelConfig = await this.get(guildId)
-        if(!levelConfig) return
-        const multiplier = levelConfig.multiplier || 1
-        const xpToAdd = Math.floor(Math.random() * (35 - 20) + 20);
+        const newConfig = document.toObject()
+        delete newConfig._id
+        delete newConfig.__v
 
-        await addGuildTextXp(guildId, channelId, userId, xpToAdd, multiplier);
-        await addGlobalTextXp(userId, xpToAdd);
+        await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        return newConfig
+    }
+
+    async addReward(guildId: Snowflake, reward: LevelReward, scope: 'text' | 'voice') {
+        const config = await this.get(guildId)
+        if(!config) return console.log('config')
+        if(config.rewards[scope].length >= 20) return { error: 'rewardsLimit' }
+        const document = await LevelConfigModel.findOneAndUpdate({ guildId }, {
+            $push: { [`rewards.${scope}`]: reward }
+        }, { upsert: true, new: true }).catch((e) => {console.log(e)})
+        if(!document) return console.log('document')
+
+        const newConfig = document.toObject()
+        delete newConfig._id
+        delete newConfig.__v
+
+        await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        return newConfig
+    }
+
+    async handleTextXp(message: Message) {
+        return handleTextXp(message)
     }
 
     async handleVoiceXp(oldState: VoiceState, newState: VoiceState) {
         return handleVoiceXp(oldState, newState)
     }
+
     async resetDailyXp() {
         await GuildProfileModel.updateMany({ $or: [ { 'statistics.text.dailyXp': { $gte: 1 } }, { 'statistics.voice.dailyXp': { $gte: 1 } } ] }, {
             'statistics.text.dailyXp': 0,
@@ -70,53 +92,6 @@ class XpSystemModule extends BaseModule {
         await redis.profiles.flushAll()
         await redis.guildProfiles.flushAll()
     }
-
 }
-
-async function addGuildTextXp(guildId: Snowflake, channelId: Snowflake, userId: Snowflake, xpToAdd: number, multiplier: number) {
-    const guildProfile = await Profiles.get(userId, guildId) as GuildProfileDocument;
-    const { level, xp } = guildProfile.statistics.text;
-    if(cooldowns.get(`${guildId}-${userId}`)) return;
-    cooldowns.set(`${guildId}-${userId}`, true)
-    const xpNeeded = Profiles.neededXp(level);
-
-    setTimeout(() => {
-        cooldowns.set(`${guildId}-${userId}`, false)
-    }, 60000);
-
-    if(xp + (xpToAdd * multiplier) >= xpNeeded) return levelUp(guildProfile, channelId, xp, (xpToAdd * multiplier), xpNeeded);
-
-    guildProfile.statistics.text.xp += xpToAdd * multiplier
-    guildProfile.statistics.text.totalXp += xpToAdd * multiplier
-    guildProfile.statistics.text.dailyXp += xpToAdd * multiplier
-
-    await Profiles.set(guildProfile)
-
-    return guildProfile
-}
-
-async function addGlobalTextXp(userId: Snowflake, xpToAdd: number) {
-    const globalProfile = await Profiles.get(userId) as ProfileDocument;
-    const { level, xp } = globalProfile.statistics.text;
-    if(cooldowns.get(userId)) return;
-    cooldowns.set(userId, true)
-    const xpNeeded = Profiles.neededXp(level);
-
-    setTimeout(() => {
-        cooldowns.set(userId, false)
-    }, 60000);
-
-    if(xp + xpToAdd >= xpNeeded) return levelUp(globalProfile, null, xp, xpToAdd, xpNeeded, true);
-
-    globalProfile.statistics.text.xp += xpToAdd
-    globalProfile.statistics.text.totalXp += xpToAdd
-    globalProfile.statistics.text.dailyXp += xpToAdd
-
-    await Profiles.set(globalProfile)
-
-    return globalProfile;
-}
-
-
 
 export default new XpSystemModule()
