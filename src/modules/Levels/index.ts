@@ -55,6 +55,20 @@ class XpSystemModule extends BaseModule {
         return newConfig
     }
 
+    async setMultiplier(guildId: Snowflake, multiplier: number): Promise<LevelConfig | undefined> {
+        const document = await LevelConfigModel.findOneAndUpdate({ guildId }, {
+            multiplier
+        }, { upsert: true, new: true, runValidators: true }).catch(() => {})
+        if(!document) return
+
+        const newConfig = document.toObject()
+        delete newConfig._id
+        delete newConfig.__v
+
+        await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        return newConfig
+    }
+
     async addReward(guildId: Snowflake, reward: LevelReward, scope: 'text' | 'voice') {
         const config = await this.get(guildId)
         if(!config) return
@@ -84,6 +98,15 @@ class XpSystemModule extends BaseModule {
 
         await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
         return newConfig
+    }
+
+    async rewardList(guildId: Snowflake, scope?: 'text' | 'voice') {
+        const config = await this.get(guildId)
+        if(!config) return
+        if(scope === 'text') return config.rewards.text
+        if(scope === 'voice') return config.rewards.voice
+
+        return config.rewards
     }
 
     async handleTextXp(message: Message) {

@@ -40,10 +40,10 @@
     "help": {
         "help": {
             "updateTitle": "Updates",
-            "updateList": "• Welcome Messages! More info on modules page!",
+            "updateList": "• Welcome Messages! More info on modules page!\n• Level Rewards! Check `/level rewards`",
 
             "comingSoonTitle": "Coming soon",
-            "comingSoonList": "• Website dashboard (In progress, but idk when I finish it xD)\n • Level rewards - Automatically given roles to users who reach specified level\n • Statistic channels - Display various stats within a name of a channel",
+            "comingSoonList": "• Website dashboard (In progress, but idk when I finish it xD)\n• Statistic channels - Display various stats within a name of a channel",
 
             "statTitle": "Bot stats",
             "statList": "Commands: {{commandCount}}\n Servers: {{guildCount}}/75\n Profiles: {{profileCount}}"
@@ -59,8 +59,8 @@
                 "value": "You can set up message with reactions or buttons, which will add or remove roles from user, you can also specify the type of role (add/remove or verify - which will allow only to add role and not remove)\n __Cannot manage through commands yet__"
             },
             "xpSystem": {
-                "name": "XP System",
-                "value": "XP System works both in text and voice channels. You gain coins from leveling up. Level rewards coming soon!\n __Cannot manage through commands yet__"
+                "name": "Levels System",
+                "value": "Levels System works both in text and voice channels. You gain coins from leveling up. You can add Level Rewards, which are just roles, which will be added to the user, when he hit specific level, check `/level rewards`"
             },
             "embedMessages": {
                 "name": "Embed Messages",
@@ -168,11 +168,21 @@
                 "set": "✅ Custom Level Up message has been set successfully!",
                 "unset": "✅ Custom Level Up message has been unset successfully!"
             },
+            "multiplier": {
+                "set": "✅ XP multiplier has been set successfully!",
+                "display": "Multiplier is set to `{{multiplier}}`"
+            },
             "rewards": {
                 "add": "✅ Level Rewards has been added successfully!",
                 "remove": "✅ Level Rewards has been removed successfully!",
 
-                "takePreviousRole": "Take previous reward",
+                "listTitle": "Level Rewards",
+                "textListTitle": "Text Level Rewards",
+                "voiceListTitle": "Voice Level Rewards",
+                "text": "Text rewards",
+                "voice": "Voice rewards",
+
+                "takePreviousRole": "Remove previous reward",
 
                 "limitError": "❌ You can add only up to 20 rewards for each scope (text and voice)!",
                 "rewardNotSelected": "❌ Wrong reward, please select a reward from the list!"

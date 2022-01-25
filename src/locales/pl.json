@@ -168,9 +168,19 @@
                 "set": "✅ Pomyślnie ustawiono wiadomość level up!",
                 "unset": "✅ Pomyślnie usunięto wiadomość level up!"
             },
+            "multiplier": {
+                "set": "✅ Pomyślnie ustawiono mnożnik xp!",
+                "display": "Mnożnik jest ustawiony na `{{multiplier}}`"
+            },
             "rewards": {
                 "add": "✅ Pomyślnie dodano nagrodę za level!",
                 "remove": "✅ Pomyślnie usunięto nagrodę za level!",
+
+                "listTitle": "Nagrody za level",
+                "textListTitle": "Nagrody za tekstowy level",
+                "voiceListTitle": "Nagrody za głosowy level",
+                "text": "Nagrody tekstowe",
+                "voice": "Nagrody głosowe",
 
                 "takePreviousRole": "Zabierz poprzednią nagrodę",
 

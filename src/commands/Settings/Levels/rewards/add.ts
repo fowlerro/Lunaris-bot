@@ -1,5 +1,5 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
-import xpSystem from "../../../../modules/xpSystem";
+import Levels from "../../../../modules/Levels";
 import { palette } from "../../../../utils/utils";
 
 export default async (interaction: CommandInteraction) => {
@@ -10,7 +10,7 @@ export default async (interaction: CommandInteraction) => {
     const scope = interaction.options.getString('scope', true)
     const removePreviousReward = interaction.options.getBoolean('remove-previous-reward') || false
 
-    const res = await xpSystem.addReward(
+    const res = await Levels.addReward(
         interaction.guildId!,
         { roleId: role.id, level, takePreviousRole: removePreviousReward },
         scope === 'voice' ? 'voice' : 'text'

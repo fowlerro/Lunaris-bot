@@ -1,7 +1,7 @@
 import cron from 'node-cron'
 
 import BaseModule from "../../utils/structures/BaseModule";
-import xpSystem from '../xpSystem';
+import Levels from '../Levels';
 
 
 class ResetModule extends BaseModule {
@@ -16,7 +16,7 @@ class ResetModule extends BaseModule {
 
 async function dailyReset() {
     console.log(new Date().toLocaleString('pl-PL'), 'Daily reset');
-    await xpSystem.resetDailyXp();
+    await Levels.resetDailyXp();
 }
 
 function daily() {

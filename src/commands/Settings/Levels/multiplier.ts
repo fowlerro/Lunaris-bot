@@ -4,31 +4,33 @@ import { palette } from "../../../utils/utils";
 
 export default async (interaction: CommandInteraction) => {
     const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
-    const format = interaction.options.getString('format')
-    if(format && format.length > 256) return formatTooLong(interaction)
+    const multiplier = interaction.options.getNumber('value')
+    if(!multiplier) return sendMultiplier(interaction)
+    if(multiplier <= 0 || multiplier > 5) return handleError(interaction)
 
-    const updatedConfig = await Levels.setLevelUpMessage(interaction.guildId!, format)
-    if(!updatedConfig) return handleError(interaction)
+    const newConfig = await Levels.setMultiplier(interaction.guildId!, multiplier)
+    if(!newConfig) return handleError(interaction)
 
     const embed = new MessageEmbed()
         .setColor(palette.success)
-        .setDescription(t(`command.level.levelUpMessage.${format ? 'set' : 'unset'}`, language));
+        .setDescription(t('command.level.multiplier.set', language))
 
     return interaction.reply({
         embeds: [embed]
     })
 }
 
-function formatTooLong(interaction: CommandInteraction) {
+async function sendMultiplier(interaction: CommandInteraction) {
     const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const config = await Levels.get(interaction.guildId!)
+    if(!config) return handleError(interaction)
 
     const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.level.levelUpMessage.formatTooLong', language))
+        .setColor(palette.info)
+        .setDescription(t('command.level.multiplier.display', language, { multiplier: config.multiplier.toString() }))
 
     return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
+        embeds: [embed]
     })
 }
 

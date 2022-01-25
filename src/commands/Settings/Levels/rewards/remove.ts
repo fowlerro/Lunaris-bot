@@ -1,5 +1,5 @@
 import { AutocompleteInteraction, CommandInteraction, MessageEmbed } from "discord.js";
-import xpSystem from "../../../../modules/xpSystem";
+import Levels from "../../../../modules/Levels";
 import { palette } from "../../../../utils/utils";
 
 export default async (interaction: CommandInteraction) => {
@@ -9,7 +9,7 @@ export default async (interaction: CommandInteraction) => {
     const scope = interaction.options.getString('scope', true)
     if(!rewardId) return rewardNotSelected(interaction)
 
-    const res = await xpSystem.removeReward(interaction.guildId, rewardId, scope === 'voice' ? 'voice' : 'text')
+    const res = await Levels.removeReward(interaction.guildId, rewardId, scope === 'voice' ? 'voice' : 'text')
     if(!res) return handleError(interaction)
 
     const embed = new MessageEmbed()
@@ -27,7 +27,7 @@ export async function removeAutocomplete(interaction: AutocompleteInteraction) {
 
     const input = interaction.options.getString('reward', true)
     const scope = interaction.options.getString('scope', true)
-    const levelConfig = await xpSystem.get(interaction.guildId)
+    const levelConfig = await Levels.get(interaction.guildId)
     if(!levelConfig) return
     const sortedRewards = levelConfig.rewards[scope === 'voice' ? 'voice' : 'text'].sort((a, b) => b.level - a.level)
 

@@ -1,7 +1,7 @@
 import { VoiceState } from "discord.js";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
-import xpSystem from "../../modules/xpSystem";
+import Levels from "../../modules/Levels";
 
 export default class VoiceStateUpdateEvent extends BaseEvent {
 	constructor() {
@@ -12,6 +12,6 @@ export default class VoiceStateUpdateEvent extends BaseEvent {
 		if(!client.isOnline) return;
 		if(newState.member?.user.bot) return;
 
-		xpSystem.handleVoiceXp(oldState, newState);
+		Levels.handleVoiceXp(oldState, newState);
 	}
 }

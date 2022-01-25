@@ -2,6 +2,7 @@ import { AutocompleteInteraction, CommandInteraction, Permissions } from "discor
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
 import levelUpMessage from "./levelUpMessage";
+import multiplier from "./multiplier";
 import rewards from "./rewards";
 import { removeAutocomplete } from "./rewards/remove";
 
@@ -16,15 +17,36 @@ export default class LevelCommand extends BaseCommand {
             },
             [
                 {
-                    name: 'level-up-message',
-                    description: "Set custom level up message, not providing format argument will remove custom message",
-                    type: 'SUB_COMMAND',
+                    name: 'config',
+                    description: "Manage Levels config",
+                    type: 'SUB_COMMAND_GROUP',
                     options: [
                         {
-                            name: 'format',
-                            description: 'Format of the level up message, you can use the formatters here `/formatters`',
-                            type: 'STRING',
-                        }
+                            name: 'level-up-message',
+                            description: "Set custom level up message, not providing format argument will remove custom message",
+                            type: 'SUB_COMMAND',
+                            options: [
+                                {
+                                    name: 'format',
+                                    description: 'Format of the level up message, you can use the formatters here `/formatters`',
+                                    type: 'STRING',
+                                }
+                            ]
+                        },
+                        {
+                            name: 'multiplier',
+                            description: "Set xp multiplier, or display current setting, when value not provided",
+                            type: 'SUB_COMMAND',
+                            options: [
+                                {
+                                    name: 'value',
+                                    description: "Default is 1 (20-35xp per message)",
+                                    type: 'NUMBER',
+                                    minValue: 0.01,
+                                    maxValue: 5
+                                }
+                            ]
+                        },
                     ]
                 },
                 {
@@ -88,12 +110,19 @@ export default class LevelCommand extends BaseCommand {
                         {
                             name: 'list',
                             description: "A list of added Level Rewards",
-                            type: 'SUB_COMMAND'
+                            type: 'SUB_COMMAND',
+                            options: [
+                                {
+                                    name: 'scope',
+                                    description: "Display rewards for only text or voice",
+                                    type: 'STRING',
+                                    choices: [{ name: 'text', value: 'text' }, { name: 'voice', value: 'voice' }],
+                                }
+                            ]
                         }
                     ]
                 }
-            ],
-            true, true
+            ]
         );
     }
 
@@ -108,6 +137,7 @@ export default class LevelCommand extends BaseCommand {
         if(subcommandGroup === 'rewards') return rewards(interaction)
 
         if(subcommand === 'level-up-message') return levelUpMessage(interaction)
+        if(subcommand === 'multiplier') return multiplier(interaction)
     }
 
     async autocomplete(interaction: AutocompleteInteraction) {

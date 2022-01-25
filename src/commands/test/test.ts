@@ -1,7 +1,7 @@
 import { CommandInteraction } from "discord.js";
 import { GuildProfileDocument } from "../../database/schemas/GuildProfile";
 import Profiles from "../../modules/Profiles";
-import levelRewards from "../../modules/xpSystem/levelRewards";
+import levelRewards from "../../modules/Levels/levelRewards";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 
