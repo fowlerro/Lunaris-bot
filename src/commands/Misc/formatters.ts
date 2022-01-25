@@ -14,8 +14,7 @@ export default class FormatterCommand extends BaseCommand {
                 en: "List of all available formatters, you can use in some modules like Welcome Message",
                 pl: "Lista dostępnych formatowań, których możesz użyć w modułach takich jak Wiadomości Powitalne"
             },
-            [],
-            true, true
+            []
         );
     }
 

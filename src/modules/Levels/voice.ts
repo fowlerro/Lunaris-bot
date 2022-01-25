@@ -1,11 +1,11 @@
-import { VoiceState, GuildMember, Collection } from "discord.js";
-import { Snowflake } from "discord-api-types";
+import { VoiceState, GuildMember, Collection, Snowflake } from "discord.js";
 
-import Guilds from "../Guilds";
 import Profiles from "../Profiles";
 import { ProfileDocument } from "../../database/schemas/Profile";
 import { GuildProfileDocument } from "../../database/schemas/GuildProfile";
-import xpSystem from ".";
+
+import xpSystem from "./index";
+import { voiceLevelUp } from "./levelUp";
 
 const membersInterval: {
     [x: string]: NodeJS.Timer
@@ -142,7 +142,7 @@ function stopXp(guildId: Snowflake, memberId: Snowflake) {
 function addGuildXp(profile: GuildProfileDocument, xpToAdd: number) {
     const { level, xp } = profile.statistics.voice;
     const xpNeeded = Profiles.neededXp(level);
-    if(xp + xpToAdd >= xpNeeded) return levelUp(profile, xp, xpToAdd, xpNeeded);
+    if(xp + xpToAdd >= xpNeeded) return voiceLevelUp(profile, xp, xpToAdd, xpNeeded);
     
     profile.statistics.voice.xp += xpToAdd
     profile.statistics.voice.totalXp += xpToAdd
@@ -153,22 +153,10 @@ function addGuildXp(profile: GuildProfileDocument, xpToAdd: number) {
 function addGlobalXp(profile: ProfileDocument, xpToAdd: number) {
     const { level, xp } = profile.statistics.voice;
     const xpNeeded = Profiles.neededXp(level);
-    if(xp + xpToAdd >= xpNeeded) return levelUp(profile, xp, xpToAdd, xpNeeded, true);
+    if(xp + xpToAdd >= xpNeeded) return voiceLevelUp(profile, xp, xpToAdd, xpNeeded);
 
     profile.statistics.voice.xp += xpToAdd
     profile.statistics.voice.totalXp += xpToAdd
     profile.statistics.voice.dailyXp += xpToAdd
     profile.statistics.voice.timeSpent += 1
-}
-
-function levelUp(profile: GuildProfileDocument | ProfileDocument, xp: number, xpToAdd: number, xpNeeded: number, isGlobal: boolean = false) {
-    const rest = (xp + xpToAdd) - xpNeeded;
-
-    profile.statistics.voice.level += 1;
-    profile.statistics.voice.xp = rest;
-    profile.statistics.voice.totalXp += xpToAdd;
-    profile.statistics.voice.dailyXp += xpToAdd;
-    profile.statistics.voice.timeSpent += 1;
-
-    'coins' in profile && (profile.coins += profile.statistics.voice.level * (10 + profile.statistics.voice.level * 2))
 }

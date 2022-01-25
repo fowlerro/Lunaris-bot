@@ -1,7 +1,7 @@
 import { CommandInteraction } from "discord.js";
-import { WelcomeMessageAction } from "types";
-import { GuildConfigModel } from "../../database/schemas/GuildConfig";
-import WelcomeMessage from "../../modules/WelcomeMessage";
+import { GuildProfileDocument } from "../../database/schemas/GuildProfile";
+import Profiles from "../../modules/Profiles";
+import levelRewards from "../../modules/Levels/levelRewards";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 
@@ -29,8 +29,9 @@ export default class TestCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.member || !('guild' in interaction.member)) return
 
-        const action = interaction.options.getString('action', true) as WelcomeMessageAction
-        await WelcomeMessage.sendMessage(interaction.member, action)
+        const profile = await Profiles.get(interaction.member.id, interaction.guildId!) as GuildProfileDocument
+        await levelRewards(profile, true)
+        await levelRewards(profile, false)
         
         interaction.reply({
             content: 'ok', 

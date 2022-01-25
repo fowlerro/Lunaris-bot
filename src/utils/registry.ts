@@ -34,7 +34,7 @@ export async function registerCommands(dir = '') {
 				}
 				
 				if(command.type === 'CHAT_INPUT') commandOptions.description = command.description.en
-
+				
 				const globalCommand = globalCommands?.find(cmd => cmd.name === command.name)
 				if(!globalCommand || !globalCommand.equals(commandOptions)) {
 					command.test ? await guild.commands.create(commandOptions) : await client.application?.commands.create(commandOptions)

@@ -17,6 +17,10 @@ const LevelConfigSchema = new Schema({
         default: 1
     },
     levelUpMessage: {
+        messageFormat: {
+            type: String,
+            maxlength: 256
+        },
         mode: {
             type: String,
             enum: ['off', 'currentChannel', 'specificChannel'],
@@ -27,6 +31,40 @@ const LevelConfigSchema = new Schema({
             minlength: 18,
             maxlength: 18
         }
+    },
+    rewards: {
+        text: [{
+            roleId: {
+                type: String,
+                minlength: 18,
+                maxlength: 18
+            },
+            level: {
+                type: Number,
+                min: 1,
+                required: true
+            },
+            takePreviousRole: {
+                type: Boolean,
+                default: true
+            }
+        }],
+        voice: [{
+            roleId: {
+                type: String,
+                minlength: 18,
+                maxlength: 18
+            },
+            level: {
+                type: Number,
+                min: 1,
+                required: true
+            },
+            takePreviousRole: {
+                type: Boolean,
+                default: true
+            }
+        }]
     }
 })
 

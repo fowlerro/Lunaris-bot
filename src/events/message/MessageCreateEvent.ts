@@ -1,7 +1,7 @@
 import { Message } from "discord.js";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
-import xpSystem from "../../modules/xpSystem";
+import Levels from "../../modules/Levels";
 
 export default class MessageCreateEvent extends BaseEvent {
     constructor() {
@@ -17,6 +17,6 @@ export default class MessageCreateEvent extends BaseEvent {
         })
         if(!client.isOnline) return;
 
-        xpSystem.addTextXp(message);
+        Levels.handleTextXp(message)
     }
 };
