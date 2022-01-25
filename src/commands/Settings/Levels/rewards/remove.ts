@@ -1,5 +1,67 @@
-import { CommandInteraction } from "discord.js";
+import { AutocompleteInteraction, CommandInteraction, MessageEmbed } from "discord.js";
+import xpSystem from "../../../../modules/xpSystem";
+import { palette } from "../../../../utils/utils";
 
 export default async (interaction: CommandInteraction) => {
-    
+    if(!interaction.guildId) return
+    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const rewardId = interaction.options.getString('reward', true)
+    const scope = interaction.options.getString('scope', true)
+    if(!rewardId) return rewardNotSelected(interaction)
+
+    const res = await xpSystem.removeReward(interaction.guildId, rewardId, scope === 'voice' ? 'voice' : 'text')
+    if(!res) return handleError(interaction)
+
+    const embed = new MessageEmbed()
+        .setColor(palette.success)
+        .setDescription(t('command.level.rewards.remove', language))
+
+    return interaction.reply({
+        embeds: [embed]
+    })
+}
+
+export async function removeAutocomplete(interaction: AutocompleteInteraction) {
+    if(!interaction.guildId) return
+    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+
+    const input = interaction.options.getString('reward', true)
+    const scope = interaction.options.getString('scope', true)
+    const levelConfig = await xpSystem.get(interaction.guildId)
+    if(!levelConfig) return
+    const sortedRewards = levelConfig.rewards[scope === 'voice' ? 'voice' : 'text'].sort((a, b) => b.level - a.level)
+
+    const options = await Promise.all(sortedRewards.map(async reward => {
+        const role = reward.roleId ? await interaction.guild?.roles.fetch(reward.roleId) : null
+        return {
+            name: `Level: ${reward.level}, ${t('general.role', language)}: ${role ? role.name : t('general.none', language)}, ${t('command.level.rewards.takePreviousRole', language)}: ${t(`general.${reward.takePreviousRole ? 'yes' : 'no'}`, language)}`,
+            value: reward._id!
+        }
+    }))
+
+    return interaction.respond(options.splice(0, 25))
+}
+
+async function rewardNotSelected(interaction: CommandInteraction) {
+    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const embed = new MessageEmbed()
+        .setColor(palette.error)
+        .setDescription(t('command.level.rewards.rewardNotSelected', language))
+
+    return interaction.reply({
+        embeds: [embed],
+        ephemeral: true
+    })
+}
+
+async function handleError(interaction: CommandInteraction) {
+    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const embed = new MessageEmbed()
+        .setColor(palette.error)
+        .setDescription(t('general.error', language))
+
+    return interaction.reply({
+        embeds: [embed],
+        ephemeral: true
+    })
 }

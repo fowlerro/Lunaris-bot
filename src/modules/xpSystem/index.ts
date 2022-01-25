@@ -57,13 +57,27 @@ class XpSystemModule extends BaseModule {
 
     async addReward(guildId: Snowflake, reward: LevelReward, scope: 'text' | 'voice') {
         const config = await this.get(guildId)
-        if(!config) return console.log('config')
+        if(!config) return
         if(config.rewards[scope].length >= 20) return { error: 'rewardsLimit' }
         const document = await LevelConfigModel.findOneAndUpdate({ guildId }, {
             $push: { [`rewards.${scope}`]: reward }
         }, { upsert: true, new: true }).catch((e) => {console.log(e)})
-        if(!document) return console.log('document')
+        if(!document) return
 
+        const newConfig = document.toObject()
+        delete newConfig._id
+        delete newConfig.__v
+
+        await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        return newConfig
+    }
+
+    async removeReward(guildId: Snowflake, rewardId: string, scope: 'text' | 'voice') {
+        const document = await LevelConfigModel.findOneAndUpdate({ guildId, [`rewards.${scope}`]: { $elemMatch: { _id: rewardId } } }, {
+            $pull: { [`rewards.${scope}`]: { _id: rewardId } }
+        }, { new: true }).catch(() => {})
+        if(!document) return
+        
         const newConfig = document.toObject()
         delete newConfig._id
         delete newConfig.__v

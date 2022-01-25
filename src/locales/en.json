@@ -33,7 +33,9 @@
         "example": "Example",
         "user": "User",
         "date": "Date",
-        "error": "❌ Something went wrong :/ Try again!"
+        "error": "❌ Something went wrong :/ Try again!",
+        "yes": "yes",
+        "no": "no"
     },
     "help": {
         "help": {
@@ -168,7 +170,12 @@
             },
             "rewards": {
                 "add": "✅ Level Rewards has been added successfully!",
-                "limitError": "❌ You can add only up to 20 rewards for each scope (text and voice)!"
+                "remove": "✅ Level Rewards has been removed successfully!",
+
+                "takePreviousRole": "Take previous reward",
+
+                "limitError": "❌ You can add only up to 20 rewards for each scope (text and voice)!",
+                "rewardNotSelected": "❌ Wrong reward, please select a reward from the list!"
             }
         }
     },

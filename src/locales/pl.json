@@ -32,7 +32,10 @@
         "syntax": "Składnia",
         "example": "Przykład",
         "user": "Użytkownik",
-        "date": "Data"
+        "date": "Data",
+        "error": "❌ Coś poszło nie tak :/ Spróbuj ponownie!",
+        "yes": "tak",
+        "no": "nie"
     },
     "help": {
         "help": {
@@ -167,7 +170,12 @@
             },
             "rewards": {
                 "add": "✅ Pomyślnie dodano nagrodę za level!",
-                "limitError": "❌ Możesz dodać jedynie po 20 nagród dla tekstowych lub głosowych leveli!"
+                "remove": "✅ Pomyślnie usunięto nagrodę za level!",
+
+                "takePreviousRole": "Zabierz poprzednią nagrodę",
+
+                "limitError": "❌ Możesz dodać jedynie po 20 nagród dla tekstowych lub głosowych leveli!",
+                "rewardNotSelected": "❌ Nieprawidłowa nagroda, wybierz poprawną z listy!"
             }
         }
     },

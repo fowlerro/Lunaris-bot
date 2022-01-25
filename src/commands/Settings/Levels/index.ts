@@ -1,8 +1,9 @@
-import { CommandInteraction, Permissions } from "discord.js";
+import { AutocompleteInteraction, CommandInteraction, Permissions } from "discord.js";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
 import levelUpMessage from "./levelUpMessage";
 import rewards from "./rewards";
+import { removeAutocomplete } from "./rewards/remove";
 
 export default class LevelCommand extends BaseCommand {
     constructor() {
@@ -69,6 +70,13 @@ export default class LevelCommand extends BaseCommand {
                             type: 'SUB_COMMAND',
                             options: [
                                 {
+                                    name: 'scope',
+                                    description: "If a reward is text or voice",
+                                    type: 'STRING',
+                                    choices: [{ name: 'text', value: 'text' }, { name: 'voice', value: 'voice' }],
+                                    required: true
+                                },
+                                {
                                     name: 'reward',
                                     description: "A reward to be removed",
                                     type: 'STRING',
@@ -100,5 +108,9 @@ export default class LevelCommand extends BaseCommand {
         if(subcommandGroup === 'rewards') return rewards(interaction)
 
         if(subcommand === 'level-up-message') return levelUpMessage(interaction)
+    }
+
+    async autocomplete(interaction: AutocompleteInteraction) {
+        return removeAutocomplete(interaction)
     }
 }
