@@ -1,7 +1,7 @@
 import { Formatters, GuildMember } from "discord.js";
 
-export function dateNow() {
-    return Formatters.time(new Date())
+export function dateNow(member: GuildMember, formatDate: boolean) {
+    return formatDate ? Formatters.time(new Date()) : new Date().toUTCString()
 }
 
 export function memberAvatar(member: GuildMember) {

@@ -2,7 +2,6 @@ import { ChannelMention, ExcludeEnum, Guild, MemberMention, Snowflake } from "di
 import { ActivityTypes } from "discord.js/typings/enums";
 import path from "path";
 import fs from 'fs'
-import BaseCommand from "./structures/BaseCommand";
 
 export const botOwners = ["313346190995619841"];
 

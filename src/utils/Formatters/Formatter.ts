@@ -8,7 +8,7 @@ interface IVariables {
 export interface IFormatter {
     name: string;
     path?: string;
-    customFunction?: (member: GuildMember) => string | null;
+    customFunction?: (member: GuildMember, formatDate: boolean) => string | null;
     type: string;
     mentionType?: 'member' | 'channel' | 'role';
     category: string;
@@ -213,7 +213,7 @@ export const supportedFormatters: IFormatter[] = [
 
 const regex = /{{[A-Za-z]{1,}}}/g
 
-export default function TextFormatter(format: string, variables: IVariables) {
+export default function TextFormatter(format: string, variables: IVariables, formatDate: boolean = true) {
     const match = format.match(regex)
     if(!match) return format
 
@@ -227,7 +227,7 @@ export default function TextFormatter(format: string, variables: IVariables) {
 
         if(supportedFormatter.type === 'variable') return format = formatVariable(format, value, supportedFormatter, variables)
         if(supportedFormatter.type === 'mention') return format = formatMention(format, value, supportedFormatter, variables)
-        if(supportedFormatter.type === 'custom') return format = formatCustom(format, value, supportedFormatter, variables)
+        if(supportedFormatter.type === 'custom') return format = formatCustom(format, value, supportedFormatter, variables, formatDate)
     })
 
     return format
@@ -253,9 +253,9 @@ function formatMention(format: string, value: string, formatter: IFormatter, var
     return format
 }
 
-function formatCustom(format: string, value: string, formatter: IFormatter, variables: IVariables) {
+function formatCustom(format: string, value: string, formatter: IFormatter, variables: IVariables, formatDate: boolean) {
     if(!formatter.customFunction) return format
-    const variable = formatter.customFunction(variables.member)
+    const variable = formatter.customFunction(variables.member, formatDate)
     if(!variable) return format
     format = format.replace(value, variable)
 

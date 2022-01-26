@@ -4,6 +4,8 @@ import Profiles from "../../modules/Profiles";
 import levelRewards from "../../modules/Levels/levelRewards";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
+import TextFormatter from "../../utils/Formatters/Formatter";
+import { StatisticChannelsModel } from "../../database/schemas/StatisticChannels";
 
 export default class TestCommand extends BaseCommand {
     constructor() {
@@ -27,11 +29,16 @@ export default class TestCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
+        if(!interaction.guildId) return
         if(!interaction.member || !('guild' in interaction.member)) return
 
-        const profile = await Profiles.get(interaction.member.id, interaction.guildId!) as GuildProfileDocument
-        await levelRewards(profile, true)
-        await levelRewards(profile, false)
+        const res = await StatisticChannelsModel.create({
+            guildId: interaction.guildId,
+            channels: [{
+                channelId: "935890742025535519",
+                format: "{{DateNow}}"
+            }]
+        })
         
         interaction.reply({
             content: 'ok', 
