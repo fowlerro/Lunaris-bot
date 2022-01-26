@@ -168,6 +168,20 @@
                 "set": "✅ Custom Level Up message has been set successfully!",
                 "unset": "✅ Custom Level Up message has been unset successfully!"
             },
+            "levelUpChannel": {
+                "set": {
+                    "off": "✅ Level up message has been successfully disabled!",
+                    "currentChannel": "✅ Level up message has been successfully set as `currentChannel`!",
+                    "specificChannel": "✅ Level up message channel has been set successfully!"
+                },
+
+                "currentChannel": "Message will be showing on channel where user leveled up",
+                "specificChannel": "Message will be showing in {{channel}}",
+                "disabled": "Level up message is disabled",
+
+                "wrongMode": "❌ Wrong mode, please select one from the options",
+                "notSpecifiedChannel": "❌ Channel not specified, select one from the options!"
+            },
             "multiplier": {
                 "set": "✅ XP multiplier has been set successfully!",
                 "display": "Multiplier is set to `{{multiplier}}`"

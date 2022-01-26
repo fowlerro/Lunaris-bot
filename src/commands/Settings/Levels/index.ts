@@ -1,6 +1,7 @@
 import { AutocompleteInteraction, CommandInteraction, Permissions } from "discord.js";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
+import levelUpChannel from "./levelUpChannel";
 import levelUpMessage from "./levelUpMessage";
 import multiplier from "./multiplier";
 import rewards from "./rewards";
@@ -28,8 +29,27 @@ export default class LevelCommand extends BaseCommand {
                             options: [
                                 {
                                     name: 'format',
-                                    description: 'Format of the level up message, you can use the formatters here `/formatters`',
+                                    description: 'Format of the level up message, you can use the formatters here /formatters',
                                     type: 'STRING',
+                                }
+                            ]
+                        },
+                        {
+                            name: 'level-up-channel',
+                            description: "Change way the bot will send level up message",
+                            type: 'SUB_COMMAND',
+                            options: [
+                                {
+                                    name: 'mode',
+                                    description: "Mode allows you to choose one out of three options",
+                                    type: 'STRING',
+                                    choices: [{ name: 'disable', value: 'off' }, { name: 'Current channel - Channel where user gets level', value: 'currentChannel' }, { name: "Specific Channel - Choose channel to gets level up messages always in one place", value: 'specificChannel' }]
+                                },
+                                {
+                                    name: 'channel',
+                                    description: "Channel for the last mode",
+                                    type: 'CHANNEL',
+                                    channelTypes: [ 'GUILD_TEXT' ]
                                 }
                             ]
                         },
@@ -137,6 +157,7 @@ export default class LevelCommand extends BaseCommand {
         if(subcommandGroup === 'rewards') return rewards(interaction)
 
         if(subcommand === 'level-up-message') return levelUpMessage(interaction)
+        if(subcommand === 'level-up-channel') return levelUpChannel(interaction)
         if(subcommand === 'multiplier') return multiplier(interaction)
     }
 

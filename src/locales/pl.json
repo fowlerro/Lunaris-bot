@@ -168,6 +168,20 @@
                 "set": "✅ Pomyślnie ustawiono wiadomość level up!",
                 "unset": "✅ Pomyślnie usunięto wiadomość level up!"
             },
+            "levelUpChannel": {
+                "set": {
+                    "off": "✅ Pomyślnie wyłączono wiadomość zdobycia levela!",
+                    "currentChannel": "✅ Pomyślnie ustawiono wiadomość jako `currentChannel`!",
+                    "specificChannel": "✅ Pomyślnie ustawiono kanał wiadomości!"
+                },
+
+                "currentChannel": "Wiadomość ustawiona jest na kanale, w którym użytkownik zdobędzie level",
+                "specificChannel": "Wiadomość ustawiona jest na kanale {{channel}}",
+                "disabled": "Wiadomość zdobycia levela jest wyłączona",
+
+                "wrongMode": "❌ Niepoprawny tryb, wybierz prawidłowy z opcji komendy",
+                "notSpecifiedChannel": "❌ Nie podano kanału, wybierz go w opcji komendy!"
+            },
             "multiplier": {
                 "set": "✅ Pomyślnie ustawiono mnożnik xp!",
                 "display": "Mnożnik jest ustawiony na `{{multiplier}}`"

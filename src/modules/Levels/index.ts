@@ -8,11 +8,11 @@ import { LevelConfigModel } from "../../database/schemas/LevelConfig";
 import { handleTextXp } from "./text";
 import { handleVoiceXp } from "./voice";
 
-import { LevelConfig, LevelReward } from "types";
+import { LevelConfig, LevelReward, LevelUpMessage } from "types";
 
-class XpSystemModule extends BaseModule {
+class LevelsModule extends BaseModule {
     constructor() {
-        super('XpSystem', true)
+        super('Levels', true)
     }
 
     async run() {}
@@ -47,6 +47,22 @@ class XpSystemModule extends BaseModule {
         }, { upsert: true, new: true, runValidators: true }).catch(() => {})
         if(!document) return
 
+        const newConfig = document.toObject()
+        delete newConfig._id
+        delete newConfig.__v
+
+        await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        return newConfig
+    }
+
+    async setLevelUpChannel(guildId: Snowflake, mode: LevelUpMessage['mode'], channelId?: Snowflake): Promise<LevelConfig | undefined> {
+        const document = await LevelConfigModel.findOneAndUpdate({ guildId }, {
+            levelUpMessage: {
+                mode, channelId
+            }
+        }, { upsert: true, new: true, runValidators: true }).catch(() => {})
+        if(!document) return
+        
         const newConfig = document.toObject()
         delete newConfig._id
         delete newConfig.__v
@@ -131,4 +147,4 @@ class XpSystemModule extends BaseModule {
     }
 }
 
-export default new XpSystemModule()
+export default new LevelsModule()
