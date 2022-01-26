@@ -19,4 +19,4 @@ jobs:
 
       # Finally, run our tests
       - name: Run the tests
-        run: npm ci
+        run: npm run ci

@@ -234,7 +234,7 @@ export default function TextFormatter(format: string, variables: IVariables) {
 }
 
 function formatVariable(format: string, value: string, formatter: IFormatter, variables: IVariables) {
-    const variable = formatter.path?.split('.').reduce((a, prop) => a[prop], variables)
+    const variable = formatter.path?.split('.').reduce((a, prop) => a?.[prop], variables)
     format = format.replace(value, (typeof variable === 'string' || typeof variable === 'number') ? variable
         : (variable instanceof Date ? Formatters.time(variable) : value))
 
@@ -242,7 +242,7 @@ function formatVariable(format: string, value: string, formatter: IFormatter, va
 }
 
 function formatMention(format: string, value: string, formatter: IFormatter, variables: IVariables) {
-    const variable = formatter.path?.split('.').reduce((a, prop) => a[prop], variables)
+    const variable = formatter.path?.split('.').reduce((a, prop) => a?.[prop], variables)
     if(typeof variable !== 'string') return format
     const mention = formatter.mentionType === 'member' ? Formatters.memberNicknameMention(variable)
         : formatter.mentionType === 'role' ? Formatters.roleMention(variable)
