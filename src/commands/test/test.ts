@@ -4,6 +4,7 @@ import Profiles from "../../modules/Profiles";
 import levelRewards from "../../modules/Levels/levelRewards";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
+import Logs from "../../modules/Logs";
 
 export default class TestCommand extends BaseCommand {
     constructor() {
@@ -27,11 +28,10 @@ export default class TestCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
+        if(!interaction.guildId) return
         if(!interaction.member || !('guild' in interaction.member)) return
 
-        const profile = await Profiles.get(interaction.member.id, interaction.guildId!) as GuildProfileDocument
-        await levelRewards(profile, true)
-        await levelRewards(profile, false)
+        await Logs.log('members', 'memberJoin', interaction.guildId)
         
         interaction.reply({
             content: 'ok', 
