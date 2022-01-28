@@ -7,6 +7,7 @@
     "dev": "sudo systemctl stop lunaris; nodemon ./src/bot.ts",
     "start": "node ./dist/bot.js",
     "test": "jest --watch --verbose --testPathPattern=src/test --maxWorkers=1",
+    "test:coverage": "jest --coverage --verbose --testPathPattern=src/test --maxWorkers=1",
     "ci": "jest --ci --verbose --testPathPattern='src/test'",
     "heroku": "tsc && npm run copyassets",
     "copyassets": "cp -r ./src/modules/Profiles/assets/ ./dist/modules/Profiles/assets/"
