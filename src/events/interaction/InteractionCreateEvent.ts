@@ -3,6 +3,7 @@ import { Interaction } from "discord.js";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
 import CommandHandler from "../../modules/CommandHandler";
+import Logs from "../../modules/Logs";
 
 export default class InteractionCreateEvent extends BaseEvent {
     constructor() {
@@ -15,5 +16,7 @@ export default class InteractionCreateEvent extends BaseEvent {
         if(interaction.isCommand() || interaction.isContextMenu()) CommandHandler.handle(interaction)
 
         if(interaction.isAutocomplete()) CommandHandler.autocomplete(interaction)
+
+        if(interaction.isButton()) Logs.handleAction(interaction)
     }
 }

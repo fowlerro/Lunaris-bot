@@ -1,20 +1,27 @@
+import { MessageEmbedOptions } from "discord.js";
+import { palette } from "../../utils/utils";
+
 export default {
     members: {
         memberJoin: {
-            title: "Member Join",
+            color: palette.info,
+            author: {
+                name: "logs.members.memberJoin.title",
+                iconURL: "{{memberAvatar}}"
+            },
             fields: [
                 {
-                    name: "Member",
-                    value: "@Chuj",
+                    name: "logs.members.memberJoin.member",
+                    value: "{{mentionMember}}\n{{memberId}}",
                     inline: true
                 },
                 {
-                    name: "Account created at",
-                    value: "Date",
+                    name: "logs.members.memberJoin.createdAt",
+                    value: "{{memberCreatedAt}}\n{{memberCreatedAt:R}}",
                     inline: true
                 }
             ],
             timestamp: new Date()
-        }
+        } as MessageEmbedOptions
     }
 }

@@ -31,7 +31,7 @@ export default class TestCommand extends BaseCommand {
         if(!interaction.guildId) return
         if(!interaction.member || !('guild' in interaction.member)) return
 
-        await Logs.log('members', 'memberJoin', interaction.guildId)
+        await Logs.log('members', 'memberJoin', interaction.guildId, { guild: interaction.guild, member: interaction.member })
         
         interaction.reply({
             content: 'ok', 

@@ -9,7 +9,7 @@ export default {
     directory: path.join(__dirname, '../locales'),
     retryInDefaultLocale: true,
     objectNotation: true,
-    updateFiles: false
+    updateFiles: false,
 } as ConfigurationOptions
 
 export function translate(phrase: LocalePhrase, locale: string, variables: Replacements = {}) {

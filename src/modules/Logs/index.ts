@@ -1,4 +1,6 @@
-import { Formatters, MessageEmbed, Snowflake, TextChannel } from "discord.js";
+import { ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed, Snowflake, TextChannel } from "discord.js";
+import { Language } from "types";
+import { LocalePhrase } from "../../types/locales";
 import TextFormatter from "../../utils/Formatters/Formatter";
 import BaseModule from "../../utils/structures/BaseModule";
 import templates from "./templates";
@@ -13,19 +15,58 @@ class LogsModule extends BaseModule {
 
     async run() {}
 
-    async log(category: keyof Config, type: string, guildId: Snowflake, ...vars: any) {
+    async log(category: keyof Config, type: string, guildId: Snowflake, vars: any) {
         const config: Config = { members: { channelId: "795980843516297216", logs: { memberJoin: true } } }
 
         const guild = await client.guilds.fetch(guildId).catch(() => {})
         if(!guild) return console.log('notGuild')
         const channel = await guild.channels.fetch(config[category].channelId).catch(() => {}) as TextChannel | null
         if(!channel) return console.log('notChannel')
+        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
 
-        const embed = new MessageEmbed(templates.members.memberJoin)
+        const embed = this.formatTemplate(language, vars)
+
+        const actionButtons = this.addActions(vars)
 
         channel.send({
-            embeds: [embed]
+            embeds: [embed],
+            components: [actionButtons]
         })
+    }
+
+    formatTemplate(language: Language, vars: any) {
+        const template = templates.members.memberJoin
+
+        const fields = template.fields?.map(value => ({ name: t(value.name as LocalePhrase, language), value: TextFormatter(value.value, vars), inline: value.inline }))
+        const embed = new MessageEmbed()
+        
+        template?.color && embed.setColor(template.color)
+        template?.title && embed.setTitle(t(template.title as LocalePhrase, language))
+        template?.author?.name && embed.setAuthor({ name: t(template.author.name as LocalePhrase, language), iconURL: TextFormatter(template.author?.iconURL || "", vars), url: template.author?.url })
+        template?.description && embed.setDescription(t(template.description as LocalePhrase, language))
+        fields && embed.addFields(...fields)
+        template?.timestamp && embed.setTimestamp(template.timestamp)
+
+        return embed
+    }
+
+    addActions(vars: any) {
+        const muteUser = new MessageButton()
+            .setCustomId(`logAction-mute-${vars.member.id}`)
+            .setLabel('Mute member')
+            .setStyle('SECONDARY')
+
+        const actionRow = new MessageActionRow()
+            .setComponents([muteUser])
+
+        return actionRow
+    }
+
+    async handleAction(interaction: ButtonInteraction) {
+        const customId = interaction.customId
+        const [_, logType, memberId] = customId.split('-')
+
+        
     }
 }
 

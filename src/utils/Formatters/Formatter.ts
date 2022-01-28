@@ -67,7 +67,7 @@ export const supportedFormatters: IFormatter[] = [
     },
     {
         name: 'memberCreatedAt', path: 'member.user.createdAt',
-        type: 'variable',
+        type: 'variableDate',
         category: 'member',
         description: {
             en: "The date of the member's account creation",
@@ -87,7 +87,7 @@ export const supportedFormatters: IFormatter[] = [
     // GUILD
     {
         name: 'serverCreatedAt', path: 'guild.createdAt',
-        type: 'variable',
+        type: 'variableDate',
         category: 'server',
         description: {
             en: "The date of the server creation",
@@ -211,7 +211,7 @@ export const supportedFormatters: IFormatter[] = [
     }
 ]
 
-const regex = /{{[A-Za-z]{1,}}}/g
+const regex = /{{[A-Za-z:]{1,}}}/g
 
 export default function TextFormatter(format: string, variables: IVariables) {
     const match = format.match(regex)
@@ -220,12 +220,13 @@ export default function TextFormatter(format: string, variables: IVariables) {
     match.filter(value => 
         Boolean(supportedFormatters.find(format => 
             format.name === value.substring(2, value.length-2)
+            || (format.type === 'variableDate' && format.name === value.substring(2, value.length-4))
         ))
     ).forEach(value => {
         const valueName = value.substring(2, value.length-2)
-        const supportedFormatter = supportedFormatters.find(format => format.name === valueName)!
-
+        const supportedFormatter = supportedFormatters.find(format => format.name === valueName || format.name === valueName.substring(0, valueName.length-2))!
         if(supportedFormatter.type === 'variable') return format = formatVariable(format, value, supportedFormatter, variables)
+        if(supportedFormatter.type === 'variableDate') return format = formatVariableDate(format, value, supportedFormatter, variables)
         if(supportedFormatter.type === 'mention') return format = formatMention(format, value, supportedFormatter, variables)
         if(supportedFormatter.type === 'custom') return format = formatCustom(format, value, supportedFormatter, variables)
     })
@@ -237,6 +238,15 @@ function formatVariable(format: string, value: string, formatter: IFormatter, va
     const variable = formatter.path?.split('.').reduce((a, prop) => a?.[prop], variables)
     format = format.replace(value, (typeof variable === 'string' || typeof variable === 'number') ? variable
         : (variable instanceof Date ? Formatters.time(variable) : value))
+
+    return format
+}
+
+function formatVariableDate(format: string, value: string, formatter: IFormatter, variables: IVariables) {
+    const dateStyle = value.substring(2, value.length-2).split(':')[1] as typeof Formatters.TimestampStylesString || 'f'
+    const variable = formatter.path?.split('.').reduce((a, prop) => a?.[prop], variables)
+    format = format.replace(value, (typeof variable === 'string' || typeof variable === 'number') ? variable
+        : (variable instanceof Date ? Formatters.time(variable, dateStyle) : value))
 
     return format
 }

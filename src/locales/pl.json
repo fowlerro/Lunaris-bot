@@ -210,92 +210,12 @@
         }
     },
     "logs": {
-        "general": {
-            "allowedPerms": "Dodane permisje",
-            "deniedPerms": "Zabrane permisje",
-            "resetPerms": "Zresetowane permisje"
-        },
-        "member": {
-            "joinedTitle": "%VAR% dołączył",
-            "leavedTitle": "%VAR% opuścił serwer",
-
-            "nicknameChangedTitle": "Nickname %VAR% został zmieniony",
-            "nicknameCreatedTitle": "Nickname %VAR% został ustawiony",
-            "nicknameRemovedTitle": "Nickname %VAR% został usunięty",
-            "nicknameChangedDesc": "%VAR% zmienił nick użytkownikowi %VAR%",
-            "nicknameCreatedDesc": "%VAR% stworzył nick użytkownikowi %VAR%",
-            "nicknameRemovedDesc": "%VAR% usunął nick użytkownikowi %VAR%",
-            "nicknameChangedBy": "Zmieniony przez",
-            "nicknameOld": "Stary nickname",
-            "nicknameNew": "Nowy nickname",
-
-            "kickedTitle": "%VAR% został wyrzucony",
-            "kickedDesc": "%VAR% został wyrzucony przez %VAR%",
-            "kickedAt": "W czasie",
-            "kickedTarget": "Wyrzucony",
-
-            "bannedTitle": "%VAR% został zbanowany",
-            "bannedDesc": "%VAR% został zbanowany przez %VAR%",
-            "bannedAt": "W czasie",
-            "bannedTarget": "Zbanowany",
-
-            "unbannedTitle": "%VAR% został odbanowany",
-            "unbannedDesc": "%VAR% został odbanowany przez %VAR%",
-            "unbannedAt": "W czasie",
-            "unbannedTarget": "Odbanowany",
-
-            "addRoleTitle": "%VAR% otrzymał rolę",
-            "removeRoleTitle": "%VAR% stracił rolę"
-        },
-        "channel": {
-            "createdTitle": "Nowy kanał został stworzony",
-            "createdAt": "W czasie",
-            
-            "deletedTitle": "Kanał #%VAR% został usunięty",
-            "deletedAt": "W czasie",
-
-            "changedTitle": "Kanał #%VAR% został zmodyfikowany",
-            "changedOld": "Stary",
-            "changedNew": "Nowy"
-        },
-        "message": {
-            "deletedTitle": "Wiadomość została usunięta",
-
-            "editedTitle": "Wiadomość została edytowana",
-            "editedLink": "[Skocz do wiadomości](%VAR%)",
-            "target": "Autor wiadomości"
-        },
-        "invite": {
-            "createdTitle": "Zaproszenie zostało utworzone",
-            "deletedTitle": "Zaproszenie zostało usunięte",
-            "createdBy": "Stworzone przez",
-            "createdAt": "Stworzone",
-            "expiresAt": "Straci ważność",
-            "maxUses": "Użyć"
-        },
-        "cmd": {
-            "triggerTitle": "Komenda '%VAR%' została wykonana"
-        },
-        "role": {
-            "createdTitle": "Nowa rola została stworzona",
-            "deletedTitle": "Rola @%VAR% została usunięta",
-            "changedTitle": "Rola @%VAR% została zmodyfikowana",
-
-            "hoist": "Wyświetlanie osobno",
-            "mentionable": "Zezwolenie na wzmianki"
-        },
-        "warn": {
-            "addWarn": "%VAR% otrzymał ostrzeżenie",
-            "removeWarn": "Ostrzeżenie użytkownika %VAR% zostało zdjęte",
-            "removeAllWarns": "Wszystkie ostrzeżenia na serwerze zostały usunięte",
-            "addedBy": "Nadane przez",
-            "removedBy": "Zdjęte przez"
-        },
-        "mute": {
-            "muted": "%VAR% został wyciszony",
-            "unmuted": "%VAR% znów może pisać",
-            "addedBy": "Nadane przez",
-            "removedBy": "Zdjęte przez"
+        "members": {
+            "memberJoin": {
+                "title": "Użytkownik dołączył",
+                "member": "Użytkownik",
+                "createdAt": "Data utworzenia konta"
+            }
         }
     },
     "autoMod": {
@@ -320,7 +240,7 @@
         }
     },
     "xp": {
-        "levelUpMessage": "Właśnie zdobyłeś **{{level}} lvl** {{user}}!"
+        "levelUpMessage": "Właśnie zdobyłeś **{{level}} lvl** {{{user}}}!"
     },
     "dashboard": {
         "embeds": {

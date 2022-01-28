@@ -210,93 +210,13 @@
         }
     },
     "logs": {
-        "general": {
-            "allowedPerms": "Added permissions",
-            "deniedPerms": "Revoked permissions",
-            "resetPerms": "Reset permissions"
-        },
-        "member": {
-            "joinedTitle": "%VAR% joined",
-            "leavedTitle": "%VAR% leaved",
-
-            "nicknameChangedTitle": "Nickname %VAR% has been changed",
-            "nicknameCreatedTitle": "Nickname %VAR% has been set",
-            "nicknameRemovedTitle": "Nickname %VAR% has been removed",
-            "nicknameChangedDesc": "%VAR% changed %VAR% nickname",
-            "nicknameCreatedDesc": "%VAR% created %VAR% nickname",
-            "nicknameRemovedDesc": "%VAR% removed %VAR% nickname",
-            "nicknameChangedBy": "Changed by",
-            "nicknameOld": "Old nickname",
-            "nicknameNew": "New nickname",
-
-            "kickedTitle": "%VAR% has been kicked",
-            "kickedDesc": "%VAR% has been kicked by %VAR%",
-            "kickedAt": "Kicked at",
-            "kickedTarget": "Target",
-
-            "bannedTitle": "%VAR% has been banned",
-            "bannedDesc": "%VAR% has been banned by %VAR%",
-            "bannedAt": "Banned at",
-            "bannedTarget": "Target",
-
-            "unbannedTitle": "%VAR% has been unbanned",
-            "unbannedDesc": "%VAR% has been unbanned by %VAR%",
-            "unbannedAt": "Unbanned at",
-            "unbannedTarget": "Target",
-
-            "addRoleTitle": "%VAR% got a role",
-            "removeRoleTitle": "%VAR% lost the role"
-        },
-        "channel": {
-            "createdTitle": "New channel has been created",
-            "createdAt": "Created at",
-            
-            "deletedTitle": "Channel #%VAR% has been deleted",
-            "deletedAt": "Deleted at",
-
-            "changedTitle": "Channel #%VAR% has been changed",
-            "changedOld": "Old",
-            "changedNew": "New"
-        },
-        "message": {
-            "deletedTitle": "Message has been deleted",
-
-            "editedTitle": "Message has been edited",
-            "editedLink": "[Jump to message](%VAR%)",
-            "target": "Message author"
-        },
-        "invite": {
-            "createdTitle": "Invite has been created",
-            "deletedTitle": "Invite has been deleted",
-            "createdBy": "Created by",
-            "createdAt": "Created at",
-            "expiresAt": "Expires at",
-            "maxUses": "Uses"
-        },
-        "cmd": {
-            "triggerTitle": "Command '%VAR%' has been triggered"
-        },
-        "role": {
-            "createdTitle": "New role has been created",
-            "deletedTitle":"Role @%VAR% has been deleted",
-            "changedTitle": "Role @%VAR% has been changed",
-
-            "hoist": "Hoist",
-            "mentionable": "Mention role"
-        },
-        "warn": {
-            "addWarn": "%VAR% has been warned",
-            "removeWarn": "%VAR%'s warn has been removed",
-            "removeAllWarns": "All server warns has been removed",
-            "addedBy": "Warned by",
-            "removedBy": "Removed by"
-        },
-        "mute": {
-            "muted": "%VAR% has been muted",
-            "unmuted": "%VAR% has been unmuted",
-            "addedBy": "Muted by",
-            "removedBy": "Removed by"
-        }
+        "members": {
+            "memberJoin": {
+                "title": "Member Joined",
+                "member": "Member",
+                "createdAt": "Account created at"
+            }
+        } 
     },
     "autoMod": {
         "notManagable": "I cannot manage %VAR%",
@@ -320,7 +240,7 @@
         }
     },
     "xp": {
-        "levelUpMessage": "You've just leveled up to **{{level}} lvl** {{user}}!"
+        "levelUpMessage": "You've just leveled up to **{{level}} lvl** {{{user}}}!"
     },
     "dashboard": {
         "embeds": {
