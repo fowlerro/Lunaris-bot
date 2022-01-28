@@ -8,7 +8,7 @@ interface IVariables {
 export interface IFormatter {
     name: string;
     path?: string;
-    customFunction?: (member: GuildMember) => string | null;
+    customFunction?: (member: GuildMember, ...vars: any) => string | null;
     type: string;
     mentionType?: 'member' | 'channel' | 'role';
     category: string;
@@ -72,6 +72,15 @@ export const supportedFormatters: IFormatter[] = [
         description: {
             en: "The date of the member's account creation",
             pl: "Data stworzenia konta użytkownika"
+        }
+    },
+    {
+        name: 'memberJoinedAt', path: 'member.joinedAt',
+        type: 'variableDate',
+        category: 'member',
+        description: {
+            en: "The date when member joined to the server",
+            pl: "Data dołączenia użytkownika na serwer"
         }
     },
     {
@@ -184,7 +193,7 @@ export const supportedFormatters: IFormatter[] = [
     // CUSTOM
     {
         name: 'DateNow', customFunction: dateNow,
-        type: 'custom',
+        type: 'customDate',
         category: 'other',
         description: {
             en: "Display date of sended message",
@@ -220,15 +229,19 @@ export default function TextFormatter(format: string, variables: IVariables) {
     match.filter(value => 
         Boolean(supportedFormatters.find(format => 
             format.name === value.substring(2, value.length-2)
-            || (format.type === 'variableDate' && format.name === value.substring(2, value.length-4))
+            || ((format.type === 'variableDate' || format.type === 'customDate') && format.name === value.substring(2, value.length-4))
+            || (value.substring(2, value.length-2) in variables?.customs)
         ))
     ).forEach(value => {
         const valueName = value.substring(2, value.length-2)
+        if(valueName in variables?.customs) return format = formatCustomVariable(format, value, variables)
         const supportedFormatter = supportedFormatters.find(format => format.name === valueName || format.name === valueName.substring(0, valueName.length-2))!
+        if(!supportedFormatter) return format
         if(supportedFormatter.type === 'variable') return format = formatVariable(format, value, supportedFormatter, variables)
         if(supportedFormatter.type === 'variableDate') return format = formatVariableDate(format, value, supportedFormatter, variables)
         if(supportedFormatter.type === 'mention') return format = formatMention(format, value, supportedFormatter, variables)
         if(supportedFormatter.type === 'custom') return format = formatCustom(format, value, supportedFormatter, variables)
+        if(supportedFormatter.type === 'customDate') return format = formatCustomDate(format, value, supportedFormatter, variables)
     })
 
     return format
@@ -270,4 +283,20 @@ function formatCustom(format: string, value: string, formatter: IFormatter, vari
     format = format.replace(value, variable)
 
     return format
+}
+
+function formatCustomDate(format: string, value: string, formatter: IFormatter, variables: IVariables) {
+    const dateStyle = value.substring(2, value.length-2).split(':')[1] as typeof Formatters.TimestampStylesString || 'f'
+    if(!formatter.customFunction) return format
+    const variable = formatter.customFunction(variables.member, dateStyle)
+    if(!variable) return format
+    format = format.replace(value, variable)
+
+    return format
+}
+
+function formatCustomVariable(format: string, value: string, variables: IVariables) {
+    const valueName = value.substring(2, value.length-2)
+    const variable = variables?.customs?.[valueName]
+    return variable ? format.replace(value, variable) : format
 }

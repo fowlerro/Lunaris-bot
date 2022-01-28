@@ -115,10 +115,10 @@
             "notDeletable": "Nie mogę usunąć tej emotki"
         },
         "warn": {
-            "add": "{{member}} został ostrzeżony przez {{executor}} {{reason}}",
-            "remove": "{{executor}} zdjął ostrzeżenie z użytkownika {{member}}",
-            "removeMemberAll": "{{executor}} zdjął wszystkie ostrzeżenia z użytkownika {{member}}",
-            "removeAll": "{{executor}} zdjął wszystkie ostrzeżenia na serwerze",
+            "add": "{{{member}}} został ostrzeżony przez {{{executor}}} {{reason}}",
+            "remove": "{{{executor}}} zdjął ostrzeżenie z użytkownika {{{member}}}",
+            "removeMemberAll": "{{{executor}}} zdjął wszystkie ostrzeżenia z użytkownika {{{member}}}",
+            "removeAll": "{{{executor}}} zdjął wszystkie ostrzeżenia na serwerze",
             "list": "Lista ostrzeżeń użytkownika {{userTag}}",
             "guildList": "Lista ostrzeżeń na serwerze",
             "error": "Wystąpił problem z usunięciem ostrzeżenia",
@@ -211,10 +211,48 @@
     },
     "logs": {
         "members": {
-            "memberJoin": {
-                "title": "Użytkownik dołączył",
+            "join": {
+                "title": "Użytkownik dołączył!",
                 "member": "Użytkownik",
-                "createdAt": "Data utworzenia konta"
+                "createdAt": "Data stworzenia konta"
+            },
+            "leave": {
+                "title": "Użytkownik wyszedł!",
+                "joinedAt": "Na serwerze od",
+                "roles": "Role"
+            },
+
+            "warn": {
+                "title": "Ostrzeżenie!",
+                "warnCount": "Ilość ostrzeżeń"
+            },
+            "unwarn": {
+                "title": "Zdjęte ostrzeżenie!"
+            },
+
+            "kick": {
+                "title": "Użytkownik wyrzucony!"
+            },
+
+            "timeout": {
+                "title": "Użytkownik zablokowany!",
+                "timeoutEnd": "Koniec blokady"
+            },
+            "timeoutEnd": {
+                "title": "Użytkownik odblokowany"
+
+            },
+
+            "ban": {
+                "title": "Użytkownik zbanowany!",
+                "moderator": "Moderator",
+                "target": "Użytkownik",
+                "bannedAt": "Data bana",
+                "unbanAt": "Data unbana",
+                "reason": "Powód"
+            },
+            "unban": {
+                "title": "Użytkownik odbanowany!"
             }
         }
     },

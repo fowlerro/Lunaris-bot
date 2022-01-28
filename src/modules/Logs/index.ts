@@ -16,7 +16,7 @@ class LogsModule extends BaseModule {
     async run() {}
 
     async log(category: keyof Config, type: string, guildId: Snowflake, vars: any) {
-        const config: Config = { members: { channelId: "795980843516297216", logs: { memberJoin: true } } }
+        const config: Config = { members: { channelId: "795980843516297216", logs: { memberJoin: true, memberBan: true } } }
 
         const guild = await client.guilds.fetch(guildId).catch(() => {})
         if(!guild) return console.log('notGuild')
@@ -24,7 +24,7 @@ class LogsModule extends BaseModule {
         if(!channel) return console.log('notChannel')
         const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
 
-        const embed = this.formatTemplate(language, vars)
+        const embed = this.formatTemplate(category, type, language, vars)
 
         const actionButtons = this.addActions(vars)
 
@@ -34,8 +34,8 @@ class LogsModule extends BaseModule {
         })
     }
 
-    formatTemplate(language: Language, vars: any) {
-        const template = templates.members.memberJoin
+    formatTemplate(category: keyof Config, type: string, language: Language, vars: any) {
+        const template = templates[category][type]
 
         const fields = template.fields?.map(value => ({ name: t(value.name as LocalePhrase, language), value: TextFormatter(value.value, vars), inline: value.inline }))
         const embed = new MessageEmbed()
@@ -45,6 +45,8 @@ class LogsModule extends BaseModule {
         template?.author?.name && embed.setAuthor({ name: t(template.author.name as LocalePhrase, language), iconURL: TextFormatter(template.author?.iconURL || "", vars), url: template.author?.url })
         template?.description && embed.setDescription(t(template.description as LocalePhrase, language))
         fields && embed.addFields(...fields)
+        template?.image?.url && embed.setImage(TextFormatter(template.image.url, vars))
+        template?.thumbnail?.url && embed.setThumbnail(TextFormatter(template.thumbnail.url, vars))
         template?.timestamp && embed.setTimestamp(template.timestamp)
 
         return embed
@@ -52,9 +54,9 @@ class LogsModule extends BaseModule {
 
     addActions(vars: any) {
         const muteUser = new MessageButton()
-            .setCustomId(`logAction-mute-${vars.member.id}`)
             .setLabel('Mute member')
-            .setStyle('SECONDARY')
+            .setStyle('LINK')
+            .setURL('discord://-/settings/advanced')
 
         const actionRow = new MessageActionRow()
             .setComponents([muteUser])

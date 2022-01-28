@@ -115,10 +115,10 @@
             "notDeletable": "The emoji cannot be deleted"
         },
         "warn": {
-            "add": "{{member}} has been warned by {{executor}} {{reason}}",
-            "remove": "{{executor}} removed warn from user {{member}}",
-            "removeMemberAll": "{{executor}} removed all {{member}}'s warns",
-            "removeAll": "{{executor}} removed all server warns",
+            "add": "{{{member}}} has been warned by {{{executor}}} {{reason}}",
+            "remove": "{{{executor}}} removed warn from user {{{member}}}",
+            "removeMemberAll": "{{{executor}}} removed all {{{member}}}'s warns",
+            "removeAll": "{{{executor}}} removed all server warns",
             "list": "{{userTag}}'s warn list",
             "guildList": "Warns:",
             "error": "Something went wrong! Warn couldn't be removed",
@@ -211,10 +211,48 @@
     },
     "logs": {
         "members": {
-            "memberJoin": {
-                "title": "Member Joined",
+            "join": {
+                "title": "Member joined!",
                 "member": "Member",
                 "createdAt": "Account created at"
+            },
+            "leave": {
+                "title": "Member left!",
+                "joinedAt": "In server since",
+                "roles": "Roles"
+            },
+
+            "warn": {
+                "title": "Member warned!",
+                "warnCount": "Warn count"
+            },
+            "unwarn": {
+                "title": "Member unwarned!"
+            },
+
+            "kick": {
+                "title": "Member kicked!"
+            },
+
+            "timeout": {
+                "title": "Member timed out!",
+                "timeoutEnd": "Timeout ends at"
+            },
+            "timeoutEnd": {
+                "title": "Member timeout ended"
+
+            },
+
+            "ban": {
+                "title": "Member banned!",
+                "moderator": "Moderator",
+                "target": "Member",
+                "bannedAt": "Banned",
+                "unbanAt": "Unban",
+                "reason": "Reason"
+            },
+            "unban": {
+                "title": "Member unbanned!"
             }
         } 
     },
