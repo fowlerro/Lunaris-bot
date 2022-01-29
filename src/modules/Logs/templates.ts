@@ -95,12 +95,12 @@ export default {
                 {
                     name: "logs.members.ban.moderator",
                     value: "{{moderatorMention}}\n`{{moderatorId}}`",
-                    inline: false
+                    inline: true
                 },
                 {
                     name: "logs.members.ban.target",
                     value: "{{mentionMember}}\n`{{memberId}}`",
-                    inline: false
+                    inline: true
                 },
                 {
                     name: "logs.members.warn.warnCount",

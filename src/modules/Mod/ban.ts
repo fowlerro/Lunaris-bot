@@ -1,7 +1,8 @@
-import { Guild, Permissions } from "discord.js"
+import { Formatters, Guild, Permissions } from "discord.js"
 import { Snowflake } from "discord-api-types"
 
 import { GuildBanModel } from "../../database/schemas/GuildBans"
+import Logs from "../Logs"
 
 export const Ban = {
     add: async (targetId: Snowflake, guildId: Snowflake, executorId: Snowflake, reason?: string, time?: number) => {
@@ -13,11 +14,17 @@ export const Ban = {
         const target = await guild.members.fetch(targetId).catch(() => {}) || await client.users.fetch(targetId).catch(() => {})
         if(!target) return { error: "Wrong targetId" }
         if('bannable' in target && !target.bannable) return { error: 'targetNotManagable' }
+        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
 
         let timestamp: number = 0;
         const date = Date.now();
         if(time) timestamp = date + time;
-        if(!timestamp) return { error: null, result: guild.bans.create(targetId, { reason }) }
+        if(!timestamp) {
+            const result = await guild.bans.create(targetId, { reason }).catch((e) => console.log(e))
+            await Logs.log('members', 'ban', guild.id, { member: target, customs: { moderatorMention: `<@${executorId}>`, moderatorId: executorId,  reason: reason || t('general.none', language), unbanDate: t('general.never', language), unbanDateR: " " }})
+    
+            return { error: null, result }
+        }
         const result = await saveBan(targetId, guild, executorId, reason, time, timestamp)
         if(!result) return { error: "Something went wrong" }
 
@@ -39,18 +46,19 @@ export const Ban = {
     }
 }
 
-async function saveBan(userId: Snowflake, guild: Guild, by: Snowflake, reason?: string, time?: number, timestamp?: number) {
-
+async function saveBan(userId: Snowflake, guild: Guild, executorId: Snowflake, reason?: string, time?: number, timestamp?: number) {
+    const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+    const user = await client.users.fetch(userId).catch(e => console.log(e))
     const result = await guild.bans.create(userId, { reason }).catch(e => {})
     if(!result) return;
 
-    await GuildBanModel.create({
-        userId,
-        guildId: guild.id,
-        by,
+    await GuildBanModel.findOneAndUpdate({ guildId: guild.id, userId }, {
+        executorId,
         reason,
         time: timestamp
-    });
+    }, { upsert: true, runValidators: true }).catch(e => console.log(e));
+
+    await Logs.log('members', 'ban', guild.id, { member: user, customs: { moderatorMention: `<@${executorId}>`, moderatorId: executorId,  reason: reason || t('general.none', language), unbanDate: timestamp ? Formatters.time(Math.floor(timestamp / 1000)) : t('general.never', language), unbanDateR: timestamp ? Formatters.time(Math.floor(timestamp / 1000), 'R') : " " }})
 
     setTimeout(async () => {
         await guild.bans.remove(userId, `Timed ban ended, reason: ${reason || 'none'}`).catch(e => {})

@@ -230,11 +230,11 @@ export default function TextFormatter(format: string, variables: IVariables) {
         Boolean(supportedFormatters.find(format => 
             format.name === value.substring(2, value.length-2)
             || ((format.type === 'variableDate' || format.type === 'customDate') && format.name === value.substring(2, value.length-4))
-            || (value.substring(2, value.length-2) in variables?.customs)
+            || (variables?.customs && value.substring(2, value.length-2) in variables?.customs)
         ))
     ).forEach(value => {
         const valueName = value.substring(2, value.length-2)
-        if(valueName in variables?.customs) return format = formatCustomVariable(format, value, variables)
+        if(variables?.customs && valueName in variables?.customs) return format = formatCustomVariable(format, value, variables)
         const supportedFormatter = supportedFormatters.find(format => format.name === valueName || format.name === valueName.substring(0, valueName.length-2))!
         if(!supportedFormatter) return format
         if(supportedFormatter.type === 'variable') return format = formatVariable(format, value, supportedFormatter, variables)

@@ -35,7 +35,8 @@
         "date": "Data",
         "error": "❌ Coś poszło nie tak :/ Spróbuj ponownie!",
         "yes": "tak",
-        "no": "nie"
+        "no": "nie",
+        "never": "Nigdy"
     },
     "help": {
         "help": {
@@ -262,18 +263,18 @@
             "wordsListTitle": "Lista blokowanych słów"
         },
         "mute": {
-            "addMute": "{{member}} został wyciszony przez {{executor}} {{reason}}",
-            "removeMute": "{{member}} został odciszony przez {{executor}}",
+            "addMute": "{{{member}}} został wyciszony przez {{{executor}}} {{reason}}",
+            "removeMute": "{{{member}}} został odciszony przez {{{executor}}}",
             "removeMuteAll": "Wszyscy użytkownicy zostali odciszeni",
             "removeAllMutesReason": "Odciszono wszystkich użytkowników",
-            "notMuted": "{{member}} nie jest wyciszony",
+            "notMuted": "{{{member}}} nie jest wyciszony",
             "muteList": "Lista mute'ów na serwerze",
             "error": "Coś poszło nie tak :/ Spróbuj ponownie!"
         },
         "ban": {
-            "add": "{{member}} został zbanowany przez {{executor}} {{reason}}",
-            "remove": "{{member}} został odbanowany przez {{executor}} {{reason}}",
-            "notBanned": "{{member}} nie jest zbanowany",
+            "add": "{{{member}}} został zbanowany przez {{{executor}}} {{reason}}",
+            "remove": "{{{member}}} został odbanowany przez {{{executor}}} {{reason}}",
+            "notBanned": "{{{member}}} nie jest zbanowany",
             "notFound": "Nie znaleziono użytkownika"
         }
     },

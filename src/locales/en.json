@@ -35,7 +35,8 @@
         "date": "Date",
         "error": "❌ Something went wrong :/ Try again!",
         "yes": "yes",
-        "no": "no"
+        "no": "no",
+        "never": "Never"
     },
     "help": {
         "help": {
@@ -262,18 +263,18 @@
             "wordsListTitle": "Blocked words"
         },
         "mute": {
-            "addMute": "{{member}} has been muted by {{executor}} {{reason}}",
-            "removeMute": "{{member}} has been unmuted by {{executor}}",
+            "addMute": "{{{member}}} has been muted by {{{executor}}} {{reason}}",
+            "removeMute": "{{{member}}} has been unmuted by {{{executor}}}",
             "removeMuteAll": "All members have been unmuted",
             "removeAllMutesReason": "Unmute all members",
-            "notMuted": "{{member}} is not muted",
+            "notMuted": "{{{member}}} is not muted",
             "muteList": "Muted users:",
             "error": "Something went wrong :/ Try again!"
         },
         "ban": {
-            "add": "{{member}} has been banned by {{executor}} {{reason}}",
-            "remove": "{{member}} has been unbanned by {{executor}} {{reason}}",
-            "notBanned": "{{member}} is not banned",
+            "add": "{{{member}}} has been banned by {{{executor}}} {{reason}}",
+            "remove": "{{{member}}} has been unbanned by {{{executor}}} {{reason}}",
+            "notBanned": "{{{member}}} is not banned",
             "notFound": "User not found"
         }
     },
