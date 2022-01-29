@@ -36,7 +36,8 @@
         "error": "❌ Coś poszło nie tak :/ Spróbuj ponownie!",
         "yes": "tak",
         "no": "nie",
-        "never": "Nigdy"
+        "never": "Nigdy",
+        "message": "Wiadomość"
     },
     "help": {
         "help": {
@@ -213,7 +214,25 @@
     "logs": {
         "general": {
             "moderator": "Moderator",
-            "member": "Użytkownik"
+            "member": "Użytkownik",
+            "messageAuthor": "Autor wiadomości"
+        },
+        "messages": {
+            "edit": {
+                "title": "Edytowano wiadomość!",
+                "sendedAt": "Data wysłania wiadomości"
+            },
+            "delete": {
+                "title": "Usunięto wiadomość!",
+                "by": "Usunięta przez",
+                "inChannel": "Na kanale"
+            },
+            "pin": {
+                "title": "Przypięto wiadomość"
+            },
+            "unpin": {
+                "title": "Odpięto wiadomość!"
+            }
         },
         "members": {
             "join": {

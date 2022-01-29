@@ -214,6 +214,62 @@ export const supportedFormatters: IFormatter[] = [
         }
     },
 
+    // MESSAGE
+    {
+        name: 'messageId', path: 'message.id',
+        type: 'variable',
+        category: 'message',
+        description: {
+            en: "Message's identificator",
+            pl: "Identyfikator wiadomości"
+        } 
+    },
+    {
+        name: 'messageContent', path: 'message.content',
+        type: 'variable',
+        category: 'message',
+        description: {
+            en: "Message content",
+            pl: "Treść wiadomości"
+        }
+    },
+    {
+        name: 'messageCleanContent', path: 'message.cleanContent',
+        type: 'variable',
+        category: 'message',
+        description: {
+            en: "Message content with all mentions replaces by the equivalent text",
+            pl: "Treść wiadomości z wszystkimi wzmiankami zamienionymi na tekst"
+        }
+    },
+    {
+        name: 'messageChannelId', path: 'message.channelId',
+        type: 'variable',
+        category: 'message',
+        description: {
+            en: "Identificator of channel in which message was sent",
+            pl: "Identyfikator kanału, w którym została wysłana wiadomość"
+        }
+    },
+    {
+        name: 'messageAuthorId', path: 'message.author.id',
+        type: 'variable',
+        category: 'message',
+        description: {
+            en: "Identificator of message's author",
+            pl: "Identyfikator autora wiadomości"
+        }
+    },
+    {
+        name: 'messageSendedTime', path: 'message.createdAt',
+        type: 'variableDate',
+        category: 'message',
+        description: {
+            en: "The date when message was sent",
+            pl: "Data wysłania wiadomości"
+        }
+    },
+
     // MENTIONS
     {
         name: 'mentionMember', path: 'member.id',
@@ -253,6 +309,26 @@ export const supportedFormatters: IFormatter[] = [
         description: {
             en: "Mention a role",
             pl: "Pinguje rolę"
+        }
+    },
+    {
+        name: 'mentionMessageAuthor', path: 'message.author.id',
+        type: 'mention',
+        mentionType: 'member',
+        category: 'message',
+        description: {
+            en: "Mention a message's author",
+            pl: "Pinguje autora wiadomości"
+        }
+    },
+    {
+        name: 'mentionMessageChannel', path: 'message.channelId',
+        type: 'mention',
+        mentionType: 'channel',
+        category: 'message',
+        description: {
+            en: "Mention a channel in which message was sent",
+            pl: "Pinguje kanał, w którym wiadomość została wysłana"
         }
     },
 

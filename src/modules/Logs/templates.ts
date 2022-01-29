@@ -2,6 +2,141 @@ import { MessageEmbedOptions } from "discord.js";
 import { palette } from "../../utils/utils";
 
 export default {
+    messages: {
+        edit: {
+            color: palette.info,
+            author: {
+                name: "logs.messages.edit.title",
+                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/memo_1f4dd.png"
+            },
+            fields: [
+                {
+                    name: "logs.general.member",
+                    value: "{{mentionMessageAuthor}}\n`{{messageAuthorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.messages.edit.sendedAt",
+                    value: "{{messageSendedTime}}\n{{messageSendedTime:R}}",
+                    inline: true
+                },
+                {
+                    name: "general.before",
+                    value: "{{messageContentBefore}}",
+                    inline: false
+                },
+                {
+                    name: "general.after",
+                    value: "{{messageContentAfter}}",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        },
+        delete: {
+            color: palette.error,
+            author: {
+                name: "logs.roles.delete.title",
+                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/cross-mark_274c.png"
+            },
+            fields: [
+                {
+                    name: "logs.messages.delete.by",
+                    value: "{{deletedByMention}}\n`{{deletedById}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.general.messageAuthor",
+                    value: "{{mentionMessageAuthor}}\n`{{messageAuthorId}}`",
+                    inline: true
+                },
+                {
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true
+                },
+                {
+                    name: "logs.messages.delete.inChannel",
+                    value: "{{mentionMessageChannel}}",
+                    inline: true
+                },
+                {
+                    name: "logs.messages.edit.sendedAt",
+                    value: "{{messageSendedTime}}\n{{messageSendedTime:R}}",
+                    inline: true
+                },
+                {
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true
+                },
+                {
+                    name: "general.message",
+                    value: "{{messageContent}}",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        },
+        pin: {
+            color: palette.info,
+            author: {
+                name: "logs.messages.pin.title"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.general.messageAuthor",
+                    value: "{{mentionMessageAuthor}}\n`{{messageAuthorId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.channel",
+                    value: "{{mentionMessageChannel}}\n`{{messageChannelId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.message",
+                    value: "{{messageContent}}",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        },
+        unpin: {
+            color: palette.info,
+            author: {
+                name: "logs.messages.unpin.title"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.general.messageAuthor",
+                    value: "{{mentionMessageAuthor}}\n`{{messageAuthorId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.channel",
+                    value: "{{mentionMessageChannel}}\n`{{messageChannelId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.message",
+                    value: "{{messageContent}}",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        },
+    } as { [logType: string]: MessageEmbedOptions },
     members: {
         join: {
             color: palette.info,

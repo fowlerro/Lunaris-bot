@@ -17,6 +17,7 @@ class LogsModule extends BaseModule {
 
     async log(category: keyof Templates, type: string, guildId: Snowflake, vars: any) {
         const config = { 
+            messages: { channelId: "795981046645653524" },
             members: { channelId: "795980843516297216", logs: { join: true, leave: true, ban: true } },
             roles: { channelId: "805536443216822362" }
         }

@@ -36,7 +36,8 @@
         "error": "❌ Something went wrong :/ Try again!",
         "yes": "yes",
         "no": "no",
-        "never": "Never"
+        "never": "Never",
+        "message": "Message"
     },
     "help": {
         "help": {
@@ -213,7 +214,25 @@
     "logs": {
         "general": {
             "moderator": "Moderator",
-            "member": "Member"
+            "member": "Member",
+            "messageAuthor": "Message author"
+        },
+        "messages": {
+            "edit": {
+                "title": "Message edited!",
+                "sendedAt": "Message sended at"
+            },
+            "delete": {
+                "title": "Message deleted!",
+                "by": "Deleted by",
+                "inChannel": "In channel"
+            },
+            "pin": {
+                "title": "Message pinned"
+            },
+            "unpin": {
+                "title": "Message unpinned!"
+            }
         },
         "members": {
             "join": {
