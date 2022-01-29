@@ -11,7 +11,7 @@ export default {
             },
             fields: [
                 {
-                    name: "logs.members.join.member",
+                    name: "logs.general.member",
                     value: "{{mentionMember}}\n`{{memberId}}`",
                     inline: true
                 },
@@ -31,7 +31,7 @@ export default {
             },
             fields: [
                 {
-                    name: "logs.members.join.member",
+                    name: "logs.general.member",
                     value: "{{mentionMember}}\n`{{memberId}}`",
                     inline: true
                 },
@@ -60,12 +60,12 @@ export default {
             },
             fields: [
                 {
-                    name: "logs.members.ban.moderator",
+                    name: "logs.general.moderator",
                     value: "{{moderatorMention}}\n`{{moderatorId}}`",
                     inline: true
                 },
                 {
-                    name: "logs.members.ban.target",
+                    name: "logs.general.member",
                     value: "{{mentionMember}}\n`{{memberId}}`",
                     inline: true
                 },
@@ -75,7 +75,7 @@ export default {
                     inline: false
                 },
                 {
-                    name: "logs.members.ban.reason",
+                    name: "general.reason",
                     value: "```{{reason}}```",
                     inline: false
                 }
@@ -93,12 +93,12 @@ export default {
             },
             fields: [
                 {
-                    name: "logs.members.ban.moderator",
+                    name: "logs.general.moderator",
                     value: "{{moderatorMention}}\n`{{moderatorId}}`",
                     inline: true
                 },
                 {
-                    name: "logs.members.ban.target",
+                    name: "logs.general.member",
                     value: "{{mentionMember}}\n`{{memberId}}`",
                     inline: true
                 },
@@ -108,7 +108,7 @@ export default {
                     inline: false
                 },
                 {
-                    name: "logs.members.ban.reason",
+                    name: "general.reason",
                     value: "```{{reason}}```",
                     inline: false
                 }
@@ -127,17 +127,17 @@ export default {
             },
             fields: [
                 {
-                    name: "logs.members.ban.moderator",
+                    name: "logs.general.moderator",
                     value: "{{moderatorMention}}\n`{{moderatorId}}`",
                     inline: true
                 },
                 {
-                    name: "logs.members.ban.target",
+                    name: "logs.general.member",
                     value: "{{mentionMember}}\n`{{memberId}}`",
                     inline: true
                 },
                 {
-                    name: "logs.members.ban.reason",
+                    name: "general.reason",
                     value: "```{{reason}}```",
                     inline: false
                 }
@@ -156,12 +156,12 @@ export default {
             },
             fields: [
                 {
-                    name: "logs.members.ban.moderator",
+                    name: "logs.general.moderator",
                     value: "{{moderatorMention}}\n`{{moderatorId}}`",
                     inline: true
                 },
                 {
-                    name: "logs.members.ban.target",
+                    name: "logs.general.member",
                     value: "{{mentionMember}}\n`{{memberId}}`",
                     inline: true
                 },
@@ -171,7 +171,7 @@ export default {
                     inline: false
                 },
                 {
-                    name: "logs.members.ban.reason",
+                    name: "general.reason",
                     value: "```{{reason}}```",
                     inline: false
                 }
@@ -189,17 +189,17 @@ export default {
             },
             fields: [
                 {
-                    name: "logs.members.ban.moderator",
+                    name: "logs.general.moderator",
                     value: "{{moderatorMention}}\n`{{moderatorId}}`",
                     inline: true
                 },
                 {
-                    name: "logs.members.ban.target",
+                    name: "logs.general.member",
                     value: "{{mentionMember}}\n`{{memberId}}`",
                     inline: true
                 },
                 {
-                    name: "logs.members.ban.reason",
+                    name: "general.reason",
                     value: "```{{reason}}```",
                     inline: false
                 }
@@ -218,12 +218,12 @@ export default {
             },
             fields: [
                 {
-                    name: "logs.members.ban.moderator",
+                    name: "logs.general.moderator",
                     value: "{{moderatorMention}}\n`{{moderatorId}}`",
                     inline: false
                 },
                 {
-                    name: "logs.members.ban.target",
+                    name: "logs.general.member",
                     value: "{{mentionMember}}\n`{{memberId}}`",
                     inline: false
                 },
@@ -238,7 +238,7 @@ export default {
                     inline: true
                 },
                 {
-                    name: "logs.members.ban.reason",
+                    name: "general.reason",
                     value: "```{{reason}}```",
                     inline: false
                 }
@@ -255,22 +255,147 @@ export default {
             },
             fields: [
                 {
-                    name: "logs.members.ban.moderator",
+                    name: "logs.general.moderator",
                     value: "{{moderatorMention}}\n`{{moderatorId}}`",
                     inline: true
                 },
                 {
-                    name: "logs.members.ban.target",
+                    name: "logs.general.member",
                     value: "{{mentionMember}}\n`{{memberId}}`",
                     inline: true
                 },
                 {
-                    name: "logs.members.ban.reason",
+                    name: "general.reason",
                     value: "```{{reason}}```",
                     inline: false
                 }
             ],
             timestamp: new Date()
         }
-    } as { [logType: string]: MessageEmbedOptions }
+    } as { [logType: string]: MessageEmbedOptions },
+    roles: {
+        create: {
+            color: palette.info,
+            author: {
+                name: "logs.roles.create.title",
+                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.role",
+                    value: "{{mentionRole}}\n`{{roleId}}`",
+                    inline: true
+                }
+            ],
+            timestamp: new Date()
+        },
+        delete: {
+            color: palette.error,
+            author: {
+                name: "logs.roles.delete.title",
+                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/cross-mark_274c.png"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.role",
+                    value: "{{roleName}}",
+                    inline: true
+                },
+                {
+                    name: "logs.roles.delete.createdAt",
+                    value: "{{roleCreatedAt}}\np{{roleCreatedAt:R}}",
+                    inline: true
+                }
+            ],
+            timestamp: new Date()
+        },
+        edit: {
+            color: palette.info,
+            author: {
+                name: "logs.roles.edit.title"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.role",
+                    value: "{{mentionRole}}\n`{{roleId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.roles.edit.edits",
+                    value: "{{roleEdits}}",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        },
+        add: {
+            color: palette.info,
+            author: {
+                name: "logs.roles.add.title"
+            },
+            thumbnail: {
+                url: "{{memberAvatar}}"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.general.member",
+                    value: "{{mentionMember}}\n`{{memberId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.role",
+                    value: "{{mentionRole}}\n`{{roleId}}`",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        },
+        remove: {
+            color: palette.error,
+            author: {
+                name: "logs.roles.remove.title"
+            },
+            thumbnail: {
+                url: "{{memberAvatar}}"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.general.member",
+                    value: "{{mentionMember}}\n`{{memberId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.role",
+                    value: "{{mentionRole}}\n`{{roleId}}`",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        }
+    } as { [logType: string]: MessageEmbedOptions },
 }
