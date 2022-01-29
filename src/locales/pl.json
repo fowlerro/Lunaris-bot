@@ -211,10 +211,13 @@
         }
     },
     "logs": {
+        "general": {
+            "moderator": "Moderator",
+            "member": "Użytkownik"
+        },
         "members": {
             "join": {
                 "title": "Użytkownik dołączył!",
-                "member": "Użytkownik",
                 "createdAt": "Data stworzenia konta"
             },
             "leave": {
@@ -241,19 +244,34 @@
             },
             "timeoutEnd": {
                 "title": "Użytkownik odblokowany"
-
             },
 
             "ban": {
                 "title": "Użytkownik zbanowany!",
-                "moderator": "Moderator",
-                "target": "Użytkownik",
                 "bannedAt": "Data bana",
-                "unbanAt": "Data unbana",
-                "reason": "Powód"
+                "unbanAt": "Data unbana"
             },
             "unban": {
                 "title": "Użytkownik odbanowany!"
+            }
+        },
+        "roles": {
+            "create": {
+                "title": "Rola stworzona!"
+            },
+            "delete": {
+                "title": "Rola usunięta!",
+                "createdAt": "Data utworzenia roli"
+            },
+            "edit": {
+                "title": "Rola edytowana!",
+                "edits": "Zmiany"
+            },
+            "add": {
+                "title": "Nadano rolę!"
+            },
+            "remove": {
+                "title": "Zabrano rolę!"
             }
         }
     },

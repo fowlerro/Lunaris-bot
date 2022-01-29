@@ -158,6 +158,62 @@ export const supportedFormatters: IFormatter[] = [
         }
     },
 
+    // ROLE
+    {
+        name: "roleName", path: "role.name",
+        type: "variable",
+        category: "role",
+        description: {
+            en: "Role's name",
+            pl: "Nazwa roli"
+        }
+    },
+    {
+        name: "roleId", path: "role.id",
+        type: "variable",
+        category: "role",
+        description: {
+            en: "Role's identificator",
+            pl: "Identyfikator roli"
+        }
+    },
+    {
+        name: "roleColor", path: "role.hexColor",
+        type: "variable",
+        category: "role",
+        description: {
+            en: "Role's color in HEX",
+            pl: "Kolor HEX roli"
+        }
+    },
+    {
+        name: "roleHoist", path: "role.hoist",
+        type: "variable",
+        category: "role",
+        description: {
+            en: "Returns `true`, if role is hoisted, or `false` if not",
+            pl: "Zwraca `true` jeśli rola wyświetlana jest osobno na liście użytkowników, lub `false` jeśli nie"
+        }
+    },
+    {
+        name: "roleCreatedAt", path: "role.createdAt",
+        type: "variableDate",
+        category: "role",
+        description: {
+            en: "Date of role creation",
+            pl: "Data stworzenia roli"
+        }
+    },
+    {
+        name: "rolePosition", path: "role.position",
+        type: "variable",
+        category: "role",
+        description: {
+            en: "Role's position in role list",
+            pl: "Pozycja roli na liście ról"
+        }
+    },
+
     // MENTIONS
     {
         name: 'mentionMember', path: 'member.id',
@@ -187,6 +243,16 @@ export const supportedFormatters: IFormatter[] = [
         description: {
             en: "Mention a server's owner",
             pl: "Pinguje właściciela serwera"
+        }
+    },
+    {
+        name: 'mentionRole', path: 'role.id',
+        type: 'mention',
+        mentionType: 'role',
+        category: 'role',
+        description: {
+            en: "Mention a role",
+            pl: "Pinguje rolę"
         }
     },
 

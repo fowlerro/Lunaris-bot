@@ -211,10 +211,13 @@
         }
     },
     "logs": {
+        "general": {
+            "moderator": "Moderator",
+            "member": "Member"
+        },
         "members": {
             "join": {
                 "title": "Member joined!",
-                "member": "Member",
                 "createdAt": "Account created at"
             },
             "leave": {
@@ -246,16 +249,32 @@
 
             "ban": {
                 "title": "Member banned!",
-                "moderator": "Moderator",
-                "target": "Member",
                 "bannedAt": "Banned",
-                "unbanAt": "Unban",
-                "reason": "Reason"
+                "unbanAt": "Unban"
             },
             "unban": {
                 "title": "Member unbanned!"
             }
-        } 
+        },
+        "roles": {
+            "create": {
+                "title": "Role created!"
+            },
+            "delete": {
+                "title": "Role deleted!",
+                "createdAt": "Role created at"
+            },
+            "edit": {
+                "title": "Role edited!",
+                "edits": "Edits"
+            },
+            "add": {
+                "title": "Role given!"
+            },
+            "remove": {
+                "title": "Role taken!"
+            }
+        }
     },
     "autoMod": {
         "notManagable": "I cannot manage %VAR%",

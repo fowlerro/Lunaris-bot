@@ -28,7 +28,7 @@ async function logs(member: GuildMember) {
     const { banned, banExecutor, banReason } = await isBanned(member)
 	if(banned && banExecutor && (banExecutor.id !== client.user?.id)) return Logs.log('members', 'ban', member.guild.id, { member, customs: { moderatorMention: `<@${banExecutor.id}>`, moderatorId: banExecutor.id,  reason: banReason || t('general.none', language), unbanDate: t('general.never', language), unbanDateR: " " }}) 
 
-    if(!kicked && !banned) return Logs.log('members', 'leave', member.guild.id, { member, customs: { memberRoles: member.roles.cache.filter(role => role.name !== 'everyone').map(role => `<@&${role.id}>`) } })
+    if(!kicked && !banned) return Logs.log('members', 'leave', member.guild.id, { member, customs: { memberRoles: member.roles.cache.filter(role => role.name !== '@everyone').map(role => `<@&${role.id}>`) } })
 }
 
 async function isKicked(member: GuildMember) {

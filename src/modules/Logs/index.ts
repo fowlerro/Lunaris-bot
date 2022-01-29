@@ -6,7 +6,7 @@ import BaseModule from "../../utils/structures/BaseModule";
 import templates from "./templates";
 import { Config } from "./types";
 
-
+type Templates = typeof templates
 
 class LogsModule extends BaseModule {
     constructor() {
@@ -15,8 +15,11 @@ class LogsModule extends BaseModule {
 
     async run() {}
 
-    async log(category: keyof Config, type: string, guildId: Snowflake, vars: any) {
-        const config: Config = { members: { channelId: "795980843516297216", logs: { memberJoin: true, memberBan: true } } }
+    async log(category: keyof Templates, type: string, guildId: Snowflake, vars: any) {
+        const config = { 
+            members: { channelId: "795980843516297216", logs: { join: true, leave: true, ban: true } },
+            roles: { channelId: "805536443216822362" }
+        }
 
         const guild = await client.guilds.fetch(guildId).catch(() => {})
         if(!guild) return console.log('notGuild')
@@ -26,15 +29,15 @@ class LogsModule extends BaseModule {
 
         const embed = this.formatTemplate(category, type, language, vars)
 
-        const actionButtons = this.addActions(vars)
+        // const actionButtons = this.addActions(vars)
 
         channel.send({
             embeds: [embed],
-            components: [actionButtons]
+            // components: [actionButtons]
         })
     }
 
-    formatTemplate(category: keyof Config, type: string, language: Language, vars: any) {
+    formatTemplate(category: keyof Templates, type: string, language: Language, vars: any) {
         const template = templates[category][type]
 
         const fields = template.fields?.map(value => ({ name: t(value.name as LocalePhrase, language), value: TextFormatter(value.value, vars), inline: value.inline }))
