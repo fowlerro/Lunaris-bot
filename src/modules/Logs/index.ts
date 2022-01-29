@@ -3,6 +3,7 @@ import { Language } from "types";
 import { LocalePhrase } from "../../types/locales";
 import TextFormatter from "../../utils/Formatters/Formatter";
 import BaseModule from "../../utils/structures/BaseModule";
+import Embeds from "../Embeds";
 import templates from "./templates";
 import { Config } from "./types";
 
@@ -30,10 +31,12 @@ class LogsModule extends BaseModule {
 
         const embed = this.formatTemplate(category, type, language, vars)
 
+        const checkedEmbed = await Embeds.checkLimits(embed, false)
+        if(checkedEmbed.error) return
         // const actionButtons = this.addActions(vars)
 
         channel.send({
-            embeds: [embed],
+            embeds: [checkedEmbed.pages[0]],
             // components: [actionButtons]
         })
     }
