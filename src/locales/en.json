@@ -274,6 +274,7 @@
         "ban": {
             "add": "{{{member}}} has been banned by {{{executor}}} {{reason}}",
             "remove": "{{{member}}} has been unbanned by {{{executor}}} {{reason}}",
+            "removeReason": "Timed ban ended\nBan reason: {{reason}}",
             "notBanned": "{{{member}}} is not banned",
             "notFound": "User not found"
         }

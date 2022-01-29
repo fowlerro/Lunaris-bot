@@ -274,6 +274,7 @@
         "ban": {
             "add": "{{{member}}} został zbanowany przez {{{executor}}} {{reason}}",
             "remove": "{{{member}}} został odbanowany przez {{{executor}}} {{reason}}",
+            "removeReason": "Czasowy ban minął\nPowód bana: {{reason}}",
             "notBanned": "{{{member}}} nie jest zbanowany",
             "notFound": "Nie znaleziono użytkownika"
         }
