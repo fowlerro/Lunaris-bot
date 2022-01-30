@@ -279,6 +279,98 @@ export const supportedFormatters: IFormatter[] = [
         }
     },
 
+    // THREAD
+    {
+        name: "threadName", path: "thread.name",
+        type: "variable",
+        category: "thread",
+        description: {
+            en: "Thread's name",
+            pl: "Nazwa wątka"
+        }
+    },
+    {
+        name: "threadId", path: "thread.id",
+        type: "variable",
+        category: "thread",
+        description: {
+            en: "Thread's identificator",
+            pl: "Identyfikator wątka"
+        }
+    },
+    {
+        name: "threadOwnerId", path: "thread.ownerId",
+        type: "variable",
+        category: "thread",
+        description: {
+            en: "Thread's owner identificator",
+            pl: "Identyfikator właściciela wątka"
+        }
+    },
+    {
+        name: "threadCreatedAt", path: "thread.createdAt",
+        type: "variableDate",
+        category: "thread",
+        description: {
+            en: "Thread creation date",
+            pl: "Data stworzenia wątka"
+        }
+    },
+    {
+        name: "threadLastMessageId", path: "thread.lastMessageId",
+        type: 'variable',
+        category: 'thread',
+        description: {
+            en: "Last message's identificator in thread",
+            pl: "Identykator ostatniej wiadomości w wątku"
+        }
+    },
+    {
+        name: "threadParentName", path: "thread.parent.name",
+        type: 'variable',
+        category: 'thread',
+        description: {
+            en: "Channel name, in which thread was created",
+            pl: "Nazwa kanału w którym utworzono wątek"
+        }
+    },
+    {
+        name: "threadParentId", path: "thread.parentId",
+        type: 'variable',
+        category: 'thread',
+        description: {
+            en: "Threads's parent channel identificator",
+            pl: "Identyfikator kanału, w którym utworzono wątek"
+        }
+    },
+    {
+        name: "threadAutoArchiveDuration", path: "thread.autoArchiveDuration",
+        type: 'variable',
+        category: 'thread',
+        description: {
+            en: "Inactive duration (in minutes) after which the thread will automatically archive",
+            pl: "Czas nieaktywności (w minutach), po której wątek zostanie automatycznie zarchiwizowany"
+        }
+    },
+    {
+        name: "threadMemberCount", path: "thread.memberCount",
+        type: 'variable',
+        category: 'thread',
+        description: {
+            en: "Approximate count of users in thread",
+            pl: "Przybliżona liczba użytkowników w wątku"
+        }
+    },
+    {
+        name: "threadMessageCount", path: "thread.messages.cache.size",
+        type: 'variable',
+        category: 'thread',
+        description: {
+            en: "Approximate count of messages in thread",
+            pl: "Przybliżona liczba wiadomości w wątku"
+        }
+    },
+
     // MESSAGE
     {
         name: 'messageId', path: 'message.id',
@@ -404,6 +496,36 @@ export const supportedFormatters: IFormatter[] = [
         description: {
             en: "Mention a channel in which message was sent",
             pl: "Pinguje kanał, w którym wiadomość została wysłana"
+        }
+    },
+    {
+        name: 'mentionThread', path: 'thread.id',
+        type: 'mention',
+        mentionType: 'channel',
+        category: 'thread',
+        description: {
+            en: "Mention thread",
+            pl: "Pinguje wątek"
+        }
+    },
+    {
+        name: 'mentionThreadParent', path: 'thread.parentId',
+        type: 'mention',
+        mentionType: 'channel',
+        category: 'thread',
+        description: {
+            en: "Mention thread's parent channel",
+            pl: "Pinguje kanał w którym wątek został utworzony"
+        }
+    },
+    {
+        name: 'mentionThreadOwner', path: 'thread.ownerId',
+        type: 'mention',
+        mentionType: 'member',
+        category: 'thread',
+        description: {
+            en: "Mention thread's owner",
+            pl: "Pinguje właściciela wątka"
         }
     },
 
