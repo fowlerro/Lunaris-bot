@@ -32,9 +32,6 @@ async function serverLogs(oldRole: Role, newRole: Role) {
     const { executor, changes } = roleLog
     if(!executor) return
     if(!changes) return
-    console.log(changes)
-
-    console.log('EXTRA', roleLog.extra)
 
 	const roleEdits = registerEdits(changes, language)
 

@@ -372,7 +372,11 @@
                 "emojiAuthor": "Emotka dodana przez",
                 "createdAt": "Data dodania emotki"
             },
-            "edit": {}
+            "edit": {
+                "title": "Edytowano emotkę!",
+                "oldName": "Stara nazwa",
+                "newName": "Nowa nazwa"
+            }
         },
         "server": {
             "unwarnAll": {

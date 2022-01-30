@@ -938,34 +938,51 @@ export default {
                 },
             ],
             image: {
-                url: "{{emojiUrl}}",
-                width: 24,
-                height: 24
+                url: "{{emojiUrl}}"
             },
             timestamp: new Date()
         },
         edit: {
             color: palette.info,
             author: {
-                name: "logs.threads.edit.title"
+                name: "logs.emojis.edit.title"
             },
             fields: [
                 {
-                    name: "logs.threads.edit.editor",
-                    value: "{{editorMention}}\n`{{editorId}}`",
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
                     inline: true
                 },
                 {
-                    name: "general.thread",
-                    value: "{{mentionThread}}\n`{{threadId}}`",
+                    name: "logs.emojis.delete.emojiAuthor",
+                    value: "{{mentionEmojiCreator}}\n`{{emojiCreatorId}}`",
                     inline: true
                 },
                 {
-                    name: "logs.thread.edit.edits",
-                    value: "{{threadEdits}}",
-                    inline: false
-                }
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true
+                },
+
+                {
+                    name: "logs.emojis.edit.oldName",
+                    value: "{{emojiOldName}}",
+                    inline: true
+                },
+                {
+                    name: "logs.emojis.edit.newName",
+                    value: "{{emojiNewName}}",
+                    inline: true
+                },
+                {
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true
+                },
             ],
+            image: {
+                url: "{{emojiUrl}}"
+            },
             timestamp: new Date()
         },
     } as { [logType: string]: MessageEmbedOptions },

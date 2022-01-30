@@ -325,7 +325,10 @@
             },
             "edit": {
                 "title": "Channel edited!",
-                "edits": "Edits"
+                "edits": "Edits",
+                "changes": {
+
+                }
             }
         },
         "threads": {
@@ -373,7 +376,11 @@
                 "emojiAuthor": "Emoji added by",
                 "createdAt": "Emoji created at"
             },
-            "edit": {}
+            "edit": {
+                "title": "Emoji edited!",
+                "oldName": "Old name",
+                "newName": "New name"
+            }
         },
         "server": {
             "unwarnAll": {
