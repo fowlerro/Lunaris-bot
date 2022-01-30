@@ -297,7 +297,15 @@
             },
             "edit": {
                 "title": "Rola edytowana!",
-                "edits": "Zmiany"
+                "edits": "Zmiany",
+                "changes": {
+                    "color": "Kolor",
+                    "name": "Nazwa",
+                    "hoist": "Oddzielenie",
+                    "mentionable": "Możliwa do wzmianki",
+                    "allowPermissions": "Dodane permisje",
+                    "denyPermissions": "Zabrane permisje"
+                }
             },
             "add": {
                 "title": "Nadano rolę!"
@@ -408,7 +416,7 @@
         "CREATE_INSTANT_INVITE": "Tworzenie zaproszenia",
         "KICK_MEMBERS": "Wyrzucanie członków",
         "BAN_MEMBERS": "Banowanie członków",
-
+        "MODERATE_MEMBERS": "Nałóż przerwę na członków",
         "MANAGE_CHANNELS": "Zarządzanie kanałami",
         "MANAGE_GUILD": "Zarządzanie serwerem",
         "ADD_REACTIONS": "Dodawanie reakcji",
@@ -435,7 +443,18 @@
         "MANAGE_NICKNAMES": "Zarządzanie pseudonimami",
         "MANAGE_ROLES": "Zarządzanie rolami",
         "MANAGE_WEBHOOKS": "Zarządzanie webhookami",
-        "MANAGE_EMOJIS": "Zarządzanie emoji"
+
+        "START_EMBEDDED_ACTIVITIES": "Rozpocznij aktywności",
+        "USE_APPLICATION_COMMANDS": "Używanie poleceń aplikacji",
+        "SEND_MESSAGES_IN_THREADS": "Wysyłanie wiadomości w wątkach",
+        "USE_PUBLIC_THREADS": "Używanie publicznych wątków",
+        "USE_PRIVATE_THREADS": "Używanie prywatnych wątków",
+        "CREATE_PUBLIC_THREADS": "Tworzenie publicznych wątków",
+        "CREATE_PRIVATE_THREADS": "Tworzenie prywatnych wątków",
+        "MANAGE_THREADS": "Zarządzaj wątkami",
+        "REQUEST_TO_SPEAK": "Poproś o głos",
+        "MANAGE_EVENTS": "Zarządzaj wydarzeniami",
+        "MANAGE_EMOJIS_AND_STICKERS": "Zarządzanie emoji i naklejkami"
     },
     "date": {
         "days": {

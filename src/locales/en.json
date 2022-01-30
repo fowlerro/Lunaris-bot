@@ -298,7 +298,15 @@
             },
             "edit": {
                 "title": "Role edited!",
-                "edits": "Edits"
+                "edits": "Edits",
+                "changes": {
+                    "color": "Color",
+                    "name": "Name",
+                    "hoist": "Hoist",
+                    "mentionable": "Mentionable",
+                    "allowPermissions": "Allowed perms",
+                    "denyPermissions": "Denied perms"
+                }
             },
             "add": {
                 "title": "Role given!"
@@ -409,6 +417,7 @@
         "CREATE_INSTANT_INVITE": "Create Invite",
         "KICK_MEMBERS": "Kick Members",
         "BAN_MEMBERS": "Ban Members",
+        "MODERATE_MEMBERS": "Timeout Members",
         "ADMINISTRATOR": "Administrator",
         "MANAGE_CHANNELS": "Manage Channels",
         "MANAGE_GUILD": "Manage Server",
@@ -436,7 +445,18 @@
         "MANAGE_NICKNAMES": "Manage Nicknames",
         "MANAGE_ROLES": "Manage Roles",
         "MANAGE_WEBHOOKS": "Manage Webhooks",
-        "MANAGE_EMOJIS": "Manage Emojis"
+
+        "START_EMBEDDED_ACTIVITIES": "Start Activities",
+        "USE_APPLICATION_COMMANDS": "Use Application Commands",
+        "SEND_MESSAGES_IN_THREADS": "Send Messages in Threads",
+        "USE_PUBLIC_THREADS": "Use Public Threads",
+        "USE_PRIVATE_THREADS": "Use Private Threads",
+        "CREATE_PUBLIC_THREADS": "Create Public Threads",
+        "CREATE_PRIVATE_THREADS": "Create Private Threads",
+        "MANAGE_THREADS": "Manage Threads",
+        "REQUEST_TO_SPEAK": "Request to Speak",
+        "MANAGE_EVENTS": "Manage Events",
+        "MANAGE_EMOJIS_AND_STICKERS": "Manage Emojis and Stickers"
     },
     "date": {
         "days": {
