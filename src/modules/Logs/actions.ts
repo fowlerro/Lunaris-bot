@@ -75,7 +75,8 @@ export default {
     channels: {},
     threads: {},
     invites: {},
-    emojis: {}
+    emojis: {},
+    server: {}
 } as {
     [category in keyof Templates]: {
         [type: string]: {

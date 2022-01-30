@@ -128,6 +128,7 @@
             "error": "Something went wrong! Warn couldn't be removed",
             "notFound": "Warn not found!",
             "targetNotFound": "Member not found!",
+            "targetWithoutWarns": "{{{member}}} doesn't have any warns!",
             "optionAll": "Delete all warns from this member!"
         },
         "idea": {
@@ -260,6 +261,10 @@
             "unwarn": {
                 "title": "Member unwarned!"
             },
+            "unwarnAll": {
+                "title": "Removed all warns from member",
+                "warnCount": "Deleted warn count"
+            },
 
             "kick": {
                 "title": "Member kicked!"
@@ -361,6 +366,11 @@
                 "createdAt": "Emoji created at"
             },
             "edit": {}
+        },
+        "server": {
+            "unwarnAll": {
+                "title": "Unwarned whole server!"
+            }
         }
     },
     "autoMod": {

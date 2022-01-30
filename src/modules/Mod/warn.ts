@@ -25,7 +25,7 @@ export const Warn = {
 
         return true;
     },
-    remove: async (guildId: Snowflake, warnId: string, executorId: Snowflake, targetId?: Snowflake, reason?: string): Promise<{ action?: 'all' | 'targetAll', error?: 'warnNotFound' | 'targetNotFound' | 'guildNotFound', result?: GuildProfileDocument }> => {
+    remove: async (guildId: Snowflake, warnId: string, executorId: Snowflake, targetId?: Snowflake, reason?: string): Promise<{ action?: 'all' | 'targetAll', error?: 'warnNotFound' | 'targetNotFound' | 'guildNotFound' | 'targetWithoutWarns', result?: GuildProfileDocument }> => {
         const guild = await client.guilds.fetch(guildId).catch(() => {})
         if(!guild) return { error: 'guildNotFound' }
         const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
@@ -34,16 +34,20 @@ export const Warn = {
                 $set: {
                     warns: []
                 } 
-            });
+            })
             const guildProfileList = await redis.guildProfiles.scan(0, { MATCH: `${guildId}-*` })
             for await (const key of guildProfileList.keys) {
-                console.log(key)
                 await redis.guildProfiles.del(key)
             }
+
+            Logs.log('server', 'unwarnAll', guildId, { customs: { mentionModerator: `<@${executorId}>`, moderatorId: executorId, reason: reason || t('general.none', language) } })
             return { action: 'all' };
         }
 
         if(warnId === 'targetAll' && targetId) {
+            const target = await guild.members.fetch(targetId).catch(console.error)
+            const profile = await Profiles.get(targetId, guildId) as GuildProfileDocument
+            if(!profile.warns.length) return { error: 'targetWithoutWarns' }
             const result = await GuildProfileModel.findOneAndUpdate({ guildId, userId: targetId }, {
                 $set: {
                     warns: []
@@ -51,6 +55,8 @@ export const Warn = {
             }, { upsert: true, new: true, runValidators: true }).catch(() => {})
             if(!result) return { error: 'targetNotFound' }
             await Profiles.set(result)
+            await Logs.log('members', 'unwarnAll', guildId, { member: target, customs: { moderatorMention: `<@${executorId}>`, moderatorId: executorId, memberUnwarnCount: profile.warns.length || "0", reason: reason || t('general.none', language) }})
+
             return { action: 'targetAll' }
         }
 

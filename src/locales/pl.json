@@ -128,6 +128,7 @@
             "error": "Wystąpił problem z usunięciem ostrzeżenia",
             "notFound": "Nie znaleziono ostrzeżenia!",
             "targetNotFound": "Nie znaleziono użytkownika!",
+            "targetWithoutWarns": "{{{member}}} nie posiada żadnych ostrzeżeń",
             "optionAll": "Usuń wszystkie ostrzeżenia z tego użytkownika!"
         },
         "idea": {
@@ -260,6 +261,10 @@
             "unwarn": {
                 "title": "Zdjęte ostrzeżenie!"
             },
+            "unwarnAll": {
+                "title": "Zdjęto wszystkie ostrzeżenia z użytkownika",
+                "warnCount": "Liczba usuniętych ostrzeżeń"
+            },
 
             "kick": {
                 "title": "Użytkownik wyrzucony!"
@@ -360,6 +365,11 @@
                 "createdAt": "Data dodania emotki"
             },
             "edit": {}
+        },
+        "server": {
+            "unwarnAll": {
+                "title": "Zdjęto ostrzeżenia na całym serwerze!"
+            }
         }
     },
     "autoMod": {

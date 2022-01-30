@@ -213,7 +213,7 @@ export default {
             ],
             timestamp: new Date()
         },
-        
+
         warn: {
             color: palette.error,
             author: {
@@ -270,6 +270,39 @@ export default {
                 {
                     name: "logs.members.warn.warnCount",
                     value: "{{memberWarnCount}}",
+                    inline: false
+                },
+                {
+                    name: "general.reason",
+                    value: "```{{reason}}```",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        },
+        unwarnAll: {
+            color: palette.success,
+            author: {
+                name: "logs.members.unwarnAll.title",
+                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
+            },
+            thumbnail: {
+                url: "{{memberAvatar}}"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.general.member",
+                    value: "{{mentionMember}}\n`{{memberId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.members.unwarnAll.warnCount",
+                    value: "{{memberUnwarnCount}}",
                     inline: false
                 },
                 {
@@ -932,6 +965,28 @@ export default {
                     value: "{{threadEdits}}",
                     inline: false
                 }
+            ],
+            timestamp: new Date()
+        },
+    } as { [logType: string]: MessageEmbedOptions },
+    server: {
+        unwarnAll: {
+            color: palette.info,
+            author: {
+                name: "logs.server.unwarnAll.title",
+                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{mentionModerator}}\n`{{moderatorId}}`",
+                    inline: false
+                },
+                {
+                    name: "general.reason",
+                    value: "```{{reason}}```",
+                    inline: false
+                },
             ],
             timestamp: new Date()
         },
