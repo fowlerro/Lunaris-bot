@@ -231,6 +231,10 @@
                 "by": "Deleted by",
                 "inChannel": "In channel"
             },
+            "purge": {
+                "title": "Many messages purged!",
+                "count": "Message count"
+            },
             "pin": {
                 "title": "Message pinned"
             },

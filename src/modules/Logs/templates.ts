@@ -78,6 +78,36 @@ export default {
             ],
             timestamp: new Date()
         },
+        purge: {
+            color: palette.error,
+            author: {
+                name: "logs.messages.purge.title",
+                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/cross-mark_274c.png"
+            },
+            fields: [
+                {
+                    name: "logs.messages.delete.by",
+                    value: "{{deletedByMention}}\n`{{deletedById}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.messages.delete.inChannel",
+                    value: "{{mentionMessageChannel}}",
+                    inline: true
+                },
+                {
+                    name: "logs.messages.purge.count",
+                    value: "{{purgeCount}}",
+                    inline: true
+                },
+                {
+                    name: "general.reason",
+                    value: "```{{reason}}```",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        },
         pin: {
             color: palette.info,
             author: {

@@ -231,6 +231,10 @@
                 "by": "Usunięta przez",
                 "inChannel": "Na kanale"
             },
+            "purge": {
+                "title": "Usunięto wiele wiadomości!",
+                "count": "Ilość wiadomości"
+            },
             "pin": {
                 "title": "Przypięto wiadomość"
             },
