@@ -214,6 +214,71 @@ export const supportedFormatters: IFormatter[] = [
         }
     },
 
+    // CHANNEL
+    {
+        name: "channelName", path: "channel.name",
+        type: "variable",
+        category: "channel",
+        description: {
+            en: "Channels's name",
+            pl: "Nazwa kanału"
+        }
+    },
+    {
+        name: "channelId", path: "channel.id",
+        type: "variable",
+        category: "channel",
+        description: {
+            en: "Channel's identificator",
+            pl: "Identyfikator kanału"
+        }
+    },
+    {
+        name: "channelCreatedAt", path: "channel.createdAt",
+        type: "variableDate",
+        category: "channel",
+        description: {
+            en: "Date of channel creation",
+            pl: "Data stworzenia kanału"
+        }
+    },
+    {
+        name: "channelLastMessageId", path: "channel.lastMessageId",
+        type: 'variable',
+        category: 'channel',
+        description: {
+            en: "Last message's identificator in channel",
+            pl: "Identykator ostatniej wiadomości na kanale"
+        }
+    },
+    {
+        name: "channelTopic", path: "channel.topic",
+        type: 'variable',
+        category: 'channel',
+        description: {
+            en: "Channel's topic",
+            pl: "Opis kanału"
+        }
+    },
+    {
+        name: "channelCategoryName", path: "channel.parent.name",
+        type: 'variable',
+        category: 'channel',
+        description: {
+            en: "Channel's category name",
+            pl: "Nazwa kategorii kanału"
+        }
+    },
+    {
+        name: "channelCategoryId", path: "channel.parentId",
+        type: 'variable',
+        category: 'channel',
+        description: {
+            en: "Channel's category identificator",
+            pl: "Identyfikator kategorii kanału"
+        }
+    },
+
     // MESSAGE
     {
         name: 'messageId', path: 'message.id',
@@ -309,6 +374,16 @@ export const supportedFormatters: IFormatter[] = [
         description: {
             en: "Mention a role",
             pl: "Pinguje rolę"
+        }
+    },
+    {
+        name: 'mentionChannel', path: 'channel.id',
+        type: 'mention',
+        mentionType: 'channel',
+        category: 'channel',
+        description: {
+            en: "Mention a channel",
+            pl: "Pinguje kanał"
         }
     },
     {
