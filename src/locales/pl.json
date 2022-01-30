@@ -38,7 +38,8 @@
         "yes": "tak",
         "no": "nie",
         "never": "Nigdy",
-        "message": "Wiadomość"
+        "message": "Wiadomość",
+        "emoji": "Emotka"
     },
     "help": {
         "help": {
@@ -343,6 +344,18 @@
                 "createdAt": "Data utworzenia zaproszenia",
                 "uses": "Użycia"
             }
+        },
+        "emojis": {
+            "create": {
+                "title": "Dodano emotkę!",
+                "emojiName": "Nazwa emotki"
+            },
+            "delete": {
+                "title": "Usunięto emotkę!",
+                "emojiAuthor": "Emotka dodana przez",
+                "createdAt": "Data dodania emotki"
+            },
+            "edit": {}
         }
     },
     "autoMod": {

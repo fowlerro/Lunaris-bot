@@ -23,7 +23,8 @@ class LogsModule extends BaseModule {
             roles: { channelId: "805536443216822362" },
             channels: { channelId: "795980922553761793" },
             threads: { channelId: "937281497390538762" },
-            invites: { channelId: "804820204022399046" }
+            invites: { channelId: "804820204022399046" },
+            emojis: { channelId: "937352424895705168" }
         }
 
         const guild = await client.guilds.fetch(guildId).catch(() => {})

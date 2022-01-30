@@ -11,7 +11,7 @@ export default class InviteDeleteEvent extends BaseEvent {
     async run(invite: Invite) {
         if(!client.isOnline) return
         if(!invite.guild) return
-
+        
         serverLogs(invite)
     }
 }

@@ -811,4 +811,99 @@ export default {
             timestamp: new Date()
         }
     } as { [logType: string]: MessageEmbedOptions },
+    emojis: {
+        create: {
+            color: palette.info,
+            author: {
+                name: "logs.emojis.create.title",
+                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{mentionEmojiCreator}}\n`{{emojiCreatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.emoji",
+                    value: "{{emojiName}}\n`{{emojiId}}`",
+                    inline: true
+                },
+            ],
+            image: {
+                url: "{{emojiUrl}}"
+            },
+            timestamp: new Date()
+        },
+        delete: {
+            color: palette.error,
+            author: {
+                name: "logs.emojis.delete.title",
+                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/cross-mark_274c.png"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.emojis.delete.emojiAuthor",
+                    value: "{{mentionEmojiCreator}}\n`{{emojiCreatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true
+                },
+
+                {
+                    name: "logs.emojis.create.emojiName",
+                    value: "{{emojiName}}",
+                    inline: true
+                },
+                {
+                    name: "logs.emojis.delete.createdAt",
+                    value: "{{emojiCreatedAt}}\n{{emojiCreatedAt:R}}",
+                    inline: true
+                },
+                {
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true
+                },
+            ],
+            image: {
+                url: "{{emojiUrl}}",
+                width: 24,
+                height: 24
+            },
+            timestamp: new Date()
+        },
+        edit: {
+            color: palette.info,
+            author: {
+                name: "logs.threads.edit.title"
+            },
+            fields: [
+                {
+                    name: "logs.threads.edit.editor",
+                    value: "{{editorMention}}\n`{{editorId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.thread",
+                    value: "{{mentionThread}}\n`{{threadId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.thread.edit.edits",
+                    value: "{{threadEdits}}",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        },
+    } as { [logType: string]: MessageEmbedOptions },
 }

@@ -28,30 +28,29 @@ async function logs(member: GuildMember) {
     const { banned, banExecutor, banReason } = await isBanned(member)
 	if(banned && banExecutor && (banExecutor.id !== client.user?.id)) return Logs.log('members', 'ban', member.guild.id, { member, customs: { moderatorMention: `<@${banExecutor.id}>`, moderatorId: banExecutor.id,  reason: banReason || t('general.none', language), unbanDate: t('general.never', language), unbanDateR: " " }}) 
 
-    if(!kicked && !banned) return Logs.log('members', 'leave', member.guild.id, { member, customs: { memberRoles: member.roles.cache.filter(role => role.name !== '@everyone').map(role => `<@&${role.id}>`) } })
+    const memberRoles = member.roles.cache.filter(role => role.name !== '@everyone').map(role => `<@&${role.id}>`)
+    if(!kicked && !banned) return Logs.log('members', 'leave', member.guild.id, { member, customs: { memberRoles: memberRoles.length ? memberRoles.join(', ') : t('general.none', language) } })
 }
 
 async function isKicked(member: GuildMember) {
-	const auditLogs = await member.guild.fetchAuditLogs({ type: 'MEMBER_KICK', limit: 1 }).catch(e => console.log(e))
+	const auditLogs = await member.guild.fetchAuditLogs({ type: 'MEMBER_KICK', limit: 5 }).catch(console.error)
 	if(!auditLogs) return { kicked: false }
-	const kickLog = auditLogs.entries.first()
+	const kickLog = auditLogs.entries.find(log => log.target?.id === member.id && Date.now() - log.createdTimestamp < 5000)
 	if(!kickLog) return { kicked: false }
 
-	const { executor, target, reason } = kickLog
-	if(!target || target.id !== member.id) return { kicked: false }
+	const { executor, reason } = kickLog
 	if(member.joinedAt && (kickLog.createdAt < member.joinedAt)) return { kicked: false }
 
 	return { kicked: true, kickExecutor: executor, kickReason: reason }
 }
 
 async function isBanned(member: GuildMember) {
-	const auditLogs = await member.guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD', limit: 1 }).catch(e => console.log(e))
+	const auditLogs = await member.guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD', limit: 5 }).catch(console.error)
 	if(!auditLogs) return { banned: false }
-	const banLog = auditLogs.entries.first()
+	const banLog = auditLogs.entries.find(log => log.target?.id === member.id && Date.now() - log.createdTimestamp < 5000)
 	if(!banLog) return { banned: false }
 
-	const { executor, target, reason } = banLog
-	if(!target || target.id !== member.id) return { banned: false }
+	const { executor, reason } = banLog
 	if(member.joinedAt && (banLog.createdAt < member.joinedAt)) return { banned: false }
 
 	return { banned: true, banExecutor: executor, banReason: reason }

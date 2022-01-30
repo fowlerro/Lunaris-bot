@@ -38,7 +38,8 @@
         "yes": "yes",
         "no": "no",
         "never": "Never",
-        "message": "Message"
+        "message": "Message",
+        "emoji": "Emoji"
     },
     "help": {
         "help": {
@@ -344,6 +345,18 @@
                 "createdAt": "Invite created at",
                 "uses": "Uses"
             }
+        },
+        "emojis": {
+            "create": {
+                "title": "Emoji added!",
+                "emojiName": "Emoji name"
+            },
+            "delete": {
+                "title": "Emoji deleted!",
+                "emojiAuthor": "Emoji added by",
+                "createdAt": "Emoji created at"
+            },
+            "edit": {}
         }
     },
     "autoMod": {
