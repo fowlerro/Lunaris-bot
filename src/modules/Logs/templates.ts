@@ -36,7 +36,7 @@ export default {
         delete: {
             color: palette.error,
             author: {
-                name: "logs.roles.delete.title",
+                name: "logs.messages.delete.title",
                 iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/cross-mark_274c.png"
             },
             fields: [
@@ -532,5 +532,76 @@ export default {
             ],
             timestamp: new Date()
         }
+    } as { [logType: string]: MessageEmbedOptions },
+    channels: {
+        create: {
+            color: palette.info,
+            author: {
+                name: "logs.channels.create.title",
+                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.channel",
+                    value: "{{mentionChannel}}\n`{{channelId}}`",
+                    inline: true
+                }
+            ],
+            timestamp: new Date()
+        },
+        delete: {
+            color: palette.error,
+            author: {
+                name: "logs.channels.delete.title",
+                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/cross-mark_274c.png"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.channel",
+                    value: "{{channelName}}",
+                    inline: true
+                },
+                {
+                    name: "logs.channels.delete.createdAt",
+                    value: "{{channelCreatedAt}}\n{{channelCreatedAt:R}}",
+                    inline: true
+                }
+            ],
+            timestamp: new Date()
+        },
+        edit: {
+            color: palette.info,
+            author: {
+                name: "logs.channels.edit.title"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.channel",
+                    value: "{{mentionChannel}}\n`{{channelId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.channels.edit.edits",
+                    value: "{{channelEdits}}",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        },
     } as { [logType: string]: MessageEmbedOptions },
 }

@@ -3,6 +3,7 @@ import { Message, Permissions } from "discord.js";
 import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
+import { sleep } from "../../utils/utils";
 
 export default class MessageUpdateEvent extends BaseEvent {
 	constructor() {
@@ -32,7 +33,7 @@ async function editMessageLog(oldMessage: Message, newMessage: Message) {
 async function pinMessageLog(oldMessage: Message, newMessage: Message) {
 	if(!newMessage.guild) return
 	if(!newMessage.guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return
-
+    await sleep(500)
 	const auditLogs = await newMessage.guild.fetchAuditLogs({ type: 'MESSAGE_PIN', limit: 5 }).catch(console.error)
 	if(!auditLogs) return
 
@@ -45,7 +46,7 @@ async function pinMessageLog(oldMessage: Message, newMessage: Message) {
 async function unpinMessageLog(oldMessage: Message, newMessage: Message) {
 	if(!newMessage.guild) return
 	if(!newMessage.guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return
-
+    await sleep(500)
 	const auditLogs = await newMessage.guild.fetchAuditLogs({ type: 'MESSAGE_UNPIN', limit: 5 }).catch(console.error)
 	if(!auditLogs) return
 

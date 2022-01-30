@@ -215,12 +215,14 @@
         "general": {
             "moderator": "Moderator",
             "member": "Member",
-            "messageAuthor": "Message author"
+            "messageAuthor": "Message author",
+            "jumpToMessage": "Jump to message"
         },
         "messages": {
             "edit": {
                 "title": "Message edited!",
-                "sendedAt": "Message sended at"
+                "sendedAt": "Message sended at",
+                "deleteMessage": "Delete message!"
             },
             "delete": {
                 "title": "Message deleted!",
@@ -292,6 +294,19 @@
             },
             "remove": {
                 "title": "Role taken!"
+            }
+        },
+        "channels": {
+            "create": {
+                "title": "Channel created!"
+            },
+            "delete": {
+                "title": "Channel deleted!",
+                "createdAt": "Channel created at"
+            },
+            "edit": {
+                "title": "Channel edited!",
+                "edits": "Edits"
             }
         }
     },

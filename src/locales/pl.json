@@ -215,12 +215,14 @@
         "general": {
             "moderator": "Moderator",
             "member": "Użytkownik",
-            "messageAuthor": "Autor wiadomości"
+            "messageAuthor": "Autor wiadomości",
+            "jumpToMessage": "Skocz do wiadomości"
         },
         "messages": {
             "edit": {
                 "title": "Edytowano wiadomość!",
-                "sendedAt": "Data wysłania wiadomości"
+                "sendedAt": "Data wysłania wiadomości",
+                "deleteMessage": "Usuń wiadomość!"
             },
             "delete": {
                 "title": "Usunięto wiadomość!",
@@ -291,6 +293,19 @@
             },
             "remove": {
                 "title": "Zabrano rolę!"
+            }
+        },
+        "channels": {
+            "create": {
+                "title": "Stworzono kanał!"
+            },
+            "delete": {
+                "title": "Usunięto kanał!",
+                "createdAt": "Data stworzenia kanału"
+            },
+            "edit": {
+                "title": "Edytowano kanał!",
+                "edits": "Zmiany"
             }
         }
     },

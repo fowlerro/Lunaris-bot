@@ -4,10 +4,10 @@ import { LocalePhrase } from "../../types/locales";
 import TextFormatter from "../../utils/Formatters/Formatter";
 import BaseModule from "../../utils/structures/BaseModule";
 import Embeds from "../Embeds";
+import actions from "./actions";
 import templates from "./templates";
-import { Config } from "./types";
 
-type Templates = typeof templates
+export type Templates = typeof templates
 
 class LogsModule extends BaseModule {
     constructor() {
@@ -20,7 +20,8 @@ class LogsModule extends BaseModule {
         const config = { 
             messages: { channelId: "795981046645653524" },
             members: { channelId: "795980843516297216", logs: { join: true, leave: true, ban: true } },
-            roles: { channelId: "805536443216822362" }
+            roles: { channelId: "805536443216822362" },
+            channels: { channelId: "795980922553761793" }
         }
 
         const guild = await client.guilds.fetch(guildId).catch(() => {})
@@ -33,11 +34,11 @@ class LogsModule extends BaseModule {
 
         const checkedEmbed = await Embeds.checkLimits(embed, false)
         if(checkedEmbed.error) return
-        // const actionButtons = this.addActions(vars)
+        const actionButtons = this.addActions(category, type, language, vars)
 
         channel.send({
             embeds: [checkedEmbed.pages[0]],
-            // components: [actionButtons]
+            components: actionButtons ? [actionButtons] : undefined
         })
     }
 
@@ -59,23 +60,21 @@ class LogsModule extends BaseModule {
         return embed
     }
 
-    addActions(vars: any) {
-        const muteUser = new MessageButton()
-            .setLabel('Mute member')
-            .setStyle('LINK')
-            .setURL('discord://-/settings/advanced')
-
+    addActions(category: keyof Templates, type: string, language: Language, vars: any) {
+        
+        const actionButtons = actions?.[category]?.[type]?.addActions?.(language, vars)
+        if(!actionButtons || !actionButtons.length) return
         const actionRow = new MessageActionRow()
-            .setComponents([muteUser])
+            .setComponents(actionButtons)
 
         return actionRow
     }
 
     async handleAction(interaction: ButtonInteraction) {
         const customId = interaction.customId
-        const [_, logType, memberId] = customId.split('-')
-
-        
+        const [log, category, logType] = customId.split('-')
+        if(!log || log !== 'logs' || !category || !logType) return
+        actions?.[category as keyof Templates]?.[logType]?.handleActions?.(interaction)
     }
 }
 
