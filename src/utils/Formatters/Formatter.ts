@@ -371,6 +371,127 @@ export const supportedFormatters: IFormatter[] = [
         }
     },
 
+    // INVITE
+    {
+        name: "inviteCode", path: "invite.code",
+        type: "variable",
+        category: "invite",
+        description: {
+            en: "Code of an invite",
+            pl: "Kod zaproszenia"
+        }
+    },
+    {
+        name: "inviteCode", path: "invite.code",
+        type: "variable",
+        category: "invite",
+        description: {
+            en: "Code of an invite",
+            pl: "Kod zaproszenia"
+        }
+    },
+    {
+        name: "inviteCode", path: "invite.code",
+        type: "variable",
+        category: "invite",
+        description: {
+            en: "Code of an invite",
+            pl: "Kod zaproszenia"
+        }
+    },
+    {
+        name: "inviteChannelId", path: "invite.channelId",
+        type: "variable",
+        category: "invite",
+        description: {
+            en: "Channel for invite",
+            pl: "Kanał dla zaproszenia"
+        }
+    },
+    {
+        name: "inviteCreatedAt", path: "invite.createdAt",
+        type: "variableDate",
+        category: "invite",
+        description: {
+            en: "Invite's creation date",
+            pl: "Data stworzenia zaproszenia"
+        }
+    },
+    {
+        name: "inviteExpiresAt", path: "invite.expiresAt",
+        type: "variableDate",
+        category: "invite",
+        description: {
+            en: "Invite's expiration date",
+            pl: "Data wygaśnięcia zaproszenia"
+        }
+    },
+    {
+        name: "inviteCreatorId", path: "invite.inviterId",
+        type: "variable",
+        category: "invite",
+        description: {
+            en: "Invite's creator identificator",
+            pl: "Identyfikator twórcy zaproszenia"
+        }
+    },
+    {
+        name: "inviteMaxAge", path: "invite.maxAge",
+        type: "variable",
+        category: "invite",
+        description: {
+            en: "Maximum age of the invite in seconds",
+            pl: "Maksymalny czas działania zaproszenia w sekundach"
+        }
+    },
+    {
+        name: "inviteMaxUses", path: "invite.maxUses",
+        type: "variable",
+        category: "invite",
+        description: {
+            en: "Maximum uses of the invite",
+            pl: "Maksymalna ilość użyć zaproszenia"
+        }
+    },
+    {
+        name: "inviteUrl", path: "invite.url",
+        type: "variable",
+        category: "invite",
+        description: {
+            en: "URL of this invite",
+            pl: "URL zaproszenia"
+        }
+    },
+    {
+        name: "inviteUses", path: "invite.uses",
+        type: "variable",
+        category: "invite",
+        description: {
+            en: "Usage count of the invite",
+            pl: "Ilość użyć zaproszenia"
+        }
+    },
+    {
+        name: 'mentionInviteCreator', path: 'invite.inviterId',
+        type: 'mention',
+        mentionType: 'member',
+        category: 'invite',
+        description: {
+            en: "Mention an invite's creator",
+            pl: "Pinguje twórcę zaproszenia"
+        }
+    },
+    {
+        name: 'mentionInviteChannel', path: 'invite.channelId',
+        type: 'mention',
+        mentionType: 'channel',
+        category: 'invite',
+        description: {
+            en: "Mention an invite's channel",
+            pl: "Pinguje kanał zaproszenia"
+        }
+    },
+
     // MESSAGE
     {
         name: 'messageId', path: 'message.id',
