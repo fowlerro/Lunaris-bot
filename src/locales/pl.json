@@ -13,6 +13,7 @@
         "createdAt": "Konto utworzone",
         "joinedAt": "Dołączył",
         "channel": "Kanał",
+        "thread": "Wątek",
         "content": "Treść",
         "before": "Przed",
         "after": "Po",
@@ -305,6 +306,25 @@
             },
             "edit": {
                 "title": "Edytowano kanał!",
+                "edits": "Zmiany"
+            }
+        },
+        "threads": {
+            "create": {
+                "title": "Utworzono wątek!",
+                "owner": "Twórca wątka",
+                "inChannel": "Stworzono w",
+                "autoArchiveDuration": "Czas do auto archiwacji"
+            },
+            "delete": {
+                "title": "Usunięto wątek!",
+                "createdAt": "Data stworzenia",
+                "memberCount": "Liczba użytkowników",
+                "messageCount": "Liczba wiadomości"
+            },
+            "edit": {
+                "title": "Edytowano wątek!",
+                "editor": "Edytowano przez",
                 "edits": "Zmiany"
             }
         }

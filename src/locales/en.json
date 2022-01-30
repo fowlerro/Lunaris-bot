@@ -13,6 +13,7 @@
         "createdAt": "Account created at",
         "joinedAt": "Account joined at",
         "channel": "Channel",
+        "thread": "Thread",
         "content": "Content",
         "before": "Before",
         "after": "After",
@@ -306,6 +307,25 @@
             },
             "edit": {
                 "title": "Channel edited!",
+                "edits": "Edits"
+            }
+        },
+        "threads": {
+            "create": {
+                "title": "Thread created!",
+                "owner": "Thread owner",
+                "inChannel": "Created in",
+                "autoArchiveDuration": "Auto archive duration"
+            },
+            "delete": {
+                "title": "Thread deleted!",
+                "createdAt": "Thread created at",
+                "memberCount": "Member count",
+                "messageCount": "Message count"
+            },
+            "edit": {
+                "title": "Thread edited!",
+                "editor": "Edited by",
                 "edits": "Edits"
             }
         }

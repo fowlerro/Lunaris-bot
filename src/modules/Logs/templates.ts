@@ -604,4 +604,127 @@ export default {
             timestamp: new Date()
         },
     } as { [logType: string]: MessageEmbedOptions },
+    threads: {
+        create: {
+            color: palette.info,
+            author: {
+                name: "logs.threads.create.title",
+                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
+            },
+            fields: [
+                {
+                    name: "logs.threads.create.owner",
+                    value: "{{mentionThreadOwner}}\n`{{threadOwnerId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.thread",
+                    value: "{{mentionThread}}\n`{{threadId}}`",
+                    inline: true
+                },
+                {
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true
+                },
+                {
+                    name: "logs.threads.create.inChannel",
+                    value: "{{mentionThreadParent}}\n`{{threadParentId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.threads.create.autoArchiveDuration",
+                    value: "{{threadAutoArchiveDuration}} min",
+                    inline: true
+                },
+                {
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true
+                },
+            ],
+            timestamp: new Date()
+        },
+        delete: {
+            color: palette.error,
+            author: {
+                name: "logs.threads.delete.title",
+                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/cross-mark_274c.png"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.thread",
+                    value: "{{threadName}}",
+                    inline: true
+                },
+                {
+                    name: "logs.threads.create.owner",
+                    value: "{{mentionThreadOwner}}\n`{{threadOwnerId}}`",
+                    inline: true
+                },
+
+                {
+                    name: "logs.threads.create.inChannel",
+                    value: "{{mentionThreadParent}}\n`{{threadParentId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.threads.delete.createdAt",
+                    value: "{{threadCreatedAt}}\n{{threadCreatedAt:R}}",
+                    inline: true
+                },
+                {
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true
+                },
+
+                {
+                    name: "logs.threads.delete.memberCount",
+                    value: "{{threadMemberCount}}",
+                    inline: true
+                },
+                {
+                    name: "logs.threads.delete.messageCount",
+                    value: "{{threadMessageCount}}",
+                    inline: true
+                },
+                {
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true
+                },
+            ],
+            timestamp: new Date()
+        },
+        edit: {
+            color: palette.info,
+            author: {
+                name: "logs.threads.edit.title"
+            },
+            fields: [
+                {
+                    name: "logs.threads.edit.editor",
+                    value: "{{editorMention}}\n`{{editorId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.thread",
+                    value: "{{mentionThread}}\n`{{threadId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.thread.edit.edits",
+                    value: "{{threadEdits}}",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        },
+    } as { [logType: string]: MessageEmbedOptions },
 }

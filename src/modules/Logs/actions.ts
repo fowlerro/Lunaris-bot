@@ -72,7 +72,8 @@ export default {
     },
     members: {},
     roles: {},
-    channels: {}
+    channels: {},
+    threads: {}
 } as {
     [category in keyof Templates]: {
         [type: string]: {
