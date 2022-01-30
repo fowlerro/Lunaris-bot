@@ -327,6 +327,22 @@
                 "editor": "Edytowano przez",
                 "edits": "Zmiany"
             }
+        },
+        "invites": {
+            "create": {
+                "title": "Utworzono zaproszenie!",
+                "createdBy": "Utworzono przez",
+                "forChannel": "Dla kanału",
+                "code": "Kod zaproszenia",
+                "expiresAt": "Data wygaśnięcia",
+                "maxUses": "Maks. ilość użyć"
+            },
+            "delete": {
+                "title": "Usunięto zaproszenie!",
+                "deletedBy": "Usunięto przez",
+                "createdAt": "Data utworzenia zaproszenia",
+                "uses": "Użycia"
+            }
         }
     },
     "autoMod": {

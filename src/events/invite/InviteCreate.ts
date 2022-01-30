@@ -1,4 +1,5 @@
 import { Invite } from "discord.js";
+import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
 
@@ -10,11 +11,13 @@ export default class InviteCreateEvent extends BaseEvent {
     async run(invite: Invite) {
         if(!client.isOnline) return;
         if(!invite.guild) return
-        // const guildConfig = await Guilds.config.get(invite.guild.id);
-        // const logChannel = (invite.guild as Guild).channels.cache.find(channel => channel.id === guildConfig.get('logs.invites'));
-        // if(!logChannel) return;
-        // const language = guildConfig.get('language');
 
-        // inviteCreatedLog(client, invite.url, invite.expiresTimestamp, invite.inviter, invite.maxUses, invite.channel.id, logChannel, language);
+        serverLogs(invite)
     }
 };
+
+async function serverLogs(invite: Invite) {
+    if(!invite.guild) return
+    
+    Logs.log('invites', 'create', invite.guild.id, { invite })
+}

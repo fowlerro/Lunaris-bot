@@ -1,19 +1,30 @@
-import { Invite } from "discord.js";
+import { Invite, Permissions } from "discord.js"
+import Logs from "../../modules/Logs"
 
-import BaseEvent from "../../utils/structures/BaseEvent";
+import BaseEvent from "../../utils/structures/BaseEvent"
+import { sleep } from "../../utils/utils"
 export default class InviteDeleteEvent extends BaseEvent {
     constructor() {
-        super('inviteDelete');
+        super('inviteDelete')
     }
     
     async run(invite: Invite) {
-        if(!client.isOnline) return;
+        if(!client.isOnline) return
         if(!invite.guild) return
-        // const guildConfig = await Guilds.config.get(client, invite.guild.id);
-        // const logChannel = (invite.guild as Guild).channels.cache.find(channel => channel.id === guildConfig.get('logs.invites'));
-        // if(!logChannel) return;
-        // const language = guildConfig.get('language');
 
-        // inviteDeletedLog(client, invite.code, invite.channel.id, logChannel, language);
+        serverLogs(invite)
     }
-};
+}
+
+async function serverLogs(invite: Invite) {
+    const guild = await invite.guild?.fetch().catch(console.error)
+    if(!guild) return
+    if(!guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return
+
+    await sleep(500)
+    const auditLogs = await guild.fetchAuditLogs({ type: 'INVITE_DELETE', limit: 5 }).catch(console.error)
+    if(!auditLogs) return
+    const log = auditLogs.entries.find(log => log.target.code === invite.code && Date.now() - log.createdTimestamp < 5000)
+    if(!log || !log.executor) return
+    Logs.log('invites', 'delete', guild.id, { invite: log.target, customs: { deletedByMention: `<@${log.executor.id}>`, deletedById: log.executor.id } })
+}

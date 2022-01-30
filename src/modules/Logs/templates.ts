@@ -727,4 +727,88 @@ export default {
             timestamp: new Date()
         },
     } as { [logType: string]: MessageEmbedOptions },
+    invites: {
+        create: {
+            color: palette.info,
+            author: {
+                name: "logs.invites.create.title",
+                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
+            },
+            fields: [
+                {
+                    name: "logs.invites.create.createdBy",
+                    value: "{{mentionInviteCreator}}\n`{{inviteCreatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.invites.create.forChannel",
+                    value: "{{mentionInviteChannel}}\n`{{inviteChannelId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.invites.create.code",
+                    value: "`{{inviteCode}}`",
+                    inline: true
+                },
+
+                {
+                    name: "logs.invites.create.expiresAt",
+                    value: "{{inviteExpiresAt}}\n{{inviteExpiresAt:R}}",
+                    inline: true
+                },
+                {
+                    name: "logs.invites.create.maxUses",
+                    value: "{{inviteMaxUses}}",
+                    inline: true
+                },
+                {
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true,
+                }
+            ],
+            timestamp: new Date()
+        },
+        delete: {
+            color: palette.error,
+            author: {
+                name: "logs.invites.delete.title",
+                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/cross-mark_274c.png"
+            },
+            fields: [
+                {
+                    name: "logs.invites.delete.deletedBy",
+                    value: "{{deletedByMention}}\n`{{deletedById}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.invites.create.createdBy",
+                    value: "{{mentionInviteCreator}}\n`{{inviteCreatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.invites.create.code",
+                    value: "`{{inviteCode}}`",
+                    inline: true
+                },
+
+                {
+                    name: "logs.invites.create.forChannel",
+                    value: "{{mentionInviteChannel}}\n`{{inviteChannelId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.invites.delete.uses",
+                    value: "{{inviteUses}}",
+                    inline: true
+                },
+                {
+                    name: '\u200b',
+                    value: '\u200b',
+                    inline: true
+                }
+            ],
+            timestamp: new Date()
+        }
+    } as { [logType: string]: MessageEmbedOptions },
 }

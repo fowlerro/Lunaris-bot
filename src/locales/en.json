@@ -328,6 +328,22 @@
                 "editor": "Edited by",
                 "edits": "Edits"
             }
+        },
+        "invites": {
+            "create": {
+                "title": "Invite created!",
+                "createdBy": "Created by",
+                "forChannel": "For channel",
+                "code": "Invite code",
+                "expiresAt": "Expires at",
+                "maxUses": "Max uses"
+            },
+            "delete": {
+                "title": "Invite deleted!",
+                "deletedBy": "Deleted by",
+                "createdAt": "Invite created at",
+                "uses": "Uses"
+            }
         }
     },
     "autoMod": {
