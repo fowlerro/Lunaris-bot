@@ -10,7 +10,7 @@ export interface IFormatter {
     path?: string;
     customFunction?: (member: GuildMember, ...vars: any) => string | null;
     type: string;
-    mentionType?: 'member' | 'channel' | 'role';
+    mentionType?: 'member' | 'channel' | 'role' | 'emoji';
     category: string;
     description: {
         en: string;
@@ -548,6 +548,73 @@ export const supportedFormatters: IFormatter[] = [
         }
     },
 
+    // EMOJI
+    {
+        name: 'emoji', path: 'emoji.id',
+        type: 'mention',
+        mentionType: 'emoji',
+        category: 'emoji',
+        description: {
+            en: "Sends an emoji",
+            pl: "Wysyła emotkę"
+        }
+    },
+    {
+        name: 'emojiName', path: 'emoji.name',
+        type: 'variable',
+        category: 'emoji',
+        description: {
+            en: "Emoji's name",
+            pl: "Nazwa emotki"
+        }
+    },
+    {
+        name: 'emojiId', path: 'emoji.id',
+        type: 'variable',
+        category: 'emoji',
+        description: {
+            en: "Emoji's identificator",
+            pl: "Identyfikator emotki"
+        }
+    },
+    {
+        name: 'emojiUrl', path: 'emoji.url',
+        type: 'variable',
+        category: 'emoji',
+        description: {
+            en: "Emoji's URL",
+            pl: "URL emotki"
+        }
+    },
+    {
+        name: 'emojiCreatedAt', path: 'emoji.createdAt',
+        type: 'variableDate',
+        category: 'emoji',
+        description: {
+            en: "Date of emoji creation",
+            pl: "Data dodania emotki"
+        }
+    },
+    {
+        name: 'emojiCreatorId', path: 'emoji.author.id',
+        type: 'variable',
+        category: 'emoji',
+        description: {
+            en: "Emoji's author identificator",
+            pl: "Identyfikator autora emotki"
+        }
+    },
+    {
+        name: 'mentionEmojiCreator', path: 'emoji.author.id',
+        type: 'mention',
+        mentionType: 'member',
+        category: 'emoji',
+        description: {
+            en: "Mention emoji's author",
+            pl: "Pinguje autora emotki"
+        }
+    },
+
     // MENTIONS
     {
         name: 'mentionMember', path: 'member.id',
@@ -730,6 +797,7 @@ function formatMention(format: string, value: string, formatter: IFormatter, var
     const mention = formatter.mentionType === 'member' ? Formatters.memberNicknameMention(variable)
         : formatter.mentionType === 'role' ? Formatters.roleMention(variable)
         : formatter.mentionType === 'channel' ? Formatters.channelMention(variable)
+        : formatter.mentionType === 'emoji' ? Formatters.formatEmoji(variable)
         : value
     format = format.replace(value, mention)
 
