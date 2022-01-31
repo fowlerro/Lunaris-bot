@@ -58,7 +58,7 @@ function editColor(changes: AuditLogChange[], language: Language) {
     return `**${t('logs.roles.edit.changes.color', language)}**: \`#${oldColor?.toUpperCase()}\` => \`#${newColor?.toUpperCase()}\`\n`
 }
 
-function editName(changes: AuditLogChange[], language: Language) {
+export function editName(changes: AuditLogChange[], language: Language) {
     const change = changes.find(change => change.key === 'name')
     if(!change) return ''
     const oldName = change.old

@@ -650,7 +650,7 @@ export default {
             fields: [
                 {
                     name: "logs.general.moderator",
-                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    value: "{{moderator}}",
                     inline: true
                 },
                 {

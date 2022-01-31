@@ -39,7 +39,8 @@
         "no": "nie",
         "never": "Nigdy",
         "message": "Wiadomość",
-        "emoji": "Emotka"
+        "emoji": "Emotka",
+        "unknown": "Nieznany"
     },
     "help": {
         "help": {
@@ -324,7 +325,17 @@
             },
             "edit": {
                 "title": "Edytowano kanał!",
-                "edits": "Zmiany"
+                "edits": "Zmiany",
+                "allowed": "Zezwolono",
+                "denied": "Zakazano",
+                "default": "Domyślne",
+                "changes": {
+                    "topic": "Temat",
+                    "slowmode": "Tryb powolny",
+                    "nsfw": "NSFW",
+                    "announcement": "Kanał ogłoszeniowy",
+                    "archive": "Archiwizuj po nieaktywności"
+                }
             }
         },
         "threads": {

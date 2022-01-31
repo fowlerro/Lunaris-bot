@@ -39,7 +39,8 @@
         "no": "no",
         "never": "Never",
         "message": "Message",
-        "emoji": "Emoji"
+        "emoji": "Emoji",
+        "unknown": "Unknown"
     },
     "help": {
         "help": {
@@ -326,8 +327,15 @@
             "edit": {
                 "title": "Channel edited!",
                 "edits": "Edits",
+                "allowed": "Allowed",
+                "denied": "Denied",
+                "default": "Default",
                 "changes": {
-
+                    "topic": "Topic",
+                    "slowmode": "Slowmode",
+                    "nsfw": "NSFW",
+                    "announcement": "Announcement Channel",
+                    "archive": "Archive after inactivity"
                 }
             }
         },
