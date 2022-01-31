@@ -354,7 +354,10 @@
             "edit": {
                 "title": "Edytowano wątek!",
                 "editor": "Edytowano przez",
-                "edits": "Zmiany"
+                "edits": "Zmiany",
+                "changes": {
+                    "locked": "Zablokowany"
+                }
             }
         },
         "invites": {

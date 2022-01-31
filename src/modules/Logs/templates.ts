@@ -782,7 +782,7 @@ export default {
                     inline: true
                 },
                 {
-                    name: "logs.thread.edit.edits",
+                    name: "logs.threads.edit.edits",
                     value: "{{threadEdits}}",
                     inline: false
                 }

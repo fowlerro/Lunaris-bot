@@ -117,7 +117,7 @@ function editTopic(changes: AuditLogChange[], language: Language) {
         ${t('general.after', language)}: ${newValue}\n\n`
 }
 
-function editSlowmode(changes: AuditLogChange[], language: Language) {
+export function editSlowmode(changes: AuditLogChange[], language: Language) {
     const change = changes.find(change => change.key === 'rate_limit_per_user')
     if(!change) return ''
     const oldValue = change.old ? change.old + 's' : t('general.off', language)
@@ -142,7 +142,7 @@ function editType(changes: AuditLogChange[], language: Language) {
     return `**${t('logs.channels.edit.changes.announcement', language)}**: \`${newValue}\`\n`
 }
 
-function editArchive(changes: AuditLogChange[], language: Language) {
+export function editArchive(changes: AuditLogChange[], language: Language) {
     const change = changes.find(change => change.key === 'default_auto_archive_duration')
     if(!change) return ''
     const oldValue = change.old ? change.old + 'min' : t('general.none', language)

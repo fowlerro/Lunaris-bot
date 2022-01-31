@@ -355,7 +355,10 @@
             "edit": {
                 "title": "Thread edited!",
                 "editor": "Edited by",
-                "edits": "Edits"
+                "edits": "Edits",
+                "changes": {
+                    "locked": "Locked"
+                }
             }
         },
         "invites": {
