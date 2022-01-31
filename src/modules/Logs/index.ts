@@ -1,5 +1,6 @@
-import { ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed, Snowflake, TextChannel } from "discord.js";
+import { ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed, MessageEmbedOptions, Snowflake, TextChannel } from "discord.js";
 import { Language } from "types";
+import { GuildLogs, GuildLogsModel } from "../../database/schemas/GuildLogs";
 import { LocalePhrase } from "../../types/locales";
 import TextFormatter from "../../utils/Formatters/Formatter";
 import BaseModule from "../../utils/structures/BaseModule";
@@ -16,22 +17,70 @@ class LogsModule extends BaseModule {
 
     async run() {}
 
-    async log(category: keyof Templates, type: string, guildId: Snowflake, vars: any) {
-        const config = { 
-            messages: { channelId: "795981046645653524" },
-            members: { channelId: "795980843516297216", logs: { join: true, leave: true, ban: true } },
-            roles: { channelId: "805536443216822362" },
-            channels: { channelId: "795980922553761793" },
-            threads: { channelId: "937281497390538762" },
-            invites: { channelId: "804820204022399046" },
-            emojis: { channelId: "937352424895705168" },
-            server: { channelId: "937403455641886811" }
-        }
+    async get(guildId: Snowflake): Promise<GuildLogs | null> {
+        const json = await redis.logConfigs.getEx(guildId, { EX: 60 * 10 })
+        if(json) return JSON.parse(json) as GuildLogs
 
-        const guild = await client.guilds.fetch(guildId).catch(() => {})
-        if(!guild) return console.log('notGuild')
-        const channel = await guild.channels.fetch(config[category].channelId).catch(() => {}) as TextChannel | null
-        if(!channel) return console.log('notChannel')
+        const document = await GuildLogsModel.findOne({ guildId }).select('-_id -__v')
+        if(!document) return this.create(guildId)
+
+        const config = document.toObject()
+        await redis.logConfigs.setEx(guildId, 60 * 10, JSON.stringify(config))
+        return config
+    }
+
+    async set(guildId: Snowflake, category: keyof Templates, channelId?: Snowflake): Promise<GuildLogs | null> {
+        if(!Object.keys(templates).includes(category)) return null
+
+        const document = await GuildLogsModel.findOneAndUpdate({ guildId }, {
+            $set: {
+                [`${category}.channelId`]: channelId
+            }
+        }, { new: true, upsert: true, runValidators: true }).select('-_id -__v').catch(console.error)
+        if(!document) return null
+
+        const config = document.toObject()
+        await redis.logConfigs.setEx(guildId, 60 * 10, JSON.stringify(config))
+        return config
+    }
+
+    async toggle(guildId: Snowflake, category: keyof Templates, log: string, value: boolean): Promise<GuildLogs | null> {
+        if(!Object.keys(templates).includes(category)) return null
+        if(!Object.keys(templates[category]).includes(log)) return null
+
+        const document = await GuildLogsModel.findOneAndUpdate({ guildId }, {
+            $set: {
+                [`${category}.logs.${log}`]: value
+            }
+        }, { new: true, upsert: true, runValidators: true }).select('-_id -__v').catch(console.error)
+        if(!document) return null
+
+        const config = document.toObject()
+        await redis.logConfigs.setEx(guildId, 60 * 10, JSON.stringify(config))
+        return config
+    }
+
+    async create(guildId: Snowflake): Promise<GuildLogs | null> {
+        const document = await GuildLogsModel.create({ guildId }).catch(console.error)
+        if(!document) return null
+
+        const config = document.toObject()
+        delete config._id
+        delete config.__v
+        await redis.logConfigs.setEx(guildId, 60 * 10, JSON.stringify(config))
+        return config
+    }
+
+    async log<T extends keyof Templates>(category: T, type: keyof Templates[T], guildId: Snowflake, vars: any) {
+        const config = await this.get(guildId)
+        if(!config) return
+        const channelId = config?.[category]?.channelId
+        const isLogEnabled = config?.[category]?.logs?.[type] as boolean
+        if(!channelId || !isLogEnabled) return
+        const guild = await client.guilds.fetch(guildId).catch(console.error)
+        if(!guild) return
+        const channel = await guild.channels.fetch(channelId).catch(console.error) as TextChannel | null
+        if(!channel) return
         const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
 
         const embed = this.formatTemplate(category, type, language, vars)
@@ -46,8 +95,8 @@ class LogsModule extends BaseModule {
         })
     }
 
-    formatTemplate(category: keyof Templates, type: string, language: Language, vars: any) {
-        const template = templates[category][type]
+    formatTemplate<T extends keyof Templates>(category: T, type: keyof Templates[T], language: Language, vars: any) {
+        const template = templates[category][type] as MessageEmbedOptions
 
         const fields = template.fields?.map(value => ({ name: t(value.name as LocalePhrase, language), value: TextFormatter(value.value, vars), inline: value.inline }))
         const embed = new MessageEmbed()
@@ -64,8 +113,8 @@ class LogsModule extends BaseModule {
         return embed
     }
 
-    addActions(category: keyof Templates, type: string, language: Language, vars: any) {
-        
+    addActions<T extends keyof Templates>(category: T, type: keyof Templates[T], language: Language, vars: any) {
+        // @ts-ignore
         const actionButtons = actions?.[category]?.[type]?.addActions?.(language, vars)
         if(!actionButtons || !actionButtons.length) return
         const actionRow = new MessageActionRow()
@@ -78,7 +127,8 @@ class LogsModule extends BaseModule {
         const customId = interaction.customId
         const [log, category, logType] = customId.split('-')
         if(!log || log !== 'logs' || !category || !logType) return
-        actions?.[category as keyof Templates]?.[logType]?.handleActions?.(interaction)
+        // @ts-ignore
+        actions?.[category]?.[logType]?.handleActions?.(interaction)
     }
 }
 

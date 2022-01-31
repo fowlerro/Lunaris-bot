@@ -77,11 +77,13 @@ export default {
     invites: {},
     emojis: {},
     server: {}
-} as {
-    [category in keyof Templates]: {
-        [type: string]: {
-            addActions?: (language: Language, vars: any) => MessageButton[],
-            handleActions?: (interaction: ButtonInteraction) => void
+} as Actions<Templates>
+
+type Actions<T> = {
+    [category in keyof T]: {
+        [type in keyof T[category]]?: {
+            addActions: (language: Language, vars: any) => MessageButton[]
+            handleActions: (interaction: ButtonInteraction) => void
         }
     }
 }

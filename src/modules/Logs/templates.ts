@@ -32,7 +32,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         delete: {
             color: palette.error,
             author: {
@@ -77,7 +77,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         purge: {
             color: palette.error,
             author: {
@@ -107,7 +107,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         pin: {
             color: palette.info,
             author: {
@@ -136,7 +136,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         unpin: {
             color: palette.info,
             author: {
@@ -165,8 +165,8 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
-    } as { [logType: string]: MessageEmbedOptions },
+        } as MessageEmbedOptions,
+    },
     members: {
         join: {
             color: palette.info,
@@ -187,7 +187,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         leave: {
             color: palette.info,
             author: {
@@ -212,7 +212,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
 
         warn: {
             color: palette.error,
@@ -246,7 +246,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         unwarn: {
             color: palette.success,
             author: {
@@ -279,7 +279,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         unwarnAll: {
             color: palette.success,
             author: {
@@ -312,7 +312,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
 
         kick: {
             color: palette.error,
@@ -341,7 +341,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
 
         timeout: {
             color: palette.error,
@@ -375,7 +375,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         timeoutEnd: {
             color: palette.success,
             author: {
@@ -403,7 +403,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
 
         ban: {
             color: palette.error,
@@ -441,7 +441,7 @@ export default {
                     inline: false
                 }
             ]
-        },
+        } as MessageEmbedOptions,
         unban: {
             color: palette.success,
             author: {
@@ -469,8 +469,8 @@ export default {
                 }
             ],
             timestamp: new Date()
-        }
-    } as { [logType: string]: MessageEmbedOptions },
+        } as MessageEmbedOptions
+    },
     roles: {
         create: {
             color: palette.info,
@@ -491,7 +491,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         delete: {
             color: palette.error,
             author: {
@@ -516,7 +516,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         edit: {
             color: palette.info,
             author: {
@@ -540,7 +540,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         add: {
             color: palette.info,
             author: {
@@ -567,7 +567,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         remove: {
             color: palette.error,
             author: {
@@ -594,8 +594,8 @@ export default {
                 }
             ],
             timestamp: new Date()
-        }
-    } as { [logType: string]: MessageEmbedOptions },
+        } as MessageEmbedOptions
+    },
     channels: {
         create: {
             color: palette.info,
@@ -616,7 +616,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         delete: {
             color: palette.error,
             author: {
@@ -641,7 +641,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        }  as MessageEmbedOptions,
         edit: {
             color: palette.info,
             author: {
@@ -665,8 +665,8 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
-    } as { [logType: string]: MessageEmbedOptions },
+        }  as MessageEmbedOptions,
+    },
     threads: {
         create: {
             color: palette.info,
@@ -707,7 +707,7 @@ export default {
                 },
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         delete: {
             color: palette.error,
             author: {
@@ -764,7 +764,7 @@ export default {
                 },
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         edit: {
             color: palette.info,
             author: {
@@ -788,8 +788,8 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
-    } as { [logType: string]: MessageEmbedOptions },
+        } as MessageEmbedOptions,
+    },
     invites: {
         create: {
             color: palette.info,
@@ -831,7 +831,7 @@ export default {
                 }
             ],
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         delete: {
             color: palette.error,
             author: {
@@ -872,8 +872,8 @@ export default {
                 }
             ],
             timestamp: new Date()
-        }
-    } as { [logType: string]: MessageEmbedOptions },
+        } as MessageEmbedOptions
+    },
     emojis: {
         create: {
             color: palette.info,
@@ -897,7 +897,7 @@ export default {
                 url: "{{emojiUrl}}"
             },
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         delete: {
             color: palette.error,
             author: {
@@ -941,7 +941,7 @@ export default {
                 url: "{{emojiUrl}}"
             },
             timestamp: new Date()
-        },
+        } as MessageEmbedOptions,
         edit: {
             color: palette.info,
             author: {
@@ -984,8 +984,8 @@ export default {
                 url: "{{emojiUrl}}"
             },
             timestamp: new Date()
-        },
-    } as { [logType: string]: MessageEmbedOptions },
+        } as MessageEmbedOptions,
+    },
     server: {
         unwarnAll: {
             color: palette.info,
@@ -1006,6 +1006,6 @@ export default {
                 },
             ],
             timestamp: new Date()
-        },
-    } as { [logType: string]: MessageEmbedOptions },
+        } as MessageEmbedOptions,
+    },
 }

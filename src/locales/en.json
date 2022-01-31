@@ -207,6 +207,16 @@
                 "limitError": "❌ You can add only up to 20 rewards for each scope (text and voice)!",
                 "rewardNotSelected": "❌ Wrong reward, please select a reward from the list!"
             }
+        },
+        "logs": {
+            "set": "✅ Logs channel has been set successfully!",
+            "enabled": "✅ Log has been successfully enabled!",
+            "disabled": "✅ Log has been successfully disabled!",
+            "alreadyEnabled": "Log is already enabled",
+            "alreadyDisabled": "Log is already disabled",
+            "wrongCategory": "❌ Wrong logs category! Select correct from command option!",
+            "invalidLog": "❌ Invalid log! Select correct from command option",
+            "error": "❌ Something went wrong :/ Try again!"
         }
     },
     "modules": {
