@@ -72,7 +72,7 @@ export default class WarnCommand extends BaseCommand {
                         },
                         {
                             name: 'page',
-                            description: 'The page, which will be shown, in situation list of mutes will be paginated',
+                            description: 'The page, which will be shown, in situation list of warns will be paginated',
                             type: 'INTEGER'
                         }
                     ]
