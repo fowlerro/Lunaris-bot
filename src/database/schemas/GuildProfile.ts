@@ -2,14 +2,6 @@ import { Snowflake } from "discord.js";
 import { Document, model, Schema } from "mongoose";
 import { ProfileStatistics } from "./Profile";
 
-export interface GuildProfileMute {
-    isMuted: boolean;
-    timestamp?: number | null;
-    date?: number | null;
-    reason?: string | null;
-    executorId?: Snowflake | null;
-}
-
 export interface GuildProfileWarn {
     _id: string
     executorId: Snowflake;
@@ -21,7 +13,6 @@ export interface GuildProfileDocument extends Document {
     guildId: Snowflake;
     userId: Snowflake;
     statistics: ProfileStatistics;
-    mute: GuildProfileMute;
     warns: GuildProfileWarn[];
 }
 
@@ -74,24 +65,6 @@ const GuildProfileSchema = new Schema({
                 type: Number,
                 default: 0
             }
-        }
-    },
-    mute: {
-        isMuted: {
-            type: Boolean,
-            default: false,
-        },
-        timestamp: {
-            type: Number,
-        },
-        date: {
-            type: Number,
-        },
-        reason: {
-            type: String,
-        },
-        executorId: {
-            type: String,
         }
     },
     warns: [{

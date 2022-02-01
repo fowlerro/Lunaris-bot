@@ -40,7 +40,8 @@
         "never": "Nigdy",
         "message": "Wiadomość",
         "emoji": "Emotka",
-        "unknown": "Nieznany"
+        "unknown": "Nieznany",
+        "until": "Do"
     },
     "help": {
         "help": {
@@ -131,6 +132,16 @@
             "targetNotFound": "Nie znaleziono użytkownika!",
             "targetWithoutWarns": "{{{member}}} nie posiada żadnych ostrzeżeń",
             "optionAll": "Usuń wszystkie ostrzeżenia z tego użytkownika!"
+        },
+        "mute": {
+            "addMute": "✅ {{{member}}} został wyciszony przez {{{executor}}}",
+            "removeMute":"✅ {{{executor}}} usunął wyciszenie z {{{member}}}",
+            "executorWithoutPermission": "❌ Nie posiadasz uprawnień, aby to zrobić!",
+            "notModeratable": "❌ Nie możesz wyciszyć tego użytkownika!",
+            "notTimedOut": "❌ Użytkownik nie jest wyciszony!",
+            "alreadyTimedOut": "❌ Użytkownik jest już wyciszony!",
+            "incorectTime": "❌ Niepoprawny czas!",
+            "error": "❌ Coś poszło nie tak :/ Spróbuj ponownie!"
         },
         "idea": {
             "submitted": "Pomysł został przesłany!"
@@ -276,6 +287,14 @@
                 "roles": "Role"
             },
 
+
+            "nickname": {
+                "title": "Pseudonim użytkownika zmieniony!",
+                "editor": "Zmieniony przez",
+                "oldNickname": "Stary pseudonim",
+                "newNickname": "Nowy pseudonim"
+            },
+
             "warn": {
                 "title": "Ostrzeżenie!",
                 "warnCount": "Ilość ostrzeżeń"
@@ -296,7 +315,7 @@
                 "title": "Użytkownik zablokowany!",
                 "timeoutEnd": "Koniec blokady"
             },
-            "timeoutEnd": {
+            "timeoutRemove": {
                 "title": "Użytkownik odblokowany"
             },
 
@@ -421,18 +440,6 @@
     },
     "autoMod": {
         "notManagable": "Nie mam uprawnień do zarządzania %VAR%",
-        "censor": {
-            "wordsListTitle": "Lista blokowanych słów"
-        },
-        "mute": {
-            "addMute": "{{{member}}} został wyciszony przez {{{executor}}} {{reason}}",
-            "removeMute": "{{{member}}} został odciszony przez {{{executor}}}",
-            "removeMuteAll": "Wszyscy użytkownicy zostali odciszeni",
-            "removeAllMutesReason": "Odciszono wszystkich użytkowników",
-            "notMuted": "{{{member}}} nie jest wyciszony",
-            "muteList": "Lista mute'ów na serwerze",
-            "error": "Coś poszło nie tak :/ Spróbuj ponownie!"
-        },
         "ban": {
             "add": "{{{member}}} został zbanowany przez {{{executor}}} {{reason}}",
             "remove": "{{{member}}} został odbanowany przez {{{executor}}} {{reason}}",

@@ -45,19 +45,14 @@ router.get('/guilds/:guildId/settings', async (req, res) => {
     const clientMember = guild.me
     if(!clientMember) return res.sendStatus(404)
 
-    const guildRoles = await guild.roles.fetch().catch(() => {})
-    if(!guildRoles) return res.sendStatus(404)
-
-    const guildConfig = await Guilds.config.get(guildId)
-    if(!guildConfig) res.sendStatus(404)
-    return res.send({ clientMember, guildConfig, guildRoles: guildRoles.filter(role => role.name !== '@everyone' && !role.managed && role.editable) })
+    return res.send({ clientMember })
 });
 
 router.put('/guilds/:guildId/settings', async (req, res) => {
     const userId = req.user?.discordId
     const { guildId } = req.params
 
-    const { nickname, muteRoleId } = req.body
+    const { nickname } = req.body
 
     if(!userId) return res.sendStatus(401)
     if(!guildId) return res.sendStatus(404)
@@ -69,22 +64,10 @@ router.put('/guilds/:guildId/settings', async (req, res) => {
 
     const clientMember = guild.me
     if(!clientMember) return res.sendStatus(404)
-    
-    const guildConfig = await Guilds.config.get(guildId)
-    if(!guildConfig) return res.sendStatus(404)
-
-    const guildRoles = await guild.roles.fetch().catch(() => {})
-    if(!guildRoles) return res.sendStatus(404)
-
-    const muteRole = guildRoles.find(role => role.id === muteRoleId)
-    const newMuteRoleId = muteRole ? muteRole.id : guildConfig.muteRole
-
-    const updatedGuildConfig = await Guilds.config.set(guildId, { muteRole: newMuteRoleId })
-    if(!updatedGuildConfig) return res.sendStatus(404)
 
     const updatedClientMember = await clientMember.setNickname(nickname)
 
-    return res.send({ clientMember: updatedClientMember, guildConfig: updatedGuildConfig, guildRoles: guildRoles.filter(role => role.name !== '@everyone' && !role.managed && role.editable) })
+    return res.send({ clientMember: updatedClientMember })
 })
 
 
