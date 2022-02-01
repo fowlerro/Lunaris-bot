@@ -13,6 +13,7 @@
         "createdAt": "Account created at",
         "joinedAt": "Account joined at",
         "channel": "Channel",
+        "thread": "Thread",
         "content": "Content",
         "before": "Before",
         "after": "After",
@@ -35,7 +36,11 @@
         "date": "Date",
         "error": "❌ Something went wrong :/ Try again!",
         "yes": "yes",
-        "no": "no"
+        "no": "no",
+        "never": "Never",
+        "message": "Message",
+        "emoji": "Emoji",
+        "unknown": "Unknown"
     },
     "help": {
         "help": {
@@ -115,15 +120,16 @@
             "notDeletable": "The emoji cannot be deleted"
         },
         "warn": {
-            "add": "{{member}} has been warned by {{executor}} {{reason}}",
-            "remove": "{{executor}} removed warn from user {{member}}",
-            "removeMemberAll": "{{executor}} removed all {{member}}'s warns",
-            "removeAll": "{{executor}} removed all server warns",
+            "add": "{{{member}}} has been warned by {{{executor}}} {{reason}}",
+            "remove": "{{{executor}}} removed warn from user {{{member}}}",
+            "removeMemberAll": "{{{executor}}} removed all {{{member}}}'s warns",
+            "removeAll": "{{{executor}}} removed all server warns",
             "list": "{{userTag}}'s warn list",
             "guildList": "Warns:",
             "error": "Something went wrong! Warn couldn't be removed",
             "notFound": "Warn not found!",
             "targetNotFound": "Member not found!",
+            "targetWithoutWarns": "{{{member}}} doesn't have any warns!",
             "optionAll": "Delete all warns from this member!"
         },
         "idea": {
@@ -201,6 +207,27 @@
                 "limitError": "❌ You can add only up to 20 rewards for each scope (text and voice)!",
                 "rewardNotSelected": "❌ Wrong reward, please select a reward from the list!"
             }
+        },
+        "logs": {
+            "set": "✅ Logs channel has been set successfully!",
+            "enabled": "✅ Log has been successfully enabled!",
+            "disabled": "✅ Log has been successfully disabled!",
+            "status": "🗒️ Server Logs",
+            "alreadyEnabled": "Log is already enabled",
+            "alreadyDisabled": "Log is already disabled",
+            "wrongCategory": "❌ Wrong logs category! Select correct from command option!",
+            "invalidLog": "❌ Invalid log! Select correct from command option",
+            "error": "❌ Something went wrong :/ Try again!",
+            "categories": {
+                "messages": "Messages",
+                "members": "Members",
+                "roles": "Roles",
+                "channels": "Channels",
+                "threads": "Threads",
+                "invites": "Invites",
+                "emojis": "Emojis",
+                "server": "Server"
+            }
         }
     },
     "modules": {
@@ -211,91 +238,186 @@
     },
     "logs": {
         "general": {
-            "allowedPerms": "Added permissions",
-            "deniedPerms": "Revoked permissions",
-            "resetPerms": "Reset permissions"
+            "moderator": "Moderator",
+            "member": "Member",
+            "messageAuthor": "Message author",
+            "jumpToMessage": "Jump to message"
         },
-        "member": {
-            "joinedTitle": "%VAR% joined",
-            "leavedTitle": "%VAR% leaved",
-
-            "nicknameChangedTitle": "Nickname %VAR% has been changed",
-            "nicknameCreatedTitle": "Nickname %VAR% has been set",
-            "nicknameRemovedTitle": "Nickname %VAR% has been removed",
-            "nicknameChangedDesc": "%VAR% changed %VAR% nickname",
-            "nicknameCreatedDesc": "%VAR% created %VAR% nickname",
-            "nicknameRemovedDesc": "%VAR% removed %VAR% nickname",
-            "nicknameChangedBy": "Changed by",
-            "nicknameOld": "Old nickname",
-            "nicknameNew": "New nickname",
-
-            "kickedTitle": "%VAR% has been kicked",
-            "kickedDesc": "%VAR% has been kicked by %VAR%",
-            "kickedAt": "Kicked at",
-            "kickedTarget": "Target",
-
-            "bannedTitle": "%VAR% has been banned",
-            "bannedDesc": "%VAR% has been banned by %VAR%",
-            "bannedAt": "Banned at",
-            "bannedTarget": "Target",
-
-            "unbannedTitle": "%VAR% has been unbanned",
-            "unbannedDesc": "%VAR% has been unbanned by %VAR%",
-            "unbannedAt": "Unbanned at",
-            "unbannedTarget": "Target",
-
-            "addRoleTitle": "%VAR% got a role",
-            "removeRoleTitle": "%VAR% lost the role"
+        "messages": {
+            "edit": {
+                "title": "Message edited!",
+                "sendedAt": "Message sended at",
+                "deleteMessage": "Delete message!"
+            },
+            "delete": {
+                "title": "Message deleted!",
+                "by": "Deleted by",
+                "inChannel": "In channel"
+            },
+            "purge": {
+                "title": "Many messages purged!",
+                "count": "Message count"
+            },
+            "pin": {
+                "title": "Message pinned"
+            },
+            "unpin": {
+                "title": "Message unpinned!"
+            }
         },
-        "channel": {
-            "createdTitle": "New channel has been created",
-            "createdAt": "Created at",
-            
-            "deletedTitle": "Channel #%VAR% has been deleted",
-            "deletedAt": "Deleted at",
+        "members": {
+            "join": {
+                "title": "Member joined!",
+                "createdAt": "Account created at"
+            },
+            "leave": {
+                "title": "Member left!",
+                "joinedAt": "In server since",
+                "roles": "Roles"
+            },
 
-            "changedTitle": "Channel #%VAR% has been changed",
-            "changedOld": "Old",
-            "changedNew": "New"
-        },
-        "message": {
-            "deletedTitle": "Message has been deleted",
+            "warn": {
+                "title": "Member warned!",
+                "warnCount": "Warn count"
+            },
+            "unwarn": {
+                "title": "Member unwarned!"
+            },
+            "unwarnAll": {
+                "title": "Removed all warns from member",
+                "warnCount": "Deleted warn count"
+            },
 
-            "editedTitle": "Message has been edited",
-            "editedLink": "[Jump to message](%VAR%)",
-            "target": "Message author"
-        },
-        "invite": {
-            "createdTitle": "Invite has been created",
-            "deletedTitle": "Invite has been deleted",
-            "createdBy": "Created by",
-            "createdAt": "Created at",
-            "expiresAt": "Expires at",
-            "maxUses": "Uses"
-        },
-        "cmd": {
-            "triggerTitle": "Command '%VAR%' has been triggered"
-        },
-        "role": {
-            "createdTitle": "New role has been created",
-            "deletedTitle":"Role @%VAR% has been deleted",
-            "changedTitle": "Role @%VAR% has been changed",
+            "kick": {
+                "title": "Member kicked!"
+            },
 
-            "hoist": "Hoist",
-            "mentionable": "Mention role"
+            "timeout": {
+                "title": "Member timed out!",
+                "timeoutEnd": "Timeout ends at"
+            },
+            "timeoutEnd": {
+                "title": "Member timeout ended"
+
+            },
+
+            "ban": {
+                "title": "Member banned!",
+                "bannedAt": "Banned",
+                "unbanAt": "Unban"
+            },
+            "unban": {
+                "title": "Member unbanned!"
+            }
         },
-        "warn": {
-            "addWarn": "%VAR% has been warned",
-            "removeWarn": "%VAR%'s warn has been removed",
-            "removeAllWarns": "All server warns has been removed",
-            "addedBy": "Warned by",
-            "removedBy": "Removed by"
+        "roles": {
+            "create": {
+                "title": "Role created!"
+            },
+            "delete": {
+                "title": "Role deleted!",
+                "createdAt": "Role created at"
+            },
+            "edit": {
+                "title": "Role edited!",
+                "edits": "Edits",
+                "changes": {
+                    "color": "Color",
+                    "name": "Name",
+                    "hoist": "Hoist",
+                    "mentionable": "Mentionable",
+                    "allowPermissions": "Allowed perms",
+                    "denyPermissions": "Denied perms"
+                }
+            },
+            "add": {
+                "title": "Role given!"
+            },
+            "remove": {
+                "title": "Role taken!"
+            }
         },
-        "mute": {
-            "muted": "%VAR% has been muted",
-            "unmuted": "%VAR% has been unmuted",
-            "addedBy": "Muted by",
-            "removedBy": "Removed by"
+        "channels": {
+            "create": {
+                "title": "Channel created!"
+            },
+            "delete": {
+                "title": "Channel deleted!",
+                "createdAt": "Channel created at"
+            },
+            "edit": {
+                "title": "Channel edited!",
+                "edits": "Edits",
+                "allowed": "Allowed",
+                "denied": "Denied",
+                "default": "Default",
+                "changes": {
+                    "topic": "Topic",
+                    "slowmode": "Slowmode",
+                    "nsfw": "NSFW",
+                    "announcement": "Announcement Channel",
+                    "archive": "Archive after inactivity"
+                }
+            }
+        },
+        "threads": {
+            "create": {
+                "title": "Thread created!",
+                "owner": "Thread owner",
+                "inChannel": "Created in",
+                "autoArchiveDuration": "Auto archive duration"
+            },
+            "delete": {
+                "title": "Thread deleted!",
+                "createdAt": "Thread created at",
+                "memberCount": "Member count",
+                "messageCount": "Message count"
+            },
+            "edit": {
+                "title": "Thread edited!",
+                "editor": "Edited by",
+                "edits": "Edits",
+                "changes": {
+                    "locked": "Locked"
+                }
+            }
+        },
+        "invites": {
+            "create": {
+                "title": "Invite created!",
+                "createdBy": "Created by",
+                "forChannel": "For channel",
+                "code": "Invite code",
+                "expiresAt": "Expires at",
+                "maxUses": "Max uses"
+            },
+            "delete": {
+                "title": "Invite deleted!",
+                "deletedBy": "Deleted by",
+                "createdAt": "Invite created at",
+                "uses": "Uses"
+            }
+        },
+        "emojis": {
+            "create": {
+                "title": "Emoji added!",
+                "emojiName": "Emoji name"
+            },
+            "delete": {
+                "title": "Emoji deleted!",
+                "emojiAuthor": "Emoji added by",
+                "createdAt": "Emoji created at"
+            },
+            "edit": {
+                "title": "Emoji edited!",
+                "oldName": "Old name",
+                "newName": "New name"
+            }
+        },
+        "server": {
+            "unwarnAll": {
+                "title": "Unwarned whole server!"
+            }
         }
     },
     "autoMod": {
@@ -304,23 +426,24 @@
             "wordsListTitle": "Blocked words"
         },
         "mute": {
-            "addMute": "{{member}} has been muted by {{executor}} {{reason}}",
-            "removeMute": "{{member}} has been unmuted by {{executor}}",
+            "addMute": "{{{member}}} has been muted by {{{executor}}} {{reason}}",
+            "removeMute": "{{{member}}} has been unmuted by {{{executor}}}",
             "removeMuteAll": "All members have been unmuted",
             "removeAllMutesReason": "Unmute all members",
-            "notMuted": "{{member}} is not muted",
+            "notMuted": "{{{member}}} is not muted",
             "muteList": "Muted users:",
             "error": "Something went wrong :/ Try again!"
         },
         "ban": {
-            "add": "{{member}} has been banned by {{executor}} {{reason}}",
-            "remove": "{{member}} has been unbanned by {{executor}} {{reason}}",
-            "notBanned": "{{member}} is not banned",
+            "add": "{{{member}}} has been banned by {{{executor}}} {{reason}}",
+            "remove": "{{{member}}} has been unbanned by {{{executor}}} {{reason}}",
+            "removeReason": "Timed ban ended\nBan reason: {{reason}}",
+            "notBanned": "{{{member}}} is not banned",
             "notFound": "User not found"
         }
     },
     "xp": {
-        "levelUpMessage": "You've just leveled up to **{{level}} lvl** {{user}}!"
+        "levelUpMessage": "You've just leveled up to **{{level}} lvl** {{{user}}}!"
     },
     "dashboard": {
         "embeds": {
@@ -333,6 +456,7 @@
         "CREATE_INSTANT_INVITE": "Create Invite",
         "KICK_MEMBERS": "Kick Members",
         "BAN_MEMBERS": "Ban Members",
+        "MODERATE_MEMBERS": "Timeout Members",
         "ADMINISTRATOR": "Administrator",
         "MANAGE_CHANNELS": "Manage Channels",
         "MANAGE_GUILD": "Manage Server",
@@ -360,7 +484,18 @@
         "MANAGE_NICKNAMES": "Manage Nicknames",
         "MANAGE_ROLES": "Manage Roles",
         "MANAGE_WEBHOOKS": "Manage Webhooks",
-        "MANAGE_EMOJIS": "Manage Emojis"
+
+        "START_EMBEDDED_ACTIVITIES": "Start Activities",
+        "USE_APPLICATION_COMMANDS": "Use Application Commands",
+        "SEND_MESSAGES_IN_THREADS": "Send Messages in Threads",
+        "USE_PUBLIC_THREADS": "Use Public Threads",
+        "USE_PRIVATE_THREADS": "Use Private Threads",
+        "CREATE_PUBLIC_THREADS": "Create Public Threads",
+        "CREATE_PRIVATE_THREADS": "Create Private Threads",
+        "MANAGE_THREADS": "Manage Threads",
+        "REQUEST_TO_SPEAK": "Request to Speak",
+        "MANAGE_EVENTS": "Manage Events",
+        "MANAGE_EMOJIS_AND_STICKERS": "Manage Emojis and Stickers"
     },
     "date": {
         "days": {

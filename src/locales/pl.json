@@ -13,6 +13,7 @@
         "createdAt": "Konto utworzone",
         "joinedAt": "Dołączył",
         "channel": "Kanał",
+        "thread": "Wątek",
         "content": "Treść",
         "before": "Przed",
         "after": "Po",
@@ -35,7 +36,11 @@
         "date": "Data",
         "error": "❌ Coś poszło nie tak :/ Spróbuj ponownie!",
         "yes": "tak",
-        "no": "nie"
+        "no": "nie",
+        "never": "Nigdy",
+        "message": "Wiadomość",
+        "emoji": "Emotka",
+        "unknown": "Nieznany"
     },
     "help": {
         "help": {
@@ -115,15 +120,16 @@
             "notDeletable": "Nie mogę usunąć tej emotki"
         },
         "warn": {
-            "add": "{{member}} został ostrzeżony przez {{executor}} {{reason}}",
-            "remove": "{{executor}} zdjął ostrzeżenie z użytkownika {{member}}",
-            "removeMemberAll": "{{executor}} zdjął wszystkie ostrzeżenia z użytkownika {{member}}",
-            "removeAll": "{{executor}} zdjął wszystkie ostrzeżenia na serwerze",
+            "add": "{{{member}}} został ostrzeżony przez {{{executor}}} {{reason}}",
+            "remove": "{{{executor}}} zdjął ostrzeżenie z użytkownika {{{member}}}",
+            "removeMemberAll": "{{{executor}}} zdjął wszystkie ostrzeżenia z użytkownika {{{member}}}",
+            "removeAll": "{{{executor}}} zdjął wszystkie ostrzeżenia na serwerze",
             "list": "Lista ostrzeżeń użytkownika {{userTag}}",
             "guildList": "Lista ostrzeżeń na serwerze",
             "error": "Wystąpił problem z usunięciem ostrzeżenia",
             "notFound": "Nie znaleziono ostrzeżenia!",
             "targetNotFound": "Nie znaleziono użytkownika!",
+            "targetWithoutWarns": "{{{member}}} nie posiada żadnych ostrzeżeń",
             "optionAll": "Usuń wszystkie ostrzeżenia z tego użytkownika!"
         },
         "idea": {
@@ -201,6 +207,27 @@
                 "limitError": "❌ Możesz dodać jedynie po 20 nagród dla tekstowych lub głosowych leveli!",
                 "rewardNotSelected": "❌ Nieprawidłowa nagroda, wybierz poprawną z listy!"
             }
+        },
+        "logs": {
+            "set": "✅ Kanał logów został pomyślnie ustawiony!",
+            "enabled": "✅ Pomyślnie włączono loga!",
+            "disabled": "✅ Pomyślnie wyłączono loga!",
+            "status": "🗒️ Logi serwerowe",
+            "alreadyEnabled": "Log jest już włączony",
+            "alreadyDisabled": "Log jest już wyłączony",
+            "wrongCategory": "❌ Nieprawidłowa kategoria logów! Wybierz poprawną z opcji komendy!",
+            "invalidLog": "❌ Niepoprawny log! Wybierz prawidłowy z opcji komendy",
+            "error": "❌ Coś poszło nie tak :/ Spróbuj ponownie!",
+            "categories": {
+                "messages": "Wiadomości",
+                "members": "Użytkownicy",
+                "roles": "Role",
+                "channel": "Kanały",
+                "threads": "Wątki",
+                "invites": "Zaproszenia",
+                "emojis": "Emotki",
+                "server": "Serwer"
+            }
         }
     },
     "modules": {
@@ -211,91 +238,185 @@
     },
     "logs": {
         "general": {
-            "allowedPerms": "Dodane permisje",
-            "deniedPerms": "Zabrane permisje",
-            "resetPerms": "Zresetowane permisje"
+            "moderator": "Moderator",
+            "member": "Użytkownik",
+            "messageAuthor": "Autor wiadomości",
+            "jumpToMessage": "Skocz do wiadomości"
         },
-        "member": {
-            "joinedTitle": "%VAR% dołączył",
-            "leavedTitle": "%VAR% opuścił serwer",
-
-            "nicknameChangedTitle": "Nickname %VAR% został zmieniony",
-            "nicknameCreatedTitle": "Nickname %VAR% został ustawiony",
-            "nicknameRemovedTitle": "Nickname %VAR% został usunięty",
-            "nicknameChangedDesc": "%VAR% zmienił nick użytkownikowi %VAR%",
-            "nicknameCreatedDesc": "%VAR% stworzył nick użytkownikowi %VAR%",
-            "nicknameRemovedDesc": "%VAR% usunął nick użytkownikowi %VAR%",
-            "nicknameChangedBy": "Zmieniony przez",
-            "nicknameOld": "Stary nickname",
-            "nicknameNew": "Nowy nickname",
-
-            "kickedTitle": "%VAR% został wyrzucony",
-            "kickedDesc": "%VAR% został wyrzucony przez %VAR%",
-            "kickedAt": "W czasie",
-            "kickedTarget": "Wyrzucony",
-
-            "bannedTitle": "%VAR% został zbanowany",
-            "bannedDesc": "%VAR% został zbanowany przez %VAR%",
-            "bannedAt": "W czasie",
-            "bannedTarget": "Zbanowany",
-
-            "unbannedTitle": "%VAR% został odbanowany",
-            "unbannedDesc": "%VAR% został odbanowany przez %VAR%",
-            "unbannedAt": "W czasie",
-            "unbannedTarget": "Odbanowany",
-
-            "addRoleTitle": "%VAR% otrzymał rolę",
-            "removeRoleTitle": "%VAR% stracił rolę"
+        "messages": {
+            "edit": {
+                "title": "Edytowano wiadomość!",
+                "sendedAt": "Data wysłania wiadomości",
+                "deleteMessage": "Usuń wiadomość!"
+            },
+            "delete": {
+                "title": "Usunięto wiadomość!",
+                "by": "Usunięta przez",
+                "inChannel": "Na kanale"
+            },
+            "purge": {
+                "title": "Usunięto wiele wiadomości!",
+                "count": "Ilość wiadomości"
+            },
+            "pin": {
+                "title": "Przypięto wiadomość"
+            },
+            "unpin": {
+                "title": "Odpięto wiadomość!"
+            }
         },
-        "channel": {
-            "createdTitle": "Nowy kanał został stworzony",
-            "createdAt": "W czasie",
-            
-            "deletedTitle": "Kanał #%VAR% został usunięty",
-            "deletedAt": "W czasie",
+        "members": {
+            "join": {
+                "title": "Użytkownik dołączył!",
+                "createdAt": "Data stworzenia konta"
+            },
+            "leave": {
+                "title": "Użytkownik wyszedł!",
+                "joinedAt": "Na serwerze od",
+                "roles": "Role"
+            },
 
-            "changedTitle": "Kanał #%VAR% został zmodyfikowany",
-            "changedOld": "Stary",
-            "changedNew": "Nowy"
-        },
-        "message": {
-            "deletedTitle": "Wiadomość została usunięta",
+            "warn": {
+                "title": "Ostrzeżenie!",
+                "warnCount": "Ilość ostrzeżeń"
+            },
+            "unwarn": {
+                "title": "Zdjęte ostrzeżenie!"
+            },
+            "unwarnAll": {
+                "title": "Zdjęto wszystkie ostrzeżenia z użytkownika",
+                "warnCount": "Liczba usuniętych ostrzeżeń"
+            },
 
-            "editedTitle": "Wiadomość została edytowana",
-            "editedLink": "[Skocz do wiadomości](%VAR%)",
-            "target": "Autor wiadomości"
-        },
-        "invite": {
-            "createdTitle": "Zaproszenie zostało utworzone",
-            "deletedTitle": "Zaproszenie zostało usunięte",
-            "createdBy": "Stworzone przez",
-            "createdAt": "Stworzone",
-            "expiresAt": "Straci ważność",
-            "maxUses": "Użyć"
-        },
-        "cmd": {
-            "triggerTitle": "Komenda '%VAR%' została wykonana"
-        },
-        "role": {
-            "createdTitle": "Nowa rola została stworzona",
-            "deletedTitle": "Rola @%VAR% została usunięta",
-            "changedTitle": "Rola @%VAR% została zmodyfikowana",
+            "kick": {
+                "title": "Użytkownik wyrzucony!"
+            },
 
-            "hoist": "Wyświetlanie osobno",
-            "mentionable": "Zezwolenie na wzmianki"
+            "timeout": {
+                "title": "Użytkownik zablokowany!",
+                "timeoutEnd": "Koniec blokady"
+            },
+            "timeoutEnd": {
+                "title": "Użytkownik odblokowany"
+            },
+
+            "ban": {
+                "title": "Użytkownik zbanowany!",
+                "bannedAt": "Data bana",
+                "unbanAt": "Data unbana"
+            },
+            "unban": {
+                "title": "Użytkownik odbanowany!"
+            }
         },
-        "warn": {
-            "addWarn": "%VAR% otrzymał ostrzeżenie",
-            "removeWarn": "Ostrzeżenie użytkownika %VAR% zostało zdjęte",
-            "removeAllWarns": "Wszystkie ostrzeżenia na serwerze zostały usunięte",
-            "addedBy": "Nadane przez",
-            "removedBy": "Zdjęte przez"
+        "roles": {
+            "create": {
+                "title": "Rola stworzona!"
+            },
+            "delete": {
+                "title": "Rola usunięta!",
+                "createdAt": "Data utworzenia roli"
+            },
+            "edit": {
+                "title": "Rola edytowana!",
+                "edits": "Zmiany",
+                "changes": {
+                    "color": "Kolor",
+                    "name": "Nazwa",
+                    "hoist": "Oddzielenie",
+                    "mentionable": "Możliwa do wzmianki",
+                    "allowPermissions": "Dodane permisje",
+                    "denyPermissions": "Zabrane permisje"
+                }
+            },
+            "add": {
+                "title": "Nadano rolę!"
+            },
+            "remove": {
+                "title": "Zabrano rolę!"
+            }
         },
-        "mute": {
-            "muted": "%VAR% został wyciszony",
-            "unmuted": "%VAR% znów może pisać",
-            "addedBy": "Nadane przez",
-            "removedBy": "Zdjęte przez"
+        "channels": {
+            "create": {
+                "title": "Stworzono kanał!"
+            },
+            "delete": {
+                "title": "Usunięto kanał!",
+                "createdAt": "Data stworzenia kanału"
+            },
+            "edit": {
+                "title": "Edytowano kanał!",
+                "edits": "Zmiany",
+                "allowed": "Zezwolono",
+                "denied": "Zakazano",
+                "default": "Domyślne",
+                "changes": {
+                    "topic": "Temat",
+                    "slowmode": "Tryb powolny",
+                    "nsfw": "NSFW",
+                    "announcement": "Kanał ogłoszeniowy",
+                    "archive": "Archiwizuj po nieaktywności"
+                }
+            }
+        },
+        "threads": {
+            "create": {
+                "title": "Utworzono wątek!",
+                "owner": "Twórca wątka",
+                "inChannel": "Stworzono w",
+                "autoArchiveDuration": "Czas do auto archiwacji"
+            },
+            "delete": {
+                "title": "Usunięto wątek!",
+                "createdAt": "Data stworzenia",
+                "memberCount": "Liczba użytkowników",
+                "messageCount": "Liczba wiadomości"
+            },
+            "edit": {
+                "title": "Edytowano wątek!",
+                "editor": "Edytowano przez",
+                "edits": "Zmiany",
+                "changes": {
+                    "locked": "Zablokowany"
+                }
+            }
+        },
+        "invites": {
+            "create": {
+                "title": "Utworzono zaproszenie!",
+                "createdBy": "Utworzono przez",
+                "forChannel": "Dla kanału",
+                "code": "Kod zaproszenia",
+                "expiresAt": "Data wygaśnięcia",
+                "maxUses": "Maks. ilość użyć"
+            },
+            "delete": {
+                "title": "Usunięto zaproszenie!",
+                "deletedBy": "Usunięto przez",
+                "createdAt": "Data utworzenia zaproszenia",
+                "uses": "Użycia"
+            }
+        },
+        "emojis": {
+            "create": {
+                "title": "Dodano emotkę!",
+                "emojiName": "Nazwa emotki"
+            },
+            "delete": {
+                "title": "Usunięto emotkę!",
+                "emojiAuthor": "Emotka dodana przez",
+                "createdAt": "Data dodania emotki"
+            },
+            "edit": {
+                "title": "Edytowano emotkę!",
+                "oldName": "Stara nazwa",
+                "newName": "Nowa nazwa"
+            }
+        },
+        "server": {
+            "unwarnAll": {
+                "title": "Zdjęto ostrzeżenia na całym serwerze!"
+            }
         }
     },
     "autoMod": {
@@ -304,23 +425,24 @@
             "wordsListTitle": "Lista blokowanych słów"
         },
         "mute": {
-            "addMute": "{{member}} został wyciszony przez {{executor}} {{reason}}",
-            "removeMute": "{{member}} został odciszony przez {{executor}}",
+            "addMute": "{{{member}}} został wyciszony przez {{{executor}}} {{reason}}",
+            "removeMute": "{{{member}}} został odciszony przez {{{executor}}}",
             "removeMuteAll": "Wszyscy użytkownicy zostali odciszeni",
             "removeAllMutesReason": "Odciszono wszystkich użytkowników",
-            "notMuted": "{{member}} nie jest wyciszony",
+            "notMuted": "{{{member}}} nie jest wyciszony",
             "muteList": "Lista mute'ów na serwerze",
             "error": "Coś poszło nie tak :/ Spróbuj ponownie!"
         },
         "ban": {
-            "add": "{{member}} został zbanowany przez {{executor}} {{reason}}",
-            "remove": "{{member}} został odbanowany przez {{executor}} {{reason}}",
-            "notBanned": "{{member}} nie jest zbanowany",
+            "add": "{{{member}}} został zbanowany przez {{{executor}}} {{reason}}",
+            "remove": "{{{member}}} został odbanowany przez {{{executor}}} {{reason}}",
+            "removeReason": "Czasowy ban minął\nPowód bana: {{reason}}",
+            "notBanned": "{{{member}}} nie jest zbanowany",
             "notFound": "Nie znaleziono użytkownika"
         }
     },
     "xp": {
-        "levelUpMessage": "Właśnie zdobyłeś **{{level}} lvl** {{user}}!"
+        "levelUpMessage": "Właśnie zdobyłeś **{{level}} lvl** {{{user}}}!"
     },
     "dashboard": {
         "embeds": {
@@ -333,7 +455,7 @@
         "CREATE_INSTANT_INVITE": "Tworzenie zaproszenia",
         "KICK_MEMBERS": "Wyrzucanie członków",
         "BAN_MEMBERS": "Banowanie członków",
-
+        "MODERATE_MEMBERS": "Nałóż przerwę na członków",
         "MANAGE_CHANNELS": "Zarządzanie kanałami",
         "MANAGE_GUILD": "Zarządzanie serwerem",
         "ADD_REACTIONS": "Dodawanie reakcji",
@@ -360,7 +482,18 @@
         "MANAGE_NICKNAMES": "Zarządzanie pseudonimami",
         "MANAGE_ROLES": "Zarządzanie rolami",
         "MANAGE_WEBHOOKS": "Zarządzanie webhookami",
-        "MANAGE_EMOJIS": "Zarządzanie emoji"
+
+        "START_EMBEDDED_ACTIVITIES": "Rozpocznij aktywności",
+        "USE_APPLICATION_COMMANDS": "Używanie poleceń aplikacji",
+        "SEND_MESSAGES_IN_THREADS": "Wysyłanie wiadomości w wątkach",
+        "USE_PUBLIC_THREADS": "Używanie publicznych wątków",
+        "USE_PRIVATE_THREADS": "Używanie prywatnych wątków",
+        "CREATE_PUBLIC_THREADS": "Tworzenie publicznych wątków",
+        "CREATE_PRIVATE_THREADS": "Tworzenie prywatnych wątków",
+        "MANAGE_THREADS": "Zarządzaj wątkami",
+        "REQUEST_TO_SPEAK": "Poproś o głos",
+        "MANAGE_EVENTS": "Zarządzaj wydarzeniami",
+        "MANAGE_EMOJIS_AND_STICKERS": "Zarządzanie emoji i naklejkami"
     },
     "date": {
         "days": {

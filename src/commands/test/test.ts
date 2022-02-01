@@ -1,8 +1,4 @@
 import { CommandInteraction } from "discord.js";
-import { GuildProfileDocument } from "../../database/schemas/GuildProfile";
-import Profiles from "../../modules/Profiles";
-import levelRewards from "../../modules/Levels/levelRewards";
-
 import BaseCommand from "../../utils/structures/BaseCommand";
 
 export default class TestCommand extends BaseCommand {
@@ -16,9 +12,10 @@ export default class TestCommand extends BaseCommand {
             },
             [
                 {
-                    name: 'action',
+                    name: 'log',
                     description: 'action',
-                    type: 'STRING'
+                    type: 'STRING',
+                    required: true
                 }
             ],
             true,
@@ -27,11 +24,8 @@ export default class TestCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
+        if(!interaction.guildId) return
         if(!interaction.member || !('guild' in interaction.member)) return
-
-        const profile = await Profiles.get(interaction.member.id, interaction.guildId!) as GuildProfileDocument
-        await levelRewards(profile, true)
-        await levelRewards(profile, false)
         
         interaction.reply({
             content: 'ok', 

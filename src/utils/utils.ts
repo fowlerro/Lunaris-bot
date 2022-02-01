@@ -149,3 +149,7 @@ export function getCommandCategories(): string[] {
 
     return categories.filter(category => category !== 'test')
 }
+
+export function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+}
