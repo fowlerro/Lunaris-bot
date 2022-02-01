@@ -212,11 +212,22 @@
             "set": "✅ Kanał logów został pomyślnie ustawiony!",
             "enabled": "✅ Pomyślnie włączono loga!",
             "disabled": "✅ Pomyślnie wyłączono loga!",
+            "status": "🗒️ Logi serwerowe",
             "alreadyEnabled": "Log jest już włączony",
             "alreadyDisabled": "Log jest już wyłączony",
             "wrongCategory": "❌ Nieprawidłowa kategoria logów! Wybierz poprawną z opcji komendy!",
             "invalidLog": "❌ Niepoprawny log! Wybierz prawidłowy z opcji komendy",
-            "error": "❌ Coś poszło nie tak :/ Spróbuj ponownie!"
+            "error": "❌ Coś poszło nie tak :/ Spróbuj ponownie!",
+            "categories": {
+                "messages": "Wiadomości",
+                "members": "Użytkownicy",
+                "roles": "Role",
+                "channel": "Kanały",
+                "threads": "Wątki",
+                "invites": "Zaproszenia",
+                "emojis": "Emotki",
+                "server": "Serwer"
+            }
         }
     },
     "modules": {

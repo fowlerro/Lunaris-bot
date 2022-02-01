@@ -9,12 +9,12 @@ interface LogCategory {
 export type GuildLogs = {
     guildId: Snowflake
     messages?: LogCategory
-    members?: LogCategory
+    emojis?: LogCategory
     roles?: LogCategory
     channels?: LogCategory
     threads?: LogCategory
     invites?: LogCategory
-    emojis?: LogCategory
+    members?: LogCategory
     server?: LogCategory
 }
 
@@ -42,23 +42,16 @@ const GuildLogsSchema = new Schema({
             unpin: Boolean,
         }
     },
-    members: {
+    emojis: {
         channelId: {
             type: String,
             minlength: 18,
             maxlength: 18
         },
         logs: {
-            join: Boolean,
-            leave: Boolean,
-            warn: Boolean,
-            unwarn: Boolean,
-            unwarnAll: Boolean,
-            kick: Boolean,
-            timeout: Boolean,
-            timeoutEnd: Boolean,
-            ban: Boolean,
-            unban: Boolean,
+            create: Boolean,
+            delete: Boolean,
+            edit: Boolean,
         }
     },
     roles: {
@@ -110,16 +103,23 @@ const GuildLogsSchema = new Schema({
             delete: Boolean,
         }
     },
-    emojis: {
+    members: {
         channelId: {
             type: String,
             minlength: 18,
             maxlength: 18
         },
         logs: {
-            create: Boolean,
-            delete: Boolean,
-            edit: Boolean,
+            join: Boolean,
+            leave: Boolean,
+            warn: Boolean,
+            unwarn: Boolean,
+            unwarnAll: Boolean,
+            kick: Boolean,
+            timeout: Boolean,
+            timeoutEnd: Boolean,
+            ban: Boolean,
+            unban: Boolean,
         }
     },
     server: {

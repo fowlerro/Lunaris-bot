@@ -14,8 +14,6 @@ export default class RoleUpdateEvent extends BaseEvent {
 	async run(oldRole: Role, newRole: Role) {
 		if(!client.isOnline) return;
 
-		
-		console.log({ oldRole, newRole })
 		serverLogs(oldRole, newRole)
 	}
 }

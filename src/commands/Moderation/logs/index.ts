@@ -4,6 +4,7 @@ import BaseCommand from "../../../utils/structures/BaseCommand";
 import templates from "../../../modules/Logs/templates";
 import set from "./set";
 import toggle, { autocompleteToggle } from "./toggle";
+import status from "./status";
 
 export default class MuteCommand extends BaseCommand {
     constructor() {
@@ -85,8 +86,8 @@ export default class MuteCommand extends BaseCommand {
         if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) return
         const subcommand = interaction.options.getSubcommand(true)
     
-        if(subcommand === 'status') return 
-        if(subcommand === 'set') return set(interaction)
+        if(subcommand === 'status') return status(interaction)
+        if(subcommand === 'channel') return set(interaction)
         if(subcommand === 'toggle') return toggle(interaction)
     }
 

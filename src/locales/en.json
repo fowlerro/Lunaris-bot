@@ -212,11 +212,22 @@
             "set": "✅ Logs channel has been set successfully!",
             "enabled": "✅ Log has been successfully enabled!",
             "disabled": "✅ Log has been successfully disabled!",
+            "status": "🗒️ Server Logs",
             "alreadyEnabled": "Log is already enabled",
             "alreadyDisabled": "Log is already disabled",
             "wrongCategory": "❌ Wrong logs category! Select correct from command option!",
             "invalidLog": "❌ Invalid log! Select correct from command option",
-            "error": "❌ Something went wrong :/ Try again!"
+            "error": "❌ Something went wrong :/ Try again!",
+            "categories": {
+                "messages": "Messages",
+                "members": "Members",
+                "roles": "Roles",
+                "channels": "Channels",
+                "threads": "Threads",
+                "invites": "Invites",
+                "emojis": "Emojis",
+                "server": "Server"
+            }
         }
     },
     "modules": {

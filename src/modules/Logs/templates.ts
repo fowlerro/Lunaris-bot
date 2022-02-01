@@ -167,309 +167,117 @@ export default {
             timestamp: new Date()
         } as MessageEmbedOptions,
     },
-    members: {
-        join: {
+    emojis: {
+        create: {
             color: palette.info,
             author: {
-                name: "logs.members.join.title",
-                iconURL: "{{memberAvatar}}"
+                name: "logs.emojis.create.title",
+                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
             },
             fields: [
                 {
-                    name: "logs.general.member",
-                    value: "{{mentionMember}}\n`{{memberId}}`",
+                    name: "logs.general.moderator",
+                    value: "{{mentionEmojiCreator}}\n`{{emojiCreatorId}}`",
                     inline: true
                 },
                 {
-                    name: "logs.members.join.createdAt",
-                    value: "{{memberCreatedAt}}\n{{memberCreatedAt:R}}",
+                    name: "general.emoji",
+                    value: "{{emojiName}}\n`{{emojiId}}`",
                     inline: true
-                }
+                },
             ],
+            image: {
+                url: "{{emojiUrl}}"
+            },
             timestamp: new Date()
         } as MessageEmbedOptions,
-        leave: {
+        delete: {
+            color: palette.error,
+            author: {
+                name: "logs.emojis.delete.title",
+                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/cross-mark_274c.png"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.emojis.delete.emojiAuthor",
+                    value: "{{mentionEmojiCreator}}\n`{{emojiCreatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true
+                },
+
+                {
+                    name: "logs.emojis.create.emojiName",
+                    value: "{{emojiName}}",
+                    inline: true
+                },
+                {
+                    name: "logs.emojis.delete.createdAt",
+                    value: "{{emojiCreatedAt}}\n{{emojiCreatedAt:R}}",
+                    inline: true
+                },
+                {
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true
+                },
+            ],
+            image: {
+                url: "{{emojiUrl}}"
+            },
+            timestamp: new Date()
+        } as MessageEmbedOptions,
+        edit: {
             color: palette.info,
             author: {
-                name: "logs.members.leave.title",
-                iconURL: "{{memberAvatar}}"
+                name: "logs.emojis.edit.title"
             },
             fields: [
                 {
-                    name: "logs.general.member",
-                    value: "{{mentionMember}}\n`{{memberId}}`",
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
                     inline: true
                 },
                 {
-                    name: "logs.members.leave.joinedAt",
-                    value: "{{memberJoinedAt}}\n{{memberJoinedAt:R}}",
+                    name: "logs.emojis.delete.emojiAuthor",
+                    value: "{{mentionEmojiCreator}}\n`{{emojiCreatorId}}`",
                     inline: true
                 },
                 {
-                    name: 'logs.members.leave.roles',
-                    value: "{{memberRoles}}",
-                    inline: false
-                }
-            ],
-            timestamp: new Date()
-        } as MessageEmbedOptions,
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true
+                },
 
-        warn: {
-            color: palette.error,
-            author: {
-                name: "logs.members.warn.title",
-                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/prohibited_1f6ab.png"
-            },
-            thumbnail: {
-                url: "{{memberAvatar}}"
-            },
-            fields: [
                 {
-                    name: "logs.general.moderator",
-                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    name: "logs.emojis.edit.oldName",
+                    value: "{{emojiOldName}}",
                     inline: true
                 },
                 {
-                    name: "logs.general.member",
-                    value: "{{mentionMember}}\n`{{memberId}}`",
+                    name: "logs.emojis.edit.newName",
+                    value: "{{emojiNewName}}",
                     inline: true
                 },
                 {
-                    name: "logs.members.warn.warnCount",
-                    value: "{{memberWarnCount}}",
-                    inline: false
+                    name: "\u200b",
+                    value: "\u200b",
+                    inline: true
                 },
-                {
-                    name: "general.reason",
-                    value: "```{{reason}}```",
-                    inline: false
-                }
             ],
+            image: {
+                url: "{{emojiUrl}}"
+            },
             timestamp: new Date()
         } as MessageEmbedOptions,
-        unwarn: {
-            color: palette.success,
-            author: {
-                name: "logs.members.unwarn.title",
-                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
-            },
-            thumbnail: {
-                url: "{{memberAvatar}}"
-            },
-            fields: [
-                {
-                    name: "logs.general.moderator",
-                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
-                    inline: true
-                },
-                {
-                    name: "logs.general.member",
-                    value: "{{mentionMember}}\n`{{memberId}}`",
-                    inline: true
-                },
-                {
-                    name: "logs.members.warn.warnCount",
-                    value: "{{memberWarnCount}}",
-                    inline: false
-                },
-                {
-                    name: "general.reason",
-                    value: "```{{reason}}```",
-                    inline: false
-                }
-            ],
-            timestamp: new Date()
-        } as MessageEmbedOptions,
-        unwarnAll: {
-            color: palette.success,
-            author: {
-                name: "logs.members.unwarnAll.title",
-                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
-            },
-            thumbnail: {
-                url: "{{memberAvatar}}"
-            },
-            fields: [
-                {
-                    name: "logs.general.moderator",
-                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
-                    inline: true
-                },
-                {
-                    name: "logs.general.member",
-                    value: "{{mentionMember}}\n`{{memberId}}`",
-                    inline: true
-                },
-                {
-                    name: "logs.members.unwarnAll.warnCount",
-                    value: "{{memberUnwarnCount}}",
-                    inline: false
-                },
-                {
-                    name: "general.reason",
-                    value: "```{{reason}}```",
-                    inline: false
-                }
-            ],
-            timestamp: new Date()
-        } as MessageEmbedOptions,
-
-        kick: {
-            color: palette.error,
-            author: {
-                name: "logs.members.kick.title",
-                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
-            },
-            thumbnail: {
-                url: "{{memberAvatar}}"
-            },
-            fields: [
-                {
-                    name: "logs.general.moderator",
-                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
-                    inline: true
-                },
-                {
-                    name: "logs.general.member",
-                    value: "{{mentionMember}}\n`{{memberId}}`",
-                    inline: true
-                },
-                {
-                    name: "general.reason",
-                    value: "```{{reason}}```",
-                    inline: false
-                }
-            ],
-            timestamp: new Date()
-        } as MessageEmbedOptions,
-
-        timeout: {
-            color: palette.error,
-            author: {
-                name: "logs.members.timeout.title",
-                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/muted-speaker_1f507.png"
-            },
-            thumbnail: {
-                url: "{{memberAvatar}}"
-            },
-            fields: [
-                {
-                    name: "logs.general.moderator",
-                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
-                    inline: true
-                },
-                {
-                    name: "logs.general.member",
-                    value: "{{mentionMember}}\n`{{memberId}}`",
-                    inline: true
-                },
-                {
-                    name: "logs.members.timeout.timeoutEnd",
-                    value: "{{timeoutDate}}\n{{timeoutDateR}}",
-                    inline: false
-                },
-                {
-                    name: "general.reason",
-                    value: "```{{reason}}```",
-                    inline: false
-                }
-            ],
-            timestamp: new Date()
-        } as MessageEmbedOptions,
-        timeoutEnd: {
-            color: palette.success,
-            author: {
-                name: "logs.members.timeoutEnd.title",
-                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/speaker-low-volume_1f508.png"
-            },
-            thumbnail: {
-                url: "{{memberAvatar}}"
-            },
-            fields: [
-                {
-                    name: "logs.general.moderator",
-                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
-                    inline: true
-                },
-                {
-                    name: "logs.general.member",
-                    value: "{{mentionMember}}\n`{{memberId}}`",
-                    inline: true
-                },
-                {
-                    name: "general.reason",
-                    value: "```{{reason}}```",
-                    inline: false
-                }
-            ],
-            timestamp: new Date()
-        } as MessageEmbedOptions,
-
-        ban: {
-            color: palette.error,
-            author: {
-                name: "logs.members.ban.title",
-                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/prohibited_1f6ab.png"
-            },
-            thumbnail: {
-                url: "{{memberAvatar}}"
-            },
-            fields: [
-                {
-                    name: "logs.general.moderator",
-                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
-                    inline: false
-                },
-                {
-                    name: "logs.general.member",
-                    value: "{{mentionMember}}\n`{{memberId}}`",
-                    inline: false
-                },
-                {
-                    name: "logs.members.ban.bannedAt",
-                    value: "{{DateNow}}\n{{DateNow:R}}",
-                    inline: true
-                },
-                {
-                    name: "logs.members.ban.unbanAt",
-                    value: "{{unbanDate}}\n{{unbanDateR}}",
-                    inline: true
-                },
-                {
-                    name: "general.reason",
-                    value: "```{{reason}}```",
-                    inline: false
-                }
-            ]
-        } as MessageEmbedOptions,
-        unban: {
-            color: palette.success,
-            author: {
-                name: "logs.members.unban.title",
-                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
-            },
-            thumbnail: {
-                url: "{{memberAvatar}}"
-            },
-            fields: [
-                {
-                    name: "logs.general.moderator",
-                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
-                    inline: true
-                },
-                {
-                    name: "logs.general.member",
-                    value: "{{mentionMember}}\n`{{memberId}}`",
-                    inline: true
-                },
-                {
-                    name: "general.reason",
-                    value: "```{{reason}}```",
-                    inline: false
-                }
-            ],
-            timestamp: new Date()
-        } as MessageEmbedOptions
     },
     roles: {
         create: {
@@ -874,35 +682,61 @@ export default {
             timestamp: new Date()
         } as MessageEmbedOptions
     },
-    emojis: {
-        create: {
+    members: {
+        join: {
             color: palette.info,
             author: {
-                name: "logs.emojis.create.title",
-                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
+                name: "logs.members.join.title",
+                iconURL: "{{memberAvatar}}"
             },
             fields: [
                 {
-                    name: "logs.general.moderator",
-                    value: "{{mentionEmojiCreator}}\n`{{emojiCreatorId}}`",
+                    name: "logs.general.member",
+                    value: "{{mentionMember}}\n`{{memberId}}`",
                     inline: true
                 },
                 {
-                    name: "general.emoji",
-                    value: "{{emojiName}}\n`{{emojiId}}`",
+                    name: "logs.members.join.createdAt",
+                    value: "{{memberCreatedAt}}\n{{memberCreatedAt:R}}",
                     inline: true
-                },
+                }
             ],
-            image: {
-                url: "{{emojiUrl}}"
-            },
             timestamp: new Date()
         } as MessageEmbedOptions,
-        delete: {
+        leave: {
+            color: palette.info,
+            author: {
+                name: "logs.members.leave.title",
+                iconURL: "{{memberAvatar}}"
+            },
+            fields: [
+                {
+                    name: "logs.general.member",
+                    value: "{{mentionMember}}\n`{{memberId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.members.leave.joinedAt",
+                    value: "{{memberJoinedAt}}\n{{memberJoinedAt:R}}",
+                    inline: true
+                },
+                {
+                    name: 'logs.members.leave.roles',
+                    value: "{{memberRoles}}",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        } as MessageEmbedOptions,
+
+        warn: {
             color: palette.error,
             author: {
-                name: "logs.emojis.delete.title",
-                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/cross-mark_274c.png"
+                name: "logs.members.warn.title",
+                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/prohibited_1f6ab.png"
+            },
+            thumbnail: {
+                url: "{{memberAvatar}}"
             },
             fields: [
                 {
@@ -911,41 +745,31 @@ export default {
                     inline: true
                 },
                 {
-                    name: "logs.emojis.delete.emojiAuthor",
-                    value: "{{mentionEmojiCreator}}\n`{{emojiCreatorId}}`",
+                    name: "logs.general.member",
+                    value: "{{mentionMember}}\n`{{memberId}}`",
                     inline: true
                 },
                 {
-                    name: "\u200b",
-                    value: "\u200b",
-                    inline: true
-                },
-
-                {
-                    name: "logs.emojis.create.emojiName",
-                    value: "{{emojiName}}",
-                    inline: true
+                    name: "logs.members.warn.warnCount",
+                    value: "{{memberWarnCount}}",
+                    inline: false
                 },
                 {
-                    name: "logs.emojis.delete.createdAt",
-                    value: "{{emojiCreatedAt}}\n{{emojiCreatedAt:R}}",
-                    inline: true
-                },
-                {
-                    name: "\u200b",
-                    value: "\u200b",
-                    inline: true
-                },
+                    name: "general.reason",
+                    value: "```{{reason}}```",
+                    inline: false
+                }
             ],
-            image: {
-                url: "{{emojiUrl}}"
-            },
             timestamp: new Date()
         } as MessageEmbedOptions,
-        edit: {
-            color: palette.info,
+        unwarn: {
+            color: palette.success,
             author: {
-                name: "logs.emojis.edit.title"
+                name: "logs.members.unwarn.title",
+                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
+            },
+            thumbnail: {
+                url: "{{memberAvatar}}"
             },
             fields: [
                 {
@@ -954,37 +778,213 @@ export default {
                     inline: true
                 },
                 {
-                    name: "logs.emojis.delete.emojiAuthor",
-                    value: "{{mentionEmojiCreator}}\n`{{emojiCreatorId}}`",
+                    name: "logs.general.member",
+                    value: "{{mentionMember}}\n`{{memberId}}`",
                     inline: true
                 },
                 {
-                    name: "\u200b",
-                    value: "\u200b",
-                    inline: true
-                },
-
-                {
-                    name: "logs.emojis.edit.oldName",
-                    value: "{{emojiOldName}}",
-                    inline: true
+                    name: "logs.members.warn.warnCount",
+                    value: "{{memberWarnCount}}",
+                    inline: false
                 },
                 {
-                    name: "logs.emojis.edit.newName",
-                    value: "{{emojiNewName}}",
-                    inline: true
-                },
-                {
-                    name: "\u200b",
-                    value: "\u200b",
-                    inline: true
-                },
+                    name: "general.reason",
+                    value: "```{{reason}}```",
+                    inline: false
+                }
             ],
-            image: {
-                url: "{{emojiUrl}}"
-            },
             timestamp: new Date()
         } as MessageEmbedOptions,
+        unwarnAll: {
+            color: palette.success,
+            author: {
+                name: "logs.members.unwarnAll.title",
+                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
+            },
+            thumbnail: {
+                url: "{{memberAvatar}}"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.general.member",
+                    value: "{{mentionMember}}\n`{{memberId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.members.unwarnAll.warnCount",
+                    value: "{{memberUnwarnCount}}",
+                    inline: false
+                },
+                {
+                    name: "general.reason",
+                    value: "```{{reason}}```",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        } as MessageEmbedOptions,
+
+        kick: {
+            color: palette.error,
+            author: {
+                name: "logs.members.kick.title",
+                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
+            },
+            thumbnail: {
+                url: "{{memberAvatar}}"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.general.member",
+                    value: "{{mentionMember}}\n`{{memberId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.reason",
+                    value: "```{{reason}}```",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        } as MessageEmbedOptions,
+
+        timeout: {
+            color: palette.error,
+            author: {
+                name: "logs.members.timeout.title",
+                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/muted-speaker_1f507.png"
+            },
+            thumbnail: {
+                url: "{{memberAvatar}}"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.general.member",
+                    value: "{{mentionMember}}\n`{{memberId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.members.timeout.timeoutEnd",
+                    value: "{{timeoutDate}}\n{{timeoutDateR}}",
+                    inline: false
+                },
+                {
+                    name: "general.reason",
+                    value: "```{{reason}}```",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        } as MessageEmbedOptions,
+        timeoutEnd: {
+            color: palette.success,
+            author: {
+                name: "logs.members.timeoutEnd.title",
+                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/speaker-low-volume_1f508.png"
+            },
+            thumbnail: {
+                url: "{{memberAvatar}}"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.general.member",
+                    value: "{{mentionMember}}\n`{{memberId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.reason",
+                    value: "```{{reason}}```",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        } as MessageEmbedOptions,
+
+        ban: {
+            color: palette.error,
+            author: {
+                name: "logs.members.ban.title",
+                iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/prohibited_1f6ab.png"
+            },
+            thumbnail: {
+                url: "{{memberAvatar}}"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: false
+                },
+                {
+                    name: "logs.general.member",
+                    value: "{{mentionMember}}\n`{{memberId}}`",
+                    inline: false
+                },
+                {
+                    name: "logs.members.ban.bannedAt",
+                    value: "{{DateNow}}\n{{DateNow:R}}",
+                    inline: true
+                },
+                {
+                    name: "logs.members.ban.unbanAt",
+                    value: "{{unbanDate}}\n{{unbanDateR}}",
+                    inline: true
+                },
+                {
+                    name: "general.reason",
+                    value: "```{{reason}}```",
+                    inline: false
+                }
+            ]
+        } as MessageEmbedOptions,
+        unban: {
+            color: palette.success,
+            author: {
+                name: "logs.members.unban.title",
+                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
+            },
+            thumbnail: {
+                url: "{{memberAvatar}}"
+            },
+            fields: [
+                {
+                    name: "logs.general.moderator",
+                    value: "{{moderatorMention}}\n`{{moderatorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.general.member",
+                    value: "{{mentionMember}}\n`{{memberId}}`",
+                    inline: true
+                },
+                {
+                    name: "general.reason",
+                    value: "```{{reason}}```",
+                    inline: false
+                }
+            ],
+            timestamp: new Date()
+        } as MessageEmbedOptions
     },
     server: {
         unwarnAll: {
