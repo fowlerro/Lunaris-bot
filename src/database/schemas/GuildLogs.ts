@@ -112,12 +112,13 @@ const GuildLogsSchema = new Schema({
         logs: {
             join: Boolean,
             leave: Boolean,
+            nicknameChange: Boolean,
             warn: Boolean,
             unwarn: Boolean,
             unwarnAll: Boolean,
             kick: Boolean,
             timeout: Boolean,
-            timeoutEnd: Boolean,
+            timeoutRemove: Boolean,
             ban: Boolean,
             unban: Boolean,
         }

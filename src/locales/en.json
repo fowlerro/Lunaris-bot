@@ -40,7 +40,8 @@
         "never": "Never",
         "message": "Message",
         "emoji": "Emoji",
-        "unknown": "Unknown"
+        "unknown": "Unknown",
+        "until": "Until"
     },
     "help": {
         "help": {
@@ -131,6 +132,16 @@
             "targetNotFound": "Member not found!",
             "targetWithoutWarns": "{{{member}}} doesn't have any warns!",
             "optionAll": "Delete all warns from this member!"
+        },
+        "mute": {
+            "addMute": "✅ {{{member}}} has been timed out by {{{executor}}}",
+            "removeMute":"✅ {{{executor}}} removed timeout from {{{member}}}",
+            "executorWithoutPermission": "❌ You don't have permissions to do that!",
+            "notModeratable": "❌ You can't moderate this member!",
+            "notTimedOut": "❌ Member is not timed out!",
+            "alreadyTimedOut": "❌ Member is already timed out!",
+            "incorectTime": "❌ Incorect time!",
+            "error":"❌ Something went wrong :/ Try again!"
         },
         "idea": {
             "submitted": "An idea has been submitted"
@@ -276,6 +287,13 @@
                 "roles": "Roles"
             },
 
+            "nickname": {
+                "title": "Member nickname changed!",
+                "editor": "Changed by",
+                "oldNickname": "Old nickname",
+                "newNickname": "New nickname"
+            },
+
             "warn": {
                 "title": "Member warned!",
                 "warnCount": "Warn count"
@@ -296,8 +314,8 @@
                 "title": "Member timed out!",
                 "timeoutEnd": "Timeout ends at"
             },
-            "timeoutEnd": {
-                "title": "Member timeout ended"
+            "timeoutRemove": {
+                "title": "Member timeout removed!"
 
             },
 
@@ -422,18 +440,6 @@
     },
     "autoMod": {
         "notManagable": "I cannot manage %VAR%",
-        "censor": {
-            "wordsListTitle": "Blocked words"
-        },
-        "mute": {
-            "addMute": "{{{member}}} has been muted by {{{executor}}} {{reason}}",
-            "removeMute": "{{{member}}} has been unmuted by {{{executor}}}",
-            "removeMuteAll": "All members have been unmuted",
-            "removeAllMutesReason": "Unmute all members",
-            "notMuted": "{{{member}}} is not muted",
-            "muteList": "Muted users:",
-            "error": "Something went wrong :/ Try again!"
-        },
         "ban": {
             "add": "{{{member}}} has been banned by {{{executor}}} {{reason}}",
             "remove": "{{{member}}} has been unbanned by {{{executor}}} {{reason}}",

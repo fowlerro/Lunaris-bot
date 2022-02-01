@@ -10,11 +10,6 @@ const GuildConfigSchema = new Schema({
         required: true,
         unique: true
     },
-    muteRole: {
-        type: String,
-        minlength: 18,
-        maxlength: 18
-    },
     modules: {
         autoRole: {
             type: Boolean,

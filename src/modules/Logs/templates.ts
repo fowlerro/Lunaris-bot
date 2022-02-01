@@ -729,6 +729,51 @@ export default {
             timestamp: new Date()
         } as MessageEmbedOptions,
 
+        nicknameChange: {
+            color: palette.info,
+            author: {
+                name: "logs.members.nickname.title",
+                iconURL: "https://emojipedia-us.s3.amazonaws.com/source/skype/289/check-mark_2714-fe0f.png"
+            },
+            thumbnail: {
+                url: "{{memberAvatar}}"
+            },
+            fields: [
+                {
+                    name: "logs.members.nickname.editor",
+                    value: "{{editorMention}}\n`{{editorId}}`",
+                    inline: true
+                },
+                {
+                    name: "logs.general.member",
+                    value: "{{mentionMember}}\n`{{memberId}}`",
+                    inline: true
+                },
+                {
+                    name: '\u200b',
+                    value: '\u200b',
+                    inline: true
+                },
+
+                {
+                    name: "logs.members.nickname.oldNickname",
+                    value: "{{oldNickname}}",
+                    inline: true
+                },
+                {
+                    name: "logs.members.nickname.newNickname",
+                    value: "{{newNickname}}",
+                    inline: true
+                },
+                {
+                    name: '\u200b',
+                    value: '\u200b',
+                    inline: true
+                }
+            ],
+            timestamp: new Date()
+        } as MessageEmbedOptions,
+
         warn: {
             color: palette.error,
             author: {
@@ -891,10 +936,10 @@ export default {
             ],
             timestamp: new Date()
         } as MessageEmbedOptions,
-        timeoutEnd: {
+        timeoutRemove: {
             color: palette.success,
             author: {
-                name: "logs.members.timeoutEnd.title",
+                name: "logs.members.timeoutRemove.title",
                 iconURL: "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/twitter/282/speaker-low-volume_1f508.png"
             },
             thumbnail: {
