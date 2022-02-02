@@ -1,7 +1,9 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildMemberUpdate
-import { GuildMember } from 'discord.js'
+import { AuditLogChange, Formatters, GuildMember, Permissions, User } from 'discord.js'
+import Logs from '../../modules/Logs';
 
 import BaseEvent from '../../utils/structures/BaseEvent';
+import { sleep } from '../../utils/utils';
 
 export default class GuildMemberUpdateEvent extends BaseEvent {
   constructor() {
@@ -10,62 +12,111 @@ export default class GuildMemberUpdateEvent extends BaseEvent {
   
   async run(oldMember: GuildMember, newMember: GuildMember) {
     if(!client.isOnline) return;
-    // if(oldMember.nickname !== newMember.nickname) {
-    //   if(!newMember.guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return; //!important //TODO: Make permissions checking in all cases 
 
-    //   const guildConfig = await Guilds.config.get(newMember.guild.id);
-    //   const logChannel = newMember.guild.channels.cache.find(channel => channel.id === guildConfig.logs?.member);
-    //   if(!logChannel) return;
-    //   const language = guildConfig.language
-
-    //   const auditLog = await newMember.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_UPDATE'});
-    //   const update = auditLog.entries.first();
-    //   if(!update) return;
-    //   const executor = update.executor;
-    //   const target = update.target;
-    //   const changes = update.changes?.find(obj => obj.key === 'nick');
-    //   const oldNickname = changes?.old;
-    //   const newNickname = changes?.new;
-      
-    //   memberNicknameLog(client, executor, target, oldNickname, newNickname, logChannel, language);
-    // }
-
-    // if(oldMember.roles.cache.size < newMember.roles.cache.size) {
-    //   if(!newMember.guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
-
-    //   const guildConfig = await Guilds.config.get(newMember.guild.id);
-    //   const logChannel = newMember.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
-    //   if(!logChannel) return;
-    //   const language = guildConfig.language;
-
-    //   const auditLog = await newMember.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_ROLE_UPDATE'});
-    //   const update = auditLog.entries.first();
-    //   if(!update || Date.now() - update.createdTimestamp > 5000) return;
-    //   const { executor, target } = update;
-    //   const addedRole = update.changes?.find(obj => obj.key === '$add')?.new;
-    //   const addedRoleId = (addedRole as APIRole[])[0].id
-    //   if(addedRoleId === guildConfig.modules.autoMod?.muteRole) return //Mute.add(client, newMember.guild.id, target.id, 'Role add', executor.id);
-      
-    //   memberRoleLog(client, executor, target, addedRoleId, "add", logChannel, language);
-    // }
-
-    // if(oldMember.roles.cache.size > newMember.roles.cache.size) {
-    //   if(!newMember.guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return;
-
-    //   const guildConfig = await Guilds.config.get(client, newMember.guild.id);
-    //   const logChannel = newMember.guild.channels.cache.find(channel => channel.id === guildConfig.get('logs.member'));
-    //   const language = guildConfig.get('language');
-    //   if(!logChannel) return;
-
-    //   const auditLog = await newMember.guild.fetchAuditLogs({limit: 1, type: 'MEMBER_ROLE_UPDATE'});
-    //   const update = auditLog.entries.first();
-    //   if(!update || Date.now() - update.createdTimestamp > 5000) return;
-    //   const {executor, target} = update;
-    //   const removedRole = update.changes?.find(obj => obj.key === '$remove')?.new;
-    //   const removedRoleId = (removedRole as APIRole[])[0].id
-    //   if(removedRoleId === guildConfig.get('modules.autoMod.muteRole')) return //Mute.remove(client, newMember.guild.id, executor.id, target.id, 'Role remove');
-      
-    //   memberRoleLog(client, executor, target, removedRoleId, "remove", logChannel, language);
-    // }
+    serverLogs(oldMember, newMember)
   }
+}
+
+async function serverLogs(oldMember: GuildMember, newMember: GuildMember) {
+	if(!newMember.guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return
+
+	if(oldMember.roles.cache.size < newMember.roles.cache.size) addRoleLog(newMember)
+	if(oldMember.roles.cache.size > newMember.roles.cache.size) removeRoleLog(newMember)
+
+    memberUpdateLog(newMember)
+}
+
+async function memberUpdateLog(newMember: GuildMember) {
+    await sleep(500)
+    const auditLogs = await newMember.guild.fetchAuditLogs({ type: 'MEMBER_UPDATE', limit: 5 }).catch(console.error)
+    if(!auditLogs) return
+    const log = auditLogs.entries.find(log => log.target?.id === newMember.id && Date.now() - log.createdTimestamp < 5000)
+    if(!log) return
+    const { executor, target, changes, reason } = log
+    if(!executor || !target || !changes) return
+
+    const nickChange = changes.find(change => change.key === 'nick')
+    const timeoutChange = changes.find(change => change.key === 'communication_disabled_until')
+    
+    if(nickChange) nicknameLog(newMember, executor, nickChange)
+    if(timeoutChange && timeoutChange.new) timeoutLog(newMember, executor, timeoutChange, reason)
+    if(timeoutChange && !timeoutChange.new) timeoutRemoveLog(newMember, executor, reason)
+}
+
+async function addRoleLog(newMember: GuildMember) {
+	await sleep(500)
+	const auditLog = await newMember.guild.fetchAuditLogs({ type: 'MEMBER_ROLE_UPDATE', limit: 1 }).catch((e) => console.error(e))
+	if(!auditLog) return
+	const addRoleLog = auditLog.entries.first()
+	if(!addRoleLog) return
+
+	const { executor, target, changes } = addRoleLog
+	const addedRole = changes?.find(change => change.key === '$add')?.new
+	if(!addedRole || !executor || !target) return
+	if(!Array.isArray(addedRole) || !('name' in addedRole[0])) return
+
+	Logs.log('roles', 'add', newMember.guild.id, { member: newMember, role: addedRole[0], customs: { moderatorMention: `<@${executor.id}>`, moderatorId: executor.id } })
+}
+
+async function removeRoleLog(newMember: GuildMember) {
+	await sleep(500)
+	const auditLog = await newMember.guild.fetchAuditLogs({ type: 'MEMBER_ROLE_UPDATE', limit: 1 }).catch(e => console.error(e))
+	if(!auditLog) return
+	const removeRoleLog = auditLog.entries.first()
+	if(!removeRoleLog) return
+
+	const { executor, target, changes } = removeRoleLog
+	const removedRole = changes?.find(change => change.key === '$remove')?.new
+	if(!removedRole || !executor || !target) return
+	if(!Array.isArray(removedRole) || !('name' in removedRole[0])) return
+
+	Logs.log('roles', 'remove', newMember.guild.id, { member: newMember, role: removedRole[0], customs: { moderatorMention: `<@${executor.id}>`, moderatorId: executor.id } })
+}
+
+async function nicknameLog(newMember: GuildMember, executor: User, change: AuditLogChange) {
+    if(change.old === change.new) return
+    const language = newMember.guild.preferredLocale === 'pl' ? 'pl' : 'en'
+    const oldNickname = change.old || t('general.none', language)
+    const newNickname = change.new || t('general.none', language)
+
+    Logs.log('members', 'nicknameChange', newMember.guild.id, { 
+        member: newMember, 
+        customs: {
+            editorMention: `<@${executor.id}>`,
+            editorId: executor.id,
+            oldNickname,
+            newNickname
+        }
+    })
+}
+
+async function timeoutLog(newMember: GuildMember, executor: User, change: AuditLogChange, reason: string | null) {
+    if(!change.new || typeof change.new !== 'string') return
+    const language = newMember.guild.preferredLocale === 'pl' ? 'pl' : 'en'
+
+    const timeoutDate = new Date(change.new)
+
+    Logs.log('members', 'timeout', newMember.guild.id, {
+        member: newMember,
+        customs: {
+            moderatorMention: `<@${executor.id}>`,
+            moderatorId: executor.id,
+            timeoutDate: Formatters.time(timeoutDate),
+            timeoutDateR: Formatters.time(timeoutDate, 'R'),
+            reason: reason || t('general.none', language)
+        }
+    })
+}
+
+async function timeoutRemoveLog(newMember: GuildMember, executor: User, reason: string | null) {
+    const language = newMember.guild.preferredLocale === 'pl' ? 'pl' : 'en'
+
+    Logs.log('members', 'timeoutRemove', newMember.guild.id, {
+        member: newMember,
+        customs: {
+            moderatorMention: `<@${executor.id}>`,
+            moderatorId: executor.id,
+            reason: reason || t('general.none', language)
+        }
+    })
 }

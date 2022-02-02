@@ -1,10 +1,5 @@
 import { CommandInteraction } from "discord.js";
-import { GuildProfileDocument } from "../../database/schemas/GuildProfile";
-import Profiles from "../../modules/Profiles";
-import levelRewards from "../../modules/Levels/levelRewards";
-
 import BaseCommand from "../../utils/structures/BaseCommand";
-import Logs from "../../modules/Logs";
 
 export default class TestCommand extends BaseCommand {
     constructor() {
@@ -17,9 +12,10 @@ export default class TestCommand extends BaseCommand {
             },
             [
                 {
-                    name: 'action',
+                    name: 'log',
                     description: 'action',
-                    type: 'STRING'
+                    type: 'STRING',
+                    required: true
                 }
             ],
             true,
@@ -30,8 +26,6 @@ export default class TestCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId) return
         if(!interaction.member || !('guild' in interaction.member)) return
-
-        await Logs.log('members', 'memberJoin', interaction.guildId, { guild: interaction.guild, member: interaction.member })
         
         interaction.reply({
             content: 'ok', 

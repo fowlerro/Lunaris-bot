@@ -36,5 +36,4 @@ export async function deleteAutocomplete(interaction: AutocompleteInteraction) {
     }))
 
     return interaction.respond(options?.splice(0, 25) || [])
-
 }

@@ -72,7 +72,7 @@ export default class WarnCommand extends BaseCommand {
                         },
                         {
                             name: 'page',
-                            description: 'The page, which will be shown, in situation list of mutes will be paginated',
+                            description: 'The page, which will be shown, in situation list of warns will be paginated',
                             type: 'INTEGER'
                         }
                     ]
@@ -116,6 +116,7 @@ export default class WarnCommand extends BaseCommand {
             const description = warn.error === 'warnNotFound' ?
                 t('command.warn.notFound', language)
                 : warn.error === 'targetNotFound' ? t('command.warn.targetNotFound', language)
+                : warn.error === 'targetWithoutWarns' ? t('command.warn.targetWithoutWarns', language)
                 : warn.action === 'all' ? t('command.warn.removeAll', language,  { executor: Formatters.memberNicknameMention(interaction.user.id) })
                 : warn.action === 'targetAll' ? t('command.warn.removeMemberAll', language, { executor: Formatters.memberNicknameMention(interaction.user.id), member: Formatters.memberNicknameMention(member.id) })
                 : t('command.warn.remove', language, { executor: Formatters.memberNicknameMention(interaction.user.id), member: Formatters.memberNicknameMention(member.id) })

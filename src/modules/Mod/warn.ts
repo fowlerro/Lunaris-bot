@@ -1,10 +1,16 @@
 import { Snowflake } from 'discord.js'
 
 import { GuildProfileDocument, GuildProfileModel, GuildProfileWarn } from "../../database/schemas/GuildProfile";
+import Logs from '../Logs';
 import Profiles from '../Profiles';
 
 export const Warn = {
     give: async (guildId: Snowflake, targetId: Snowflake, executorId: Snowflake, reason?: string) => {
+        const guild = await client.guilds.fetch(guildId).catch(() => {})
+        if(!guild) return
+        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+        const target = await guild.members.fetch(targetId).catch(() => {})
+        if(!target) return
         const document = await GuildProfileModel.findOneAndUpdate({ guildId, userId: targetId }, {
             $push: {
                 warns: {
@@ -15,26 +21,33 @@ export const Warn = {
         }, { upsert: true, new: true, runValidators: true }).catch(() => {})
         if(!document) return
         await Profiles.set(document)
+        await Logs.log('members', 'warn', guildId, { member: target, customs: { moderatorMention: `<@${executorId}>`, moderatorId: executorId, memberWarnCount: document.warns.length, reason: reason || t('general.none', language) } })
 
         return true;
     },
-    remove: async (guildId: Snowflake, warnId: string, executorId: Snowflake, targetId?: Snowflake): Promise<{ action?: 'all' | 'targetAll', error?: 'warnNotFound' | 'targetNotFound', result?: GuildProfileDocument }> => {
-        if(warnId === 'all') {
+    remove: async (guildId: Snowflake, warnId: string, executorId: Snowflake, targetId?: Snowflake, reason?: string): Promise<{ action?: 'all' | 'targetAll', error?: 'warnNotFound' | 'targetNotFound' | 'guildNotFound' | 'targetWithoutWarns', result?: GuildProfileDocument }> => {
+        const guild = await client.guilds.fetch(guildId).catch(() => {})
+        if(!guild) return { error: 'guildNotFound' }
+        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+        if(warnId === 'all') { 
             await GuildProfileModel.updateMany({ guildId }, {
                 $set: {
                     warns: []
                 } 
-            });
+            })
             const guildProfileList = await redis.guildProfiles.scan(0, { MATCH: `${guildId}-*` })
-            console.log(guildProfileList)
             for await (const key of guildProfileList.keys) {
-                console.log(key)
                 await redis.guildProfiles.del(key)
             }
+
+            Logs.log('server', 'unwarnAll', guildId, { customs: { mentionModerator: `<@${executorId}>`, moderatorId: executorId, reason: reason || t('general.none', language) } })
             return { action: 'all' };
         }
 
         if(warnId === 'targetAll' && targetId) {
+            const target = await guild.members.fetch(targetId).catch(console.error)
+            const profile = await Profiles.get(targetId, guildId) as GuildProfileDocument
+            if(!profile.warns.length) return { error: 'targetWithoutWarns' }
             const result = await GuildProfileModel.findOneAndUpdate({ guildId, userId: targetId }, {
                 $set: {
                     warns: []
@@ -42,20 +55,28 @@ export const Warn = {
             }, { upsert: true, new: true, runValidators: true }).catch(() => {})
             if(!result) return { error: 'targetNotFound' }
             await Profiles.set(result)
+            await Logs.log('members', 'unwarnAll', guildId, { member: target, customs: { moderatorMention: `<@${executorId}>`, moderatorId: executorId, memberUnwarnCount: profile.warns.length || "0", reason: reason || t('general.none', language) }})
+
             return { action: 'targetAll' }
         }
 
-        const result = await GuildProfileModel.findOneAndUpdate({ guildId, 'warns._id': warnId }, {
+        if(!targetId) return { error: 'targetNotFound' }
+
+        const target = await guild.members.fetch(targetId).catch(() => {})
+        if(!target) return { error: 'targetNotFound' }
+
+        const document = await GuildProfileModel.findOneAndUpdate({ guildId, 'warns._id': warnId }, {
             $pull: {
                 warns: {
                     _id: warnId
                 }
             }
         }, { upsert: true, new: true, runValidators: true }).catch(() => {})
-        if(!result) return { error: 'warnNotFound' }
-        await Profiles.set(result)
+        if(!document) return { error: 'warnNotFound' }
+        await Profiles.set(document)
+        await Logs.log('members', 'unwarn', guildId, { member: target, customs: { moderatorMention: `<@${executorId}>`, moderatorId: executorId, memberWarnCount: document.warns.length || "0", reason: reason || t('general.none', language) }})
 
-        return { result }
+        return { result: document }
     },
     list: async (guildId: Snowflake, targetId?: Snowflake): Promise<{ warns: GuildProfileWarn[] | GuildProfileDocument[], error?: string}> => {
         const guild = await client.guilds.fetch(guildId).catch(() => {})
