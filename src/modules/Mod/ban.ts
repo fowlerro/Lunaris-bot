@@ -1,10 +1,9 @@
-import { Formatters, Guild, GuildMember, Permissions, User } from "discord.js"
-import { Snowflake } from "discord-api-types"
+import { Formatters, Guild, Permissions, Snowflake } from "discord.js"
 
-import { GuildBanModel } from "../../database/schemas/GuildBans"
 import Logs from "../Logs"
-import { Language } from "types"
+import { GuildBanModel } from "../../database/schemas/GuildBans"
 import { getLocale } from "../../utils/utils"
+import type { Language } from "types"
 
 export const Ban = {
     add: async (targetId: Snowflake, guildId: Snowflake, executorId: Snowflake, reason?: string, time?: number) => {

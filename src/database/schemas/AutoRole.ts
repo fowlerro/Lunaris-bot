@@ -1,6 +1,6 @@
 import { Document, model, Schema } from "mongoose";
 
-import { AutoRole } from 'types'
+import type { AutoRole } from 'types'
 
 export interface AutoRoleDocument extends AutoRole, Document {}
 

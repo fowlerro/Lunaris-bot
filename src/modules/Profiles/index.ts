@@ -13,7 +13,6 @@ import { GuildProfileDocument, GuildProfileModel } from '../../database/schemas/
 import { ProfileDocument, ProfileModel } from '../../database/schemas/Profile';
 import { convertLargeNumbers } from '../../utils/utils';
 
-
 class ProfileModule extends BaseModule {
     constructor() {
         super('Profile', true)

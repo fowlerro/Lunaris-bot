@@ -3,7 +3,6 @@ import ms from "ms";
 
 import Mod from "../../../modules/Mod";
 import { getLocale, palette } from "../../../utils/utils";
-
 import type { Language } from 'types'
 
 const regex = /[0-9]+[d|h|m|s]/g

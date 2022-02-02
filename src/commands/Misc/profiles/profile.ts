@@ -5,7 +5,7 @@ import Profiles from "../../../modules/Profiles";
 import { GuildProfileDocument } from "../../../database/schemas/GuildProfile";
 import { ProfileDocument } from "../../../database/schemas/Profile";
 
-export default class LanguageCommand extends BaseCommand {
+export default class ProfileCommand extends BaseCommand {
     constructor() {
         super(
             'profile',

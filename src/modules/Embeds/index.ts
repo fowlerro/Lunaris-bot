@@ -1,7 +1,7 @@
 import { ButtonInteraction, CommandInteraction, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextChannel, Snowflake } from "discord.js"
 
 import BaseModule from "../../utils/structures/BaseModule"
-import { Embed } from "types"
+import type { Embed } from "types"
 
 const EMBED_LIMITS = {
 	title: 256,

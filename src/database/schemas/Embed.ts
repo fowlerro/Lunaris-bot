@@ -1,7 +1,8 @@
 import { Document, model, Schema } from "mongoose";
-import { palette } from "../../utils/utils";
 
-import { EmbedMessage } from 'types'
+import { palette } from "../../utils/utils";
+import type { EmbedMessage } from 'types'
+
 
 export interface EmbedDocument extends Omit<EmbedMessage, '_id'>, Document {}
 

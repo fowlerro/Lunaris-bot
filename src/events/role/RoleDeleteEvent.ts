@@ -1,8 +1,8 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-roleDelete
 import { Role } from "discord.js";
-import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
+import Logs from "../../modules/Logs";
 import { getAuditLog } from "../../utils/utils";
 
 export default class RoleDeleteEvent extends BaseEvent {

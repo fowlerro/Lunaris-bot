@@ -4,11 +4,10 @@ import BaseModule from "../../utils/structures/BaseModule";
 import { GuildProfileModel } from "../../database/schemas/GuildProfile";
 import { ProfileModel } from "../../database/schemas/Profile";
 import { LevelConfigModel } from "../../database/schemas/LevelConfig";
+import type { LevelConfig, LevelReward, LevelUpMessage } from "types";
 
 import { handleTextXp } from "./text";
 import { handleVoiceXp } from "./voice";
-
-import { LevelConfig, LevelReward, LevelUpMessage } from "types";
 
 class LevelsModule extends BaseModule {
     constructor() {

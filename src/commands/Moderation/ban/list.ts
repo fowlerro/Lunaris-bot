@@ -1,9 +1,8 @@
 import { CommandInteraction, EmbedFieldData, Formatters, MessageEmbed } from "discord.js";
 
-import { getLocale, palette } from "../../../utils/utils";
-
-import { Language } from "types";
 import Embeds from "../../../modules/Embeds";
+import { getLocale, palette } from "../../../utils/utils";
+import type { Language } from "types";
 
 export default async (interaction: CommandInteraction) => {
     if(!interaction.guildId) return

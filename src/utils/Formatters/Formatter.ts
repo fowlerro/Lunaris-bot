@@ -1,4 +1,5 @@
 import { Formatters, GuildMember } from "discord.js"
+
 import { dateNow, memberAvatar, serverIcon } from "./customs"
 
 interface IVariables {

@@ -1,11 +1,11 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-channelUpdate
 import { AuditLogChange, DMChannel, GuildAuditLogsEntry, GuildChannel, Permissions, Snowflake } from "discord.js";
-import { Language } from "types";
-import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
+import Logs from "../../modules/Logs";
 import { getAuditLog, getLocale, sleep } from "../../utils/utils";
 import { editName } from "../role/RoleUpdateEvent";
+import type { Language } from "types";
 
 
 export default class ChannelUpdateEvent extends BaseEvent {

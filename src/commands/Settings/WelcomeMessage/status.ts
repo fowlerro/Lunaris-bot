@@ -1,14 +1,14 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 
-import { WelcomeMessageModel } from "../../../database/schemas/WelcomeMessage";
 import WelcomeMessage from "../../../modules/WelcomeMessage";
 import Embeds from "../../../modules/Embeds";
-import { handleError } from './index'
+import { WelcomeMessageModel } from "../../../database/schemas/WelcomeMessage";
 import { getLocale, palette } from "../../../utils/utils";
+import { handleError } from './index'
+import type { Language, WelcomeMessage as WelcomeMessageType } from "types";
 
 import { formatWelcomeMessageList } from "./list";
 
-import { Language, WelcomeMessage as WelcomeMessageType } from "types";
 
 export default async (interaction: CommandInteraction) => {
     const language = getLocale(interaction.guildLocale)

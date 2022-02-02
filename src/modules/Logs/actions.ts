@@ -1,6 +1,7 @@
 import { ButtonInteraction, MessageButton, TextChannel } from "discord.js";
-import { Language } from "types";
-import { Templates } from ".";
+
+import type { Templates } from "./index";
+import type { Language } from "types";
 
 export default {
     messages: {

@@ -1,8 +1,8 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-messageUpdate
 import { Message } from "discord.js";
-import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
+import Logs from "../../modules/Logs";
 import { getAuditLog } from "../../utils/utils";
 
 export default class MessageUpdateEvent extends BaseEvent {

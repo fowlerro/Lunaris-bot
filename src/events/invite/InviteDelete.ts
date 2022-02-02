@@ -1,7 +1,7 @@
 import { Invite, Permissions } from "discord.js"
-import Logs from "../../modules/Logs"
 
 import BaseEvent from "../../utils/structures/BaseEvent"
+import Logs from "../../modules/Logs"
 import { getAuditLog, sleep } from "../../utils/utils"
 export default class InviteDeleteEvent extends BaseEvent {
     constructor() {

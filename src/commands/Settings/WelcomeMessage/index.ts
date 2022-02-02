@@ -3,6 +3,7 @@ import { AutocompleteInteraction, CommandInteraction, MessageEmbed, Permissions 
 import BaseCommand from "../../../utils/structures/BaseCommand";
 import WelcomeMessage from "../../../modules/WelcomeMessage";
 import { capitalize, palette } from "../../../utils/utils";
+import type { Language } from "types";
 
 import add from "./add";
 import _delete, { deleteAutocomplete } from "./delete";
@@ -10,7 +11,6 @@ import list from "./list";
 import set from "./set";
 import status from "./status";
 
-import { Language } from "types";
 
 export default class WelcomeMessageCommand extends BaseCommand {
     constructor() {

@@ -1,4 +1,5 @@
 import { MessageEmbedOptions } from "discord.js";
+
 import { palette } from "../../utils/utils";
 
 export default {

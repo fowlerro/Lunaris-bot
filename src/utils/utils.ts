@@ -3,7 +3,8 @@ import { ActivityTypes } from "discord.js/typings/enums";
 import path from "path";
 import fs from 'fs'
 import convert from 'color-convert'
-import { Language } from "types";
+
+import type { Language } from "types";
 
 export const botOwners = ["313346190995619841"];
 

@@ -1,8 +1,9 @@
-import { ActivityOptions, Client, ClientOptions, Collection } from 'discord.js';
-import { Snowflake } from 'discord-api-types';
+import { ActivityOptions, Client, ClientOptions, Collection, Snowflake } from 'discord.js';
+
 import BaseEvent from '../utils/structures/BaseEvent';
 import BaseModule from '../utils/structures/BaseModule';
 import BaseCommand from '../utils/structures/BaseCommand';
+
 import { GuildConfigDocument } from '../database/schemas/GuildConfig';
 import { ProfileDocument } from '../database/schemas/Profile';
 import { GuildProfileDocument } from '../database/schemas/GuildProfile';

@@ -1,9 +1,10 @@
 import { CommandInteraction, EmbedFieldData, MessageEmbed } from "discord.js";
-import { Language } from "types";
+
 import Logs, { Templates } from "../../../modules/Logs";
 import templates from "../../../modules/Logs/templates";
-import { LocalePhrase } from "../../../types/locales";
 import { getLocale, palette } from "../../../utils/utils";
+import type { LocalePhrase } from "../../../types/locales";
+import type { Language } from "types";
 
 export default async (interaction: CommandInteraction) => {
     const language = getLocale(interaction.guildLocale)

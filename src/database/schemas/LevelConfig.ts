@@ -1,6 +1,6 @@
 import { Document, model, Schema } from "mongoose";
 
-import { LevelConfig } from "types";
+import type { LevelConfig } from "types";
 
 export interface LevelConfigDocument extends LevelConfig, Document {}
 

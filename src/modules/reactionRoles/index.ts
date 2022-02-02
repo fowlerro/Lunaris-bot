@@ -2,8 +2,7 @@ import { Message, MessageReaction, User, Snowflake } from "discord.js";
 
 import BaseModule from "../../utils/structures/BaseModule";
 import { ReactionRoleDocument, ReactionRoleModel } from "../../database/schemas/ReactionRoles";
-
-import { Reactions } from 'types'
+import type { Reactions } from 'types'
 
 class ReactionRolesModule extends BaseModule {
     constructor() {

@@ -1,10 +1,12 @@
-import { ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed, MessageEmbedOptions, Snowflake, TextChannel } from "discord.js";
-import { Language } from "types";
+import { ButtonInteraction, MessageActionRow, MessageEmbed, MessageEmbedOptions, Snowflake, TextChannel } from "discord.js";
+
 import { GuildLogs, GuildLogsModel } from "../../database/schemas/GuildLogs";
-import { LocalePhrase } from "../../types/locales";
 import TextFormatter from "../../utils/Formatters/Formatter";
 import BaseModule from "../../utils/structures/BaseModule";
 import { getLocale } from "../../utils/utils";
+import type { LocalePhrase } from "../../types/locales";
+import type { Language } from "types";
+
 import Embeds from "../Embeds";
 import actions from "./actions";
 import templates from "./templates";

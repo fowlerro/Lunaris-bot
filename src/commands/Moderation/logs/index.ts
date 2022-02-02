@@ -1,12 +1,13 @@
-import { AutocompleteInteraction, CommandInteraction, MessageEmbed, Permissions } from "discord.js";
+import { AutocompleteInteraction, CommandInteraction, Permissions } from "discord.js";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
 import templates from "../../../modules/Logs/templates";
+
 import set from "./set";
 import toggle, { autocompleteToggle } from "./toggle";
 import status from "./status";
 
-export default class MuteCommand extends BaseCommand {
+export default class LogsCommand extends BaseCommand {
     constructor() {
         super(
             'logs',

@@ -1,6 +1,7 @@
 import { AutocompleteInteraction, CommandInteraction, Permissions } from "discord.js";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
+
 import levelUpChannel from "./levelUpChannel";
 import levelUpMessage from "./levelUpMessage";
 import multiplier from "./multiplier";

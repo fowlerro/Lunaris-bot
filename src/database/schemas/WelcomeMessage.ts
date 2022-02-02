@@ -1,6 +1,6 @@
 import { Document, model, Schema } from "mongoose";
 
-import { WelcomeMessage } from 'types'
+import type { WelcomeMessage } from 'types'
 
 export interface WelcomeMessageDocument extends WelcomeMessage, Document {}
 

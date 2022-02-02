@@ -1,7 +1,7 @@
 import { Collection, Message, Snowflake } from "discord.js"
-import Logs from "../../modules/Logs"
 
 import BaseEvent from "../../utils/structures/BaseEvent"
+import Logs from "../../modules/Logs"
 import { getAuditLog, getLocale } from "../../utils/utils"
 
 export default class MessageDeleteBulkEvent extends BaseEvent {

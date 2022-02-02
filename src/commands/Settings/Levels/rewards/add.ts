@@ -1,4 +1,5 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
+
 import Levels from "../../../../modules/Levels";
 import { getLocale, palette } from "../../../../utils/utils";
 

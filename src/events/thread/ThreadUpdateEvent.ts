@@ -1,11 +1,11 @@
-import { AuditLogChange, Permissions, ThreadChannel } from "discord.js";
-import { Language } from "types";
-import Logs from "../../modules/Logs";
+import { AuditLogChange, ThreadChannel } from "discord.js";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { getAuditLog, getLocale, sleep } from "../../utils/utils";
-import { editArchive, editSlowmode } from "../channel/ChannelUpdateEvent";
+import Logs from "../../modules/Logs";
 import { editName } from "../role/RoleUpdateEvent";
+import { editArchive, editSlowmode } from "../channel/ChannelUpdateEvent";
+import { getAuditLog, getLocale } from "../../utils/utils";
+import type { Language } from "types";
 
 export default class ThreadUpdateEvent extends BaseEvent {
     constructor() {

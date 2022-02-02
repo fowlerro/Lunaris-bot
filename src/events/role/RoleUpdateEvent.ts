@@ -1,10 +1,10 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-roleUpdate
 import { AuditLogChange, Permissions, PermissionString, Role } from "discord.js";
-import { Language } from "types";
-import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
+import Logs from "../../modules/Logs";
 import { getAuditLog, getLocale } from "../../utils/utils";
+import type { Language } from "types";
 
 export default class RoleUpdateEvent extends BaseEvent {
 	constructor() {

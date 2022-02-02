@@ -1,8 +1,8 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-channelDelete
 import { DMChannel, GuildChannel } from "discord.js";
-import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
+import Logs from "../../modules/Logs";
 import { getAuditLog } from "../../utils/utils";
 
 

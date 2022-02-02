@@ -1,5 +1,6 @@
 import { GuildProfileDocument } from "../../database/schemas/GuildProfile";
 import { getLocale } from "../../utils/utils";
+
 import xpSystem from './index'
 
 export default async (profile: GuildProfileDocument, isText: boolean) => {

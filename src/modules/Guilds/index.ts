@@ -2,7 +2,7 @@ import { Snowflake } from "discord.js";
 
 import BaseModule from "../../utils/structures/BaseModule";
 import { GuildConfigModel } from "../../database/schemas/GuildConfig";
-import { GuildConfig } from "types";
+import type { GuildConfig } from "types";
 
 class GuildsModule extends BaseModule {
     constructor() {

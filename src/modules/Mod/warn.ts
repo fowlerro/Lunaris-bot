@@ -1,9 +1,9 @@
 import { Snowflake } from 'discord.js'
 
-import { GuildProfileDocument, GuildProfileModel, GuildProfileWarn } from "../../database/schemas/GuildProfile";
-import { getLocale } from '../../utils/utils';
 import Logs from '../Logs';
 import Profiles from '../Profiles';
+import { GuildProfileDocument, GuildProfileModel, GuildProfileWarn } from "../../database/schemas/GuildProfile";
+import { getLocale } from '../../utils/utils';
 
 export const Warn = {
     give: async (guildId: Snowflake, targetId: Snowflake, executorId: Snowflake, reason?: string) => {

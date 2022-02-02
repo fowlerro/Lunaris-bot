@@ -1,9 +1,9 @@
-import { CommandInteraction, Message, MessageAttachment, MessageEmbed } from "discord.js";
+import { CommandInteraction, MessageAttachment, MessageEmbed } from "discord.js";
 import { createCanvas } from 'canvas'
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 import { colorFormatsType, convertColor, getLocale, palette, supportedColorFormats } from "../../utils/utils";
-import { Language } from "types";
+import type { Language } from "types";
 
 export default class ColorCommand extends BaseCommand {
     constructor() {
@@ -62,8 +62,7 @@ export default class ColorCommand extends BaseCommand {
                         }
                     ]
                 }
-            ],
-            true, true
+            ]
         );
     }
 

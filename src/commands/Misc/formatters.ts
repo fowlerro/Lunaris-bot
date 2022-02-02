@@ -1,8 +1,9 @@
 
-import { CommandInteraction, Message, MessageEmbed } from "discord.js";
+import { CommandInteraction, MessageEmbed } from "discord.js";
+
+import BaseCommand from "../../utils/structures/BaseCommand";
 import Embeds from "../../modules/Embeds";
 import { IFormatter, supportedFormatters } from "../../utils/Formatters/Formatter";
-import BaseCommand from "../../utils/structures/BaseCommand";
 import { capitalize, getLocale, palette } from "../../utils/utils";
 
 export default class FormatterCommand extends BaseCommand {

@@ -1,9 +1,9 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildMemberRemove
 import { GuildMember } from "discord.js";
-import Logs from "../../modules/Logs";
-import WelcomeMessage from "../../modules/WelcomeMessage";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
+import Logs from "../../modules/Logs";
+import WelcomeMessage from "../../modules/WelcomeMessage";
 import { getAuditLog, getLocale, sleep } from "../../utils/utils";
 
 export default class GuildMemberRemoveEvent extends BaseEvent {

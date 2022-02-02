@@ -1,8 +1,8 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildMemberUpdate
 import { AuditLogChange, Formatters, GuildMember, Permissions, User } from 'discord.js'
-import Logs from '../../modules/Logs';
 
 import BaseEvent from '../../utils/structures/BaseEvent';
+import Logs from '../../modules/Logs';
 import { getAuditLog, getLocale, sleep } from '../../utils/utils';
 
 export default class GuildMemberUpdateEvent extends BaseEvent {

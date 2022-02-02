@@ -1,9 +1,9 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
+import Embeds from "../../modules/Embeds";
 import { IdeaModel } from "../../database/schemas/Ideas";
 import { palette } from "../../utils/utils";
-import Embeds from "../../modules/Embeds";
 
 export default class ManageIdeasCommand extends BaseCommand {
     constructor() {

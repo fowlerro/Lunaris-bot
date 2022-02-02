@@ -1,8 +1,8 @@
 import { AutocompleteInteraction, CommandInteraction, Formatters, MessageEmbed } from "discord.js";
-import { Language } from "types";
 
 import Mod from "../../../modules/Mod";
 import { getLocale, palette } from "../../../utils/utils";
+import type { Language } from "types";
 
 import { wrongId, memberNotFound, missingPermissions } from './give'
 

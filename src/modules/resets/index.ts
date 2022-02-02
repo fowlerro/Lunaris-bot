@@ -2,8 +2,6 @@ import cron from 'node-cron'
 
 import BaseModule from "../../utils/structures/BaseModule";
 import Levels from '../Levels';
-
-
 class ResetModule extends BaseModule {
     constructor() {
        super('Reset', true)

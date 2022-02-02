@@ -14,7 +14,7 @@ type SortedProfiles = {
     coins?: ProfileDocument[],
 }
 
-export default class LanguageCommand extends BaseCommand {
+export default class RankingCommand extends BaseCommand {
     constructor() {
         super(
             'ranking',

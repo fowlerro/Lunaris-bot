@@ -1,4 +1,5 @@
 import { CommandInteraction } from "discord.js";
+
 import BaseCommand from "../../utils/structures/BaseCommand";
 
 export default class TestCommand extends BaseCommand {

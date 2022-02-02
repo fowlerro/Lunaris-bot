@@ -3,8 +3,7 @@ import { GuildMember, Snowflake } from "discord.js";
 import BaseModule from "../../utils/structures/BaseModule";
 import { AutoRoleModel } from "../../database/schemas/AutoRole";
 import { AutoRoleTimeModel } from "../../database/schemas/AutoRoleTime";
-
-import { AutoRole } from "types";
+import type { AutoRole } from "types";
 
 class AutoRoleModule extends BaseModule {
     constructor() {

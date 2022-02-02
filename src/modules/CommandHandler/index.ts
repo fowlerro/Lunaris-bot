@@ -1,4 +1,5 @@
 import { AutocompleteInteraction, CommandInteraction, ContextMenuInteraction } from "discord.js";
+
 import BaseModule from "../../utils/structures/BaseModule";
 
 class CommandsModule extends BaseModule {

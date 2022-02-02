@@ -2,12 +2,11 @@ import { AutocompleteInteraction, CommandInteraction, MessageEmbed, Permissions 
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
 import { getLocale, palette } from "../../../utils/utils";
+import type { Language } from "types";
 
 import give from "./give";
 import remove, { removeAutocomplete } from "./remove";
 import list from "./list";
-
-import { Language } from "types";
 
 export default class BanCommand extends BaseCommand {
     constructor() {

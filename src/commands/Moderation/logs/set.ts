@@ -1,8 +1,9 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
-import { Language } from "types";
+
 import Logs from "../../../modules/Logs";
 import templates from "../../../modules/Logs/templates";
 import { getLocale, palette } from "../../../utils/utils";
+import type { Language } from "types";
 
 export default async (interaction: CommandInteraction) => {
     const language = getLocale(interaction.guildLocale)
