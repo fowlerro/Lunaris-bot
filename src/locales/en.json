@@ -143,6 +143,17 @@
             "incorectTime": "❌ Incorect time!",
             "error":"❌ Something went wrong :/ Try again!"
         },
+        "ban": {
+            "add": "✅ {{{member}}} has been banned by {{{executor}}}",
+            "remove": "✅ {{{member}}} has been unbanned by {{{executor}}}",
+            "removeReason": "Timed ban ended\nBan reason: {{reason}}",
+            "list": "🗒️ Bans",
+            "notBanned": "❌ Member is not banned",
+            "notFound": "❌ User not found",
+            "noPermissions": "❌ You don't have permissions to do that!",
+            "notManageable": "❌ I cannot manage this member!",
+            "missingPermissions": "❌ I don't have permissions to ban member!"
+        },
         "idea": {
             "submitted": "An idea has been submitted"
         },
@@ -436,16 +447,6 @@
             "unwarnAll": {
                 "title": "Unwarned whole server!"
             }
-        }
-    },
-    "autoMod": {
-        "notManagable": "I cannot manage %VAR%",
-        "ban": {
-            "add": "{{{member}}} has been banned by {{{executor}}} {{reason}}",
-            "remove": "{{{member}}} has been unbanned by {{{executor}}} {{reason}}",
-            "removeReason": "Timed ban ended\nBan reason: {{reason}}",
-            "notBanned": "{{{member}}} is not banned",
-            "notFound": "User not found"
         }
     },
     "xp": {

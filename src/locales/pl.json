@@ -143,6 +143,17 @@
             "incorectTime": "❌ Niepoprawny czas!",
             "error": "❌ Coś poszło nie tak :/ Spróbuj ponownie!"
         },
+        "ban": {
+            "add": "✅ {{{member}}} został zbanowany przez {{{executor}}}",
+            "remove": "✅ {{{member}}} został odbanowany przez {{{executor}}}",
+            "removeReason": "Czasowy ban minął\nPowód bana: {{reason}}",
+            "list": "🗒️ Lista banów",
+            "notBanned": "❌ Użytkownik nie jest zbanowany!",
+            "notFound": "❌ Nie znaleziono użytkownika!",
+            "noPermissions": "❌ Nie posiadasz uprawnień, aby to zrobić!",
+            "notManageable": "❌ Nie mogę zarządzać tym użytkownikiem!",
+            "missingPermissions": "❌ Nie posiadam uprawnień do banowania użytkowników!"
+        },
         "idea": {
             "submitted": "Pomysł został przesłany!"
         },
@@ -436,16 +447,6 @@
             "unwarnAll": {
                 "title": "Zdjęto ostrzeżenia na całym serwerze!"
             }
-        }
-    },
-    "autoMod": {
-        "notManagable": "Nie mam uprawnień do zarządzania %VAR%",
-        "ban": {
-            "add": "{{{member}}} został zbanowany przez {{{executor}}} {{reason}}",
-            "remove": "{{{member}}} został odbanowany przez {{{executor}}} {{reason}}",
-            "removeReason": "Czasowy ban minął\nPowód bana: {{reason}}",
-            "notBanned": "{{{member}}} nie jest zbanowany",
-            "notFound": "Nie znaleziono użytkownika"
         }
     },
     "xp": {

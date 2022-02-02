@@ -65,7 +65,7 @@ async function saveBan(userId: Snowflake, guild: Guild, executorId: Snowflake, r
 
     setTimeout(async () => {
         if(!guild.me?.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return
-        const unbanReason = t('autoMod.ban.removeReason', language, { reason: reason || t('general.none', language) })
+        const unbanReason = t('command.ban.removeReason', language, { reason: reason || t('general.none', language) })
         await guild.bans.remove(userId, unbanReason).catch(e => {})
         await GuildBanModel.findOneAndDelete({ userId, guildId: guild.id });
         await Logs.log('members', 'unban', guild.id, { member: user, customs: { moderatorMention: `<@${client.user?.id}>`, moderatorId: client.user?.id, reason: unbanReason }})
@@ -77,17 +77,22 @@ async function saveBan(userId: Snowflake, guild: Guild, executorId: Snowflake, r
 export async function registerBans() {
     const bans = await GuildBanModel.find();
     for(const ban of bans) {
-        const guild = await client.guilds.fetch(ban.guildId).catch(() => {})
+        const guild = await client.guilds.fetch(ban.guildId).catch(console.error)
         if(!guild) return
-        const user = await client.users.fetch(ban.userId).catch(() => {})
-        if(!user) return
-        if(ban.time && ban.time < Date.now()) {
-            await guild.bans.remove(user.id, `Timed ban ended, reason: ${ban.reason || 'none'}`).catch(e => {})
 
-            ban.remove();
+        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+        const unbanReason = t('command.ban.removeReason', language, { reason: ban.reason || t('general.none', language) })
+
+        const user = await client.users.fetch(ban.userId).catch(console.error)
+        if(!user) return
+
+        if(ban.time && ban.time < Date.now()) {
+            await guild.bans.remove(user.id, unbanReason).catch(console.error)
+
+            return ban.remove();
         }
         setTimeout(async () => {
-            await guild.bans.remove(user.id, `Timed ban ended, reason: ${ban.reason || 'none'}`).catch(e => {})
+            await guild.bans.remove(user.id, unbanReason).catch(console.error)
 
             ban.remove();
         }, (ban.time || 0) - Date.now());
