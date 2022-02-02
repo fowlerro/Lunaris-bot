@@ -3,7 +3,7 @@ import { Role } from "discord.js";
 import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { sleep } from "../../utils/utils";
+import { getAuditLog } from "../../utils/utils";
 
 export default class RoleDeleteEvent extends BaseEvent {
     constructor() {
@@ -18,14 +18,8 @@ export default class RoleDeleteEvent extends BaseEvent {
 }
 
 async function serverLogs(role: Role) {
-    await sleep(500)
-    const auditLogs = await role.guild.fetchAuditLogs({ type: 'ROLE_DELETE', limit: 1 }).catch((e) => {console.log(e)})
-    if(!auditLogs) return
-    const roleLog = auditLogs.entries.first()
-    if(!roleLog) return
+    const log = await getAuditLog(role.guild, 'ROLE_DELETE', (log) => (log.target?.id === role.id))
+    if(!log || !log.executor) return
 
-    const { executor, target } = roleLog
-    if(!executor || target?.id !== role.id) return
-
-    Logs.log('roles', 'delete', role.guild.id, { role, customs: { moderatorMention: `<@${executor.id}>`, moderatorId: executor.id } })
+    Logs.log('roles', 'delete', role.guild.id, { role, customs: { moderatorMention: `<@${log.executor.id}>`, moderatorId: log.executor.id } })
 }

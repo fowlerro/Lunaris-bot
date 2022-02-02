@@ -3,7 +3,7 @@ import { Language } from "types";
 import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { getLocale, sleep } from "../../utils/utils";
+import { getAuditLog, getLocale, sleep } from "../../utils/utils";
 import { editArchive, editSlowmode } from "../channel/ChannelUpdateEvent";
 import { editName } from "../role/RoleUpdateEvent";
 
@@ -13,19 +13,15 @@ export default class ThreadUpdateEvent extends BaseEvent {
     }
     
     async run(oldThread: ThreadChannel, newThread: ThreadChannel) {
-
-        serverLogs(oldThread, newThread)
+        serverLogs(newThread)
     }
 };
 
-async function serverLogs(oldThread: ThreadChannel, newThread: ThreadChannel) {
-    if(!newThread.guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return
-    await sleep(500)
+async function serverLogs(newThread: ThreadChannel) {
     const language = getLocale(newThread.guild.preferredLocale)
-    const auditLogs = await newThread.guild.fetchAuditLogs({ type: 'THREAD_UPDATE', limit: 5 }).catch(console.error)
-    if(!auditLogs) return
-    const log = await auditLogs.entries.find(log => log.target.id === newThread.id && Date.now() - log.createdTimestamp < 5000)
-    if(!log) return 
+    
+    const log = await getAuditLog(newThread.guild, 'THREAD_UPDATE', (log) => (log.target.id === newThread.id))
+    if(!log) return
 
     const { executor, changes } = log
     if(!executor || !changes) return

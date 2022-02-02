@@ -1,4 +1,4 @@
-import { ExcludeEnum } from "discord.js";
+import { ExcludeEnum, Guild, GuildAuditLogsAction, GuildAuditLogsEntry, Permissions } from "discord.js";
 import { ActivityTypes } from "discord.js/typings/enums";
 import path from "path";
 import fs from 'fs'
@@ -123,4 +123,14 @@ export function convertColor(inputFormat: colorFormatsType, outputFormat: colorF
 
 export function getLocale(guildLocale: string | null): Language {
     return guildLocale === 'pl' ? 'pl' : 'en'
+}
+
+export async function getAuditLog<T extends GuildAuditLogsAction>(guild: Guild, type: T, find: (log: GuildAuditLogsEntry<T>) => boolean, noSleep: boolean = false): Promise<GuildAuditLogsEntry<T> | null> {
+    if(!guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return null
+    if(!noSleep) await sleep(500)
+    const auditLogs = await guild.fetchAuditLogs({ type, limit: 5 }).catch(console.error)
+    if(!auditLogs) return null
+    const log = auditLogs.entries.find(log => find(log) && Date.now() - log.createdTimestamp < 5000)
+    if(!log) return null
+    return log
 }

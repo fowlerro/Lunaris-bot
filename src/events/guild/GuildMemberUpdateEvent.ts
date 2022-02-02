@@ -3,7 +3,7 @@ import { AuditLogChange, Formatters, GuildMember, Permissions, User } from 'disc
 import Logs from '../../modules/Logs';
 
 import BaseEvent from '../../utils/structures/BaseEvent';
-import { getLocale, sleep } from '../../utils/utils';
+import { getAuditLog, getLocale, sleep } from '../../utils/utils';
 
 export default class GuildMemberUpdateEvent extends BaseEvent {
   constructor() {
@@ -19,6 +19,7 @@ export default class GuildMemberUpdateEvent extends BaseEvent {
 
 async function serverLogs(oldMember: GuildMember, newMember: GuildMember) {
 	if(!newMember.guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return
+    sleep(500)
 
 	if(oldMember.roles.cache.size < newMember.roles.cache.size) addRoleLog(newMember)
 	if(oldMember.roles.cache.size > newMember.roles.cache.size) removeRoleLog(newMember)
@@ -27,11 +28,9 @@ async function serverLogs(oldMember: GuildMember, newMember: GuildMember) {
 }
 
 async function memberUpdateLog(newMember: GuildMember) {
-    await sleep(500)
-    const auditLogs = await newMember.guild.fetchAuditLogs({ type: 'MEMBER_UPDATE', limit: 5 }).catch(console.error)
-    if(!auditLogs) return
-    const log = auditLogs.entries.find(log => log.target?.id === newMember.id && Date.now() - log.createdTimestamp < 5000)
+    const log = await getAuditLog(newMember.guild, 'MEMBER_UPDATE', (log) => (log.target?.id === newMember.id), true)
     if(!log) return
+
     const { executor, target, changes, reason } = log
     if(!executor || !target || !changes) return
 
@@ -44,13 +43,10 @@ async function memberUpdateLog(newMember: GuildMember) {
 }
 
 async function addRoleLog(newMember: GuildMember) {
-	await sleep(500)
-	const auditLog = await newMember.guild.fetchAuditLogs({ type: 'MEMBER_ROLE_UPDATE', limit: 1 }).catch((e) => console.error(e))
-	if(!auditLog) return
-	const addRoleLog = auditLog.entries.first()
-	if(!addRoleLog) return
+    const log = await getAuditLog(newMember.guild, 'MEMBER_ROLE_UPDATE', (log) => (log.target?.id === newMember.id), true)
+    if(!log) return
 
-	const { executor, target, changes } = addRoleLog
+	const { executor, target, changes } = log
 	const addedRole = changes?.find(change => change.key === '$add')?.new
 	if(!addedRole || !executor || !target) return
 	if(!Array.isArray(addedRole) || !('name' in addedRole[0])) return
@@ -59,13 +55,10 @@ async function addRoleLog(newMember: GuildMember) {
 }
 
 async function removeRoleLog(newMember: GuildMember) {
-	await sleep(500)
-	const auditLog = await newMember.guild.fetchAuditLogs({ type: 'MEMBER_ROLE_UPDATE', limit: 1 }).catch(e => console.error(e))
-	if(!auditLog) return
-	const removeRoleLog = auditLog.entries.first()
-	if(!removeRoleLog) return
+    const log = await getAuditLog(newMember.guild, 'MEMBER_ROLE_UPDATE', (log) => (log.target?.id === newMember.id), true)
+    if(!log) return
 
-	const { executor, target, changes } = removeRoleLog
+	const { executor, target, changes } = log
 	const removedRole = changes?.find(change => change.key === '$remove')?.new
 	if(!removedRole || !executor || !target) return
 	if(!Array.isArray(removedRole) || !('name' in removedRole[0])) return

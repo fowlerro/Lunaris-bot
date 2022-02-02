@@ -1,10 +1,10 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-roleUpdate
-import { AuditLogChange, BitField, Formatters, Permissions, PermissionString, Role } from "discord.js";
+import { AuditLogChange, Permissions, PermissionString, Role } from "discord.js";
 import { Language } from "types";
 import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { getLocale, sleep } from "../../utils/utils";
+import { getAuditLog, getLocale } from "../../utils/utils";
 
 export default class RoleUpdateEvent extends BaseEvent {
 	constructor() {
@@ -14,24 +14,18 @@ export default class RoleUpdateEvent extends BaseEvent {
 	async run(oldRole: Role, newRole: Role) {
 		if(!client.isOnline) return;
 
-		serverLogs(oldRole, newRole)
+		serverLogs(newRole)
 	}
 }
 
-async function serverLogs(oldRole: Role, newRole: Role) {
-    if(!newRole.guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return
-    await sleep(500)
-    const auditLogs = await newRole.guild.fetchAuditLogs({ type: 'ROLE_UPDATE', limit: 5 }).catch(console.error)
-    if(!auditLogs) return
-
-    const roleLog = auditLogs.entries.find(log => log.target?.id === newRole.id && Date.now() - log.createdTimestamp < 5000)
-    if(!roleLog) return
+async function serverLogs(newRole: Role) {
+    const log = await getAuditLog(newRole.guild, 'ROLE_UPDATE', (log) => (log.target?.id === newRole.id))
+    if(!log) return
     
     const language = getLocale(newRole.guild.preferredLocale)
 
-    const { executor, changes } = roleLog
-    if(!executor) return
-    if(!changes) return
+    const { executor, changes } = log
+    if(!executor || !changes) return
 
 	const roleEdits = registerEdits(changes, language)
 

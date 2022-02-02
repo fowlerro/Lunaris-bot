@@ -4,7 +4,7 @@ import { Language } from "types";
 import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { getLocale, sleep } from "../../utils/utils";
+import { getAuditLog, getLocale, sleep } from "../../utils/utils";
 import { editName } from "../role/RoleUpdateEvent";
 
 
@@ -25,24 +25,17 @@ async function serverLogs(oldChannel: GuildChannel, newChannel: GuildChannel) {
     if(!newChannel.guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return
     await sleep(500)
 
-    const updateLogs = await newChannel.guild.fetchAuditLogs({ type: 'CHANNEL_UPDATE', limit: 5 }).catch(console.error)
-    if(updateLogs) {
-        const updateLog = updateLogs.entries.find(log => log.target.id === newChannel.id && Date.now() - log.createdTimestamp < 5000)
-        if(updateLog) return channelUpdateLog(oldChannel, newChannel, updateLog)
-    }
+    const updateLog = await getAuditLog(newChannel.guild, 'CHANNEL_UPDATE', (log) => (log.target.id === newChannel.id), true)
+    if(updateLog) return channelUpdateLog(newChannel, updateLog)
 
     let moderatorId: Snowflake | null = null
-
-    const overwriteLogs = await newChannel.guild.fetchAuditLogs({ type: 'CHANNEL_OVERWRITE_UPDATE', limit: 5 }).catch(console.error)
-    if(overwriteLogs) {
-        const overwriteLog = overwriteLogs.entries.find(log => log.target.id === newChannel.id && Date.now() - log.createdTimestamp < 5000)
-        if(overwriteLog) moderatorId = overwriteLog.executor?.id || null
-    }
+    const overwriteLog = await getAuditLog(newChannel.guild, 'CHANNEL_OVERWRITE_UPDATE', (log) => (log.target.id === newChannel.id), true)
+    if(overwriteLog) moderatorId = overwriteLog.executor?.id || null
 
     return channelOverwriteLog(oldChannel, newChannel, moderatorId)
 }
 
-async function channelUpdateLog(oldChannel: GuildChannel, newChannel: GuildChannel, auditLog: GuildAuditLogsEntry<"CHANNEL_UPDATE", "CHANNEL_UPDATE", "UPDATE", "CHANNEL">) {
+async function channelUpdateLog(newChannel: GuildChannel, auditLog: GuildAuditLogsEntry<"CHANNEL_UPDATE", "CHANNEL_UPDATE", "UPDATE", "CHANNEL">) {
     const language = getLocale(newChannel.guild.preferredLocale)
     const { executor, changes } = auditLog
     if(!executor || !changes) return
