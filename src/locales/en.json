@@ -250,6 +250,11 @@
                 "emojis": "Emojis",
                 "server": "Server"
             }
+        },
+        "color": {
+            "converted": "✅ **{{inputFormat}}:** `{{inputColor}}` => **{{outputFormat}}:** `{{outputColor}}`",
+            "incorrectFormat": "❌ Incorrect format, select corrent one from command option!",
+            "invalidColor": "❌ Invalid color!"
         }
     },
     "modules": {
