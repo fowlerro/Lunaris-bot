@@ -4,7 +4,7 @@ import Logs from "../../modules/Logs";
 import WelcomeMessage from "../../modules/WelcomeMessage";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { sleep } from "../../utils/utils";
+import { getLocale, sleep } from "../../utils/utils";
 
 export default class GuildMemberRemoveEvent extends BaseEvent {
 	constructor() {
@@ -20,7 +20,7 @@ export default class GuildMemberRemoveEvent extends BaseEvent {
 }
 
 async function logs(member: GuildMember) {
-    const language = member.guild.preferredLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(member.guild.preferredLocale)
 	await sleep(500)
 	const { kicked, kickExecutor, kickReason } = await isKicked(member)
 	if(kicked && kickExecutor) return Logs.log('members', 'kick', member.guild.id, { member, customs: { moderatorMention: `<@${kickExecutor.id}>`, moderatorId: kickExecutor.id, reason: kickReason || t('general.none', language) } })

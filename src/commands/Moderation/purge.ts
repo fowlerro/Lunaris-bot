@@ -1,7 +1,7 @@
 import { CommandInteraction, MessageEmbed, Permissions, TextChannel } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
-import { palette } from "../../utils/utils";
+import { getLocale, palette } from "../../utils/utils";
 
 export default class PurgeCommand extends BaseCommand {
     constructor() {
@@ -47,7 +47,7 @@ export default class PurgeCommand extends BaseCommand {
         if(count > 100) count = 100
         if(count < 1) count = 1
 
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         let fetched = await channel.messages.fetch({ limit: user ? 100 : count }, { cache: false });
         if(user) {

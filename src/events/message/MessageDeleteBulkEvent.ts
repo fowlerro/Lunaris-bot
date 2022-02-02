@@ -2,7 +2,7 @@ import { Collection, Message, Snowflake } from "discord.js"
 import Logs from "../../modules/Logs"
 
 import BaseEvent from "../../utils/structures/BaseEvent"
-import { sleep } from "../../utils/utils"
+import { getLocale, sleep } from "../../utils/utils"
 
 export default class MessageDeleteBulkEvent extends BaseEvent {
     constructor() {
@@ -19,22 +19,21 @@ export default class MessageDeleteBulkEvent extends BaseEvent {
 async function serverLogs(messages: Collection<Snowflake, Message>) {
     const guild = messages.first()?.guild
     if(!guild) return
-    console.log('guild')
-    const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(guild.preferredLocale)
+    
     await sleep(500)
     const auditLogs = await messages.first()?.guild?.fetchAuditLogs({ type: 'MESSAGE_BULK_DELETE', limit: 5 }).catch(console.error)
     if(!auditLogs) return
-    console.log('auditLogs', auditLogs.entries.first())
-    console.log(messages.size, messages.first())
+    
     const log = auditLogs.entries.find(log => 
         log.extra.count === messages.size &&
         log.target.id === messages.first()?.channelId &&
         Date.now() - log.createdTimestamp < 5000
     )
     if(!log || !log.executor) return
-    console.log('log')
+
     const { executor, extra, reason, target } = log
-    console.log({ target })
+    
     Logs.log('messages', 'purge', guild.id, { 
         customs: { 
             deletedByMention: `<@${executor.id}>`,

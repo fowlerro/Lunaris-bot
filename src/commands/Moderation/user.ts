@@ -1,7 +1,7 @@
 import { ContextMenuInteraction, Formatters, MessageEmbed } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
-import { palette } from "../../utils/utils";
+import { getLocale, palette } from "../../utils/utils";
 
 export default class UserInfoCommand extends BaseCommand {
     constructor() {
@@ -19,7 +19,7 @@ export default class UserInfoCommand extends BaseCommand {
         const targetMember = await interaction.guild?.members.fetch(interaction.targetId).catch(() => {})
         if(!targetMember) return;
 
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         const embed = new MessageEmbed()
             .setColor(palette.info)

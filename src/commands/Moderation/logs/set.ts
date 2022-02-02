@@ -2,10 +2,10 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 import { Language } from "types";
 import Logs from "../../../modules/Logs";
 import templates from "../../../modules/Logs/templates";
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
 
 export default async (interaction: CommandInteraction) => {
-    const language = interaction.guild?.preferredLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const category = interaction.options.getString('category', true)
     const channel = interaction.options.getChannel('channel')
     if(!(Object.keys(templates)).includes(category)) return wrongCategory(interaction, language)

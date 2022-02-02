@@ -2,7 +2,7 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 
 import Embeds from "../../../../modules/Embeds";
 import Levels from "../../../../modules/Levels";
-import { palette } from "../../../../utils/utils";
+import { getLocale, palette } from "../../../../utils/utils";
 
 import { LevelReward, LevelRewards } from "types";
 
@@ -17,7 +17,7 @@ export default async (interaction: CommandInteraction) => {
 }
 
 async function scopedList(interaction: CommandInteraction, rewardList: LevelReward[], scope: 'text' | 'voice') {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const description = rewardList.map(reward => `**Level**: \`${reward.level}\`, **${t('general.role', language)}**: ${reward.roleId ? `<@&${reward.roleId}>` : t('general.none', language)}, **${t('command.level.rewards.takePreviousRole', language)}**: ${reward.takePreviousRole ? t('general.yes', language) : t('general.no', language)}`)
 
     const embed = new MessageEmbed()
@@ -34,7 +34,7 @@ async function scopedList(interaction: CommandInteraction, rewardList: LevelRewa
 }
 
 async function fullList(interaction: CommandInteraction, rewardList: LevelRewards) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const textField = rewardList.text.map(reward => `**Level**: \`${reward.level}\`, **${t('general.role', language)}**: ${reward.roleId ? `<@&${reward.roleId}>` : t('general.none', language)}, **${t('command.level.rewards.takePreviousRole', language)}**: ${reward.takePreviousRole ? t('general.yes', language) : t('general.no', language)}`)
     const voiceField = rewardList.voice.map(reward => `**Level**: \`${reward.level}\`, **${t('general.role', language)}**: ${reward.roleId ? `<@&${reward.roleId}>` : t('general.none', language)}, **${t('command.level.rewards.takePreviousRole', language)}**: ${reward.takePreviousRole ? t('general.yes', language) : t('general.no', language)}`)
 
@@ -53,7 +53,7 @@ async function fullList(interaction: CommandInteraction, rewardList: LevelReward
 }
 
 function handleError(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const embed = new MessageEmbed()
         .setColor(palette.error)
         .setDescription(t('general.error', language))

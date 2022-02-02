@@ -3,6 +3,7 @@ import { ActivityTypes } from "discord.js/typings/enums";
 import path from "path";
 import fs from 'fs'
 import convert from 'color-convert'
+import { Language } from "types";
 
 export const botOwners = ["313346190995619841"];
 
@@ -118,4 +119,8 @@ export function convertColor(inputFormat: colorFormatsType, outputFormat: colorF
     if(inputFormat === 'CMYK' && outputFormat === 'HSL') return convert.cmyk.hsl([Number(match[1]), Number(match[3]), Number(match[5]), Number(match[7])])
 
     return color
+}
+
+export function getLocale(guildLocale: string | null): Language {
+    return guildLocale === 'pl' ? 'pl' : 'en'
 }

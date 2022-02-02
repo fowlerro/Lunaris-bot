@@ -3,7 +3,7 @@ import { GuildBan } from "discord.js";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
 import Logs from "../../modules/Logs";
-import { sleep } from "../../utils/utils";
+import { getLocale, sleep } from "../../utils/utils";
 
 export default class GuildBanRemoveEvent extends BaseEvent {
 	constructor() {
@@ -18,7 +18,7 @@ export default class GuildBanRemoveEvent extends BaseEvent {
 
 async function logs(ban: GuildBan) {
 	await sleep(500)
-	const language = ban.guild.preferredLocale === 'pl' ? 'pl' : 'en'
+	const language = getLocale(ban.guild.preferredLocale)
 	const auditLogs = await ban.guild.fetchAuditLogs({ type: 'MEMBER_BAN_REMOVE', limit: 1 }).catch(e => console.log(e))
 	if(!auditLogs) return
 	const unbanLog = auditLogs.entries.first()

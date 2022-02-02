@@ -2,7 +2,7 @@ import { AutocompleteInteraction, CommandInteraction, EmbedFieldData, Formatters
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 import { ProfileModel } from "../../database/schemas/Profile";
-import { assignNestedObjects, capitalize, getCommandCategories, palette } from "../../utils/utils";
+import { assignNestedObjects, capitalize, getCommandCategories, getLocale, palette } from "../../utils/utils";
 
 export default class HelpCommand extends BaseCommand {
     
@@ -33,7 +33,7 @@ export default class HelpCommand extends BaseCommand {
 
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId) return
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         const command = interaction.options.getString('command')
 

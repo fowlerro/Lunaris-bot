@@ -3,7 +3,7 @@ import { AuditLogChange, Formatters, GuildMember, Permissions, User } from 'disc
 import Logs from '../../modules/Logs';
 
 import BaseEvent from '../../utils/structures/BaseEvent';
-import { sleep } from '../../utils/utils';
+import { getLocale, sleep } from '../../utils/utils';
 
 export default class GuildMemberUpdateEvent extends BaseEvent {
   constructor() {
@@ -75,7 +75,7 @@ async function removeRoleLog(newMember: GuildMember) {
 
 async function nicknameLog(newMember: GuildMember, executor: User, change: AuditLogChange) {
     if(change.old === change.new) return
-    const language = newMember.guild.preferredLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(newMember.guild.preferredLocale)
     const oldNickname = change.old || t('general.none', language)
     const newNickname = change.new || t('general.none', language)
 
@@ -92,7 +92,7 @@ async function nicknameLog(newMember: GuildMember, executor: User, change: Audit
 
 async function timeoutLog(newMember: GuildMember, executor: User, change: AuditLogChange, reason: string | null) {
     if(!change.new || typeof change.new !== 'string') return
-    const language = newMember.guild.preferredLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(newMember.guild.preferredLocale)
 
     const timeoutDate = new Date(change.new)
 
@@ -109,7 +109,7 @@ async function timeoutLog(newMember: GuildMember, executor: User, change: AuditL
 }
 
 async function timeoutRemoveLog(newMember: GuildMember, executor: User, reason: string | null) {
-    const language = newMember.guild.preferredLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(newMember.guild.preferredLocale)
 
     Logs.log('members', 'timeoutRemove', newMember.guild.id, {
         member: newMember,

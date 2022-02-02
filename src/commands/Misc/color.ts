@@ -2,7 +2,7 @@ import { CommandInteraction, Message, MessageAttachment, MessageEmbed } from "di
 import { createCanvas } from 'canvas'
 
 import BaseCommand from "../../utils/structures/BaseCommand";
-import { colorFormatsType, convertColor, palette, supportedColorFormats } from "../../utils/utils";
+import { colorFormatsType, convertColor, getLocale, palette, supportedColorFormats } from "../../utils/utils";
 import { Language } from "types";
 
 export default class ColorCommand extends BaseCommand {
@@ -69,7 +69,7 @@ export default class ColorCommand extends BaseCommand {
 
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId || !interaction.member) return
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
         
         const subcommand = interaction.options.getSubcommand(true)
 

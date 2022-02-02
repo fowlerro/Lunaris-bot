@@ -1,10 +1,10 @@
 import { AutocompleteInteraction, CommandInteraction, MessageEmbed } from "discord.js";
 import Levels from "../../../../modules/Levels";
-import { palette } from "../../../../utils/utils";
+import { getLocale, palette } from "../../../../utils/utils";
 
 export default async (interaction: CommandInteraction) => {
     if(!interaction.guildId) return
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const rewardId = interaction.options.getString('reward', true)
     const scope = interaction.options.getString('scope', true)
     if(!rewardId) return rewardNotSelected(interaction)
@@ -23,7 +23,7 @@ export default async (interaction: CommandInteraction) => {
 
 export async function removeAutocomplete(interaction: AutocompleteInteraction) {
     if(!interaction.guildId) return
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
 
     const input = interaction.options.getString('reward', true)
     const scope = interaction.options.getString('scope', true)
@@ -43,7 +43,7 @@ export async function removeAutocomplete(interaction: AutocompleteInteraction) {
 }
 
 async function rewardNotSelected(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const embed = new MessageEmbed()
         .setColor(palette.error)
         .setDescription(t('command.level.rewards.rewardNotSelected', language))
@@ -55,7 +55,7 @@ async function rewardNotSelected(interaction: CommandInteraction) {
 }
 
 async function handleError(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const embed = new MessageEmbed()
         .setColor(palette.error)
         .setDescription(t('general.error', language))

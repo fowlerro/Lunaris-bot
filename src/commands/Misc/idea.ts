@@ -2,7 +2,7 @@ import { CommandInteraction, MessageEmbed, TextChannel } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 import { IdeaModel } from "../../database/schemas/Ideas";
-import { palette } from "../../utils/utils";
+import { getLocale, palette } from "../../utils/utils";
 import { testGuildId } from "../../bot";
 
 export default class IdeaCommand extends BaseCommand {
@@ -27,7 +27,7 @@ export default class IdeaCommand extends BaseCommand {
 
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId) return
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
         const description = interaction.options.getString('description', true)
         if(!description) return
 

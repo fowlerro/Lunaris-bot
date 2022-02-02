@@ -2,7 +2,7 @@ import { CommandInteraction, Formatters, MessageEmbed } from "discord.js";
 import ms from "ms";
 
 import Mod from "../../../modules/Mod";
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
 
 import type { Language } from 'types'
 
@@ -10,7 +10,7 @@ const regex = /[0-9]+[d|h|m|s]/g
 
 export default async (interaction: CommandInteraction) => {
     if(!interaction.guildId) return
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const userId = interaction.options.getString('user-id')
     if(userId && (isNaN(+userId) || userId.length !== 18)) return wrongId(interaction, language)
 

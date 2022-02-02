@@ -4,7 +4,7 @@ import { Language } from "types";
 import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { sleep } from "../../utils/utils";
+import { getLocale, sleep } from "../../utils/utils";
 
 export default class RoleUpdateEvent extends BaseEvent {
 	constructor() {
@@ -23,9 +23,11 @@ async function serverLogs(oldRole: Role, newRole: Role) {
     await sleep(500)
     const auditLogs = await newRole.guild.fetchAuditLogs({ type: 'ROLE_UPDATE', limit: 5 }).catch(console.error)
     if(!auditLogs) return
+
     const roleLog = auditLogs.entries.find(log => log.target?.id === newRole.id && Date.now() - log.createdTimestamp < 5000)
     if(!roleLog) return
-    const language = newRole.guild.preferredLocale === 'pl' ? 'pl' : 'en'
+    
+    const language = getLocale(newRole.guild.preferredLocale)
 
     const { executor, changes } = roleLog
     if(!executor) return

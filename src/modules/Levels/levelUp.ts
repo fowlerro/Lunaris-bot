@@ -4,7 +4,7 @@ import Profiles from "../Profiles";
 import { GuildProfileDocument } from "../../database/schemas/GuildProfile";
 import { ProfileDocument } from "../../database/schemas/Profile";
 import TextFormatter from "../../utils/Formatters/Formatter";
-import { palette } from "../../utils/utils";
+import { getLocale, palette } from "../../utils/utils";
 
 import xpSystem from "./index";
 import levelRewards from "./levelRewards";
@@ -54,7 +54,7 @@ export async function sendLevelUpMessage(profile: GuildProfileDocument, channelI
     const configChannelId = levelConfig.levelUpMessage.channelId
     const channel = messageMode === 'currentChannel' ? await guild.channels.fetch(channelId) as TextChannel : configChannelId && await guild.channels.fetch(configChannelId) as TextChannel;
     if(!channel) return
-    const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(guild.preferredLocale)
 
     const description = levelConfig.levelUpMessage?.messageFormat ? 
         TextFormatter(levelConfig.levelUpMessage.messageFormat, { profile, guild })

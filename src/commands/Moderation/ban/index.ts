@@ -1,7 +1,7 @@
 import { AutocompleteInteraction, CommandInteraction, MessageEmbed, Permissions } from "discord.js";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
 
 import give from "./give";
 import remove, { removeAutocomplete } from "./remove";
@@ -104,7 +104,7 @@ export default class BanCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId || !interaction.member) return
         if(!('id' in interaction.member)) return
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
         if(!interaction.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return noPermissions(interaction, language)
         
         const subcommand = interaction.options.getSubcommand(true)

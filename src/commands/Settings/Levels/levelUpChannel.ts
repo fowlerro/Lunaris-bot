@@ -1,12 +1,12 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 import Levels from "../../../modules/Levels";
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
 
 export default async (interaction: CommandInteraction) => {
     const mode = interaction.options.getString('mode')
     const channel = interaction.options.getChannel('channel')
 
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
 
     if(!mode) return displayChannel(interaction)
     if(mode !== 'off' && mode !== 'currentChannel' && mode !== 'specificChannel') return wrongMode(interaction)
@@ -25,7 +25,7 @@ export default async (interaction: CommandInteraction) => {
 }
 
 async function displayChannel(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
 
     const config = await Levels.get(interaction.guildId!)
     if(!config) return handleError(interaction)
@@ -45,7 +45,7 @@ async function displayChannel(interaction: CommandInteraction) {
 }
 
 async function wrongMode(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     
     const embed = new MessageEmbed()
         .setColor(palette.error)
@@ -57,7 +57,7 @@ async function wrongMode(interaction: CommandInteraction) {
     })
 }
 async function notSpecifiedChannel(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     
     const embed = new MessageEmbed()
         .setColor(palette.error)
@@ -70,7 +70,7 @@ async function notSpecifiedChannel(interaction: CommandInteraction) {
 }
 
 async function handleError(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     
     const embed = new MessageEmbed()
         .setColor(palette.error)

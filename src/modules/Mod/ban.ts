@@ -4,6 +4,7 @@ import { Snowflake } from "discord-api-types"
 import { GuildBanModel } from "../../database/schemas/GuildBans"
 import Logs from "../Logs"
 import { Language } from "types"
+import { getLocale } from "../../utils/utils"
 
 export const Ban = {
     add: async (targetId: Snowflake, guildId: Snowflake, executorId: Snowflake, reason?: string, time?: number) => {
@@ -15,7 +16,7 @@ export const Ban = {
         const target = await guild.members.fetch(targetId).catch(() => {}) || await client.users.fetch(targetId).catch(() => {})
         if(!target) return { error: "Wrong targetId" }
         if('bannable' in target && !target.bannable) return { error: 'targetNotManagable' }
-        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(guild.preferredLocale)
 
         let timestamp: number = 0;
         const date = Date.now();
@@ -39,7 +40,7 @@ export const Ban = {
         if(!guild.me?.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return { error: "missingPermission", perms: new Permissions([Permissions.FLAGS.BAN_MEMBERS]).toArray() }
         const target = await guild.members.fetch(targetId).catch(() => {}) || await client.users.fetch(targetId).catch(() => {})
         if(!target) return { error: "Wrong targetId" }
-        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(guild.preferredLocale)
         
         const result = await guild.bans.remove(targetId, reason).catch(e => {})
         if(!result) return { error: "notBanned" }
@@ -50,7 +51,7 @@ export const Ban = {
 }
 
 async function saveBan(userId: Snowflake, guild: Guild, executorId: Snowflake, reason?: string, time?: number, timestamp?: number) {
-    const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(guild.preferredLocale)
     const user = await client.users.fetch(userId).catch(e => console.log(e))
     const result = await guild.bans.create(userId, { reason }).catch(e => {})
     if(!result) return;
@@ -80,7 +81,7 @@ export async function registerBans() {
         const guild = await client.guilds.fetch(ban.guildId).catch(console.error)
         if(!guild) return
 
-        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(guild.preferredLocale)
         const unbanReason = t('command.ban.removeReason', language, { reason: ban.reason || t('general.none', language) })
 
         const user = await client.users.fetch(ban.userId).catch(console.error)

@@ -3,10 +3,10 @@ import { Language } from "types";
 import Logs, { Templates } from "../../../modules/Logs";
 import templates from "../../../modules/Logs/templates";
 import { LocalePhrase } from "../../../types/locales";
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
 
 export default async (interaction: CommandInteraction) => {
-    const language = interaction.guild?.preferredLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const category = interaction.options.getString('category') as keyof Templates
     if(category && !(Object.keys(templates)).includes(category)) return wrongCategory(interaction, language)
 

@@ -4,6 +4,7 @@ import { GuildLogs, GuildLogsModel } from "../../database/schemas/GuildLogs";
 import { LocalePhrase } from "../../types/locales";
 import TextFormatter from "../../utils/Formatters/Formatter";
 import BaseModule from "../../utils/structures/BaseModule";
+import { getLocale } from "../../utils/utils";
 import Embeds from "../Embeds";
 import actions from "./actions";
 import templates from "./templates";
@@ -81,7 +82,7 @@ class LogsModule extends BaseModule {
         if(!guild) return
         const channel = await guild.channels.fetch(channelId).catch(console.error) as TextChannel | null
         if(!channel) return
-        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(guild.preferredLocale)
 
         const embed = this.formatTemplate(category, type, language, vars)
 

@@ -1,6 +1,7 @@
 import { Snowflake } from 'discord.js'
 
 import { GuildProfileDocument, GuildProfileModel, GuildProfileWarn } from "../../database/schemas/GuildProfile";
+import { getLocale } from '../../utils/utils';
 import Logs from '../Logs';
 import Profiles from '../Profiles';
 
@@ -8,7 +9,7 @@ export const Warn = {
     give: async (guildId: Snowflake, targetId: Snowflake, executorId: Snowflake, reason?: string) => {
         const guild = await client.guilds.fetch(guildId).catch(() => {})
         if(!guild) return
-        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(guild.preferredLocale)
         const target = await guild.members.fetch(targetId).catch(() => {})
         if(!target) return
         const document = await GuildProfileModel.findOneAndUpdate({ guildId, userId: targetId }, {
@@ -28,7 +29,7 @@ export const Warn = {
     remove: async (guildId: Snowflake, warnId: string, executorId: Snowflake, targetId?: Snowflake, reason?: string): Promise<{ action?: 'all' | 'targetAll', error?: 'warnNotFound' | 'targetNotFound' | 'guildNotFound' | 'targetWithoutWarns', result?: GuildProfileDocument }> => {
         const guild = await client.guilds.fetch(guildId).catch(() => {})
         if(!guild) return { error: 'guildNotFound' }
-        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(guild.preferredLocale)
         if(warnId === 'all') { 
             await GuildProfileModel.updateMany({ guildId }, {
                 $set: {
@@ -81,7 +82,7 @@ export const Warn = {
     list: async (guildId: Snowflake, targetId?: Snowflake): Promise<{ warns: GuildProfileWarn[] | GuildProfileDocument[], error?: string}> => {
         const guild = await client.guilds.fetch(guildId).catch(() => {})
         if(!guild) return { error: 'guildNotFound', warns: [] }
-        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(guild.preferredLocale)
 
         if(targetId) {
             const result = await GuildProfileModel.findOne({ guildId, userId: targetId });

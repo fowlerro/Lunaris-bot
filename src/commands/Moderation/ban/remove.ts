@@ -2,13 +2,13 @@ import { AutocompleteInteraction, CommandInteraction, Formatters, MessageEmbed }
 import { Language } from "types";
 
 import Mod from "../../../modules/Mod";
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
 
 import { wrongId, memberNotFound, missingPermissions } from './give'
 
 export default async (interaction: CommandInteraction) => {
     if(!interaction.guildId) return
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const userId = interaction.options.getString('user-id', true)
     if(isNaN(+userId) || userId.length !== 18) return wrongId(interaction, language)
 

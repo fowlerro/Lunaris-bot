@@ -4,14 +4,14 @@ import { WelcomeMessageModel } from "../../../database/schemas/WelcomeMessage";
 import WelcomeMessage from "../../../modules/WelcomeMessage";
 import Embeds from "../../../modules/Embeds";
 import { handleError } from './index'
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
 
 import { formatWelcomeMessageList } from "./list";
 
 import { Language, WelcomeMessage as WelcomeMessageType } from "types";
 
 export default async (interaction: CommandInteraction) => {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const status = interaction.options.getBoolean('enable')
     const welcomeConfig = await WelcomeMessage.get(interaction.guildId!)
 

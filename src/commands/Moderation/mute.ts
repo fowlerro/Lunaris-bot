@@ -3,7 +3,7 @@ import ms from "ms";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 import Mod from "../../modules/Mod";
-import { palette } from "../../utils/utils";
+import { getLocale, palette } from "../../utils/utils";
 
 const regex = /[0-9]+[d|h|m|s]/g
 
@@ -70,7 +70,7 @@ export default class MuteCommand extends BaseCommand {
         if(!interaction.member.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS)) return noPermissions(interaction)
 
         const subcommand = interaction.options.getSubcommand(true) as 'give' | 'remove'
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         if(subcommand === 'give') {
             const member = interaction.options.getMember('member', true)
@@ -136,7 +136,7 @@ export default class MuteCommand extends BaseCommand {
 }
 
 async function noPermissions(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const embed = new MessageEmbed()
         .setColor(palette.error)
         .setDescription(t('command.mute.executorWithoutPermission', language))
@@ -148,7 +148,7 @@ async function noPermissions(interaction: CommandInteraction) {
 }
 
 async function incorectTime(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const embed = new MessageEmbed()
         .setColor(palette.error)
         .setDescription(t('command.mute.incorectTime', language))

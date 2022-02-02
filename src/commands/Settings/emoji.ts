@@ -1,7 +1,7 @@
 import { AutocompleteInteraction, CommandInteraction, MessageEmbed, Permissions } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
-import { palette } from "../../utils/utils";
+import { getLocale, palette } from "../../utils/utils";
 
 export default class EmojiCommand extends BaseCommand {
     constructor() {
@@ -61,7 +61,7 @@ export default class EmojiCommand extends BaseCommand {
         if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS)) return
         const subcommand = interaction.options.getSubcommand(true)
 
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         if(subcommand === 'add') {
             const url = interaction.options.getString('url', true)

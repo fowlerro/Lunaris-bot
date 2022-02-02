@@ -1,13 +1,13 @@
 import { CommandInteraction, EmbedFieldData, Formatters, MessageEmbed } from "discord.js";
 
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
 
 import { Language } from "types";
 import Embeds from "../../../modules/Embeds";
 
 export default async (interaction: CommandInteraction) => {
     if(!interaction.guildId) return
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
 
     const page = interaction.options.getInteger('page') || 1
 

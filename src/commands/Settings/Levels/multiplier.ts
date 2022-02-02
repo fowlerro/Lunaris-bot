@@ -1,9 +1,9 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 import Levels from "../../../modules/Levels";
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
 
 export default async (interaction: CommandInteraction) => {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const multiplier = interaction.options.getNumber('value')
     if(!multiplier) return sendMultiplier(interaction)
     if(multiplier <= 0 || multiplier > 5) return handleError(interaction)
@@ -21,7 +21,7 @@ export default async (interaction: CommandInteraction) => {
 }
 
 async function sendMultiplier(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const config = await Levels.get(interaction.guildId!)
     if(!config) return handleError(interaction)
 
@@ -35,7 +35,7 @@ async function sendMultiplier(interaction: CommandInteraction) {
 }
 
 function handleError(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
 
     const embed = new MessageEmbed()
         .setColor(palette.error)

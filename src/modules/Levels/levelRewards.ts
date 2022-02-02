@@ -1,4 +1,5 @@
 import { GuildProfileDocument } from "../../database/schemas/GuildProfile";
+import { getLocale } from "../../utils/utils";
 import xpSystem from './index'
 
 export default async (profile: GuildProfileDocument, isText: boolean) => {
@@ -12,18 +13,18 @@ export default async (profile: GuildProfileDocument, isText: boolean) => {
     const rewardsAtLevel = rewards.filter(reward => reward.level === profileLevel)
     if(!rewardsAtLevel.length) return
 
-    const guild = await client.guilds.fetch(profile.guildId).catch((e) => {console.log(e)})
+    const guild = await client.guilds.fetch(profile.guildId).catch(console.error)
     if(!guild) return
-    const member = await guild.members.fetch(profile.userId).catch((e) => {console.log(e)})
+    const member = await guild.members.fetch(profile.userId).catch(console.error)
     if(!member) return
-    const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(guild.preferredLocale)
 
     rewardsAtLevel.forEach(async reward => {
         if(!reward.roleId) return
 
-        const role = await guild.roles.fetch(reward.roleId).catch((e) => {console.log(e)})
+        const role = await guild.roles.fetch(reward.roleId).catch(console.error)
         if(!role) return
-        await member.roles.add(role, t('modules.level.rewardRoleAddReason', language)).catch((e) => {console.log(e)})
+        await member.roles.add(role, t('modules.level.rewardRoleAddReason', language)).catch(console.error)
     })
 
     if(rewardsAtLevel.some(reward => reward.takePreviousRole)) {
@@ -35,9 +36,9 @@ export default async (profile: GuildProfileDocument, isText: boolean) => {
         rewardsToTake.forEach(async reward => {
             if(!reward.roleId) return
 
-            const role = await guild.roles.fetch(reward.roleId).catch((e) => {console.log(e)})
+            const role = await guild.roles.fetch(reward.roleId).catch(console.error)
             if(!role) return
-            await member.roles.remove(role, t('modules.level.rewardRoleRemoveReason', language)).catch((e) => {console.log(e)})
+            await member.roles.remove(role, t('modules.level.rewardRoleRemoveReason', language)).catch(console.error)
         })
     }
 }

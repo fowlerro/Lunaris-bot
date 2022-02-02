@@ -1,9 +1,9 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 import Levels from "../../../modules/Levels";
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
 
 export default async (interaction: CommandInteraction) => {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const format = interaction.options.getString('format')
     if(format && format.length > 256) return formatTooLong(interaction)
 
@@ -20,7 +20,7 @@ export default async (interaction: CommandInteraction) => {
 }
 
 function formatTooLong(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
 
     const embed = new MessageEmbed()
         .setColor(palette.error)
@@ -33,7 +33,7 @@ function formatTooLong(interaction: CommandInteraction) {
 }
 
 function handleError(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
 
     const embed = new MessageEmbed()
         .setColor(palette.error)

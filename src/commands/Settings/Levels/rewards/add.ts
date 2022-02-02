@@ -1,9 +1,9 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 import Levels from "../../../../modules/Levels";
-import { palette } from "../../../../utils/utils";
+import { getLocale, palette } from "../../../../utils/utils";
 
 export default async (interaction: CommandInteraction) => {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
 
     const role = interaction.options.getRole('role', true)
     const level = interaction.options.getInteger('level', true)
@@ -28,7 +28,7 @@ export default async (interaction: CommandInteraction) => {
 }
 
 function limitRewards(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const embed = new MessageEmbed()
         .setColor(palette.error)
         .setDescription(t('command.level.rewards.limitError', language))
@@ -40,7 +40,7 @@ function limitRewards(interaction: CommandInteraction) {
 }
 
 function handleError(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const embed = new MessageEmbed()
         .setColor(palette.error)
         .setDescription(t('general.error', language))

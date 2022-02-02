@@ -4,7 +4,7 @@ import { Language } from "types";
 import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { sleep } from "../../utils/utils";
+import { getLocale, sleep } from "../../utils/utils";
 import { editName } from "../role/RoleUpdateEvent";
 
 
@@ -43,7 +43,7 @@ async function serverLogs(oldChannel: GuildChannel, newChannel: GuildChannel) {
 }
 
 async function channelUpdateLog(oldChannel: GuildChannel, newChannel: GuildChannel, auditLog: GuildAuditLogsEntry<"CHANNEL_UPDATE", "CHANNEL_UPDATE", "UPDATE", "CHANNEL">) {
-    const language = newChannel.guild.preferredLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(newChannel.guild.preferredLocale)
     const { executor, changes } = auditLog
     if(!executor || !changes) return
     const edits = registerEdits(changes, language)
@@ -52,7 +52,7 @@ async function channelUpdateLog(oldChannel: GuildChannel, newChannel: GuildChann
 }
 
 async function channelOverwriteLog(oldChannel: GuildChannel, newChannel: GuildChannel, moderatorId: Snowflake | null) {
-    const language = newChannel.guild.preferredLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(newChannel.guild.preferredLocale)
 
     const moderator = moderatorId ? `<@${moderatorId}>\n\`${moderatorId}\`` : t('general.unknown', language)
     const oldPerms = oldChannel.permissionOverwrites.cache.map(value => ({ id: value.id, deny: value.deny.toArray(), allow: value.allow.toArray() }))

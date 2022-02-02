@@ -4,7 +4,7 @@ import BaseCommand from "../../../utils/structures/BaseCommand";
 import Profiles from "../../../modules/Profiles";
 import { GuildProfileDocument, GuildProfileModel } from "../../../database/schemas/GuildProfile";
 import { ProfileDocument, ProfileModel } from "../../../database/schemas/Profile";
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
 
 type SortType = 'xp' | 'level' | 'coins';
 
@@ -56,7 +56,7 @@ export default class LanguageCommand extends BaseCommand {
         if(!interaction.guildId) return
         await interaction.deferReply()
         
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         const sortType = interaction.options.getString('sortby') as SortType || 'xp'
         const isGlobal = interaction.options.getBoolean('global') || false

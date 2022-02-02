@@ -4,7 +4,7 @@ import BaseCommand from "../../utils/structures/BaseCommand";
 import Embeds from "../../modules/Embeds";
 import Mod from "../../modules/Mod";
 import { GuildProfileWarn } from "../../database/schemas/GuildProfile";
-import { palette } from "../../utils/utils";
+import { getLocale, palette } from "../../utils/utils";
 
 export default class WarnCommand extends BaseCommand {
     constructor() {
@@ -87,7 +87,7 @@ export default class WarnCommand extends BaseCommand {
         if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return
 
         const subcommand = interaction.options.getSubcommand(true)
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         if(subcommand === 'give') {
             const member = interaction.options.getMember('member', true)
@@ -220,7 +220,7 @@ export default class WarnCommand extends BaseCommand {
         const memberId = interaction.options.get('member', true).value as string
         const member = await interaction.guild.members.fetch(memberId).catch(() => {})
 
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         const input = interaction.options.getString('warn', true)
         if(!member || !('id' in member)) return
