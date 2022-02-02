@@ -74,7 +74,7 @@
             },
             "welcomeMessages": {
                 "name": "Welcome Messages",
-                "value": "Automated messages that are sent when a user joins/leaves a server!\nYou can use many variables such as `username` or `serverName` to make your own custom and dynamic messages\nUse `/welcome add <action> <format>` to add Welcome Message\nYou can choose one of 2 actions: **join** - triggers when user join a server, or **leave** - triggers when user leave a server\nExample format: `Welcome {{username}} to server {{serverName}}!`, variables inside `{{ }}` are replaces with data related to your server and user who join/leave\nFor full list of available formats check `/format list` (Inside messages use can also use emojis as well as mentions (@user, #channel)"
+                "value": "Automated messages that are sent when a user joins/leaves a server!\nYou can use many variables such as `username` or `serverName` to make your own custom and dynamic messages\nUse `/welcome add <action> <format>` to add Welcome Message\nYou can choose one of 2 actions: **join** - triggers when user join a server, or **leave** - triggers when user leave a server\nExample format: `Welcome {\u200b{username}} to server {\u200b{serverName}}!`, variables inside `{\u200b{ }}` are replaces with data related to your server and user who join/leave\nFor full list of available formats check `/formatters` (Inside messages use can also use emojis as well as mentions (@user, #channel)"
             }
         }
     },
