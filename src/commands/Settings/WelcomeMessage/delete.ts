@@ -2,7 +2,7 @@ import { AutocompleteInteraction, CommandInteraction, MessageEmbed } from "disco
 
 import WelcomeMessage from "../../../modules/WelcomeMessage";
 import { getLocale, palette } from "../../../utils/utils";
-import { handleError } from "./index";
+import { handleCommandError } from "../../errors";
 import type { WelcomeMessageAction } from 'types'
 
 
@@ -12,7 +12,7 @@ export default async (interaction: CommandInteraction) => {
     const message = interaction.options.getString('message', true)
 
     const deleted = await WelcomeMessage.delete(interaction.guildId!, { message, action })
-    if(!deleted) return handleError(interaction, language)
+    if(!deleted) return handleCommandError(interaction, 'general.error')
 
     const embed = new MessageEmbed()
         .setColor(palette.success)
@@ -20,7 +20,7 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    })
+    }).catch(console.error)
 }
 
 export async function deleteAutocomplete(interaction: AutocompleteInteraction) {
@@ -35,5 +35,5 @@ export async function deleteAutocomplete(interaction: AutocompleteInteraction) {
         value: welcomeMessage.message
     }))
 
-    return interaction.respond(options?.splice(0, 25) || [])
+    return interaction.respond(options?.splice(0, 25) || []).catch(console.error)
 }

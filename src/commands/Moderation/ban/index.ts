@@ -7,6 +7,7 @@ import type { Language } from "types";
 import give from "./give";
 import remove, { removeAutocomplete } from "./remove";
 import list from "./list";
+import { handleCommandError } from "../../errors";
 
 export default class BanCommand extends BaseCommand {
     constructor() {
@@ -103,8 +104,7 @@ export default class BanCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId || !interaction.member) return
         if(!('id' in interaction.member)) return
-        const language = getLocale(interaction.guildLocale)
-        if(!interaction.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return noPermissions(interaction, language)
+        if(!interaction.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return handleCommandError(interaction, 'command.executorWithoutPermission')
         
         const subcommand = interaction.options.getSubcommand(true)
 
@@ -116,15 +116,4 @@ export default class BanCommand extends BaseCommand {
     async autocomplete(interaction: AutocompleteInteraction) {
         return removeAutocomplete(interaction)
     }
-}
-
-async function noPermissions(interaction: CommandInteraction, language: Language) {
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.ban.noPermissions', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
 }

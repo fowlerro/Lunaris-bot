@@ -3,6 +3,7 @@ import { CommandInteraction, MessageEmbed, TextChannel } from "discord.js";
 import BaseCommand from "../../utils/structures/BaseCommand";
 import { IdeaModel } from "../../database/schemas/Ideas";
 import { getLocale, palette } from "../../utils/utils";
+import { handleCommandError } from "../errors";
 import { testGuildId } from "../../bot";
 
 export default class IdeaCommand extends BaseCommand {
@@ -29,19 +30,19 @@ export default class IdeaCommand extends BaseCommand {
         if(!interaction.guildId) return
         const language = getLocale(interaction.guildLocale)
         const description = interaction.options.getString('description', true)
-        if(!description) return
 
-        const newIdea = await IdeaModel.create({ description })
-        if(!newIdea) return
+        const newIdea = await IdeaModel.create({ description }).catch(console.error)
+        if(!newIdea) return handleCommandError(interaction, 'general.error')
 
         interaction.reply({
             content: t('command.idea.submitted', language)
-        })
+        }).catch(console.error)
 
-        const testGuild = await client.guilds.fetch(testGuildId)
+        const testGuild = await client.guilds.fetch(testGuildId).catch(console.error)
+        if(!testGuild) return
         const ideaChannelId = "921827277203992686"
-        const ideaChannel = (await testGuild.channels.fetch(ideaChannelId)) as TextChannel | null
-        if(!ideaChannel) return
+        const ideaChannel = (await testGuild.channels.fetch(ideaChannelId).catch(console.error)) as TextChannel | null | void
+        if(!ideaChannel) return handleCommandError(interaction, 'general.error')
 
         const embed = new MessageEmbed()
             .setColor(palette.info)
@@ -49,6 +50,6 @@ export default class IdeaCommand extends BaseCommand {
 
         ideaChannel.send({
             embeds: [embed]
-        })
+        }).catch(console.error)
     }
 }

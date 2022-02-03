@@ -6,6 +6,7 @@ import templates from "../../../modules/Logs/templates";
 import set from "./set";
 import toggle, { autocompleteToggle } from "./toggle";
 import status from "./status";
+import { handleCommandError } from "../../errors";
 
 export default class LogsCommand extends BaseCommand {
     constructor() {
@@ -84,7 +85,7 @@ export default class LogsCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.guild || !interaction.guildId || !interaction.member) return
         if(!('id' in interaction.member)) return
-        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) return
+        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) return handleCommandError(interaction, 'command.executorWithoutPermission')
         const subcommand = interaction.options.getSubcommand(true)
     
         if(subcommand === 'status') return status(interaction)

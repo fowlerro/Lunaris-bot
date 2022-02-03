@@ -2,8 +2,8 @@ import { CommandInteraction, MessageAttachment, MessageEmbed } from "discord.js"
 import { createCanvas } from 'canvas'
 
 import BaseCommand from "../../utils/structures/BaseCommand";
-import { colorFormatsType, convertColor, getLocale, palette, supportedColorFormats } from "../../utils/utils";
-import type { Language } from "types";
+import { handleCommandError } from "../errors";
+import { colorFormatsType, convertColor, getLocale, supportedColorFormats } from "../../utils/utils";
 
 export default class ColorCommand extends BaseCommand {
     constructor() {
@@ -74,13 +74,13 @@ export default class ColorCommand extends BaseCommand {
 
         if(subcommand === 'convert') {
             const inputFormat = interaction.options.getString('input-format', true) as colorFormatsType
-            if(!supportedColorFormats.includes(inputFormat)) return incorrectFormat(interaction, language)
+            if(!supportedColorFormats.includes(inputFormat)) return handleCommandError(interaction, 'command.color.incorrectFormat')
             const outputFormat = interaction.options.getString('output-format', true) as colorFormatsType
-            if(!supportedColorFormats.includes(outputFormat)) return incorrectFormat(interaction, language)
+            if(!supportedColorFormats.includes(outputFormat)) return handleCommandError(interaction, 'command.color.incorrectFormat')
             const color = interaction.options.getString('color', true)
 
             const convertedColor = convertColor(inputFormat, outputFormat, color)
-            if(convertedColor instanceof Error) return invalidColor(interaction, language)
+            if(convertedColor instanceof Error) return handleCommandError(interaction, 'command.color.invalidColor')
             
             const hexColor = convertColor(inputFormat, 'HEX', color) as `#${string}`
 
@@ -95,11 +95,11 @@ export default class ColorCommand extends BaseCommand {
 
         if(subcommand === 'show') {
             const inputFormat = interaction.options.getString('input-format', true) as colorFormatsType
-            if(!supportedColorFormats.includes(inputFormat)) return incorrectFormat(interaction, language)
+            if(!supportedColorFormats.includes(inputFormat)) return handleCommandError(interaction, 'command.color.incorrectFormat')
             const color = interaction.options.getString('color', true)
 
             const hexColor = convertColor(inputFormat, 'HEX', color) as `#${string}` | Error
-            if(hexColor instanceof Error) return invalidColor(interaction, language)
+            if(hexColor instanceof Error) return handleCommandError(interaction, 'command.color.invalidColor')
             const rgbColor = convertColor(inputFormat, 'RGB', color)
             const hsvColor = convertColor(inputFormat, 'HSV', color)
             const hslColor = convertColor(inputFormat, 'HSL', color)
@@ -129,26 +129,4 @@ export default class ColorCommand extends BaseCommand {
             }).catch(console.error)
         }
     }
-}
-
-async function incorrectFormat(interaction: CommandInteraction, language: Language) {
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.color.incorrectFormat', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    }).catch(console.error)
-}
-
-async function invalidColor(interaction: CommandInteraction, language: Language) {
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.color.invalidColor', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    }).catch(console.error)
 }

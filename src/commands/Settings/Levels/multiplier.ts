@@ -2,15 +2,16 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 
 import Levels from "../../../modules/Levels";
 import { getLocale, palette } from "../../../utils/utils";
+import { handleCommandError } from "../../errors";
 
 export default async (interaction: CommandInteraction) => {
     const language = getLocale(interaction.guildLocale)
     const multiplier = interaction.options.getNumber('value')
     if(!multiplier) return sendMultiplier(interaction)
-    if(multiplier <= 0 || multiplier > 5) return handleError(interaction)
+    if(multiplier <= 0 || multiplier > 5) return handleCommandError(interaction, 'general.error')
 
     const newConfig = await Levels.setMultiplier(interaction.guildId!, multiplier)
-    if(!newConfig) return handleError(interaction)
+    if(!newConfig) return handleCommandError(interaction, 'general.error')
 
     const embed = new MessageEmbed()
         .setColor(palette.success)
@@ -18,13 +19,13 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    })
+    }).catch(console.error)
 }
 
 async function sendMultiplier(interaction: CommandInteraction) {
     const language = getLocale(interaction.guildLocale)
     const config = await Levels.get(interaction.guildId!)
-    if(!config) return handleError(interaction)
+    if(!config) return handleCommandError(interaction, 'general.error')
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
@@ -32,18 +33,5 @@ async function sendMultiplier(interaction: CommandInteraction) {
 
     return interaction.reply({
         embeds: [embed]
-    })
-}
-
-function handleError(interaction: CommandInteraction) {
-    const language = getLocale(interaction.guildLocale)
-
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.level.levelUpMessage.error', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
+    }).catch(console.error)
 }

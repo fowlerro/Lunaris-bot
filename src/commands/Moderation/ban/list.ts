@@ -2,7 +2,7 @@ import { CommandInteraction, EmbedFieldData, Formatters, MessageEmbed } from "di
 
 import Embeds from "../../../modules/Embeds";
 import { getLocale, palette } from "../../../utils/utils";
-import type { Language } from "types";
+import { handleCommandError } from "../../errors";
 
 export default async (interaction: CommandInteraction) => {
     if(!interaction.guildId) return
@@ -11,7 +11,7 @@ export default async (interaction: CommandInteraction) => {
     const page = interaction.options.getInteger('page') || 1
 
     const bans = await interaction.guild?.bans.fetch().catch(console.error)
-    if(!bans) return handleError(interaction, language)
+    if(!bans) return handleCommandError(interaction, 'general.error')
 
     const fields: EmbedFieldData[] = bans.map(ban => ({
         name: ban.user.tag,
@@ -23,22 +23,12 @@ export default async (interaction: CommandInteraction) => {
         .setColor(palette.info)
         .setTitle(t('command.ban.list', language))
         .setTimestamp();
+
     if(fields.length) embed.addFields(fields)
     if(!fields.length) embed.setDescription(t('general.none', language))
 
     const checkedEmbed = Embeds.checkLimits(embed, true)
-    if(checkedEmbed.error) return handleError(interaction, language)
+    if(checkedEmbed.error) return handleCommandError(interaction, 'general.error')
 
     Embeds.pageInteractionEmbeds(null, checkedEmbed.pages, interaction, page, true)
-}
-
-async function handleError(interaction: CommandInteraction, language: Language) {
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('general.error', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
 }

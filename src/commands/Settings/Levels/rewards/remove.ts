@@ -2,16 +2,17 @@ import { AutocompleteInteraction, CommandInteraction, MessageEmbed } from "disco
 
 import Levels from "../../../../modules/Levels";
 import { getLocale, palette } from "../../../../utils/utils";
+import { handleCommandError } from "../../../errors";
 
 export default async (interaction: CommandInteraction) => {
     if(!interaction.guildId) return
     const language = getLocale(interaction.guildLocale)
     const rewardId = interaction.options.getString('reward', true)
     const scope = interaction.options.getString('scope', true)
-    if(!rewardId) return rewardNotSelected(interaction)
+    if(!rewardId) return handleCommandError(interaction, 'command.level.rewards.rewardNotSelected')
 
     const res = await Levels.removeReward(interaction.guildId, rewardId, scope === 'voice' ? 'voice' : 'text')
-    if(!res) return handleError(interaction)
+    if(!res) return handleCommandError(interaction, 'general.error')
 
     const embed = new MessageEmbed()
         .setColor(palette.success)
@@ -19,7 +20,7 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    })
+    }).catch(console.error)
 }
 
 export async function removeAutocomplete(interaction: AutocompleteInteraction) {
@@ -33,36 +34,12 @@ export async function removeAutocomplete(interaction: AutocompleteInteraction) {
     const sortedRewards = levelConfig.rewards[scope === 'voice' ? 'voice' : 'text'].sort((a, b) => b.level - a.level)
 
     const options = await Promise.all(sortedRewards.map(async reward => {
-        const role = reward.roleId ? await interaction.guild?.roles.fetch(reward.roleId) : null
+        const role = reward.roleId ? await interaction.guild?.roles.fetch(reward.roleId).catch(console.error) : null
         return {
             name: `Level: ${reward.level}, ${t('general.role', language)}: ${role ? role.name : t('general.none', language)}, ${t('command.level.rewards.takePreviousRole', language)}: ${t(`general.${reward.takePreviousRole ? 'yes' : 'no'}`, language)}`,
             value: reward._id!
         }
     }))
 
-    return interaction.respond(options.splice(0, 25))
-}
-
-async function rewardNotSelected(interaction: CommandInteraction) {
-    const language = getLocale(interaction.guildLocale)
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.level.rewards.rewardNotSelected', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
-}
-
-async function handleError(interaction: CommandInteraction) {
-    const language = getLocale(interaction.guildLocale)
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('general.error', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
+    return interaction.respond(options.splice(0, 25)).catch(console.error)
 }

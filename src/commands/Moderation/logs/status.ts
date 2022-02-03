@@ -3,16 +3,16 @@ import { CommandInteraction, EmbedFieldData, MessageEmbed } from "discord.js";
 import Logs, { Templates } from "../../../modules/Logs";
 import templates from "../../../modules/Logs/templates";
 import { getLocale, palette } from "../../../utils/utils";
+import { handleCommandError } from "../../errors";
 import type { LocalePhrase } from "../../../types/locales";
-import type { Language } from "types";
 
 export default async (interaction: CommandInteraction) => {
     const language = getLocale(interaction.guildLocale)
     const category = interaction.options.getString('category') as keyof Templates
-    if(category && !(Object.keys(templates)).includes(category)) return wrongCategory(interaction, language)
+    if(category && !(Object.keys(templates)).includes(category)) return handleCommandError(interaction, 'command.logs.wrongCategory')
 
     const config = await Logs.get(interaction.guildId!)
-    if(!config) return handleError(interaction, language)
+    if(!config) return handleCommandError(interaction, 'general.error')
 
     const enabledMessage = '🟢'
     const disabledMessage = '🔴'
@@ -27,7 +27,7 @@ export default async (interaction: CommandInteraction) => {
     })))
 
     
-    if(!fields.length) return handleError(interaction, language)
+    if(!fields.length) return handleCommandError(interaction, 'general.error')
     if(!category) fields.push({ name: '\u200b', value: '\u200b', inline: true })
 
     const embed = new MessageEmbed()
@@ -37,27 +37,5 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
-}
-
-export function wrongCategory(interaction: CommandInteraction, language: Language) {
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.logs.wrongCategory', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    }).catch(console.error)
-}
-
-function handleError(interaction: CommandInteraction, language: Language) {
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.logs.error', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
     }).catch(console.error)
 }

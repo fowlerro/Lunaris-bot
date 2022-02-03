@@ -2,6 +2,7 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 
 import Levels from "../../../modules/Levels";
 import { getLocale, palette } from "../../../utils/utils";
+import { handleCommandError } from "../../errors";
 
 export default async (interaction: CommandInteraction) => {
     const mode = interaction.options.getString('mode')
@@ -10,11 +11,11 @@ export default async (interaction: CommandInteraction) => {
     const language = getLocale(interaction.guildLocale)
 
     if(!mode) return displayChannel(interaction)
-    if(mode !== 'off' && mode !== 'currentChannel' && mode !== 'specificChannel') return wrongMode(interaction)
-    if(mode === 'specificChannel' && !channel) return notSpecifiedChannel(interaction)
+    if(mode !== 'off' && mode !== 'currentChannel' && mode !== 'specificChannel') return handleCommandError(interaction, 'command.level.levelUpChannel.wrongMode')
+    if(mode === 'specificChannel' && !channel) return handleCommandError(interaction, 'command.level.levelUpChannel.notSpecifiedChannel')
 
     const res = await Levels.setLevelUpChannel(interaction.guildId!, mode, channel?.id)
-    if(!res) return handleError(interaction)
+    if(!res) return handleCommandError(interaction, 'general.error')
 
     const embed = new MessageEmbed()
         .setColor(palette.success)
@@ -22,14 +23,14 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    })
+    }).catch(console.error)
 }
 
 async function displayChannel(interaction: CommandInteraction) {
     const language = getLocale(interaction.guildLocale)
 
     const config = await Levels.get(interaction.guildId!)
-    if(!config) return handleError(interaction)
+    if(!config) return handleCommandError(interaction, 'general.error')
     const { mode, channelId } = config.levelUpMessage
 
     const description = mode === 'currentChannel' ? t('command.level.levelUpChannel.currentChannel', language)
@@ -42,43 +43,5 @@ async function displayChannel(interaction: CommandInteraction) {
 
     return interaction.reply({
         embeds: [embed]
-    })
-}
-
-async function wrongMode(interaction: CommandInteraction) {
-    const language = getLocale(interaction.guildLocale)
-    
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.level.levelUpChannel.wrongMode', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
-}
-async function notSpecifiedChannel(interaction: CommandInteraction) {
-    const language = getLocale(interaction.guildLocale)
-    
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.level.levelUpChannel.notSpecifiedChannel', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
-}
-
-async function handleError(interaction: CommandInteraction) {
-    const language = getLocale(interaction.guildLocale)
-    
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('general.error', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
+    }).catch(console.error)
 }

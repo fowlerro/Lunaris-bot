@@ -21,7 +21,7 @@ export async function registerCommands(dir = '') {
 		if(stat.isDirectory()) await registerCommands(path.join(dir, file));
 		if(process.env.DEVELOPMENT === 'DEV' ? file.endsWith('.ts') : file.endsWith('.js')) {
 			const { default: Command } = await import(path.join(filePath, file))
-			if(Command.prototype instanceof BaseCommand) {
+            if(Command?.prototype instanceof BaseCommand) {
 				const command: BaseCommand = new Command()
 				const category = dir.split('/').slice(2)
 				command.category = category

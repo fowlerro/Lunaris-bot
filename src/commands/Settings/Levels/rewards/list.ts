@@ -3,14 +3,15 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 import Embeds from "../../../../modules/Embeds";
 import Levels from "../../../../modules/Levels";
 import { getLocale, palette } from "../../../../utils/utils";
+import { handleCommandError } from "../../../errors";
+import type { LevelReward, LevelRewards } from "types";
 
-import { LevelReward, LevelRewards } from "types";
 
 export default async (interaction: CommandInteraction) => {
     const scope = interaction.options.getString('scope') || undefined
    
     const rewardList = await Levels.rewardList(interaction.guildId!, typeof scope === 'string' ? (scope === 'voice' ? 'voice' : 'text') : undefined)
-    if(!rewardList) return handleError(interaction)
+    if(!rewardList) return handleCommandError(interaction, 'general.error')
 
     if(Array.isArray(rewardList)) return scopedList(interaction, rewardList, scope === 'voice' ? 'voice' : 'text')
     return fullList(interaction, rewardList)
@@ -26,11 +27,11 @@ async function scopedList(interaction: CommandInteraction, rewardList: LevelRewa
         .setDescription(description.length ? description.join('\n') : t('general.none', language))
 
     const checkedEmbed = await Embeds.checkLimits(embed, false)
-    if(checkedEmbed.error) return handleError(interaction)
+    if(checkedEmbed.error) return handleCommandError(interaction, 'general.error')
 
     return interaction.reply({
         embeds: [embed]
-    })
+    }).catch(console.error)
 }
 
 async function fullList(interaction: CommandInteraction, rewardList: LevelRewards) {
@@ -45,21 +46,9 @@ async function fullList(interaction: CommandInteraction, rewardList: LevelReward
         .addField(t('command.level.rewards.voice', language), voiceField.length ? voiceField.join('\n') : t('general.none', language))
 
     const checkedEmbed = await Embeds.checkLimits(embed, false)
-    if(checkedEmbed.error) return handleError(interaction)
+    if(checkedEmbed.error) return handleCommandError(interaction, 'general.error')
 
     return interaction.reply({
         embeds: [embed]
-    })
-}
-
-function handleError(interaction: CommandInteraction) {
-    const language = getLocale(interaction.guildLocale)
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('general.error', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
+    }).catch(console.error)
 }

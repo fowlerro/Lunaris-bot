@@ -1,6 +1,7 @@
 import { AutocompleteInteraction, CommandInteraction, Permissions } from "discord.js";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
+import { handleCommandError } from "../../errors";
 
 import levelUpChannel from "./levelUpChannel";
 import levelUpMessage from "./levelUpMessage";
@@ -150,7 +151,7 @@ export default class LevelCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId || !interaction.guild || !interaction.member) return
         if(!('id' in interaction.member)) return
-        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) return
+        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) return handleCommandError(interaction, 'command.executorWithoutPermission')
         
         const subcommandGroup = interaction.options.getSubcommandGroup()
         const subcommand = interaction.options.getSubcommand(true)

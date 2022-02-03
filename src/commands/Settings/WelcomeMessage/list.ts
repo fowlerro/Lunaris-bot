@@ -3,7 +3,7 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 import Embeds from "../../../modules/Embeds";
 import WelcomeMessage from "../../../modules/WelcomeMessage";
 import { getLocale, palette } from "../../../utils/utils";
-import { handleError } from "./index";
+import { handleCommandError } from "../../errors";
 import type { GroupedWelcomeMessageFormats, Language, WelcomeMessageAction, WelcomeMessageFormat } from "types";
 
 
@@ -14,10 +14,10 @@ export default async (interaction: CommandInteraction) => {
     if(action) return selectedAction(interaction, language, action)
 
     const messageList = await WelcomeMessage.list(interaction.guildId!)
-    if(!messageList) return handleError(interaction, language)
+    if(!messageList) return handleCommandError(interaction, 'general.error')
     
     const formattedList = formatWelcomeMessageList(messageList, language)
-    if(typeof formattedList === 'string') return handleError(interaction, language)
+    if(typeof formattedList === 'string') return handleCommandError(interaction, 'general.error')
 
     const embed = new MessageEmbed()
         .setColor(palette.info)
@@ -26,12 +26,12 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    })
+    }).catch(console.error)
 }
 
 async function selectedAction(interaction: CommandInteraction, language: Language, action: WelcomeMessageAction) {
     const messageList = await WelcomeMessage.list(interaction.guildId!, action)
-    if(!messageList) return handleError(interaction, language)
+    if(!messageList) return handleCommandError(interaction, 'general.error')
     
     const formattedList = formatWelcomeMessageList(messageList, language) as string
 
@@ -40,11 +40,11 @@ async function selectedAction(interaction: CommandInteraction, language: Languag
         .addField(t(`command.welcome.list.${action}`, language), formattedList)
 
     const checkedEmbed = await Embeds.checkLimits(embed, false)
-    if(checkedEmbed.error || !checkedEmbed.pages[0]) return handleError(interaction, language)
+    if(checkedEmbed.error || !checkedEmbed.pages[0]) return handleCommandError(interaction, 'general.error')
 
     return interaction.reply({
         embeds: [checkedEmbed.pages[0]]
-    }).catch(() => {})
+    }).catch(console.error)
 }
 
 

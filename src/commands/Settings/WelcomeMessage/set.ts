@@ -2,7 +2,7 @@ import { CommandInteraction, MessageEmbed } from "discord.js";
 
 import WelcomeMessage from "../../../modules/WelcomeMessage";
 import { getLocale, palette } from "../../../utils/utils";
-import { handleError } from "./index";
+import { handleCommandError } from "../../errors";
 import type { WelcomeMessageAction } from "types";
 
 
@@ -12,7 +12,7 @@ export default async (interaction: CommandInteraction) => {
     const channel = interaction.options.getChannel('channel')
 
     const config = await WelcomeMessage.set(interaction.guildId!, action, channel?.id)
-    if(!config) return handleError(interaction, language)
+    if(!config) return handleCommandError(interaction, 'general.error')
 
     const embed = new MessageEmbed()
         .setColor(palette.success)
@@ -20,5 +20,5 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    })
+    }).catch(console.error)
 }

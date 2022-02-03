@@ -5,7 +5,6 @@ import { ProfileModel } from "../../database/schemas/Profile";
 import { assignNestedObjects, capitalize, getCommandCategories, getLocale, palette } from "../../utils/utils";
 
 export default class HelpCommand extends BaseCommand {
-    
     constructor() {
         super(
             'help',

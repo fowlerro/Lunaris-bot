@@ -8,17 +8,17 @@ import type { Language } from "types";
 
 export const botOwners = ["313346190995619841"];
 
-interface IPalette {
+export interface IPalette {
     primary: `#${string}`
-    secondary: string
+    secondary: `#${string}`
     success: `#${string}`
     info: `#${string}`
     error: `#${string}`
 }
 
 export const palette: IPalette = {
-    primary: '#1597e0',
-    secondary: '',
+    primary: '#1597E0',
+    secondary: '#B35D88',
     success: '#7BDB27',
     info: '#3C9FFC',
     error: '#B71E13',
