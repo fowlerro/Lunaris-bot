@@ -1,12 +1,14 @@
 import { createClient, RedisClientType, RedisModules, RedisScripts } from 'redis'
 
-const guildConfigs = createClient({ database: 0 })
-const profiles = createClient({ database: 1 })
-const guildProfiles = createClient({ database: 2 })
-const autoRoles = createClient({ database: 3 })
-const welcomeMessages = createClient({ database: 4 })
-const levelConfigs = createClient({ database: 5 })
-const logConfigs = createClient({ database: 6 })
+const redisURL = process.env.REDIS_URL || 'redis://localhost:6379'
+
+const guildConfigs = createClient({ database: 0, url: redisURL })
+const profiles = createClient({ database: 1, url: redisURL })
+const guildProfiles = createClient({ database: 2, url: redisURL })
+const autoRoles = createClient({ database: 3, url: redisURL })
+const welcomeMessages = createClient({ database: 4, url: redisURL })
+const levelConfigs = createClient({ database: 5, url: redisURL })
+const logConfigs = createClient({ database: 6, url: redisURL })
 
 export async function initializeCache() {
     await guildConfigs.connect()
