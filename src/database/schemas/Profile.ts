@@ -1,5 +1,6 @@
 import { Snowflake } from "discord.js";
 import mongoose, { Document, model, Schema } from "mongoose";
+
 import { palette } from "../../utils/utils";
 
 interface TextStatistics {

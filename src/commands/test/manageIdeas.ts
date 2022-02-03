@@ -1,9 +1,10 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
+import Embeds from "../../modules/Embeds";
 import { IdeaModel } from "../../database/schemas/Ideas";
 import { palette } from "../../utils/utils";
-import Embeds from "../../modules/Embeds";
+import { handleCommandError } from "../errors";
 
 export default class ManageIdeasCommand extends BaseCommand {
     constructor() {
@@ -43,8 +44,9 @@ export default class ManageIdeasCommand extends BaseCommand {
         const subcommand = interaction.options.getSubcommand(true)
 
         if(subcommand === 'list') {
-            const ideas = await IdeaModel.find()
-    
+            const ideas = await IdeaModel.find().catch(logger.error)
+            if(!ideas) return handleCommandError(interaction, 'general.error')
+            
             const fields = ideas.map(idea => ({
                 name: new Date(idea.createdAt).toLocaleString(),
                 value: `Id: ${idea._id}\ndescription: ${idea.description}`
@@ -59,19 +61,19 @@ export default class ManageIdeasCommand extends BaseCommand {
                 return interaction.reply({
                     embeds: [embed],
                     ephemeral: true
-                })
+                }).catch(logger.error)
     
             Embeds.pageInteractionEmbeds(null, embeds.pages, interaction, 1, true)
         }
 
         if(subcommand === 'delete') {
             const id = interaction.options.getString('id', true)
-            const deletedIdea = await IdeaModel.findOneAndDelete({ _id: id })
+            const deletedIdea = await IdeaModel.findOneAndDelete({ _id: id }).catch(logger.error)
             if(!deletedIdea) return
             
             return interaction.reply({
                 content: 'An idea has been deleted'
-            })
+            }).catch(logger.error)
         }
     }
 }

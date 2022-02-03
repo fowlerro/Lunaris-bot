@@ -1,7 +1,7 @@
 import i18n, { ConfigurationOptions, Replacements } from "i18n";
 import path from "path";
 
-import { LocalePhrase } from "../types/locales";
+import type { LocalePhrase } from "../types/locales";
 
 export default {
     locales: ['en', 'pl'],

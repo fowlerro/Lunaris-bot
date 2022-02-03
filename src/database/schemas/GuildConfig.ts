@@ -1,6 +1,6 @@
 import { Document, model, Schema } from "mongoose";
 
-import { GuildConfig } from 'types'
+import type { GuildConfig } from 'types'
 
 export interface GuildConfigDocument extends GuildConfig, Document {}
 

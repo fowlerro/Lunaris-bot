@@ -1,17 +1,18 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
-import { Language } from "types";
+
 import Logs from "../../../modules/Logs";
 import templates from "../../../modules/Logs/templates";
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
+import { handleCommandError } from "../../errors";
 
 export default async (interaction: CommandInteraction) => {
-    const language = interaction.guild?.preferredLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const category = interaction.options.getString('category', true)
     const channel = interaction.options.getChannel('channel')
-    if(!(Object.keys(templates)).includes(category)) return wrongCategory(interaction, language)
+    if(!(Object.keys(templates)).includes(category)) return handleCommandError(interaction, 'command.logs.wrongCategory')
 
     const config = await Logs.set(interaction.guildId!, category as any, channel?.id)
-    if(!config) return handleError(interaction, language)
+    if(!config) return handleCommandError(interaction, 'general.error')
 
     const embed = new MessageEmbed()
         .setColor(palette.success)
@@ -19,27 +20,5 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
-}
-
-export function wrongCategory(interaction: CommandInteraction, language: Language) {
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.logs.wrongCategory', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    }).catch(console.error)
-}
-
-function handleError(interaction: CommandInteraction, language: Language) {
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.logs.error', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    }).catch(console.error)
+    }).catch(logger.error)
 }

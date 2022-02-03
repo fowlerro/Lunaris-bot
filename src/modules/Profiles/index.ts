@@ -13,7 +13,6 @@ import { GuildProfileDocument, GuildProfileModel } from '../../database/schemas/
 import { ProfileDocument, ProfileModel } from '../../database/schemas/Profile';
 import { convertLargeNumbers } from '../../utils/utils';
 
-
 class ProfileModule extends BaseModule {
     constructor() {
         super('Profile', true)
@@ -37,9 +36,9 @@ class ProfileModule extends BaseModule {
             await redis.guildProfiles.get(`${guildId}-${userId}`)
         if(profile) return JSON.parse(profile) as ProfileDocument | GuildProfileDocument
         
-        const dbProfile = isGlobal ? await ProfileModel.findOne({ userId }, '-_id -__v') : await GuildProfileModel.findOne({ guildId, userId }, '-_id -__v')
-
+        const dbProfile = isGlobal ? await ProfileModel.findOne({ userId }, '-_id -__v').catch(logger.error) : await GuildProfileModel.findOne({ guildId, userId }, '-_id -__v').catch(logger.error)
         if(!dbProfile) return createProfile(userId, guildId)
+
         'guildId' in dbProfile ? await redis.guildProfiles.setEx(`${guildId}-${userId}`, 60 * 30, JSON.stringify(dbProfile))
             : await redis.profiles.setEx(userId, 60 * 30, JSON.stringify(dbProfile))
         
@@ -106,7 +105,8 @@ function neededXp(level: number) {
 }
 
 async function getRank(guildId: Snowflake, userId: Snowflake, xpType: 'text' | 'voice' = 'text', isGlobal: boolean = false) {
-    const profiles = isGlobal ? await ProfileModel.find() : await GuildProfileModel.find({ guildId })
+    const profiles = isGlobal ? await ProfileModel.find().catch(logger.error) : await GuildProfileModel.find({ guildId }).catch(logger.error)
+    if(!profiles) return
     const sortedProfiles = profiles.sort((a, b) => b.statistics[xpType].totalXp - a.statistics[xpType].totalXp)
 
     return sortedProfiles.findIndex(x => x.userId === userId) + 1
@@ -114,7 +114,8 @@ async function getRank(guildId: Snowflake, userId: Snowflake, xpType: 'text' | '
 
 async function createProfile(userId: Snowflake, guildId?: Snowflake) {
     const isGlobal = !Boolean(guildId)
-    const profile = isGlobal ? await ProfileModel.create({ userId }) : await GuildProfileModel.create({ userId, guildId })
+    const profile = isGlobal ? await ProfileModel.create({ userId }).catch(logger.error) : await GuildProfileModel.create({ userId, guildId }).catch(logger.error)
+    if(!profile) return null
     delete profile._id
     delete profile.__v
     'guildId' in profile ? await redis.guildProfiles.setEx(`${guildId}-${userId}`, 60 * 30, JSON.stringify(profile))
@@ -133,7 +134,7 @@ async function saveProfiles(global: boolean) {
 
             bulk.find({ userId: profile.userId }).replaceOne(profile)
         }
-        return bulk.execute()
+        return bulk.execute().catch(logger.error)
     }
     const scan = await redis.guildProfiles.scan(0)
     for await (const key of scan.keys) {
@@ -142,8 +143,7 @@ async function saveProfiles(global: boolean) {
         if(!profile) continue
         bulk.find({ guildId: profile.guildId, userId: profile.userId }).replaceOne(profile)
     }
-    const chuj = await bulk.execute()
-    return chuj
+    return bulk.execute().catch(logger.error)
 }
 
 

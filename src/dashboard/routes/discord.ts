@@ -37,9 +37,9 @@ router.get('/guilds/:guildId/settings', async (req, res) => {
     if(!userId) return res.sendStatus(401)
     if(!guildId) return res.sendStatus(404)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(404)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
     const clientMember = guild.me
@@ -57,15 +57,16 @@ router.put('/guilds/:guildId/settings', async (req, res) => {
     if(!userId) return res.sendStatus(401)
     if(!guildId) return res.sendStatus(404)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(404)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
     const clientMember = guild.me
     if(!clientMember) return res.sendStatus(404)
 
-    const updatedClientMember = await clientMember.setNickname(nickname)
+    const updatedClientMember = await clientMember.setNickname(nickname).catch(logger.error)
+    if(!updatedClientMember) res.sendStatus(500)
 
     return res.send({ clientMember: updatedClientMember })
 })
@@ -78,19 +79,20 @@ router.get('/guilds/:guildId/reactionroles', async (req, res) => {
     if(!userId) return res.sendStatus(401)
     if(!guildId) return res.sendStatus(404)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(404)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
-    const reactionRoles = await ReactionRoleModel.find({ guildId }).lean()
+    const reactionRoles = await ReactionRoleModel.find({ guildId }).lean().catch(logger.error)
+    if(!reactionRoles) return res.sendStatus(404)
 
-    const guildChannels = await guild.channels.fetch().catch(() => {})
+    const guildChannels = await guild.channels.fetch().catch(logger.error)
     if(!guildChannels) return res.sendStatus(404)
 
     const guildTextChannels = guildChannels.filter(guild => guild.type === 'GUILD_CATEGORY' || guild.type === 'GUILD_TEXT')
 
-    const guildRoles = await guild.roles.fetch().catch(() => {})
+    const guildRoles = await guild.roles.fetch().catch(logger.error)
     if(!guildRoles) return res.sendStatus(404)
 
     const guildManagedRoles = guildRoles.filter(role => role.name !== '@everyone' && !role.managed && role.editable)
@@ -107,19 +109,18 @@ router.put('/guilds/:guildId/reactionroles', async (req, res) => {
     if(!userId) return res.sendStatus(401)
     if(!guildId) return res.sendStatus(404)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(404)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
-    const channel = await guild.channels.fetch(channelId).catch(() => {})
+    const channel = await guild.channels.fetch(channelId).catch(logger.error)
     if(!channel || !channel.isText()) return res.sendStatus(404)
 
-    const message = messageType === 'lastMessage' ? channel.lastMessage : await channel.messages.fetch(messageId).catch(() => {})
+    const message = messageType === 'lastMessage' ? channel.lastMessage : await channel.messages.fetch(messageId).catch(logger.error)
     if(!message) return res.sendStatus(404)
 
-    await reactionRoles.create(guild.id, channel.id, message.id, reactions)
-    
+    await reactionRoles.create(guild.id, channel.id, message.id, reactions).catch(logger.error)
 
     return res.sendStatus(200)
 })
@@ -132,16 +133,17 @@ router.get('/guilds/:guildId/autoroles', async (req, res) => {
     if(!userId) return res.sendStatus(401)
     if(!guildId) return res.sendStatus(404)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(404)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
-    const guildRoles = await guild.roles.fetch().catch(() => {})
+    const guildRoles = await guild.roles.fetch().catch(logger.error)
     if(!guildRoles) return res.sendStatus(404)
     const guildManagedRoles = guildRoles.filter(role => role.name !== '@everyone' && !role.managed && role.editable)
 
-    const autoRoles = await AutoRoleModel.findOne({ guildId }).lean()
+    const autoRoles = await AutoRoleModel.findOne({ guildId }).lean().catch(logger.error)
+    if(!autoRoles) return res.sendStatus(404)
 
     
     return res.send({ autoRoles: autoRoles?.roles || [], guildRoles: guildManagedRoles })
@@ -156,14 +158,14 @@ router.put('/guilds/:guildId/autoroles', async (req, res) => {
     if(!userId) return res.sendStatus(401)
     if(!guildId) return res.sendStatus(404)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(404)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
     const newAutoRoles = await AutoRoleModel.findOneAndUpdate({ guildId }, {
         roles
-    }, { new: true, upsert: true }).lean()
+    }, { new: true, upsert: true, runValidators: true }).lean().catch(logger.error)
     if(!newAutoRoles) return res.sendStatus(500)
 
     return res.send({ roles: newAutoRoles.roles })
@@ -176,13 +178,14 @@ router.get('/guilds/:guildId/embeds', async (req, res) => {
     if(!userId) return res.sendStatus(401)
     if(!guildId) return res.sendStatus(404)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(404)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
-    const guildEmbeds = await EmbedModel.find({ guildId }).lean()
-    const guildChannels = await guild.channels.fetch().catch(() => {})
+    const guildEmbeds = await EmbedModel.find({ guildId }).lean().catch(logger.error)
+    if(!guildEmbeds) return res.sendStatus(404)
+    const guildChannels = await guild.channels.fetch().catch(logger.error)
     if(!guildChannels) return res.sendStatus(404)
 
     const guildTextChannels = guildChannels.filter(guild => guild.type === 'GUILD_CATEGORY' || guild.type === 'GUILD_TEXT')
@@ -200,28 +203,28 @@ router.put('/guilds/:guildId/embeds/save', async (req, res) => {
     if(!userId) return res.sendStatus(401)
     if(!guildId) return res.sendStatus(404)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(404)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
     const updated = _id ? await EmbedModel.findOneAndUpdate({ _id, guildId }, {
         name, messageId, channelId, messageContent, embed
-    }) : await EmbedModel.create({
+    }).catch(logger.error) : await EmbedModel.create({
         guildId,
         channelId,
         messageId,
         name,
         messageContent,
         embed
-    })
+    }).catch(logger.error)
 
     if(!updated) return res.sendStatus(500)
 
     if(updated.messageId) {
-        const channel = await guild.channels.fetch(channelId).catch(() => {})
+        const channel = await guild.channels.fetch(channelId).catch(logger.error)
         if(!channel || channel.type !== 'GUILD_TEXT') return res.sendStatus(404)
-        const message = await channel.messages.fetch(updated.messageId).catch(() => {})
+        const message = await channel.messages.fetch(updated.messageId).catch(logger.error)
         if(message) await Embeds.edit(message, messageContent, embed)
     }
 
@@ -238,19 +241,23 @@ router.put('/guilds/:guildId/embeds/send', async (req, res) => {
     if(!userId) return res.sendStatus(401)
     if(!guildId) return res.sendStatus(404)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(404)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
     const message = await Embeds.send(messageContent, embed, guildId, channelId)
-    if(!message || 'error' in message) return res.sendStatus(500)
+    if(!message) return res.sendStatus(500)
+    if(message instanceof Error) {
+        logger.error(message)
+        return res.sendStatus(500)
+    }
 
     const document = _id ? 
         await EmbedModel.findOneAndUpdate({ _id, guildId }, {
             name, messageId: message.id, channelId, messageContent, embed
-        })
-        : await EmbedModel.create({ guildId, name, messageId: message.id, channelId, messageContent, embed })
+        }).catch(logger.error)
+        : await EmbedModel.create({ guildId, name, messageId: message.id, channelId, messageContent, embed }).catch(logger.error)
 
     if(!document) return res.sendStatus(500)
 
@@ -264,9 +271,9 @@ router.delete('/guilds/:guildId/embeds/:embedId', async (req, res) => {
     if(!userId) return res.sendStatus(401)
     if(!guildId || !embedId) return res.sendStatus(404)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(404)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
     await EmbedModel.deleteOne({ _id: embedId })

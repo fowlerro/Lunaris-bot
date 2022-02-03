@@ -1,12 +1,14 @@
-import { AutocompleteInteraction, CommandInteraction, MessageEmbed, Permissions } from "discord.js";
+import { AutocompleteInteraction, CommandInteraction, Permissions } from "discord.js";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
 import templates from "../../../modules/Logs/templates";
+
 import set from "./set";
 import toggle, { autocompleteToggle } from "./toggle";
 import status from "./status";
+import { handleCommandError } from "../../errors";
 
-export default class MuteCommand extends BaseCommand {
+export default class LogsCommand extends BaseCommand {
     constructor() {
         super(
             'logs',
@@ -83,7 +85,7 @@ export default class MuteCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.guild || !interaction.guildId || !interaction.member) return
         if(!('id' in interaction.member)) return
-        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) return
+        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) return handleCommandError(interaction, 'command.executorWithoutPermission')
         const subcommand = interaction.options.getSubcommand(true)
     
         if(subcommand === 'status') return status(interaction)

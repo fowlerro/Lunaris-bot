@@ -4,11 +4,10 @@ import BaseModule from "../../utils/structures/BaseModule";
 import { GuildProfileModel } from "../../database/schemas/GuildProfile";
 import { ProfileModel } from "../../database/schemas/Profile";
 import { LevelConfigModel } from "../../database/schemas/LevelConfig";
+import type { LevelConfig, LevelReward, LevelUpMessage } from "types";
 
 import { handleTextXp } from "./text";
 import { handleVoiceXp } from "./voice";
-
-import { LevelConfig, LevelReward, LevelUpMessage } from "types";
 
 class LevelsModule extends BaseModule {
     constructor() {
@@ -21,7 +20,7 @@ class LevelsModule extends BaseModule {
         const json = await redis.levelConfigs.getEx(guildId, { EX: 60 * 5 })
         if(json) return JSON.parse(json) as LevelConfig
 
-        const document = await LevelConfigModel.findOne({ guildId }, '-_id, -__v').catch(() => {})
+        const document = await LevelConfigModel.findOne({ guildId }, '-_id, -__v').catch(logger.error)
         if(!document) return this.create(guildId)
 
         const config = document.toObject()
@@ -30,7 +29,7 @@ class LevelsModule extends BaseModule {
     }
 
     async create(guildId: Snowflake): Promise<LevelConfig | undefined> {
-        const document = await LevelConfigModel.create({ guildId }).catch(() => {})
+        const document = await LevelConfigModel.create({ guildId }).catch(logger.error)
         if(!document) return
         const config = document.toObject()
         delete config._id
@@ -44,7 +43,7 @@ class LevelsModule extends BaseModule {
             levelUpMessage: {
                 messageFormat: format
             }
-        }, { upsert: true, new: true, runValidators: true }).catch(() => {})
+        }, { upsert: true, new: true, runValidators: true }).catch(logger.error)
         if(!document) return
 
         const newConfig = document.toObject()
@@ -60,7 +59,7 @@ class LevelsModule extends BaseModule {
             levelUpMessage: {
                 mode, channelId
             }
-        }, { upsert: true, new: true, runValidators: true }).catch(() => {})
+        }, { upsert: true, new: true, runValidators: true }).catch(logger.error)
         if(!document) return
         
         const newConfig = document.toObject()
@@ -74,7 +73,7 @@ class LevelsModule extends BaseModule {
     async setMultiplier(guildId: Snowflake, multiplier: number): Promise<LevelConfig | undefined> {
         const document = await LevelConfigModel.findOneAndUpdate({ guildId }, {
             multiplier
-        }, { upsert: true, new: true, runValidators: true }).catch(() => {})
+        }, { upsert: true, new: true, runValidators: true }).catch(logger.error)
         if(!document) return
 
         const newConfig = document.toObject()
@@ -91,7 +90,7 @@ class LevelsModule extends BaseModule {
         if(config.rewards[scope].length >= 20) return { error: 'rewardsLimit' }
         const document = await LevelConfigModel.findOneAndUpdate({ guildId }, {
             $push: { [`rewards.${scope}`]: reward }
-        }, { upsert: true, new: true }).catch((e) => {console.log(e)})
+        }, { upsert: true, new: true, runValidators: true }).catch(logger.error)
         if(!document) return
 
         const newConfig = document.toObject()
@@ -105,7 +104,7 @@ class LevelsModule extends BaseModule {
     async removeReward(guildId: Snowflake, rewardId: string, scope: 'text' | 'voice') {
         const document = await LevelConfigModel.findOneAndUpdate({ guildId, [`rewards.${scope}`]: { $elemMatch: { _id: rewardId } } }, {
             $pull: { [`rewards.${scope}`]: { _id: rewardId } }
-        }, { new: true }).catch(() => {})
+        }, { new: true, upsert: true, runValidators: true }).catch(logger.error)
         if(!document) return
         
         const newConfig = document.toObject()
@@ -137,11 +136,11 @@ class LevelsModule extends BaseModule {
         await GuildProfileModel.updateMany({ $or: [ { 'statistics.text.dailyXp': { $gte: 1 } }, { 'statistics.voice.dailyXp': { $gte: 1 } } ] }, {
             'statistics.text.dailyXp': 0,
             'statistics.voice.dailyXp': 0,
-        });
+        }).catch(logger.error)
         await ProfileModel.updateMany({ $or: [ { 'statistics.text.dailyXp': { $gte: 1 } }, { 'statistics.voice.dailyXp': { $gte: 1 } } ] }, {
             'statistics.text.dailyXp': 0,
             'statistics.voice.dailyXp': 0,
-        });
+        }).catch(logger.error)
         await redis.profiles.flushAll()
         await redis.guildProfiles.flushAll()
     }

@@ -1,4 +1,5 @@
 import { AutocompleteInteraction, CommandInteraction, ContextMenuInteraction } from "discord.js";
+
 import BaseModule from "../../utils/structures/BaseModule";
 
 class CommandsModule extends BaseModule {
@@ -7,7 +8,7 @@ class CommandsModule extends BaseModule {
     }
 
     async run() {
-      	console.log(this.getName())
+      	logger.info(this.getName())
     }
 
     async handle(interaction: CommandInteraction | ContextMenuInteraction) {
@@ -15,7 +16,7 @@ class CommandsModule extends BaseModule {
         const command = client.commands.get(commandName)
         if(!command) return
 
-        command.run(interaction)
+        command.run(interaction).catch(logger.error)
     }
 
     async autocomplete(interaction: AutocompleteInteraction) {
@@ -24,7 +25,7 @@ class CommandsModule extends BaseModule {
         const command = client.commands.get(commandName)
         if(!command) return
 
-        command.autocomplete && command.autocomplete(interaction)
+        command.autocomplete && command.autocomplete(interaction).catch(logger.error)
     }
 }
 

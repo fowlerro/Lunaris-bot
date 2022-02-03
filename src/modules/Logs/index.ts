@@ -1,9 +1,12 @@
-import { ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed, MessageEmbedOptions, Snowflake, TextChannel } from "discord.js";
-import { Language } from "types";
+import { ButtonInteraction, MessageActionRow, MessageEmbed, MessageEmbedOptions, Snowflake, TextChannel } from "discord.js";
+
 import { GuildLogs, GuildLogsModel } from "../../database/schemas/GuildLogs";
-import { LocalePhrase } from "../../types/locales";
 import TextFormatter from "../../utils/Formatters/Formatter";
 import BaseModule from "../../utils/structures/BaseModule";
+import { getLocale } from "../../utils/utils";
+import type { LocalePhrase } from "../../types/locales";
+import type { Language } from "types";
+
 import Embeds from "../Embeds";
 import actions from "./actions";
 import templates from "./templates";
@@ -21,7 +24,7 @@ class LogsModule extends BaseModule {
         const json = await redis.logConfigs.getEx(guildId, { EX: 60 * 10 })
         if(json) return JSON.parse(json) as GuildLogs
 
-        const document = await GuildLogsModel.findOne({ guildId }).select('-_id -__v')
+        const document = await GuildLogsModel.findOne({ guildId }).select('-_id -__v').catch(logger.error)
         if(!document) return this.create(guildId)
 
         const config = document.toObject()
@@ -36,7 +39,7 @@ class LogsModule extends BaseModule {
             $set: {
                 [`${category}.channelId`]: channelId
             }
-        }, { new: true, upsert: true, runValidators: true }).select('-_id -__v').catch(console.error)
+        }, { new: true, upsert: true, runValidators: true }).select('-_id -__v').catch(logger.error)
         if(!document) return null
 
         const config = document.toObject()
@@ -52,7 +55,7 @@ class LogsModule extends BaseModule {
             $set: {
                 [`${category}.logs.${log}`]: value
             }
-        }, { new: true, upsert: true, runValidators: true }).select('-_id -__v').catch(console.error)
+        }, { new: true, upsert: true, runValidators: true }).select('-_id -__v').catch(logger.error)
         if(!document) return null
 
         const config = document.toObject()
@@ -61,7 +64,7 @@ class LogsModule extends BaseModule {
     }
 
     async create(guildId: Snowflake): Promise<GuildLogs | null> {
-        const document = await GuildLogsModel.create({ guildId }).catch(console.error)
+        const document = await GuildLogsModel.create({ guildId }).catch(logger.error)
         if(!document) return null
 
         const config = document.toObject()
@@ -77,11 +80,11 @@ class LogsModule extends BaseModule {
         const channelId = config?.[category]?.channelId
         const isLogEnabled = config?.[category]?.logs?.[type] as boolean
         if(!channelId || !isLogEnabled) return
-        const guild = await client.guilds.fetch(guildId).catch(console.error)
+        const guild = await client.guilds.fetch(guildId).catch(logger.error)
         if(!guild) return
-        const channel = await guild.channels.fetch(channelId).catch(console.error) as TextChannel | null
+        const channel = await guild.channels.fetch(channelId).catch(logger.error) as TextChannel | void
         if(!channel) return
-        const language = guild.preferredLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(guild.preferredLocale)
 
         const embed = this.formatTemplate(category, type, language, vars)
 
@@ -92,7 +95,7 @@ class LogsModule extends BaseModule {
         channel.send({
             embeds: [checkedEmbed.pages[0]],
             components: actionButtons ? [actionButtons] : undefined
-        })
+        }).catch(logger.error)
     }
 
     formatTemplate<T extends keyof Templates>(category: T, type: keyof Templates[T], language: Language, vars: any) {

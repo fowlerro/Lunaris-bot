@@ -46,5 +46,5 @@ export default async () => {
 
     app.use('/api', routes);
 
-    app.listen(PORT, () => console.log(`Running on Port ${PORT}`));
+    app.listen(PORT, () => logger.info(`Running on Port ${PORT}`));
 }

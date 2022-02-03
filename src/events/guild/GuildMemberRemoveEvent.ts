@@ -1,10 +1,10 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-guildMemberRemove
 import { GuildMember } from "discord.js";
-import Logs from "../../modules/Logs";
-import WelcomeMessage from "../../modules/WelcomeMessage";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { sleep } from "../../utils/utils";
+import Logs from "../../modules/Logs";
+import WelcomeMessage from "../../modules/WelcomeMessage";
+import { getAuditLog, getLocale, sleep } from "../../utils/utils";
 
 export default class GuildMemberRemoveEvent extends BaseEvent {
 	constructor() {
@@ -15,12 +15,12 @@ export default class GuildMemberRemoveEvent extends BaseEvent {
 		if(!client.isOnline) return
 		
 		WelcomeMessage.sendMessage(member, 'leave')
-		logs(member)	
+		serverLogs(member)	
 	}
 }
 
-async function logs(member: GuildMember) {
-    const language = member.guild.preferredLocale === 'pl' ? 'pl' : 'en'
+async function serverLogs(member: GuildMember) {
+    const language = getLocale(member.guild.preferredLocale)
 	await sleep(500)
 	const { kicked, kickExecutor, kickReason } = await isKicked(member)
 	if(kicked && kickExecutor) return Logs.log('members', 'kick', member.guild.id, { member, customs: { moderatorMention: `<@${kickExecutor.id}>`, moderatorId: kickExecutor.id, reason: kickReason || t('general.none', language) } })
@@ -33,25 +33,21 @@ async function logs(member: GuildMember) {
 }
 
 async function isKicked(member: GuildMember) {
-	const auditLogs = await member.guild.fetchAuditLogs({ type: 'MEMBER_KICK', limit: 5 }).catch(console.error)
-	if(!auditLogs) return { kicked: false }
-	const kickLog = auditLogs.entries.find(log => log.target?.id === member.id && Date.now() - log.createdTimestamp < 5000)
-	if(!kickLog) return { kicked: false }
+    const log = await getAuditLog(member.guild, 'MEMBER_KICK', (log) => (log.target?.id === member.id), true)
+    if(!log || !log.executor) return { kicked: false }
 
-	const { executor, reason } = kickLog
-	if(member.joinedAt && (kickLog.createdAt < member.joinedAt)) return { kicked: false }
+	const { executor, reason } = log
+	if(member.joinedAt && (log.createdAt < member.joinedAt)) return { kicked: false }
 
 	return { kicked: true, kickExecutor: executor, kickReason: reason }
 }
 
 async function isBanned(member: GuildMember) {
-	const auditLogs = await member.guild.fetchAuditLogs({ type: 'MEMBER_BAN_ADD', limit: 5 }).catch(console.error)
-	if(!auditLogs) return { banned: false }
-	const banLog = auditLogs.entries.find(log => log.target?.id === member.id && Date.now() - log.createdTimestamp < 5000)
-	if(!banLog) return { banned: false }
+    const log = await getAuditLog(member.guild, 'MEMBER_BAN_ADD', (log) => (log.target?.id === member.id))
+    if(!log || !log.executor) return { banned: false }
 
-	const { executor, reason } = banLog
-	if(member.joinedAt && (banLog.createdAt < member.joinedAt)) return { banned: false }
+	const { executor, reason } = log
+	if(member.joinedAt && (log.createdAt < member.joinedAt)) return { banned: false }
 
 	return { banned: true, banExecutor: executor, banReason: reason }
 }

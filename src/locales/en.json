@@ -81,12 +81,8 @@
     "command": {
         "globalStatus": "Command is temporary turned off",
         "languageListMessage": "Supported languages",
-        "languageListFooter": "Type %VAR% language <language> to change it",
-        "wrongLanguage": "This language is not supported, type '%VAR%language' to see supported languages list",
-        "prefixChange": "Prefix has been changed to %VAR%",
-        "languageChange": "Language has been changed to %VAR%",
-        "pingInfo": "Slash commands are still in progress, they will be available soon!",
-        "wrongId": "Wrong id",
+        "wrongId": "❌ Wrong id",
+        "executorWithoutPermission": "❌ You don't have permissions to do that!",
         "help": {
             "title": "Help",
             "cmdTitle": "Help for {{commandName}}",
@@ -106,42 +102,40 @@
             "avatar": "Avatar URL"
         },
         "purge": {
-            "wrongChannel": "Please provide a text channel",
+            "wrongChannel": "❌ Please provide a text channel",
             "success": {
-                "default": "Successfully purged {{deletedCount}} messages",
-                "user": "Successfully purged {{deletedCount}} <@{{userId}}>'s messages",
-                "channel": "Successfully purged {{deletedCount}} messages in <#{{channelId}}>",
-                "user-channel": "Successfully purged {{deletedCount}} <@{{userId}}>'s messages in <#{{channelId}}>"
+                "default": "✅ Successfully purged {{deletedCount}} messages",
+                "user": "✅ Successfully purged {{deletedCount}} <@{{userId}}>'s messages",
+                "channel": "✅ Successfully purged {{deletedCount}} messages in <#{{channelId}}>",
+                "user-channel": "✅ Successfully purged {{deletedCount}} <@{{userId}}>'s messages in <#{{channelId}}>"
             }
         },
         "emoji": {
-            "add": "The emoji **{{emojiName}}** has been successfully added",
-            "delete": "The emoji **{{emojiName}}** has been successfully deleted",
-            "error": "Something went wrong :/ Check the URL and try again",
-            "notDeletable": "The emoji cannot be deleted"
+            "add": "✅ The emoji **{{emojiName}}** has been successfully added",
+            "delete": "✅ The emoji **{{emojiName}}** has been successfully deleted",
+            "error": "❌ Something went wrong :/ Check the URL and try again",
+            "notDeletable": "❌ The emoji cannot be deleted"
         },
         "warn": {
-            "add": "{{{member}}} has been warned by {{{executor}}} {{reason}}",
-            "remove": "{{{executor}}} removed warn from user {{{member}}}",
-            "removeMemberAll": "{{{executor}}} removed all {{{member}}}'s warns",
-            "removeAll": "{{{executor}}} removed all server warns",
+            "add": "✅ {{{member}}} has been warned by {{{executor}}}",
+            "remove": "✅ {{{executor}}} removed warn from user {{{member}}}",
+            "removeMemberAll": "✅ {{{executor}}} removed all {{{member}}}'s warns",
+            "removeAll": "✅ {{{executor}}} removed all server warns",
             "list": "{{userTag}}'s warn list",
             "guildList": "Warns:",
-            "error": "Something went wrong! Warn couldn't be removed",
-            "notFound": "Warn not found!",
-            "targetNotFound": "Member not found!",
-            "targetWithoutWarns": "{{{member}}} doesn't have any warns!",
+            "error": "❌ Something went wrong! Warn couldn't be removed",
+            "notFound": "❌ Warn not found!",
+            "targetNotFound": "❌ Member not found!",
+            "targetWithoutWarns": "❌ {{{member}}} doesn't have any warns!",
             "optionAll": "Delete all warns from this member!"
         },
         "mute": {
             "addMute": "✅ {{{member}}} has been timed out by {{{executor}}}",
             "removeMute":"✅ {{{executor}}} removed timeout from {{{member}}}",
-            "executorWithoutPermission": "❌ You don't have permissions to do that!",
             "notModeratable": "❌ You can't moderate this member!",
             "notTimedOut": "❌ Member is not timed out!",
             "alreadyTimedOut": "❌ Member is already timed out!",
-            "incorectTime": "❌ Incorect time!",
-            "error":"❌ Something went wrong :/ Try again!"
+            "incorectTime": "❌ Incorect time!"
         },
         "ban": {
             "add": "✅ {{{member}}} has been banned by {{{executor}}}",
@@ -150,7 +144,6 @@
             "list": "🗒️ Bans",
             "notBanned": "❌ Member is not banned",
             "notFound": "❌ User not found",
-            "noPermissions": "❌ You don't have permissions to do that!",
             "notManageable": "❌ I cannot manage this member!",
             "missingPermissions": "❌ I don't have permissions to ban member!"
         },
@@ -162,7 +155,6 @@
             "delete": "Welcome Message has been deleted!",
             "set": "Channel for Welcome Messages has been set",
             "disabled": "Welcome Message action has been disabled",
-            "error": "Something went wrong :/",
 
             "status": {
                 "alreadyEnabled": "Module is already enabled!",
@@ -170,7 +162,6 @@
 
                 "enabled": "Module has been successfully enabled!",
                 "disabled": "Module has been successfully disabled!"
-
             },
 
             "info": {
@@ -190,7 +181,6 @@
         },
         "level": {
             "levelUpMessage": {
-                "error": "❌ Something went wrong :/ Try again!",
                 "formatTooLong": "❌ Format message can be up to 256 characters!",
 
                 "set": "✅ Custom Level Up message has been set successfully!",
@@ -239,7 +229,6 @@
             "alreadyDisabled": "Log is already disabled",
             "wrongCategory": "❌ Wrong logs category! Select correct from command option!",
             "invalidLog": "❌ Invalid log! Select correct from command option",
-            "error": "❌ Something went wrong :/ Try again!",
             "categories": {
                 "messages": "Messages",
                 "members": "Members",

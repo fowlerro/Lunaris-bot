@@ -1,6 +1,7 @@
 import { Snowflake } from "discord.js";
 import { Document, model, Schema } from "mongoose";
-import { ProfileStatistics } from "./Profile";
+
+import type { ProfileStatistics } from "./Profile";
 
 export interface GuildProfileWarn {
     _id: string

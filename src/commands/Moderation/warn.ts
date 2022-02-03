@@ -4,7 +4,8 @@ import BaseCommand from "../../utils/structures/BaseCommand";
 import Embeds from "../../modules/Embeds";
 import Mod from "../../modules/Mod";
 import { GuildProfileWarn } from "../../database/schemas/GuildProfile";
-import { palette } from "../../utils/utils";
+import { getLocale, palette } from "../../utils/utils";
+import { handleCommandError } from "../errors";
 
 export default class WarnCommand extends BaseCommand {
     constructor() {
@@ -73,7 +74,8 @@ export default class WarnCommand extends BaseCommand {
                         {
                             name: 'page',
                             description: 'The page, which will be shown, in situation list of warns will be paginated',
-                            type: 'INTEGER'
+                            type: 'INTEGER',
+                            minValue: 1
                         }
                     ]
                 }
@@ -84,10 +86,10 @@ export default class WarnCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId || !interaction.member) return
         if(!('id' in interaction.member)) return
-        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return
+        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_ROLES)) return handleCommandError(interaction, 'command.executorWithoutPermission')
 
         const subcommand = interaction.options.getSubcommand(true)
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         if(subcommand === 'give') {
             const member = interaction.options.getMember('member', true)
@@ -95,15 +97,16 @@ export default class WarnCommand extends BaseCommand {
             const reason = interaction.options.getString('reason', true)
 
             const result = await Mod.warn.give(interaction.guildId, member.id, interaction.user.id, reason)
-            if(!result) return;
+            if(!result) return handleCommandError(interaction, 'general.error')
 
             const embed = new MessageEmbed()
                 .setColor(palette.error)
-                .setDescription(t('command.warn.add', language, { member: `<@${member.id}>`, executor: `<@${interaction.user.id}>`, reason: reason ? `| ${reason}` : "" }));
+                .setDescription(t('command.warn.add', language, { member: `<@${member.id}>`, executor: `<@${interaction.user.id}>` }))
+                .addField(t('general.reason', language), Formatters.codeBlock(reason || t('general.none', language)))
             
             return interaction.reply({
                 embeds: [embed]
-            })
+            }).catch(logger.error)
         }
 
         if(subcommand === 'remove') {
@@ -112,27 +115,28 @@ export default class WarnCommand extends BaseCommand {
             const warnId = interaction.options.getString('warn', true)
             
             const warn = await Mod.warn.remove(interaction.guildId, warnId, interaction.user.id, member.id)
+            if(warn.error === 'warnNotFound') return handleCommandError(interaction, 'command.warn.notFound')
+            if(warn.error === 'targetNotFound') return handleCommandError(interaction, 'command.warn.targetNotFound')
+            if(warn.error === 'targetWithoutWarns') return handleCommandError(interaction, 'command.warn.targetWithoutWarns')
+            if(warn.error) return handleCommandError(interaction, 'general.error')
             
-            const description = warn.error === 'warnNotFound' ?
-                t('command.warn.notFound', language)
-                : warn.error === 'targetNotFound' ? t('command.warn.targetNotFound', language)
-                : warn.error === 'targetWithoutWarns' ? t('command.warn.targetWithoutWarns', language)
-                : warn.action === 'all' ? t('command.warn.removeAll', language,  { executor: Formatters.memberNicknameMention(interaction.user.id) })
+            const description = warn.action === 'all' ? 
+                t('command.warn.removeAll', language,  { executor: Formatters.memberNicknameMention(interaction.user.id) })
                 : warn.action === 'targetAll' ? t('command.warn.removeMemberAll', language, { executor: Formatters.memberNicknameMention(interaction.user.id), member: Formatters.memberNicknameMention(member.id) })
                 : t('command.warn.remove', language, { executor: Formatters.memberNicknameMention(interaction.user.id), member: Formatters.memberNicknameMention(member.id) })
 
             const embed = new MessageEmbed()
-                .setColor(warn.error ? palette.error : palette.success)
+                .setColor(palette.success)
                 .setDescription(description)
             
             return interaction.reply({
-                embeds: [embed],
-                ephemeral: Boolean(warn.error)
-            })
+                embeds: [embed]
+            }).catch(logger.error)
         }
 
         if(subcommand === 'remove-all') {
-            await Mod.warn.remove(interaction.guildId, 'all', interaction.user.id)
+            const res = await Mod.warn.remove(interaction.guildId, 'all', interaction.user.id)
+            if(!res.action) return handleCommandError(interaction, 'general.error')
 
             const embed = new MessageEmbed()
                 .setColor(palette.success)
@@ -140,30 +144,31 @@ export default class WarnCommand extends BaseCommand {
 
             return interaction.reply({
                 embeds: [embed]
-            })
+            }).catch(logger.error)
         }
 
         if(subcommand === 'list') {
             const user = interaction.options.getUser('member')
-            const page = interaction.options.getInteger('page') || 1 // TODO If < 0
+            const page = interaction.options.getInteger('page') || 1
 
             const result = await Mod.warn.list(interaction.guildId, user?.id || undefined)
+            if(result.error) return handleCommandError(interaction, 'general.error')
             let embedFields: any[] = []
 
             if(result.warns.length) {
                 embedFields = (await Promise.all(result.warns.map(async profile => {
     
                     if('warns' in profile) return Promise.all(profile.warns.map(async warn => {
-                        const date = new Intl.DateTimeFormat(language, { dateStyle: 'short', timeStyle: 'short' }).format(warn.date);
+                        // const date = new Intl.DateTimeFormat(language, { dateStyle: 'short', timeStyle: 'short' }).format(warn.date);
                         
                         let executor = warn.executorId
                         if(!isNaN(+executor)) {
-                            const executorUser = await client.users.fetch(executor).catch(() => {})
+                            const executorUser = await client.users.fetch(executor).catch(logger.error)
                             if(!executorUser) return
                             executor = executorUser.tag
                         }
 
-                        const user = await client.users.fetch(profile.userId).catch(() => {})
+                        const user = await client.users.fetch(profile.userId).catch(logger.error)
                         if(!user) return
                         const userNick = user.tag
     
@@ -171,16 +176,16 @@ export default class WarnCommand extends BaseCommand {
                             name: `Nick: ${userNick}`,
                             value: `**Mod**: ${executor}
                                     **${t('general.reason', language)}**: ${warn.reason}
-                                    **${t('general.date', language)}**: ${date}`,
+                                    **${t('general.date', language)}**: ${Formatters.time(new Date(warn.date))}`,
                             inline: true
                         }
                     }));
 
-                    const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(profile.date);
+                    // const date = new Intl.DateTimeFormat(language, {dateStyle: 'short', timeStyle: 'short'}).format(profile.date);
 
                     let executor = profile.executorId
                         if(!isNaN(+executor)) {
-                            const executorUser = await client.users.fetch(executor).catch(() => {})
+                            const executorUser = await client.users.fetch(executor).catch(logger.error)
                             if(!executorUser) return
                             executor = executorUser.tag
                         }
@@ -188,7 +193,7 @@ export default class WarnCommand extends BaseCommand {
                     return {
                         name: `Mod: ${executor}`,
                         value: `**${t('general.reason', language)}**: ${profile.reason}
-                                **${t('general.date', language)}**: ${date}`,
+                                **${t('general.date', language)}**: ${Formatters.time(new Date(profile.date))}`,
                         inline: true
                     }
                 }))).flat();
@@ -197,19 +202,15 @@ export default class WarnCommand extends BaseCommand {
             const embedAuthor = user ? t('command.warn.list', language, { userTag: user.tag }) : t('command.warn.guildList', language);
             
             const embed = new MessageEmbed()
-                .setColor(result.error ? palette.error : palette.info)
+                .setColor(palette.info)
                 .setAuthor({ name: embedAuthor, iconURL: interaction.guild?.iconURL() || undefined })
                 .setTimestamp();
 
-            result.error && embed.setDescription(result.error)
-            embedFields.length && embed.addFields(embedFields)
+            if(!embedFields.length) embed.setDescription(t('general.none', language))
+            if(embedFields.length) embed.addFields(embedFields)
             
             const embeds = Embeds.checkLimits(embed, true, 9)
-            if(embeds.error)
-                return interaction.reply({
-                    embeds: [embed],
-                    ephemeral: true
-                })
+            if(embeds.error) return handleCommandError(interaction, 'general.error')
 
             Embeds.pageInteractionEmbeds(null, embeds.pages, interaction, page, true)
         }
@@ -218,9 +219,9 @@ export default class WarnCommand extends BaseCommand {
     async autocomplete(interaction: AutocompleteInteraction) {
         if(!interaction.guildId || !interaction.guild) return
         const memberId = interaction.options.get('member', true).value as string
-        const member = await interaction.guild.members.fetch(memberId).catch(() => {})
+        const member = await interaction.guild.members.fetch(memberId).catch(logger.error)
 
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         const input = interaction.options.getString('warn', true)
         if(!member || !('id' in member)) return
@@ -235,6 +236,6 @@ export default class WarnCommand extends BaseCommand {
 
         options.unshift({ name: t('command.warn.optionAll', language), value: 'targetAll' })
 
-        return interaction.respond(options.splice(0, 25))
+        return interaction.respond(options.splice(0, 25)).catch(logger.error)
     }
 }

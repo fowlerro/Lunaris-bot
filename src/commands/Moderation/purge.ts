@@ -1,7 +1,8 @@
 import { CommandInteraction, MessageEmbed, Permissions, TextChannel } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
-import { palette } from "../../utils/utils";
+import { getLocale, palette } from "../../utils/utils";
+import { handleCommandError } from "../errors";
 
 export default class PurgeCommand extends BaseCommand {
     constructor() {
@@ -39,17 +40,18 @@ export default class PurgeCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.member) return
         if(!('id' in interaction.member)) return
-        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return
-        let count = interaction.options.getInteger('count')!
+        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return handleCommandError(interaction, 'command.executorWithoutPermission')
+        let count = interaction.options.getInteger('count', true)
         const user = interaction.options.getUser('user')
         const channel = interaction.options.getChannel('channel') as TextChannel || interaction.channel! as TextChannel
 
         if(count > 100) count = 100
         if(count < 1) count = 1
 
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
-        let fetched = await channel.messages.fetch({ limit: user ? 100 : count }, { cache: false });
+        let fetched = await channel.messages.fetch({ limit: user ? 100 : count }, { cache: false }).catch(logger.error)
+        if(!fetched) return handleCommandError(interaction, 'general.error')
         if(user) {
             let filterCount = 0;
             fetched = fetched.filter(message => message.author.id === user.id).filter(() => {
@@ -57,16 +59,17 @@ export default class PurgeCommand extends BaseCommand {
                 return filterCount <= count;
             })
         }
-        const deletedMessages = await channel.bulkDelete(fetched, true); // TODO Returning inproper messages collection
+        const deletedMessages = await channel.bulkDelete(fetched, true).catch(logger.error) // TODO Returning inproper messages collection
+        if(!deletedMessages) return handleCommandError(interaction, 'general.error')
 
         const descriptionType = user && interaction.options.getChannel('channel') ? 'user-channel' : user ? 'user' : interaction.options.getChannel('channel') ? 'channel' : 'default'
 
         const embed = new MessageEmbed()
             .setColor(palette.success)
-            .setDescription(`✅ ${t(`command.purge.success.${descriptionType}`, language, { deletedCount: deletedMessages.size.toString() || "1", userId: user?.id || "", channelId: channel.id })}`)
+            .setDescription(t(`command.purge.success.${descriptionType}`, language, { deletedCount: deletedMessages.size.toString() || "1", userId: user?.id || "", channelId: channel.id }))
 
-        interaction.reply({
+        return interaction.reply({
             embeds: [embed]
-        })
+        }).catch(logger.error)
     }
 }

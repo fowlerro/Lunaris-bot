@@ -4,7 +4,8 @@ import BaseCommand from "../../../utils/structures/BaseCommand";
 import Profiles from "../../../modules/Profiles";
 import { GuildProfileDocument, GuildProfileModel } from "../../../database/schemas/GuildProfile";
 import { ProfileDocument, ProfileModel } from "../../../database/schemas/Profile";
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
+import { handleCommandError } from '../../errors'
 
 type SortType = 'xp' | 'level' | 'coins';
 
@@ -14,7 +15,7 @@ type SortedProfiles = {
     coins?: ProfileDocument[],
 }
 
-export default class LanguageCommand extends BaseCommand {
+export default class RankingCommand extends BaseCommand {
     constructor() {
         super(
             'ranking',
@@ -56,19 +57,20 @@ export default class LanguageCommand extends BaseCommand {
         if(!interaction.guildId) return
         await interaction.deferReply()
         
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         const sortType = interaction.options.getString('sortby') as SortType || 'xp'
         const isGlobal = interaction.options.getBoolean('global') || false
 
         const executorProfile = isGlobal || sortType === 'coins' ? await Profiles.get(interaction.user.id) as ProfileDocument : await Profiles.get(interaction.user.id, interaction.guildId) as GuildProfileDocument
         const result = await fetchData(sortType, isGlobal, interaction.guildId)
+        if(!result) return handleCommandError(interaction, 'general.error')
         const formattedData = await formatList(sortType, isGlobal, executorProfile, result)
 
         const embed = new MessageEmbed()
-        .setColor(palette.primary)
-        .setFooter({ text: t('command.ranking.lastUpdate', language) })
-        .setTimestamp(Profiles.lastSave);
+            .setColor(palette.primary)
+            .setFooter({ text: t('command.ranking.lastUpdate', language) })
+            .setTimestamp(Profiles.lastSave);
 
         sortType === 'coins' ? embed.addField(t('command.ranking.coins', language), formattedData.coins.join('\n'), true) :
             embed.addField(t('command.ranking.text', language), formattedData.text.join('\n'), true)
@@ -76,24 +78,26 @@ export default class LanguageCommand extends BaseCommand {
 
         interaction.editReply({
             embeds: [embed]
-        })
+        }).catch(logger.error)
     }
 }
 
-async function fetchData(sortType: string, isGlobal: boolean, guildId: Snowflake): Promise<SortedProfiles> {
+async function fetchData(sortType: string, isGlobal: boolean, guildId: Snowflake): Promise<SortedProfiles | null> {
     if(sortType === 'coins') {
-        const results = isGlobal ? await ProfileModel.find() :
+        const results = isGlobal ? await ProfileModel.find().catch(logger.error) :
             await GuildProfileModel.aggregate([
                 { $match: { guildId } },
                 { $lookup: { from: 'profiles', localField: 'userId', foreignField: 'userId', as: 'id' } },
                 { $unwind: '$id' },
                 { $replaceRoot: { newRoot: '$id' } }
-            ]) as ProfileDocument[]
-        
+            ]).catch(logger.error) as ProfileDocument[] | void
+        if(!results) return null
+
         return { coins: results.sort((a, b) => b.coins - a.coins) }
     }
 
-    const results = isGlobal ? await ProfileModel.find() as ProfileDocument[] : await GuildProfileModel.find({ guildId }) as GuildProfileDocument[]
+    const results = isGlobal ? await ProfileModel.find().catch(logger.error) as ProfileDocument[] | void : await GuildProfileModel.find({ guildId }).catch(logger.error) as GuildProfileDocument[] | void
+    if(!results) return null
     const sortBy = sortType === 'xp' ? 'totalXp' : 'level'
 
     return {
@@ -143,7 +147,7 @@ function formatDisplayText(sortType: string, isExecutor: boolean, position: numb
 async function formatUsername(userId: Snowflake, isGlobal: boolean) {
     let userString: string = Formatters.userMention(userId);
     if(isGlobal) {
-        const fetchedUser = await client.users.fetch(userId).catch((err) => console.log(err))
+        const fetchedUser = await client.users.fetch(userId).catch(logger.error)
         if(fetchedUser) userString = fetchedUser.tag
     }
     return userString

@@ -1,9 +1,10 @@
 
-import { CommandInteraction, Message, MessageEmbed } from "discord.js";
+import { CommandInteraction, MessageEmbed } from "discord.js";
+
+import BaseCommand from "../../utils/structures/BaseCommand";
 import Embeds from "../../modules/Embeds";
 import { IFormatter, supportedFormatters } from "../../utils/Formatters/Formatter";
-import BaseCommand from "../../utils/structures/BaseCommand";
-import { capitalize, palette } from "../../utils/utils";
+import { capitalize, getLocale, palette } from "../../utils/utils";
 
 export default class FormatterCommand extends BaseCommand {
     constructor() {
@@ -20,7 +21,7 @@ export default class FormatterCommand extends BaseCommand {
 
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId) return
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         const formatters = supportedFormatters.reduce((prev, curr, index) => {
             if(!prev[curr.category]) prev[curr.category] = []

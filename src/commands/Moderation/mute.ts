@@ -3,7 +3,8 @@ import ms from "ms";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 import Mod from "../../modules/Mod";
-import { palette } from "../../utils/utils";
+import { getLocale, palette } from "../../utils/utils";
+import { handleCommandError } from "../errors";
 
 const regex = /[0-9]+[d|h|m|s]/g
 
@@ -67,44 +68,38 @@ export default class MuteCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.guild || !interaction.guildId || !interaction.member) return
         if(!('id' in interaction.member)) return
-        if(!interaction.member.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS)) return noPermissions(interaction)
+        if(!interaction.member.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS)) return handleCommandError(interaction, 'command.executorWithoutPermission')
 
         const subcommand = interaction.options.getSubcommand(true) as 'give' | 'remove'
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         if(subcommand === 'give') {
             const member = interaction.options.getMember('member', true)
-            if(!('id' in member)) return 
+            if(!('id' in member)) return handleCommandError(interaction, 'general.error')
             const userTime = interaction.options.getString('time')
             const reason = interaction.options.getString('reason') || undefined
             let time = 0
             if(userTime && userTime.match(regex))
                 for(const entry of userTime.match(regex)!) time += ms(entry)
 
-            if(!time) return incorectTime(interaction)
+            if(!time) return handleCommandError(interaction, 'command.mute.incorectTime')
             const result = await Mod.mute.add(member, interaction.member, time, reason);
+            if(result?.error === 'executorWithoutPermissions') return handleCommandError(interaction, 'command.executorWithoutPermission')
+            if(result?.error === 'notModeratable') return handleCommandError(interaction, 'command.mute.notModeratable')
+            if(result?.error === 'alreadyTimedOut') return handleCommandError(interaction, 'command.mute.alreadyTimedOut')
+            if(result?.error) return handleCommandError(interaction, 'general.error')
 
-            const description = result?.error === 'executorWithoutPermission' ? 
-                t('command.mute.executorWithoutPermission', language)
-                : result?.error === 'notModeratable' ? t('command.mute.notModeratable', language, { member: `<@${member.id}>` })
-                : result?.error === 'alreadyTimedOut' ? t('command.mute.alreadyTimedOut', language)
-                : result?.error ? t('command.mute.error', language)
-                : t('command.mute.addMute', language, { member: `<@${member.id}>`, executor: `<@${interaction.user.id}>`, reason: reason ? `| ${reason}` : "" })
+            const description = t('command.mute.addMute', language, { member: `<@${member.id}>`, executor: `<@${interaction.user.id}>` })
 
             const embed = new MessageEmbed()
-                .setColor(result?.error ? palette.error : palette.success)
+                .setColor(palette.success)
                 .setDescription(description)
-
-            if(!result?.error) {
-                embed.addField(t('general.until', language), `${Formatters.time(Math.floor(new Date().getTime() / 1000) + Math.floor(time / 1000))}\n${Formatters.time(Math.floor(new Date().getTime() / 1000) + Math.floor(time / 1000), 'R')}`)
-                embed.addField(t('general.reason', language), Formatters.codeBlock(reason || t('general.none', language)))
-            }
-            
+                .addField(t('general.until', language), `${Formatters.time(Math.floor(new Date().getTime() / 1000) + Math.floor(time / 1000))}\n${Formatters.time(Math.floor(new Date().getTime() / 1000) + Math.floor(time / 1000), 'R')}`)
+                .addField(t('general.reason', language), Formatters.codeBlock(reason || t('general.none', language)))
                 
             return interaction.reply({
-                embeds: [embed],
-                ephemeral: Boolean(result?.error)
-            })
+                embeds: [embed]
+            }).catch(logger.error)
         }
 
         if(subcommand === 'remove') {
@@ -112,49 +107,22 @@ export default class MuteCommand extends BaseCommand {
             if(!('id' in member)) return
             const reason = interaction.options.getString('reason') || undefined
 
-            const result = await Mod.mute.remove(member, interaction.member, reason);
+            const result = await Mod.mute.remove(member, interaction.member, reason)
+            if(result?.error === 'executorWithoutPermissions') return handleCommandError(interaction, 'command.executorWithoutPermission')
+            if(result?.error === 'notModeratable') return handleCommandError(interaction, 'command.mute.notModeratable')
+            if(result?.error === 'notTimedOut') return handleCommandError(interaction, 'command.mute.notTimedOut')
+            if(result?.error) return handleCommandError(interaction, 'general.error')
 
-            const description = result?.error === 'executorWithoutPermission' ?
-                t('command.mute.executorWithoutPermission', language)
-                : result?.error === 'notModeratable' ? t('command.mute.notModeratable', language)
-                : result?.error === 'notTimedOut' ? t('command.mute.notTimedOut', language)
-                : result?.error ? t('command.mute.error', language)
-                : t('command.mute.removeMute', language, { member: `<@${member.id}>`, executor: `<@${interaction.user.id}>` })
+            const description = t('command.mute.removeMute', language, { member: `<@${member.id}>`, executor: `<@${interaction.user.id}>` })
             
             const embed = new MessageEmbed()
-                .setColor(result?.error ? palette.error : palette.success)
+                .setColor(palette.success)
                 .setDescription(description)
-
-            !result?.error && embed.addField(t('general.reason', language), Formatters.codeBlock(reason || t('general.none', language)))
+                .addField(t('general.reason', language), Formatters.codeBlock(reason || t('general.none', language)))
 
             return interaction.reply({
-                embeds: [embed],
-                ephemeral: Boolean(result?.error)
-            })
+                embeds: [embed]
+            }).catch(logger.error)
         }
     }
-}
-
-async function noPermissions(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.mute.executorWithoutPermission', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
-}
-
-async function incorectTime(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.mute.incorectTime', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
 }

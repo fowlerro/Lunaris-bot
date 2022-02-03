@@ -1,18 +1,18 @@
 import { AutocompleteInteraction, CommandInteraction, MessageEmbed } from "discord.js";
 
 import WelcomeMessage from "../../../modules/WelcomeMessage";
-import { handleError } from "./index";
-import { palette } from "../../../utils/utils";
-
+import { getLocale, palette } from "../../../utils/utils";
+import { handleCommandError } from "../../errors";
 import type { WelcomeMessageAction } from 'types'
 
+
 export default async (interaction: CommandInteraction) => {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const action = interaction.options.getString('action', true) as WelcomeMessageAction
     const message = interaction.options.getString('message', true)
 
     const deleted = await WelcomeMessage.delete(interaction.guildId!, { message, action })
-    if(!deleted) return handleError(interaction, language)
+    if(!deleted) return handleCommandError(interaction, 'general.error')
 
     const embed = new MessageEmbed()
         .setColor(palette.success)
@@ -20,7 +20,7 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    })
+    }).catch(logger.error)
 }
 
 export async function deleteAutocomplete(interaction: AutocompleteInteraction) {
@@ -35,5 +35,5 @@ export async function deleteAutocomplete(interaction: AutocompleteInteraction) {
         value: welcomeMessage.message
     }))
 
-    return interaction.respond(options?.splice(0, 25) || [])
+    return interaction.respond(options?.splice(0, 25) || []).catch(logger.error)
 }

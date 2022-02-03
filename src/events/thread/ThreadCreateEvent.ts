@@ -1,7 +1,7 @@
 import { ThreadChannel } from "discord.js";
-import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
+import Logs from "../../modules/Logs";
 
 export default class ThreadCreateEvent extends BaseEvent {
     constructor() {

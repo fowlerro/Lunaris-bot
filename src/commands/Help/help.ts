@@ -2,10 +2,9 @@ import { AutocompleteInteraction, CommandInteraction, EmbedFieldData, Formatters
 
 import BaseCommand from "../../utils/structures/BaseCommand";
 import { ProfileModel } from "../../database/schemas/Profile";
-import { assignNestedObjects, capitalize, getCommandCategories, palette } from "../../utils/utils";
+import { assignNestedObjects, capitalize, getCommandCategories, getLocale, palette } from "../../utils/utils";
 
 export default class HelpCommand extends BaseCommand {
-    
     constructor() {
         super(
             'help',
@@ -33,7 +32,7 @@ export default class HelpCommand extends BaseCommand {
 
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId) return
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         const command = interaction.options.getString('command')
 
@@ -50,7 +49,7 @@ export default class HelpCommand extends BaseCommand {
 
             return interaction.reply({
                 embeds: [embed]
-            })
+            }).catch(logger.error)
         }
         const categoriesArray = getCommandCategories()
         const categories: any = {}
@@ -136,9 +135,10 @@ export default class HelpCommand extends BaseCommand {
         await interaction.reply({
             embeds: [embeds[categoriesArray.indexOf(defaultPage)]],
             components: [component]
-        })
+        }).catch(logger.error)
 
-        const repliedMessage = await interaction.fetchReply()
+        const repliedMessage = await interaction.fetchReply().catch(logger.error)
+        if(!repliedMessage) return
         if(!('createMessageComponentCollector' in repliedMessage)) return
 
         const menuCollector = repliedMessage.createMessageComponentCollector({ filter, time: 60000 })
@@ -155,7 +155,7 @@ export default class HelpCommand extends BaseCommand {
             selectedOption.default = true
             component.components = [menuComponent]
             
-            await interaction.update({ embeds: [embed], components: [component] });
+            await interaction.update({ embeds: [embed], components: [component] }).catch(logger.error)
         });
     }
 
@@ -168,6 +168,6 @@ export default class HelpCommand extends BaseCommand {
             value: command.name
         }))
         
-        return interaction.respond(options.splice(0, 25))
+        return interaction.respond(options.splice(0, 25)).catch(logger.error)
     }
 }

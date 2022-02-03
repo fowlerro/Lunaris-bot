@@ -1,22 +1,24 @@
-import { ExcludeEnum } from "discord.js";
+import { ExcludeEnum, Guild, GuildAuditLogsAction, GuildAuditLogsEntry, Permissions } from "discord.js";
 import { ActivityTypes } from "discord.js/typings/enums";
 import path from "path";
 import fs from 'fs'
 import convert from 'color-convert'
 
+import type { Language } from "types";
+
 export const botOwners = ["313346190995619841"];
 
-interface IPalette {
+export interface IPalette {
     primary: `#${string}`
-    secondary: string
+    secondary: `#${string}`
     success: `#${string}`
     info: `#${string}`
     error: `#${string}`
 }
 
 export const palette: IPalette = {
-    primary: '#1597e0',
-    secondary: '',
+    primary: '#1597E0',
+    secondary: '#B35D88',
     success: '#7BDB27',
     info: '#3C9FFC',
     error: '#B71E13',
@@ -118,4 +120,18 @@ export function convertColor(inputFormat: colorFormatsType, outputFormat: colorF
     if(inputFormat === 'CMYK' && outputFormat === 'HSL') return convert.cmyk.hsl([Number(match[1]), Number(match[3]), Number(match[5]), Number(match[7])])
 
     return color
+}
+
+export function getLocale(guildLocale: string | null): Language {
+    return guildLocale === 'pl' ? 'pl' : 'en'
+}
+
+export async function getAuditLog<T extends GuildAuditLogsAction>(guild: Guild, type: T, find: (log: GuildAuditLogsEntry<T>) => boolean, noSleep: boolean = false): Promise<GuildAuditLogsEntry<T> | null> {
+    if(!guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return null
+    if(!noSleep) await sleep(500)
+    const auditLogs = await guild.fetchAuditLogs({ type, limit: 5 }).catch(logger.error)
+    if(!auditLogs) return null
+    const log = auditLogs.entries.find(log => find(log) && Date.now() - log.createdTimestamp < 5000)
+    if(!log) return null
+    return log
 }

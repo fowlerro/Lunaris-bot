@@ -1,8 +1,9 @@
-import { AutocompleteInteraction, CommandInteraction, MessageEmbed, Permissions } from "discord.js";
+import { AutocompleteInteraction, CommandInteraction, Permissions } from "discord.js";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
 import WelcomeMessage from "../../../modules/WelcomeMessage";
-import { capitalize, palette } from "../../../utils/utils";
+import { capitalize } from "../../../utils/utils";
+import { handleCommandError } from "../../errors";
 
 import add from "./add";
 import _delete, { deleteAutocomplete } from "./delete";
@@ -10,7 +11,6 @@ import list from "./list";
 import set from "./set";
 import status from "./status";
 
-import { Language } from "types";
 
 export default class WelcomeMessageCommand extends BaseCommand {
     constructor() {
@@ -115,7 +115,7 @@ export default class WelcomeMessageCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId || !interaction.member) return
         if(!('id' in interaction.member)) return
-        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) return
+        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) return handleCommandError(interaction, 'command.executorWithoutPermission')
 
         const subCommand = interaction.options.getSubcommand(true)
         
@@ -129,15 +129,4 @@ export default class WelcomeMessageCommand extends BaseCommand {
     async autocomplete(interaction: AutocompleteInteraction) {
        return deleteAutocomplete(interaction) 
     }
-}
-
-export function handleError(interaction: CommandInteraction, language: Language) {
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.welcome.error', language));
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
 }

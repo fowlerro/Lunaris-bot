@@ -1,6 +1,7 @@
 import { ButtonInteraction, MessageButton, TextChannel } from "discord.js";
-import { Language } from "types";
-import { Templates } from ".";
+
+import type { Templates } from "./index";
+import type { Language } from "types";
 
 export default {
     messages: {
@@ -26,17 +27,17 @@ export default {
                 const channelId = customId[customId.length-1]
                 if(!messageId || !channelId) return
                 
-                const channel = await interaction.guild?.channels.fetch(channelId).catch(console.warn)
+                const channel = await interaction.guild?.channels.fetch(channelId).catch(logger.error)
                 if(!channel) return
-                const message = await (channel as TextChannel).messages.fetch(messageId).catch(console.warn)
+                const message = await (channel as TextChannel).messages.fetch(messageId).catch(logger.error)
                 if(!message) return
 
-                const res = await message.delete().catch(console.warn)
+                const res = await message.delete().catch(logger.error)
                 if(!res) return
 
                 return interaction.update({
                     components: []
-                }).catch(console.error)
+                }).catch(logger.error)
             }
         },
         pin: {

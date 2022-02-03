@@ -1,7 +1,7 @@
 import { Invite } from "discord.js";
-import Logs from "../../modules/Logs";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
+import Logs from "../../modules/Logs";
 
 export default class InviteCreateEvent extends BaseEvent {
     constructor() {

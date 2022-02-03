@@ -1,13 +1,13 @@
 import { AutocompleteInteraction, CommandInteraction, MessageEmbed, Permissions } from "discord.js";
 
 import BaseCommand from "../../../utils/structures/BaseCommand";
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
+import type { Language } from "types";
 
 import give from "./give";
 import remove, { removeAutocomplete } from "./remove";
 import list from "./list";
-
-import { Language } from "types";
+import { handleCommandError } from "../../errors";
 
 export default class BanCommand extends BaseCommand {
     constructor() {
@@ -104,8 +104,7 @@ export default class BanCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId || !interaction.member) return
         if(!('id' in interaction.member)) return
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
-        if(!interaction.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return noPermissions(interaction, language)
+        if(!interaction.member.permissions.has(Permissions.FLAGS.BAN_MEMBERS)) return handleCommandError(interaction, 'command.executorWithoutPermission')
         
         const subcommand = interaction.options.getSubcommand(true)
 
@@ -117,15 +116,4 @@ export default class BanCommand extends BaseCommand {
     async autocomplete(interaction: AutocompleteInteraction) {
         return removeAutocomplete(interaction)
     }
-}
-
-async function noPermissions(interaction: CommandInteraction, language: Language) {
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.ban.noPermissions', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
 }

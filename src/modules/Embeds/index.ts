@@ -1,7 +1,7 @@
 import { ButtonInteraction, CommandInteraction, Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed, MessageSelectMenu, SelectMenuInteraction, TextChannel, Snowflake } from "discord.js"
 
 import BaseModule from "../../utils/structures/BaseModule"
-import { Embed } from "types"
+import type { Embed } from "types"
 
 const EMBED_LIMITS = {
 	title: 256,
@@ -23,17 +23,17 @@ class EmbedsModule extends BaseModule {
 	async run() {}
 
 	async send(messageContent: string, embed: Embed, guildId: Snowflake, channelId: Snowflake) {
-		const guild = await client.guilds.fetch(guildId).catch(e => {})
-		if(!guild) return { error: "Guild not found" }
-		const channel = await guild.channels.fetch(channelId).catch(e => {})
-		if(!channel) return { error: "Channel not found" }
+		const guild = await client.guilds.fetch(guildId).catch(logger.error)
+		if(!guild) return new Error('Guild not found')
+		const channel = await guild.channels.fetch(channelId).catch(logger.error)
+		if(!channel) return new Error('Channel not found')
 
 		if(embed.hexColor) embed.color = parseInt(embed.hexColor.substring(1), 16)
 
 		const e = new MessageEmbed(embed as unknown as MessageEmbed)
 
 		const { pages, error } = this.checkLimits(e, true)
-		if(error) return { error }
+		if(error) return new Error(error)
 
 		return this.pageEmbeds(messageContent, pages, guildId, channelId, 1, true)
 	}
@@ -43,8 +43,8 @@ class EmbedsModule extends BaseModule {
 		if(embed.hexColor) embed.color = parseInt(embed.hexColor.substring(1), 16)
 		const e = new MessageEmbed(embed as unknown as MessageEmbed)
 		const { pages, error } = this.checkLimits(e, false)
-		if(error) return { error }
-		return message.edit({ content: messageContent || null, embeds: [pages[0]] }).catch(() => {})
+		if(error) return new Error(error)
+		return message.edit({ content: messageContent || null, embeds: [pages[0]] }).catch(logger.error)
 
 	}
 	checkLimits(embed: MessageEmbed, pageEmbed = true, maxFields = 25): { error: string | null, pages: MessageEmbed[] } {
@@ -62,19 +62,19 @@ class EmbedsModule extends BaseModule {
 		}
 	}
 	async pageEmbeds(messageContent: string | undefined, embeds: MessageEmbed[], guildId: Snowflake, channelId: Snowflake, defaultPage = 1, buttons = true, selectMenu = false) {
-		const guild = await client.guilds.fetch(guildId).catch(e => {})
-		if(!guild) return { error: "Guild not found" }
-		const channel = await (guild.channels.fetch(channelId) as Promise<TextChannel>).catch(e => {})
-		if(!channel) return { error: "Channel not found" }
+		const guild = await client.guilds.fetch(guildId).catch(logger.error)
+		if(!guild) return new Error('Guild not found')
+		const channel = await (guild.channels.fetch(channelId) as Promise<TextChannel>).catch(logger.error)
+		if(!channel) return new Error('Channel not found')
 
-		console.log(embeds)
-		if(embeds.length === 1) return channel.send({ content: messageContent || null, embeds: [embeds[0]] }).catch((e) => { console.log(e) })
+		if(embeds.length === 1) return channel.send({ content: messageContent || null, embeds: [embeds[0]] }).catch(logger.error)
 
 		const components = []
 		selectMenu && components.push(addSelectMenu(embeds, defaultPage))
 		buttons && components.push(addButtons(embeds, defaultPage))
 		
-		const message = await channel.send({ content: messageContent || null, embeds: [embeds[defaultPage] || embeds[0]], components })
+		const message = await channel.send({ content: messageContent || null, embeds: [embeds[defaultPage] || embeds[0]], components }).catch(logger.error)
+        if(!message) return new Error('Message not sent')
 		createCollectors(message, embeds)
 
 		return message
@@ -82,7 +82,7 @@ class EmbedsModule extends BaseModule {
 
 	// TODO Ephemeral on errors
 	async pageInteractionEmbeds(messageContent: string | null, embeds: MessageEmbed[], interaction: CommandInteraction, defaultPage = 1, buttons = true, selectMenu = false) {
-		if(embeds.length === 1) return interaction.reply({ content: messageContent, embeds: [embeds[0]] })
+		if(embeds.length === 1) return interaction.reply({ content: messageContent, embeds: [embeds[0]] }).catch(logger.error)
 
 		defaultPage = defaultPage > embeds.length-1 ? embeds.length-1 : (defaultPage > 0 ? defaultPage : 1)
 
@@ -90,10 +90,10 @@ class EmbedsModule extends BaseModule {
 		selectMenu && components.push(addSelectMenu(embeds, defaultPage))
 		buttons && components.push(addButtons(embeds, defaultPage))
 
-		await interaction.reply({ content: messageContent, embeds: [embeds[defaultPage] || embeds[0]], components })
+		await interaction.reply({ content: messageContent, embeds: [embeds[defaultPage] || embeds[0]], components }).catch(logger.error)
 
-		const fetchedReply = await interaction.fetchReply()
-		if(!('applicationId' in fetchedReply)) return
+		const fetchedReply = await interaction.fetchReply().catch(logger.error)
+		if(!fetchedReply || !('applicationId' in fetchedReply)) return new Error('Reply not fetched')
 
 		createCollectors(fetchedReply, embeds)
 
@@ -253,7 +253,7 @@ async function onSelectMenu(interaction: SelectMenuInteraction, component: Messa
 	await interaction.update({
 		embeds: [pages[selectedPage]],
 		components: [component, ...otherComponents],
-	})
+	}).catch(logger.error)
 }
 
 async function onButton(interaction: ButtonInteraction, component: MessageActionRow, message: Message, pages: MessageEmbed[]) {
@@ -290,7 +290,7 @@ async function onButton(interaction: ButtonInteraction, component: MessageAction
 	await interaction.update({
 		embeds: [pages[currentPage]],
 		components: [component, ...otherComponents],
-	})
+	}).catch(logger.error)
 }
 
 function firstPage(firstButton: MessageButton, previousButton: MessageButton, nextButton: MessageButton, lastButton: MessageButton) {

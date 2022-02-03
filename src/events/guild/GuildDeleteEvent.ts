@@ -12,6 +12,5 @@ export default class GuildDeleteEvent extends BaseEvent {
   async run(guild: Guild) {
     if(!client.isOnline) return;
     await Guilds.config.delete(guild.id);
-    // await CommandConfig.deleteMany({guildId: guild.id});
   }
 }

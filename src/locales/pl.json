@@ -80,14 +80,9 @@
     },
     "command": {
         "globalStatus": "Komenda jest chwilowo wyłączona",
-        "prefixMessage": "Prefix dla tego serwera to: %VAR%",
         "languageListMessage": "Wspierane języki",
-        "languageListFooter": "Wpisz %VAR%language <język>, aby zmienić język",
-        "wrongLanguage": "Ten język jest nieobsługiwany, wpisz '%VAR%language', aby sprawdzić listę wspieranych języków",
-        "prefixChange": "Prefix został pomyślnie zmieniony na %VAR%",
-        "languageChange": "Język został pomyślnie zmieniony na %VAR%",
-        "pingInfo": "Slash komendy są nadal w trakcie pracy, ale niedługo powinny być dostępne",
-        "wrongId": "Niepoprawne id",
+        "wrongId": "❌ Niepoprawne id",
+        "executorWithoutPermission": "❌ Nie posiadasz uprawnień, aby to zrobić!",
         "help": {
             "title": "Pomoc",
             "cmdTitle": "Informacje o {{commandName}}",
@@ -106,42 +101,40 @@
             "joinedAt": "Data dołączenia"
         },
         "purge": {
-            "wrongChannel": "Musisz podać kanał tekstowy",
+            "wrongChannel": "❌ Musisz podać kanał tekstowy",
             "success": {
-                "default": "Pomyślnie wyczyszczono {{deletedCount}} wiadomości",
-                "user": "Pomyślnie wyczyszczono {{deletedCount}} wiadomości użytkownika <@{{userId}}>",
-                "channel": "Pomyślnie wyczyszczono {{deletedCount}} wiadomości w <#{{channelId}}>",
-                "user-channel": "Pomyślnie wyczyszczono {{deletedCount}} wiadomości użytkownika <@{{userId}}> w <#{{channelId}}>"
+                "default": "✅ Pomyślnie wyczyszczono {{deletedCount}} wiadomości",
+                "user": "✅ Pomyślnie wyczyszczono {{deletedCount}} wiadomości użytkownika <@{{userId}}>",
+                "channel": "✅ Pomyślnie wyczyszczono {{deletedCount}} wiadomości w <#{{channelId}}>",
+                "user-channel": "✅ Pomyślnie wyczyszczono {{deletedCount}} wiadomości użytkownika <@{{userId}}> w <#{{channelId}}>"
             }
         },
         "emoji": {
-            "add": "Emotka **{{emojiName}}** została pomyślnie dodana",
-            "delete": "Emotka **{{emojiName}}** została pomyślnie usunięta",
-            "error": "Coś poszło nie tak, sprawdź czy link jest poprawny",
-            "notDeletable": "Nie mogę usunąć tej emotki"
+            "add": "✅ Emotka **{{emojiName}}** została pomyślnie dodana",
+            "delete": "✅ Emotka **{{emojiName}}** została pomyślnie usunięta",
+            "error": "❌ Coś poszło nie tak, sprawdź czy link jest poprawny",
+            "notDeletable": "❌ Nie mogę usunąć tej emotki"
         },
         "warn": {
-            "add": "{{{member}}} został ostrzeżony przez {{{executor}}} {{reason}}",
-            "remove": "{{{executor}}} zdjął ostrzeżenie z użytkownika {{{member}}}",
-            "removeMemberAll": "{{{executor}}} zdjął wszystkie ostrzeżenia z użytkownika {{{member}}}",
-            "removeAll": "{{{executor}}} zdjął wszystkie ostrzeżenia na serwerze",
+            "add": "✅ {{{member}}} został ostrzeżony przez {{{executor}}}",
+            "remove": "✅ {{{executor}}} zdjął ostrzeżenie z użytkownika {{{member}}}",
+            "removeMemberAll": "✅ {{{executor}}} zdjął wszystkie ostrzeżenia z użytkownika {{{member}}}",
+            "removeAll": "✅ {{{executor}}} zdjął wszystkie ostrzeżenia na serwerze",
             "list": "Lista ostrzeżeń użytkownika {{userTag}}",
             "guildList": "Lista ostrzeżeń na serwerze",
-            "error": "Wystąpił problem z usunięciem ostrzeżenia",
-            "notFound": "Nie znaleziono ostrzeżenia!",
-            "targetNotFound": "Nie znaleziono użytkownika!",
-            "targetWithoutWarns": "{{{member}}} nie posiada żadnych ostrzeżeń",
+            "error": "❌ Wystąpił problem z usunięciem ostrzeżenia",
+            "notFound": "❌ Nie znaleziono ostrzeżenia!",
+            "targetNotFound": "❌ Nie znaleziono użytkownika!",
+            "targetWithoutWarns": "❌ {{{member}}} nie posiada żadnych ostrzeżeń",
             "optionAll": "Usuń wszystkie ostrzeżenia z tego użytkownika!"
         },
         "mute": {
             "addMute": "✅ {{{member}}} został wyciszony przez {{{executor}}}",
             "removeMute":"✅ {{{executor}}} usunął wyciszenie z {{{member}}}",
-            "executorWithoutPermission": "❌ Nie posiadasz uprawnień, aby to zrobić!",
             "notModeratable": "❌ Nie możesz wyciszyć tego użytkownika!",
             "notTimedOut": "❌ Użytkownik nie jest wyciszony!",
             "alreadyTimedOut": "❌ Użytkownik jest już wyciszony!",
-            "incorectTime": "❌ Niepoprawny czas!",
-            "error": "❌ Coś poszło nie tak :/ Spróbuj ponownie!"
+            "incorectTime": "❌ Niepoprawny czas!"
         },
         "ban": {
             "add": "✅ {{{member}}} został zbanowany przez {{{executor}}}",
@@ -150,7 +143,6 @@
             "list": "🗒️ Lista banów",
             "notBanned": "❌ Użytkownik nie jest zbanowany!",
             "notFound": "❌ Nie znaleziono użytkownika!",
-            "noPermissions": "❌ Nie posiadasz uprawnień, aby to zrobić!",
             "notManageable": "❌ Nie mogę zarządzać tym użytkownikiem!",
             "missingPermissions": "❌ Nie posiadam uprawnień do banowania użytkowników!"
         },
@@ -162,7 +154,6 @@
             "delete": "Wiadomość powitalna została pomyślnie usunięta!",
             "set": "Kanał dla wiadomości powitalnych został pomyślnie ustawiony!",
             "disabled": "Akcja wiadomości powitalnych została wyłączona",
-            "error": "Coś poszło nie tak :/",
 
             "status": {
                 "alreadyEnabled": "Moduł jest już włączony!",
@@ -170,7 +161,6 @@
 
                 "enabled": "Pomyślnie włączono moduł!",
                 "disabled": "Pomyślnie wyłączono moduł!"
-
             },
 
             "info": {
@@ -190,7 +180,6 @@
         },
         "level": {
             "levelUpMessage": {
-                "error": "❌ Coś poszło nie tak :/ Spróbuj ponownie!",
                 "formatTooLong": "❌ Format może mieć maksymalnie 256 znaków!",
 
                 "set": "✅ Pomyślnie ustawiono wiadomość level up!",
@@ -239,7 +228,6 @@
             "alreadyDisabled": "Log jest już wyłączony",
             "wrongCategory": "❌ Nieprawidłowa kategoria logów! Wybierz poprawną z opcji komendy!",
             "invalidLog": "❌ Niepoprawny log! Wybierz prawidłowy z opcji komendy",
-            "error": "❌ Coś poszło nie tak :/ Spróbuj ponownie!",
             "categories": {
                 "messages": "Wiadomości",
                 "members": "Użytkownicy",

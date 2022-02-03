@@ -1,11 +1,11 @@
-import { AuditLogChange, Permissions, ThreadChannel } from "discord.js";
-import { Language } from "types";
-import Logs from "../../modules/Logs";
+import { AuditLogChange, ThreadChannel } from "discord.js";
 
 import BaseEvent from "../../utils/structures/BaseEvent";
-import { sleep } from "../../utils/utils";
-import { editArchive, editSlowmode } from "../channel/ChannelUpdateEvent";
+import Logs from "../../modules/Logs";
 import { editName } from "../role/RoleUpdateEvent";
+import { editArchive, editSlowmode } from "../channel/ChannelUpdateEvent";
+import { getAuditLog, getLocale } from "../../utils/utils";
+import type { Language } from "types";
 
 export default class ThreadUpdateEvent extends BaseEvent {
     constructor() {
@@ -13,19 +13,15 @@ export default class ThreadUpdateEvent extends BaseEvent {
     }
     
     async run(oldThread: ThreadChannel, newThread: ThreadChannel) {
-
-        serverLogs(oldThread, newThread)
+        serverLogs(newThread)
     }
 };
 
-async function serverLogs(oldThread: ThreadChannel, newThread: ThreadChannel) {
-    if(!newThread.guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return
-    await sleep(500)
-    const language = newThread.guild.preferredLocale === 'pl' ? 'pl' : 'en'
-    const auditLogs = await newThread.guild.fetchAuditLogs({ type: 'THREAD_UPDATE', limit: 5 }).catch(console.error)
-    if(!auditLogs) return
-    const log = await auditLogs.entries.find(log => log.target.id === newThread.id && Date.now() - log.createdTimestamp < 5000)
-    if(!log) return 
+async function serverLogs(newThread: ThreadChannel) {
+    const language = getLocale(newThread.guild.preferredLocale)
+    
+    const log = await getAuditLog(newThread.guild, 'THREAD_UPDATE', (log) => (log.target.id === newThread.id))
+    if(!log) return
 
     const { executor, changes } = log
     if(!executor || !changes) return

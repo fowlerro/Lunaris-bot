@@ -1,6 +1,6 @@
 import { Document, model, Schema } from "mongoose";
 
-import { ReactionRole } from 'types'
+import type { ReactionRole } from 'types'
 
 export interface ReactionRoleDocument extends Omit<ReactionRole, '_id'>, Document {}
 

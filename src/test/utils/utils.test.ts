@@ -1,6 +1,6 @@
 import { ClientUser } from "discord.js"
 import DiscordClient from "../../types/client"
-import { assignNestedObjects, capitalize, convertLargeNumbers, setActivity, getCommandCategories } from "../../utils/utils"
+import { assignNestedObjects, capitalize, convertLargeNumbers, setActivity, getCommandCategories, getLocale } from "../../utils/utils"
 
 describe('Capitalize function', () => {
     it('should return empty string', () => {
@@ -148,4 +148,30 @@ describe('getCommandCategories function', () => {
         const categories = getCommandCategories()
         expect(categories).toEqual(expect.arrayContaining(['Modules', 'Help', 'Moderation', 'Settings']))
     })
-}) 
+})
+
+describe('getLocale function', () => {
+    it('should return pl locale', () => {
+        const locale = 'pl'
+        const res = getLocale(locale)
+        expect(res).toBe(locale)
+    })
+
+    it('should return en locale', () => {
+        const locale = 'en'
+        const res = getLocale(locale)
+        expect(res).toBe(locale)
+    })
+
+    it('should fallback to en locale if called with unsupported locale', () => {
+        const locale = 'fr'
+        const res = getLocale(locale)
+        expect(res).toBe('en')
+    })
+
+    it('should fallback to en locale if called with null', () => {
+        const locale = null
+        const res = getLocale(locale)
+        expect(res).toBe('en')
+    })
+})

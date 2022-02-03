@@ -1,7 +1,8 @@
 import { AutocompleteInteraction, CommandInteraction, MessageEmbed, Permissions } from "discord.js";
 
 import BaseCommand from "../../utils/structures/BaseCommand";
-import { palette } from "../../utils/utils";
+import { getLocale, palette } from "../../utils/utils";
+import { handleCommandError } from "../errors";
 
 export default class EmojiCommand extends BaseCommand {
     constructor() {
@@ -58,66 +59,53 @@ export default class EmojiCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId || !interaction.guild || !interaction.member) return
         if(!('id' in interaction.member)) return
-        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS)) return
+        if(!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS)) return handleCommandError(interaction, 'command.executorWithoutPermission')
         const subcommand = interaction.options.getSubcommand(true)
 
-        const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+        const language = getLocale(interaction.guildLocale)
 
         if(subcommand === 'add') {
             const url = interaction.options.getString('url', true)
             const name = interaction.options.getString('name', true)
 
-            const newEmoji = await interaction.guild.emojis.create(url, name).catch(() => {})
+            const newEmoji = await interaction.guild.emojis.create(url, name).catch(logger.error)
+            if(!newEmoji) return handleCommandError(interaction, 'general.error')
 
-            const description = newEmoji ?
-                t('command.emoji.add', language, { emojiName: name })
-                : t('command.emoji.error', language)
+            const description = t('command.emoji.add', language, { emojiName: name })
 
             const embed = new MessageEmbed()
-                .setColor(newEmoji ? palette.success : palette.error)
+                .setColor(palette.success)
                 .setDescription(description);
     
             return interaction.reply({
-                embeds: [embed],
-                ephemeral: !Boolean(newEmoji)
-            })
+                embeds: [embed]
+            }).catch(logger.error)
         }
 
         if(subcommand === 'delete') {
             const emojiId = interaction.options.getString('emoji', true)
             const reason = interaction.options.getString('reason') || undefined
 
-            const emoji = await interaction.guild.emojis.fetch(emojiId).catch(() => {})
-            if(!emoji || !emoji.deletable) {
-                const embed = new MessageEmbed()
-                    .setColor(palette.error)
-                    .setDescription(t('command.emoji.notDeletable', language))
+            const emoji = await interaction.guild.emojis.fetch(emojiId).catch(logger.error)
+            if(!emoji || !emoji.deletable) return handleCommandError(interaction, 'command.emoji.notDeletable')
 
-                return interaction.reply({
-                    embeds: [embed],
-                    ephemeral: true
-                })
-            }
-
-            const deletedEmoji = await emoji.delete(reason).catch(() => {})
-            const description = deletedEmoji ? 
-                t('command.emoji.delete', language, { emojiName: deletedEmoji.name || "" })
-                : t('command.emoji.error', language)
+            const deletedEmoji = await emoji.delete(reason).catch(logger.error)
+            if(!deletedEmoji) return handleCommandError(interaction, 'general.error')
+            const description = t('command.emoji.delete', language, { emojiName: deletedEmoji.name || "" })
 
             const embed = new MessageEmbed()
-                .setColor(deletedEmoji ? palette.success : palette.error)
+                .setColor(palette.success)
                 .setDescription(description)
 
             return interaction.reply({
-                embeds: [embed],
-                ephemeral: !Boolean(deletedEmoji)
-            })
+                embeds: [embed]
+            }).catch(logger.error)
         }
     }
 
     async autocomplete(interaction: AutocompleteInteraction) {
         const inputEmoji = interaction.options.getString('emoji', true)
-        const guildEmojis = await interaction.guild?.emojis.fetch()
+        const guildEmojis = await interaction.guild?.emojis.fetch().catch(logger.error)
         const emoji = guildEmojis?.filter(emoji => (emoji.name?.includes(inputEmoji) || false))
 
         const options = emoji?.map(emoji => ({
@@ -125,6 +113,6 @@ export default class EmojiCommand extends BaseCommand {
             value: emoji.id
         }))!
 
-        return interaction.respond(options.splice(0, 25))
+        return interaction.respond(options.splice(0, 25)).catch(logger.error)
     }
 }

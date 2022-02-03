@@ -25,7 +25,6 @@ export async function handleVoiceXp(oldState: VoiceState, newState: VoiceState) 
 }
 
 async function joinedVoice(newState: VoiceState) {
-    // console.log('joined');
     const members = newState.channel?.members.filter(member => !member.user.bot);
     if(!members) return
     const verifiedMembers = checkMembers(members);
@@ -38,7 +37,6 @@ async function joinedVoice(newState: VoiceState) {
 }
 
 async function changedChannel(oldState: VoiceState, newState: VoiceState) {
-    // console.log('changed channel');
     if(!newState.member) return
     stopXp(newState.guild.id, newState.member.id);
 
@@ -47,7 +45,6 @@ async function changedChannel(oldState: VoiceState, newState: VoiceState) {
 }
 
 async function changedState(newState: VoiceState) {
-    // console.log('changed state');
     const { id, serverDeaf, serverMute, selfDeaf, selfMute } = newState;
     const members = newState.channel?.members.filter(member => !member.user.bot);
     if(!members) return
@@ -69,7 +66,6 @@ async function changedState(newState: VoiceState) {
 }
 
 async function disconnectedVoice(oldState: VoiceState) {
-    // console.log('disconnected');
     if(!oldState.member) return
     stopXp(oldState.guild.id, oldState.member.id);
     
@@ -120,7 +116,6 @@ function checkMembers(members: Collection<string, GuildMember>): Snowflake[] {
 async function startXp(guildId: Snowflake, memberId: Snowflake) {
     if(!membersInterval[`${guildId}-${memberId}`]) {
         membersInterval[`${guildId}-${memberId}`] = setInterval(async () => {
-            console.log('xp', memberId);
             const guildProfile = await Profiles.get(memberId, guildId) as GuildProfileDocument;
             const globalProfile = await Profiles.get(memberId) as ProfileDocument;
             const levelConfig = await xpSystem.get(guildId);

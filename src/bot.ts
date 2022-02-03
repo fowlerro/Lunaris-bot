@@ -10,6 +10,7 @@ import { registerCommands, registerEvents, registerModules } from './utils/regis
 import dashboard from './dashboard/app'
 import i18nconfig, { translate } from './utils/i18n'
 import cache, { Cache, initializeCache } from './utils/cache'
+import Logger from './utils/Logger'
 
 export const testGuildId = '533385524434698260'
 
@@ -26,16 +27,18 @@ const client = new DiscordClient({
 	]
 });
 
-i18n.configure(i18nconfig);
+i18n.configure(i18nconfig)
 
 declare global {
-  	var client: DiscordClient;
+  	var client: DiscordClient
 	var redis: Cache 
-	var t: typeof translate;
+	var t: typeof translate
+    var logger: typeof Logger
 }
-global.client = client;
+global.client = client
 global.redis = cache
-global.t = translate;
+global.t = translate
+global.logger = Logger;
 
 (async () => {
 	await initializeCache()

@@ -1,14 +1,16 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
+
 import Levels from "../../../modules/Levels";
-import { palette } from "../../../utils/utils";
+import { getLocale, palette } from "../../../utils/utils";
+import { handleCommandError } from "../../errors";
 
 export default async (interaction: CommandInteraction) => {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
+    const language = getLocale(interaction.guildLocale)
     const format = interaction.options.getString('format')
-    if(format && format.length > 256) return formatTooLong(interaction)
+    if(format && format.length > 256) return handleCommandError(interaction, 'command.level.levelUpMessage.formatTooLong')
 
     const updatedConfig = await Levels.setLevelUpMessage(interaction.guildId!, format)
-    if(!updatedConfig) return handleError(interaction)
+    if(!updatedConfig) return handleCommandError(interaction, 'general.error')
 
     const embed = new MessageEmbed()
         .setColor(palette.success)
@@ -16,31 +18,5 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    })
-}
-
-function formatTooLong(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
-
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.level.levelUpMessage.formatTooLong', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
-}
-
-function handleError(interaction: CommandInteraction) {
-    const language = interaction.guildLocale === 'pl' ? 'pl' : 'en'
-
-    const embed = new MessageEmbed()
-        .setColor(palette.error)
-        .setDescription(t('command.level.levelUpMessage.error', language))
-
-    return interaction.reply({
-        embeds: [embed],
-        ephemeral: true
-    })
+    }).catch(logger.error)
 }
