@@ -16,9 +16,6 @@ class GuildsModule extends BaseModule {
 
     config = {
         get: async (guildId: Snowflake): Promise<GuildConfig | null> => {
-            // const json = await redis.guildConfigs.getEx(guildId, { EX: 60 * 5 })
-            // if(json) return JSON.parse(json) as GuildConfig
-
             const cachedConfig = cache.guildConfigs.get<GuildConfig>(guildId)
             if(cachedConfig) return cachedConfig
 
@@ -26,7 +23,6 @@ class GuildsModule extends BaseModule {
             if(!document) return this.config.create(guildId)
 
             const config = document.toObject()
-            // await redis.guildConfigs.setEx(guildId, 60 * 5, JSON.stringify(config))
             cache.guildConfigs.set(guildId, config)
             return config
         },
@@ -35,7 +31,6 @@ class GuildsModule extends BaseModule {
             if(!document) return null
             
             const config = document.toObject()
-            // await redis.guildConfigs.setEx(guildId, 60 * 5, JSON.stringify(config))
             cache.guildConfigs.set(guildId, config)
             return config
         },        
@@ -46,13 +41,11 @@ class GuildsModule extends BaseModule {
             const config = document.toObject()
             delete config._id
             delete config.__v
-            // await redis.guildConfigs.setEx(guildId, 60 * 5, JSON.stringify(config))
             cache.guildConfigs.set(guildId, config)
 
             return config
         },
         delete: async (guildId: Snowflake) => {
-            // await redis.guildConfigs.del(guildId)
             cache.guildConfigs.del(guildId)
             await GuildConfigModel.deleteOne({ guildId }).catch(logger.error)
         }

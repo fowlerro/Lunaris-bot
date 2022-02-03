@@ -34,16 +34,12 @@ class ProfileModule extends BaseModule {
     async get(userId: Snowflake, guildId?: Snowflake): Promise<GuildProfile | Profile | null> {
         const isGlobal = !Boolean(guildId)
         const profile = isGlobal ?
-            // await redis.profiles.get(userId) :
-            // await redis.guildProfiles.get(`${guildId}-${userId}`)
             cache.profiles.get<Profile>(userId) : cache.guildProfiles.get<GuildProfile>(`${guildId}-${userId}`)
         if(profile) return profile
         
         const dbProfile = isGlobal ? await ProfileModel.findOne({ userId }, '-_id -__v').catch(logger.error) : await GuildProfileModel.findOne({ guildId, userId }, '-_id -__v').catch(logger.error)
         if(!dbProfile) return createProfile(userId, guildId)
 
-        // 'guildId' in dbProfile ? await redis.guildProfiles.setEx(`${guildId}-${userId}`, 60 * 30, JSON.stringify(dbProfile))
-        //     : await redis.profiles.setEx(userId, 60 * 30, JSON.stringify(dbProfile))
         'guildId' in dbProfile ? cache.guildProfiles.set<GuildProfile>(`${guildId}-${userId}`, dbProfile.toObject())
             : cache.profiles.set<Profile>(userId, dbProfile.toObject())
         
@@ -51,8 +47,6 @@ class ProfileModule extends BaseModule {
     }
 
     set(profile: Profile | GuildProfile): boolean {
-        // const res = 'guildId' in profile ? await redis.guildProfiles.setEx(`${profile.guildId}-${profile.userId}`, 60 * 30, JSON.stringify(profile))
-        //     : await redis.profiles.setEx(profile.userId, 60 * 30, JSON.stringify(profile))
         const res = 'guildId' in profile ? cache.guildProfiles.set<GuildProfile>(`${profile.guildId}-${profile.userId}`, profile)
             : cache.profiles.set<Profile>(profile.userId, profile)
 
@@ -129,8 +123,6 @@ async function createProfile(userId: Snowflake, guildId?: Snowflake): Promise<Pr
     delete profile._id
     delete profile.__v
 
-    // 'guildId' in profile ? await redis.guildProfiles.setEx(`${guildId}-${userId}`, 60 * 30, JSON.stringify(profile))
-    //     : await redis.profiles.setEx(userId, 60 * 30, JSON.stringify(profile))
     'guildId' in profile ? cache.guildProfiles.set<GuildProfile>(`${guildId}-${userId}`, profile.toObject())
         : cache.profiles.set<Profile>(userId, profile.toObject())
 

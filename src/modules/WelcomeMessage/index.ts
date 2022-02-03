@@ -39,7 +39,6 @@ class WelcomeMessageModule extends BaseModule {
 
     async get(guildId: Snowflake): Promise<WelcomeMessage | null> {
         if(!guildId) return null
-        // const json = await redis.welcomeMessages.getEx(guildId, { EX: 60 * 10 })
 
         const config = await cache.welcomeMessages.get<WelcomeMessage>(guildId)
         if(config) return config
@@ -98,7 +97,6 @@ class WelcomeMessageModule extends BaseModule {
         delete config._id
         delete config.__v
 
-        // return redis.welcomeMessages.setEx(config.guildId, 60 * 10, JSON.stringify(config))
         return cache.welcomeMessages.set<WelcomeMessage>(config.guildId, config)
     }
 

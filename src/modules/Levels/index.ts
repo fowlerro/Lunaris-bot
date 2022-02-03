@@ -17,9 +17,6 @@ class LevelsModule extends BaseModule {
     async run() {}
 
     async get(guildId: Snowflake): Promise<LevelConfig | null> {
-        // const json = await redis.levelConfigs.getEx(guildId, { EX: 60 * 5 })
-        // if(json) return JSON.parse(json) as LevelConfig
-
         const cachedConfig = cache.levelConfigs.get<LevelConfig>(guildId)
         if(cachedConfig) return cachedConfig
 
@@ -27,7 +24,6 @@ class LevelsModule extends BaseModule {
         if(!document) return this.create(guildId)
 
         const config = document.toObject()
-        // await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(config))
         cache.levelConfigs.set<LevelConfig>(guildId, config)
         return config
     }
@@ -40,7 +36,6 @@ class LevelsModule extends BaseModule {
         delete config._id
         delete config.__v
         
-        // await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(config))
         cache.levelConfigs.set<LevelConfig>(guildId, config)
         return config
     }
@@ -57,7 +52,6 @@ class LevelsModule extends BaseModule {
         delete newConfig._id
         delete newConfig.__v
 
-        // await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
         cache.levelConfigs.set<LevelConfig>(guildId, newConfig)
         return newConfig
     }
@@ -74,7 +68,6 @@ class LevelsModule extends BaseModule {
         delete newConfig._id
         delete newConfig.__v
 
-        // await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
         cache.levelConfigs.set<LevelConfig>(guildId, newConfig)
         return newConfig
     }
@@ -89,7 +82,6 @@ class LevelsModule extends BaseModule {
         delete newConfig._id
         delete newConfig.__v
 
-        // await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
         cache.levelConfigs.set<LevelConfig>(guildId, newConfig)
         return newConfig
     }
@@ -108,7 +100,6 @@ class LevelsModule extends BaseModule {
         delete newConfig._id
         delete newConfig.__v
 
-        // await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
         cache.levelConfigs.set<LevelConfig>(guildId, newConfig)
         return newConfig
     }
@@ -123,7 +114,6 @@ class LevelsModule extends BaseModule {
         delete newConfig._id
         delete newConfig.__v
 
-        // await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
         cache.levelConfigs.set<LevelConfig>(guildId, newConfig)
         return newConfig
     }
@@ -159,8 +149,6 @@ class LevelsModule extends BaseModule {
         }).catch(logger.error)
         cache.profiles.flushAll()
         cache.guildProfiles.flushAll()
-        // await redis.profiles.flushAll()
-        // await redis.guildProfiles.flushAll()
     }
 }
 

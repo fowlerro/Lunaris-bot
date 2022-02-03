@@ -21,9 +21,6 @@ class LogsModule extends BaseModule {
     async run() {}
 
     async get(guildId: Snowflake): Promise<GuildLogs | null> {
-        // const json = await redis.logConfigs.getEx(guildId, { EX: 60 * 10 })
-        // if(json) return JSON.parse(json) as GuildLogs
-
         const logs = cache.logConfigs.get<GuildLogs>(guildId)
         if(logs) return logs
 
@@ -31,7 +28,6 @@ class LogsModule extends BaseModule {
         if(!document) return this.create(guildId)
 
         const config = document.toObject()
-        // await redis.logConfigs.setEx(guildId, 60 * 10, JSON.stringify(config))
         cache.logConfigs.set(guildId, config)
         return config
     }
@@ -47,7 +43,6 @@ class LogsModule extends BaseModule {
         if(!document) return null
 
         const config = document.toObject()
-        // await redis.logConfigs.setEx(guildId, 60 * 10, JSON.stringify(config))
         cache.logConfigs.set<GuildLogs>(guildId, config)
         return config
     }
@@ -64,7 +59,6 @@ class LogsModule extends BaseModule {
         if(!document) return null
 
         const config = document.toObject()
-        // await redis.logConfigs.setEx(guildId, 60 * 10, JSON.stringify(config))
         cache.logConfigs.set<GuildLogs>(guildId, config)
         return config
     }
@@ -76,7 +70,6 @@ class LogsModule extends BaseModule {
         const config = document.toObject()
         delete config._id
         delete config.__v
-        // await redis.logConfigs.setEx(guildId, 60 * 10, JSON.stringify(config))
         cache.logConfigs.set<GuildLogs>(guildId, config)
         return config
     }

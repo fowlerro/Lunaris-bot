@@ -51,16 +51,12 @@ class AutoRoleModule extends BaseModule {
     }
 
     async get(guildId: Snowflake): Promise<AutoRole | null> {
-        // const json = await redis.autoRoles.getEx(guildId, { EX: 60 * 10 })
-        // if(json) return JSON.parse(json) as AutoRole
-
         const cachedConfig = cache.autoRoles.get<AutoRole>(guildId)
         if(cachedConfig) return cachedConfig
         
         const configDocument = await AutoRoleModel.findOne({ guildId }, '-_id -__v').catch(logger.error)
         if(!configDocument) return this.create(guildId)
 
-        // await redis.autoRoles.setEx(guildId, 60 * 10, JSON.stringify(configDocument.toObject()))
         cache.autoRoles.set(guildId, configDocument.toObject())
 
         return configDocument.toObject() as AutoRole
@@ -74,7 +70,6 @@ class AutoRoleModule extends BaseModule {
         delete config._id
         delete config.__v
         
-        // const res = await redis.autoRoles.setEx(autoRole.guildId, 60 * 10, JSON.stringify(config))
         cache.autoRoles.set(autoRole.guildId, config)
         return config
     }
@@ -87,7 +82,6 @@ class AutoRoleModule extends BaseModule {
         delete config._id
         delete config.__v
 
-        // await redis.autoRoles.setEx(guildId, 60 * 10, JSON.stringify(config))
         cache.autoRoles.set(guildId, config)
         return config as AutoRole
     }
