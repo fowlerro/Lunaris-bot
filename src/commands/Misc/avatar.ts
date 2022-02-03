@@ -15,7 +15,7 @@ export default class AvatarCommand extends BaseCommand {
     }
 
     async run(interaction: ContextMenuInteraction) {
-        const targetMember = await interaction.guild?.members.fetch(interaction.targetId).catch(console.error)
+        const targetMember = await interaction.guild?.members.fetch(interaction.targetId).catch(logger.error)
         if(!targetMember) return
         const avatarURL = targetMember.user.displayAvatarURL({ size: 256, dynamic: true })
 
@@ -25,6 +25,6 @@ export default class AvatarCommand extends BaseCommand {
 
         interaction.reply({
             embeds: [embed]
-        })
+        }).catch(logger.error)
     }
 }

@@ -68,7 +68,7 @@ export default class EmojiCommand extends BaseCommand {
             const url = interaction.options.getString('url', true)
             const name = interaction.options.getString('name', true)
 
-            const newEmoji = await interaction.guild.emojis.create(url, name).catch(console.error)
+            const newEmoji = await interaction.guild.emojis.create(url, name).catch(logger.error)
             if(!newEmoji) return handleCommandError(interaction, 'general.error')
 
             const description = t('command.emoji.add', language, { emojiName: name })
@@ -79,17 +79,17 @@ export default class EmojiCommand extends BaseCommand {
     
             return interaction.reply({
                 embeds: [embed]
-            }).catch(console.error)
+            }).catch(logger.error)
         }
 
         if(subcommand === 'delete') {
             const emojiId = interaction.options.getString('emoji', true)
             const reason = interaction.options.getString('reason') || undefined
 
-            const emoji = await interaction.guild.emojis.fetch(emojiId).catch(console.error)
+            const emoji = await interaction.guild.emojis.fetch(emojiId).catch(logger.error)
             if(!emoji || !emoji.deletable) return handleCommandError(interaction, 'command.emoji.notDeletable')
 
-            const deletedEmoji = await emoji.delete(reason).catch(console.error)
+            const deletedEmoji = await emoji.delete(reason).catch(logger.error)
             if(!deletedEmoji) return handleCommandError(interaction, 'general.error')
             const description = t('command.emoji.delete', language, { emojiName: deletedEmoji.name || "" })
 
@@ -99,13 +99,13 @@ export default class EmojiCommand extends BaseCommand {
 
             return interaction.reply({
                 embeds: [embed]
-            }).catch(console.error)
+            }).catch(logger.error)
         }
     }
 
     async autocomplete(interaction: AutocompleteInteraction) {
         const inputEmoji = interaction.options.getString('emoji', true)
-        const guildEmojis = await interaction.guild?.emojis.fetch().catch(console.error)
+        const guildEmojis = await interaction.guild?.emojis.fetch().catch(logger.error)
         const emoji = guildEmojis?.filter(emoji => (emoji.name?.includes(inputEmoji) || false))
 
         const options = emoji?.map(emoji => ({
@@ -113,6 +113,6 @@ export default class EmojiCommand extends BaseCommand {
             value: emoji.id
         }))!
 
-        return interaction.respond(options.splice(0, 25)).catch(console.error)
+        return interaction.respond(options.splice(0, 25)).catch(logger.error)
     }
 }

@@ -129,7 +129,7 @@ export function getLocale(guildLocale: string | null): Language {
 export async function getAuditLog<T extends GuildAuditLogsAction>(guild: Guild, type: T, find: (log: GuildAuditLogsEntry<T>) => boolean, noSleep: boolean = false): Promise<GuildAuditLogsEntry<T> | null> {
     if(!guild.me?.permissions.has(Permissions.FLAGS.VIEW_AUDIT_LOG)) return null
     if(!noSleep) await sleep(500)
-    const auditLogs = await guild.fetchAuditLogs({ type, limit: 5 }).catch(console.error)
+    const auditLogs = await guild.fetchAuditLogs({ type, limit: 5 }).catch(logger.error)
     if(!auditLogs) return null
     const log = auditLogs.entries.find(log => find(log) && Date.now() - log.createdTimestamp < 5000)
     if(!log) return null

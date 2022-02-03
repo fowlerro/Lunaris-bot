@@ -12,9 +12,10 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (discordId: Snowflake, done) => {
     try {
-        const user = await UserModel.findOne({ discordId });
+        const user = await UserModel.findOne({ discordId })
         return user ? done(null, user) : done(null, null);
-    } catch(err) {
+    } catch(err: any) {
+        logger.error(err)
         done(err, null);
     }
 })
@@ -33,12 +34,12 @@ passport.use(new DiscordStrategy({
         const findUser = await UserModel.findOneAndUpdate({ discordId: id }, {
             discordTag: `${username}#${Number(discriminator)}`,
             avatar,
-        }, {new: true});
+        }, {new: true})
 
         const findCredentials = await OAuth2CredentialsModel.findOneAndUpdate({ discordId: id }, {
             accessToken: encryptedAccessToken,
             refreshToken: encryptedRefreshToken,
-        });
+        })
     
         if(findUser) {
             if(!findCredentials) {
@@ -63,6 +64,7 @@ passport.use(new DiscordStrategy({
             return done(null, newUser);
         }
     } catch(err: any) {
+        logger.error(err)
         return done(err, undefined);
     }
 }));

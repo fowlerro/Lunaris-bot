@@ -26,7 +26,7 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
+    }).catch(logger.error)
 }
 
 async function selectedAction(interaction: CommandInteraction, language: Language, action: WelcomeMessageAction) {
@@ -44,7 +44,7 @@ async function selectedAction(interaction: CommandInteraction, language: Languag
 
     return interaction.reply({
         embeds: [checkedEmbed.pages[0]]
-    }).catch(console.error)
+    }).catch(logger.error)
 }
 
 

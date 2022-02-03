@@ -23,7 +23,8 @@ async function serverLogs(oldEmoji: GuildEmoji, newEmoji: GuildEmoji) {
     const log = await getAuditLog(newEmoji.guild, 'EMOJI_UPDATE', (log) => (log.target?.id === newEmoji.id))
     if(!log || !log.executor) return
 
-    newEmoji.author = await newEmoji.fetchAuthor()
+    newEmoji.author = await newEmoji.fetchAuthor().catch(logger.error) || null
+    if(!newEmoji.author) return
 
     Logs.log('emojis', 'edit', newEmoji.guild.id, { 
         emoji: newEmoji,

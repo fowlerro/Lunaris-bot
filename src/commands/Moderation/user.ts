@@ -17,7 +17,7 @@ export default class UserInfoCommand extends BaseCommand {
     }
 
     async run(interaction: ContextMenuInteraction) {
-        const targetMember = await interaction.guild?.members.fetch(interaction.targetId).catch(console.error)
+        const targetMember = await interaction.guild?.members.fetch(interaction.targetId).catch(logger.error)
         if(!targetMember) return handleCommandError(interaction, 'general.error')
 
         const language = getLocale(interaction.guildLocale)
@@ -39,6 +39,6 @@ export default class UserInfoCommand extends BaseCommand {
 
         return interaction.reply({
             embeds: [embed]
-        }).catch(console.error)
+        }).catch(logger.error)
     }
 }

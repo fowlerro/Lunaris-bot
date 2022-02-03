@@ -10,7 +10,7 @@ class ModModule extends BaseModule {
     }
 
     async run() {
-        console.log(this.getName())
+        logger.info(this.getName())
         await registerBans()
     }
 

@@ -10,7 +10,7 @@ export default async (interaction: CommandInteraction) => {
 
     const page = interaction.options.getInteger('page') || 1
 
-    const bans = await interaction.guild?.bans.fetch().catch(console.error)
+    const bans = await interaction.guild?.bans.fetch().catch(logger.error)
     if(!bans) return handleCommandError(interaction, 'general.error')
 
     const fields: EmbedFieldData[] = bans.map(ban => ({

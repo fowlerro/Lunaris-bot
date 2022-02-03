@@ -19,7 +19,7 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
+    }).catch(logger.error)
 }
 
 async function sendMultiplier(interaction: CommandInteraction) {
@@ -33,5 +33,5 @@ async function sendMultiplier(interaction: CommandInteraction) {
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
+    }).catch(logger.error)
 }

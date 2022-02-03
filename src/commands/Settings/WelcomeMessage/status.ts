@@ -22,7 +22,7 @@ export default async (interaction: CommandInteraction) => {
         welcomeConfig.status = status
         const saved = await WelcomeMessageModel.findOneAndUpdate({ guildId: interaction.guildId }, { 
             status
-        }, { new: true, upsert: true, runValidators: true }).catch(console.error)
+        }, { new: true, upsert: true, runValidators: true }).catch(logger.error)
         if(!saved) return handleCommandError(interaction, 'general.error')
         await WelcomeMessage.setCache(saved)
         return set(interaction, language, status)
@@ -38,7 +38,7 @@ function alreadySet(interaction: CommandInteraction, language: Language, status:
     
     return interaction.reply({
         embeds: [embed]
-    })
+    }).catch(logger.error)
 }
 
 function set(interaction: CommandInteraction, language: Language, status: boolean) {
@@ -48,12 +48,12 @@ function set(interaction: CommandInteraction, language: Language, status: boolea
 
     return interaction.reply({
         embeds: [embed]
-    })
+    }).catch(logger.error)
 }
 
 async function displayStatus(interaction: CommandInteraction, language: Language, welcomeConfig: WelcomeMessageType) {
-    const channelJoin = welcomeConfig.channels.join && await interaction.guild?.channels.fetch(welcomeConfig.channels.join).catch(() => {})
-    const channelLeave = welcomeConfig.channels.leave && await interaction.guild?.channels.fetch(welcomeConfig.channels.leave).catch(() => {})
+    const channelJoin = welcomeConfig.channels.join && await interaction.guild?.channels.fetch(welcomeConfig.channels.join).catch(logger.error)
+    const channelLeave = welcomeConfig.channels.leave && await interaction.guild?.channels.fetch(welcomeConfig.channels.leave).catch(logger.error)
     const list = await WelcomeMessage.list(interaction.guildId!)
     if(!list) return handleCommandError(interaction, 'general.error')
     const formattedList = formatWelcomeMessageList(list, language)
@@ -73,5 +73,5 @@ async function displayStatus(interaction: CommandInteraction, language: Language
     
     return interaction.reply({
         embeds: [checkedEmbed.pages[0]]
-    })
+    }).catch(logger.error)
 }

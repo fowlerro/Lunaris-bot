@@ -18,5 +18,5 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
+    }).catch(logger.error)
 }

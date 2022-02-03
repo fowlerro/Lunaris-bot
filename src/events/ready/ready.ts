@@ -7,7 +7,7 @@ export default class ReadyEvent extends BaseEvent {
 	}
 
 	async run() {
-		console.log(client.user?.tag + ' has logged in.');
+		logger.info(client.user?.tag + ' has logged in.');
 		await registerPresence();
 	}
 }

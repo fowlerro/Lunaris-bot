@@ -10,7 +10,7 @@ export default async (interaction: CommandInteraction) => {
     const userId = interaction.options.getString('user-id', true)
     if(isNaN(+userId) || userId.length !== 18) return handleCommandError(interaction, 'command.wrongId')
 
-    const member = userId && await client.users.fetch(userId)
+    const member = userId && await client.users.fetch(userId).catch(logger.error)
     if(!member || !('id' in member)) return handleCommandError(interaction, 'command.ban.notFound')
 
     const reason = interaction.options.getString('reason') || undefined
@@ -29,19 +29,19 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({ 
         embeds: [embed]
-    }).catch(console.error)
+    }).catch(logger.error)
 }
 
 export async function removeAutocomplete(interaction: AutocompleteInteraction) {
     if(!interaction.guildId || !interaction.guild) return
     const input = interaction.options.getString('user-id', true)
-    const bans = await interaction.guild.bans.fetch().catch(console.error)
-    if(!bans) return interaction.respond([]).catch(console.error)
+    const bans = await interaction.guild.bans.fetch().catch(logger.error)
+    if(!bans) return interaction.respond([]).catch(logger.error)
 
     const options = bans.map(ban => ({
         name: `${ban.user.tag} (${ban.user.id})`,
         value: ban.user.id
     })).filter(option => option.name.includes(input))
 
-    return interaction.respond(options?.splice(0, 25) || []).catch(console.error)
+    return interaction.respond(options?.splice(0, 25) || []).catch(logger.error)
 }

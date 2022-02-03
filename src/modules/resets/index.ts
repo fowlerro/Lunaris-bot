@@ -13,7 +13,7 @@ class ResetModule extends BaseModule {
 }
 
 async function dailyReset() {
-    console.log(new Date().toLocaleString('pl-PL'), 'Daily reset');
+    logger.info(new Date().toLocaleString('pl-PL'), 'Daily reset');
     await Levels.resetDailyXp();
 }
 

@@ -20,7 +20,7 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
+    }).catch(logger.error)
 }
 
 export async function removeAutocomplete(interaction: AutocompleteInteraction) {
@@ -34,12 +34,12 @@ export async function removeAutocomplete(interaction: AutocompleteInteraction) {
     const sortedRewards = levelConfig.rewards[scope === 'voice' ? 'voice' : 'text'].sort((a, b) => b.level - a.level)
 
     const options = await Promise.all(sortedRewards.map(async reward => {
-        const role = reward.roleId ? await interaction.guild?.roles.fetch(reward.roleId).catch(console.error) : null
+        const role = reward.roleId ? await interaction.guild?.roles.fetch(reward.roleId).catch(logger.error) : null
         return {
             name: `Level: ${reward.level}, ${t('general.role', language)}: ${role ? role.name : t('general.none', language)}, ${t('command.level.rewards.takePreviousRole', language)}: ${t(`general.${reward.takePreviousRole ? 'yes' : 'no'}`, language)}`,
             value: reward._id!
         }
     }))
 
-    return interaction.respond(options.splice(0, 25)).catch(console.error)
+    return interaction.respond(options.splice(0, 25)).catch(logger.error)
 }

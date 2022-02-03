@@ -23,7 +23,7 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
+    }).catch(logger.error)
 }
 
 async function displayChannel(interaction: CommandInteraction) {
@@ -43,5 +43,5 @@ async function displayChannel(interaction: CommandInteraction) {
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
+    }).catch(logger.error)
 }

@@ -99,7 +99,7 @@ export default class MuteCommand extends BaseCommand {
                 
             return interaction.reply({
                 embeds: [embed]
-            }).catch(console.error)
+            }).catch(logger.error)
         }
 
         if(subcommand === 'remove') {
@@ -122,7 +122,7 @@ export default class MuteCommand extends BaseCommand {
 
             return interaction.reply({
                 embeds: [embed]
-            }).catch(console.error)
+            }).catch(logger.error)
         }
     }
 }

@@ -90,7 +90,7 @@ export default class ColorCommand extends BaseCommand {
 
             return interaction.reply({
                 embeds: [embed]
-            }).catch(console.error)
+            }).catch(logger.error)
         }
 
         if(subcommand === 'show') {
@@ -126,7 +126,7 @@ export default class ColorCommand extends BaseCommand {
             return interaction.reply({
                 files: [attachment],
                 embeds: [embed],
-            }).catch(console.error)
+            }).catch(logger.error)
         }
     }
 }

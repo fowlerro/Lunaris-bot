@@ -31,7 +31,7 @@ async function scopedList(interaction: CommandInteraction, rewardList: LevelRewa
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
+    }).catch(logger.error)
 }
 
 async function fullList(interaction: CommandInteraction, rewardList: LevelRewards) {
@@ -50,5 +50,5 @@ async function fullList(interaction: CommandInteraction, rewardList: LevelReward
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
+    }).catch(logger.error)
 }

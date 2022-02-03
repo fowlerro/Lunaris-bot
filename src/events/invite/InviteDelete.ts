@@ -1,8 +1,8 @@
-import { Invite, Permissions } from "discord.js"
+import { Invite } from "discord.js"
 
 import BaseEvent from "../../utils/structures/BaseEvent"
 import Logs from "../../modules/Logs"
-import { getAuditLog, sleep } from "../../utils/utils"
+import { getAuditLog } from "../../utils/utils"
 export default class InviteDeleteEvent extends BaseEvent {
     constructor() {
         super('inviteDelete')
@@ -17,7 +17,7 @@ export default class InviteDeleteEvent extends BaseEvent {
 }
 
 async function serverLogs(invite: Invite) {
-    const guild = await invite.guild?.fetch().catch(console.error)
+    const guild = await invite.guild?.fetch().catch(logger.error)
     if(!guild) return
     
     const log = await getAuditLog(guild, 'INVITE_DELETE', (log) => (log.target.code === invite.code))

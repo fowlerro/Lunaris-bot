@@ -46,6 +46,6 @@ export default class ProfileCommand extends BaseCommand {
 
         return interaction.reply({
             files: [profileCardBuffer]
-        }).catch(console.error)
+        }).catch(logger.error)
     }
 }

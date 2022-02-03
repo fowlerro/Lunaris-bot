@@ -106,7 +106,7 @@ export default class WarnCommand extends BaseCommand {
             
             return interaction.reply({
                 embeds: [embed]
-            })
+            }).catch(logger.error)
         }
 
         if(subcommand === 'remove') {
@@ -131,7 +131,7 @@ export default class WarnCommand extends BaseCommand {
             
             return interaction.reply({
                 embeds: [embed]
-            }).catch(console.error)
+            }).catch(logger.error)
         }
 
         if(subcommand === 'remove-all') {
@@ -144,7 +144,7 @@ export default class WarnCommand extends BaseCommand {
 
             return interaction.reply({
                 embeds: [embed]
-            }).catch(console.error)
+            }).catch(logger.error)
         }
 
         if(subcommand === 'list') {
@@ -163,12 +163,12 @@ export default class WarnCommand extends BaseCommand {
                         
                         let executor = warn.executorId
                         if(!isNaN(+executor)) {
-                            const executorUser = await client.users.fetch(executor).catch(console.error)
+                            const executorUser = await client.users.fetch(executor).catch(logger.error)
                             if(!executorUser) return
                             executor = executorUser.tag
                         }
 
-                        const user = await client.users.fetch(profile.userId).catch(console.error)
+                        const user = await client.users.fetch(profile.userId).catch(logger.error)
                         if(!user) return
                         const userNick = user.tag
     
@@ -185,7 +185,7 @@ export default class WarnCommand extends BaseCommand {
 
                     let executor = profile.executorId
                         if(!isNaN(+executor)) {
-                            const executorUser = await client.users.fetch(executor).catch(() => {})
+                            const executorUser = await client.users.fetch(executor).catch(logger.error)
                             if(!executorUser) return
                             executor = executorUser.tag
                         }
@@ -219,7 +219,7 @@ export default class WarnCommand extends BaseCommand {
     async autocomplete(interaction: AutocompleteInteraction) {
         if(!interaction.guildId || !interaction.guild) return
         const memberId = interaction.options.get('member', true).value as string
-        const member = await interaction.guild.members.fetch(memberId).catch(console.error)
+        const member = await interaction.guild.members.fetch(memberId).catch(logger.error)
 
         const language = getLocale(interaction.guildLocale)
 
@@ -236,6 +236,6 @@ export default class WarnCommand extends BaseCommand {
 
         options.unshift({ name: t('command.warn.optionAll', language), value: 'targetAll' })
 
-        return interaction.respond(options.splice(0, 25)).catch(console.error)
+        return interaction.respond(options.splice(0, 25)).catch(logger.error)
     }
 }

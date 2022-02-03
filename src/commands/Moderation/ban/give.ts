@@ -13,7 +13,7 @@ export default async (interaction: CommandInteraction) => {
     const userId = interaction.options.getString('user-id')
     if(userId && (isNaN(+userId) || userId.length !== 18)) return handleCommandError(interaction, 'command.wrongId')
 
-    const member = interaction.options.getMember('member') || (userId && await client.users.fetch(userId))
+    const member = interaction.options.getMember('member') || (userId && await client.users.fetch(userId).catch(logger.error))
     if(!member || !('id' in member)) return handleCommandError(interaction, 'command.ban.notFound')
 
     const userTime = interaction.options.getString('time')
@@ -38,5 +38,5 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
+    }).catch(logger.error)
 }

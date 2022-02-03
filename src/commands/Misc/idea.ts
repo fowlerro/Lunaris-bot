@@ -31,17 +31,17 @@ export default class IdeaCommand extends BaseCommand {
         const language = getLocale(interaction.guildLocale)
         const description = interaction.options.getString('description', true)
 
-        const newIdea = await IdeaModel.create({ description }).catch(console.error)
+        const newIdea = await IdeaModel.create({ description }).catch(logger.error)
         if(!newIdea) return handleCommandError(interaction, 'general.error')
 
         interaction.reply({
             content: t('command.idea.submitted', language)
-        }).catch(console.error)
+        }).catch(logger.error)
 
-        const testGuild = await client.guilds.fetch(testGuildId).catch(console.error)
+        const testGuild = await client.guilds.fetch(testGuildId).catch(logger.error)
         if(!testGuild) return
         const ideaChannelId = "921827277203992686"
-        const ideaChannel = (await testGuild.channels.fetch(ideaChannelId).catch(console.error)) as TextChannel | null | void
+        const ideaChannel = (await testGuild.channels.fetch(ideaChannelId).catch(logger.error)) as TextChannel | null | void
         if(!ideaChannel) return handleCommandError(interaction, 'general.error')
 
         const embed = new MessageEmbed()
@@ -50,6 +50,6 @@ export default class IdeaCommand extends BaseCommand {
 
         ideaChannel.send({
             embeds: [embed]
-        }).catch(console.error)
+        }).catch(logger.error)
     }
 }

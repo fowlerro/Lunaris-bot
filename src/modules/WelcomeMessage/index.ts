@@ -27,13 +27,13 @@ class WelcomeMessageModule extends BaseModule {
         const actionFormats = formats.filter(format => format.action === action)
         if(!actionFormats.length) return
 
-        const channel = await guild.channels.fetch(channels[action]).catch(() => {})
+        const channel = await guild.channels.fetch(channels[action]).catch(logger.error)
         if(!channel || !channel.isText()) return
 
         const welcomeMessage = actionFormats[Math.floor(Math.random() * actionFormats.length)]
         const formattedWelcomeMessage = TextFormatter(welcomeMessage.message, { member, guild })
 
-        return channel.send({ content: formattedWelcomeMessage }).catch(() => {})
+        return channel.send({ content: formattedWelcomeMessage }).catch(logger.error)
     }
 
     async get(guildId: Snowflake) {
@@ -41,7 +41,7 @@ class WelcomeMessageModule extends BaseModule {
         const json = await redis.welcomeMessages.getEx(guildId, { EX: 60 * 10 })
         if(json) return JSON.parse(json) as WelcomeMessage
 
-        const document = await WelcomeMessageModel.findOne({ guildId }).catch((e) => { console.log(e) })
+        const document = await WelcomeMessageModel.findOne({ guildId }).catch(logger.error)
         if(!document) return this.create(guildId)
 
         await this.setCache(document)
@@ -52,7 +52,7 @@ class WelcomeMessageModule extends BaseModule {
         if(!guildId) return
         const config = await WelcomeMessageModel.findOneAndUpdate({ guildId }, {
             $push: { formats: format }
-        }, { upsert: true, new: true }).catch(() => {})
+        }, { upsert: true, new: true, runValidators: true }).catch(logger.error)
         if(!config) return
 
         await this.setCache(config)
@@ -68,7 +68,7 @@ class WelcomeMessageModule extends BaseModule {
                     action: format.action
                 }
             }
-        }, { new: true }).catch(() => {})
+        }, { new: true }).catch(logger.error)
         if(!config) return
         await this.setCache(config)
         return config
@@ -79,7 +79,7 @@ class WelcomeMessageModule extends BaseModule {
         const channel = `channels.${action}`
         const config = await WelcomeMessageModel.findOneAndUpdate({ guildId }, {
             [channel]: textChannelId || null
-        }, { upsert: true, new: true }).catch(() => {})
+        }, { upsert: true, new: true, runValidators: true }).catch(logger.error)
         if(!config) return
         await this.setCache(config)
         return config
@@ -107,7 +107,7 @@ class WelcomeMessageModule extends BaseModule {
     }
 
     async create(guildId: Snowflake) {
-        const document = await WelcomeMessageModel.create({ guildId }).catch(e => { console.log(e) })
+        const document = await WelcomeMessageModel.create({ guildId }).catch(logger.error)
         if(!document) return
 
         await this.setCache(document)

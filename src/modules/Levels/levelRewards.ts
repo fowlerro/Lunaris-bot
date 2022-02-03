@@ -14,18 +14,18 @@ export default async (profile: GuildProfileDocument, isText: boolean) => {
     const rewardsAtLevel = rewards.filter(reward => reward.level === profileLevel)
     if(!rewardsAtLevel.length) return
 
-    const guild = await client.guilds.fetch(profile.guildId).catch(console.error)
+    const guild = await client.guilds.fetch(profile.guildId).catch(logger.error)
     if(!guild) return
-    const member = await guild.members.fetch(profile.userId).catch(console.error)
+    const member = await guild.members.fetch(profile.userId).catch(logger.error)
     if(!member) return
     const language = getLocale(guild.preferredLocale)
 
     rewardsAtLevel.forEach(async reward => {
         if(!reward.roleId) return
 
-        const role = await guild.roles.fetch(reward.roleId).catch(console.error)
+        const role = await guild.roles.fetch(reward.roleId).catch(logger.error)
         if(!role) return
-        await member.roles.add(role, t('modules.level.rewardRoleAddReason', language)).catch(console.error)
+        await member.roles.add(role, t('modules.level.rewardRoleAddReason', language)).catch(logger.error)
     })
 
     if(rewardsAtLevel.some(reward => reward.takePreviousRole)) {
@@ -37,9 +37,9 @@ export default async (profile: GuildProfileDocument, isText: boolean) => {
         rewardsToTake.forEach(async reward => {
             if(!reward.roleId) return
 
-            const role = await guild.roles.fetch(reward.roleId).catch(console.error)
+            const role = await guild.roles.fetch(reward.roleId).catch(logger.error)
             if(!role) return
-            await member.roles.remove(role, t('modules.level.rewardRoleRemoveReason', language)).catch(console.error)
+            await member.roles.remove(role, t('modules.level.rewardRoleRemoveReason', language)).catch(logger.error)
         })
     }
 }

@@ -38,11 +38,11 @@ export async function registerCommands(dir = '') {
 				const globalCommand = globalCommands?.find(cmd => cmd.name === command.name)
 				if(!globalCommand || !globalCommand.equals(commandOptions)) {
 					command.test ? await guild.commands.create(commandOptions) : await client.application?.commands.create(commandOptions)
-					console.log(`Command '${command.name}' created!`)
+					logger.info(`Command '${command.name}' created!`)
 				}
 				// await guild.commands.create(commandOptions)
 				client.commands.set(command.name, command)
-				console.log(`Command '${command.name}' loaded!`)
+                logger.info(`Command '${command.name} loaded!'`)
 			}
 		}
 	}

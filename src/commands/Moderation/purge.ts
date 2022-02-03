@@ -50,7 +50,7 @@ export default class PurgeCommand extends BaseCommand {
 
         const language = getLocale(interaction.guildLocale)
 
-        let fetched = await channel.messages.fetch({ limit: user ? 100 : count }, { cache: false }).catch(console.error)
+        let fetched = await channel.messages.fetch({ limit: user ? 100 : count }, { cache: false }).catch(logger.error)
         if(!fetched) return handleCommandError(interaction, 'general.error')
         if(user) {
             let filterCount = 0;
@@ -59,7 +59,7 @@ export default class PurgeCommand extends BaseCommand {
                 return filterCount <= count;
             })
         }
-        const deletedMessages = await channel.bulkDelete(fetched, true).catch(console.error) // TODO Returning inproper messages collection
+        const deletedMessages = await channel.bulkDelete(fetched, true).catch(logger.error) // TODO Returning inproper messages collection
         if(!deletedMessages) return handleCommandError(interaction, 'general.error')
 
         const descriptionType = user && interaction.options.getChannel('channel') ? 'user-channel' : user ? 'user' : interaction.options.getChannel('channel') ? 'channel' : 'default'
@@ -70,6 +70,6 @@ export default class PurgeCommand extends BaseCommand {
 
         return interaction.reply({
             embeds: [embed]
-        }).catch(console.error)
+        }).catch(logger.error)
     }
 }

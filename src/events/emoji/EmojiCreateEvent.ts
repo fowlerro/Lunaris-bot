@@ -16,6 +16,7 @@ export default class EmojiCreatedEvent extends BaseEvent {
 }
 
 async function serverLogs(emoji: GuildEmoji) {
-    emoji.author = await emoji.fetchAuthor()
+    emoji.author = await emoji.fetchAuthor().catch(logger.error) || null
+    if(!emoji.author) return
     Logs.log('emojis', 'create', emoji.guild.id, { emoji })
 }

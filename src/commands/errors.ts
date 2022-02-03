@@ -14,5 +14,5 @@ export async function handleCommandError(interaction: CommandInteraction | Conte
     return interaction.reply({
         embeds: [embed],
         ephemeral
-    }).catch(console.error)
+    }).catch(logger.error)
 }

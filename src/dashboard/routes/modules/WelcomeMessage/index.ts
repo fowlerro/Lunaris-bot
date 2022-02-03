@@ -13,9 +13,9 @@ router.get('/get', async (req: Request<{ guildId: string }>, res) => {
     if(!userId) return res.sendStatus(401)
     if(!guildId) return res.sendStatus(400)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(400)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
     const welcomeMessageConfig = await WelcomeMessage.get(guildId)
@@ -32,9 +32,9 @@ router.put('/update', async (req: Request<{ guildId: string }>, res) => {
     if(!guildId) return res.sendStatus(400)
 
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(400)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
     if(typeof status !== 'boolean') return res.sendStatus(400)
@@ -45,7 +45,7 @@ router.put('/update', async (req: Request<{ guildId: string }>, res) => {
 
     const updated = await WelcomeMessageModel.findOneAndUpdate({ guildId }, {
         status, channels, formats
-    }, { upsert: true, new: true }).catch(() => {})
+    }, { upsert: true, new: true, runValidators: true }).catch(logger.error)
     if(!updated) return res.sendStatus(500)
 
     await WelcomeMessage.setCache(updated)
@@ -60,9 +60,9 @@ router.put('/switch', async (req: Request<{ guildId: string }>, res) => {
     if(!userId) return res.sendStatus(401)
     if(!guildId || typeof status !== 'boolean') return res.sendStatus(400)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(400)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
     const updated = await WelcomeMessage.get(guildId)
@@ -70,7 +70,7 @@ router.put('/switch', async (req: Request<{ guildId: string }>, res) => {
 
     const saved = await WelcomeMessageModel.findOneAndUpdate({ guildId }, {
         status
-    }, { new: true, upsert: true, runValidators: true }).catch(e => console.log(e))
+    }, { new: true, upsert: true, runValidators: true }).catch(logger.error)
     if(!saved) return res.sendStatus(500)
 
     await WelcomeMessage.setCache(saved)
@@ -87,9 +87,9 @@ router.put('/add', async (req: Request<{ guildId: string }>, res) => {
     if(!WelcomeMessage.supportedActions.includes(welcomeMessage.action)) return res.sendStatus(400)
     if(typeof welcomeMessage.message !== 'string') return res.sendStatus(400)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(400)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
     const updated = await WelcomeMessage.add(guildId, welcomeMessage)
@@ -107,9 +107,9 @@ router.put('/delete', async (req: Request<{ guildId: string }>, res) => {
     if(!WelcomeMessage.supportedActions.includes(welcomeMessage.action)) return res.sendStatus(400)
     if(typeof welcomeMessage.message !== 'string') return res.sendStatus(400)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(400)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
     const updated = await WelcomeMessage.delete(guildId, welcomeMessage)
@@ -127,9 +127,9 @@ router.put('/channel', async (req: Request<{ guildId: string }>, res) => {
     if(!WelcomeMessage.supportedActions.includes(action)) return res.sendStatus(400)
     if(typeof channelId !== 'string' || typeof channelId !== null || (typeof channelId === 'string' && channelId.length !== 18)) return res.sendStatus(400)
 
-    const guild = await client.guilds.fetch(guildId).catch(() => {})
+    const guild = await client.guilds.fetch(guildId).catch(logger.error)
     if(!guild) return res.sendStatus(400)
-    const member = await guild.members.fetch(userId).catch(() => {})
+    const member = await guild.members.fetch(userId).catch(logger.error)
     if(!member || !member.permissions.has('MANAGE_GUILD')) return res.sendStatus(401)
 
     const updated = await WelcomeMessage.set(guildId, action, channelId)

@@ -78,25 +78,25 @@ export default class RankingCommand extends BaseCommand {
 
         interaction.editReply({
             embeds: [embed]
-        }).catch(console.error)
+        }).catch(logger.error)
     }
 }
 
 async function fetchData(sortType: string, isGlobal: boolean, guildId: Snowflake): Promise<SortedProfiles | null> {
     if(sortType === 'coins') {
-        const results = isGlobal ? await ProfileModel.find() :
+        const results = isGlobal ? await ProfileModel.find().catch(logger.error) :
             await GuildProfileModel.aggregate([
                 { $match: { guildId } },
                 { $lookup: { from: 'profiles', localField: 'userId', foreignField: 'userId', as: 'id' } },
                 { $unwind: '$id' },
                 { $replaceRoot: { newRoot: '$id' } }
-            ]).catch(console.error) as ProfileDocument[] | void
+            ]).catch(logger.error) as ProfileDocument[] | void
         if(!results) return null
 
         return { coins: results.sort((a, b) => b.coins - a.coins) }
     }
 
-    const results = isGlobal ? await ProfileModel.find().catch(console.error) as ProfileDocument[] | void : await GuildProfileModel.find({ guildId }).catch(console.error) as GuildProfileDocument[] | void
+    const results = isGlobal ? await ProfileModel.find().catch(logger.error) as ProfileDocument[] | void : await GuildProfileModel.find({ guildId }).catch(logger.error) as GuildProfileDocument[] | void
     if(!results) return null
     const sortBy = sortType === 'xp' ? 'totalXp' : 'level'
 
@@ -147,7 +147,7 @@ function formatDisplayText(sortType: string, isExecutor: boolean, position: numb
 async function formatUsername(userId: Snowflake, isGlobal: boolean) {
     let userString: string = Formatters.userMention(userId);
     if(isGlobal) {
-        const fetchedUser = await client.users.fetch(userId).catch(console.error)
+        const fetchedUser = await client.users.fetch(userId).catch(logger.error)
         if(fetchedUser) userString = fetchedUser.tag
     }
     return userString

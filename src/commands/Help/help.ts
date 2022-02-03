@@ -49,7 +49,7 @@ export default class HelpCommand extends BaseCommand {
 
             return interaction.reply({
                 embeds: [embed]
-            })
+            }).catch(logger.error)
         }
         const categoriesArray = getCommandCategories()
         const categories: any = {}
@@ -135,9 +135,10 @@ export default class HelpCommand extends BaseCommand {
         await interaction.reply({
             embeds: [embeds[categoriesArray.indexOf(defaultPage)]],
             components: [component]
-        })
+        }).catch(logger.error)
 
-        const repliedMessage = await interaction.fetchReply()
+        const repliedMessage = await interaction.fetchReply().catch(logger.error)
+        if(!repliedMessage) return
         if(!('createMessageComponentCollector' in repliedMessage)) return
 
         const menuCollector = repliedMessage.createMessageComponentCollector({ filter, time: 60000 })
@@ -154,7 +155,7 @@ export default class HelpCommand extends BaseCommand {
             selectedOption.default = true
             component.components = [menuComponent]
             
-            await interaction.update({ embeds: [embed], components: [component] });
+            await interaction.update({ embeds: [embed], components: [component] }).catch(logger.error)
         });
     }
 
@@ -167,6 +168,6 @@ export default class HelpCommand extends BaseCommand {
             value: command.name
         }))
         
-        return interaction.respond(options.splice(0, 25))
+        return interaction.respond(options.splice(0, 25)).catch(logger.error)
     }
 }

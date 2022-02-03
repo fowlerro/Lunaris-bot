@@ -27,6 +27,8 @@ export default class TestCommand extends BaseCommand {
     async run(interaction: CommandInteraction) {
         if(!interaction.guildId) return
         if(!interaction.member || !('guild' in interaction.member)) return
+
+        const chuj = await client.guilds.fetch('sadadas').catch(logger.error)
         
         interaction.reply({
             content: 'ok', 

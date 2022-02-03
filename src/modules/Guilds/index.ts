@@ -10,7 +10,7 @@ class GuildsModule extends BaseModule {
     }
 
     async run() {
-        console.log(this.getName())
+        logger.info(this.getName())
         await createNewGuildConfigs()
     }
 
@@ -19,7 +19,7 @@ class GuildsModule extends BaseModule {
             const json = await redis.guildConfigs.getEx(guildId, { EX: 60 * 5 })
             if(json) return JSON.parse(json) as GuildConfig
 
-            const document = await GuildConfigModel.findOne({ guildId }).select('-_id -__v')
+            const document = await GuildConfigModel.findOne({ guildId }).select('-_id -__v').catch(logger.error)
             if(!document) return this.config.create(guildId)
 
             const config = document.toObject()
@@ -27,15 +27,15 @@ class GuildsModule extends BaseModule {
             return config
         },
         set: async (guildId: Snowflake, toSet: any): Promise<GuildConfig | undefined> => {
-            const document = await GuildConfigModel.findOneAndUpdate({ guildId }, toSet, { new: true, upsert: true }).select('-_id -__v').catch(() => {})
+            const document = await GuildConfigModel.findOneAndUpdate({ guildId }, toSet, { new: true, upsert: true }).select('-_id -__v').catch(logger.error)
             if(!document) return
             
             const config = document.toObject()
             await redis.guildConfigs.setEx(guildId, 60 * 5, JSON.stringify(config))
-            return config;
+            return config
         },        
         create: async (guildId: Snowflake): Promise<GuildConfig | undefined> => {
-            const document = await GuildConfigModel.create({ guildId }).catch(() => {})
+            const document = await GuildConfigModel.create({ guildId }).catch(logger.error)
             if(!document) return
 
             const config = document.toObject()
@@ -47,21 +47,21 @@ class GuildsModule extends BaseModule {
         },
         delete: async (guildId: Snowflake) => {
             await redis.guildConfigs.del(guildId)
-            await GuildConfigModel.deleteOne({ guildId });
+            await GuildConfigModel.deleteOne({ guildId }).catch(logger.error)
         }
     }
 }
 
 async function createNewGuildConfigs() {
-    const allGuilds = await client.guilds.fetch().catch(() => {})
+    const allGuilds = await client.guilds.fetch().catch(logger.error)
     if(!allGuilds) return
-    const allConfigs = await GuildConfigModel.find({}, 'guildId').catch(() => {})
+    const allConfigs = await GuildConfigModel.find({}, 'guildId').catch(logger.error)
     if(!allConfigs) return
-    if(allGuilds.size <= allConfigs.length) return;
-    console.log({ allGuilds, allConfigs })
+    if(allGuilds.size <= allConfigs.length) return
+    logger.warn(JSON.stringify({ allGuilds, allConfigs }))
     
     allGuilds.forEach(async(guild) => {
-        if(allConfigs.some(g => g.guildId !== guild.id)) await GuildConfigModel.create({ guildId: guild.id }) // TODO Remove guild from allGuilds after creating config for it
+        if(allConfigs.some(g => g.guildId !== guild.id)) await GuildConfigModel.create({ guildId: guild.id }).catch(logger.error) // TODO Remove guild from allGuilds after creating config for it
     })
 }
 

@@ -21,7 +21,7 @@ export async function getBotGuilds(): Promise<Guild[]> {
 };
 
 export async function getUserGuilds(discordId: Snowflake): Promise<Guild[]> {
-    const credentials = await OAuth2CredentialsModel.findOne({ discordId });
+    const credentials = await OAuth2CredentialsModel.findOne({ discordId }).catch(logger.error)
     if(!credentials) throw new Error("No credentials.");
     const encryptedAccessToken = credentials.get('accessToken');
     const decrypted = decrypt(encryptedAccessToken);

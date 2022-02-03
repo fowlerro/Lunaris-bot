@@ -26,7 +26,7 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
+    }).catch(logger.error)
 }
 
 function alreadyToggled(interaction: CommandInteraction, language: Language, value: boolean) {
@@ -36,7 +36,7 @@ function alreadyToggled(interaction: CommandInteraction, language: Language, val
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
+    }).catch(logger.error)
 }
 
 export async function autocompleteToggle(interaction: AutocompleteInteraction) {
@@ -51,5 +51,5 @@ export async function autocompleteToggle(interaction: AutocompleteInteraction) {
         value: log
     }))
 
-    return interaction.respond(options.splice(0, 25)).catch(console.error)
+    return interaction.respond(options.splice(0, 25)).catch(logger.error)
 }

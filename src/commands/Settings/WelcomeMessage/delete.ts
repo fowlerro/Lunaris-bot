@@ -20,7 +20,7 @@ export default async (interaction: CommandInteraction) => {
 
     return interaction.reply({
         embeds: [embed]
-    }).catch(console.error)
+    }).catch(logger.error)
 }
 
 export async function deleteAutocomplete(interaction: AutocompleteInteraction) {
@@ -35,5 +35,5 @@ export async function deleteAutocomplete(interaction: AutocompleteInteraction) {
         value: welcomeMessage.message
     }))
 
-    return interaction.respond(options?.splice(0, 25) || []).catch(console.error)
+    return interaction.respond(options?.splice(0, 25) || []).catch(logger.error)
 }
