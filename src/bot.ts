@@ -9,7 +9,7 @@ import { connectDatabase } from './database/mongoose'
 import { registerCommands, registerEvents, registerModules } from './utils/registry'
 import dashboard from './dashboard/app'
 import i18nconfig, { translate } from './utils/i18n'
-import cache, { Cache, initializeCache } from './utils/cache'
+import cache, { Cache } from './utils/cache'
 import Logger from './utils/Logger'
 
 export const testGuildId = '533385524434698260'
@@ -31,17 +31,16 @@ i18n.configure(i18nconfig)
 
 declare global {
   	var client: DiscordClient
-	var redis: Cache 
+	var cache: Cache
 	var t: typeof translate
     var logger: typeof Logger
 }
 global.client = client
-global.redis = cache
+global.cache = cache
 global.t = translate
 global.logger = Logger;
 
 (async () => {
-	await initializeCache()
 	await connectDatabase()
 	
 	await registerEvents('../events')

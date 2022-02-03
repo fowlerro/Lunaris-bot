@@ -231,7 +231,7 @@ export default class WarnCommand extends BaseCommand {
 
         const options = (warns as GuildProfileWarn[]).filter(warn => (warn.reason?.includes(input) || false)).map(warn => ({
             name: `${warn.reason} | ${new Date(warn.date).toLocaleString()}`,
-            value: warn._id
+            value: warn._id.toString()
         }))
 
         options.unshift({ name: t('command.warn.optionAll', language), value: 'targetAll' })

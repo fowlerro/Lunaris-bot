@@ -9,8 +9,8 @@ import { join } from 'path';
 import cron from 'node-cron'
 
 import BaseModule from "../../utils/structures/BaseModule";
-import { GuildProfileDocument, GuildProfileModel } from '../../database/schemas/GuildProfile';
-import { ProfileDocument, ProfileModel } from '../../database/schemas/Profile';
+import { GuildProfile, GuildProfileModel } from '../../database/schemas/GuildProfile';
+import { Profile, ProfileModel } from '../../database/schemas/Profile';
 import { convertLargeNumbers } from '../../utils/utils';
 
 class ProfileModule extends BaseModule {
@@ -28,31 +28,38 @@ class ProfileModule extends BaseModule {
             this._lastSave = Date.now()
         })
     }
-
-    async get(userId: Snowflake, guildId?: Snowflake) {
+    async get(userId: Snowflake): Promise<Profile | null>;
+    async get(userId: Snowflake, guildId: Snowflake): Promise<GuildProfile | null>;
+    async get(userId: Snowflake, guildId?: Snowflake): Promise<GuildProfile | Profile | null>;
+    async get(userId: Snowflake, guildId?: Snowflake): Promise<GuildProfile | Profile | null> {
         const isGlobal = !Boolean(guildId)
-        let profile = isGlobal ?
-            await redis.profiles.get(userId) :
-            await redis.guildProfiles.get(`${guildId}-${userId}`)
-        if(profile) return JSON.parse(profile) as ProfileDocument | GuildProfileDocument
+        const profile = isGlobal ?
+            // await redis.profiles.get(userId) :
+            // await redis.guildProfiles.get(`${guildId}-${userId}`)
+            cache.profiles.get<Profile>(userId) : cache.guildProfiles.get<GuildProfile>(`${guildId}-${userId}`)
+        if(profile) return profile
         
         const dbProfile = isGlobal ? await ProfileModel.findOne({ userId }, '-_id -__v').catch(logger.error) : await GuildProfileModel.findOne({ guildId, userId }, '-_id -__v').catch(logger.error)
         if(!dbProfile) return createProfile(userId, guildId)
 
-        'guildId' in dbProfile ? await redis.guildProfiles.setEx(`${guildId}-${userId}`, 60 * 30, JSON.stringify(dbProfile))
-            : await redis.profiles.setEx(userId, 60 * 30, JSON.stringify(dbProfile))
+        // 'guildId' in dbProfile ? await redis.guildProfiles.setEx(`${guildId}-${userId}`, 60 * 30, JSON.stringify(dbProfile))
+        //     : await redis.profiles.setEx(userId, 60 * 30, JSON.stringify(dbProfile))
+        'guildId' in dbProfile ? cache.guildProfiles.set<GuildProfile>(`${guildId}-${userId}`, dbProfile.toObject())
+            : cache.profiles.set<Profile>(userId, dbProfile.toObject())
         
-        return dbProfile
+        return dbProfile.toObject()
     }
 
-    async set(profile: ProfileDocument | GuildProfileDocument) {
-        const res = 'guildId' in profile ? await redis.guildProfiles.setEx(`${profile.guildId}-${profile.userId}`, 60 * 30, JSON.stringify(profile))
-            : await redis.profiles.setEx(profile.userId, 60 * 30, JSON.stringify(profile))
+    set(profile: Profile | GuildProfile): boolean {
+        // const res = 'guildId' in profile ? await redis.guildProfiles.setEx(`${profile.guildId}-${profile.userId}`, 60 * 30, JSON.stringify(profile))
+        //     : await redis.profiles.setEx(profile.userId, 60 * 30, JSON.stringify(profile))
+        const res = 'guildId' in profile ? cache.guildProfiles.set<GuildProfile>(`${profile.guildId}-${profile.userId}`, profile)
+            : cache.profiles.set<Profile>(profile.userId, profile)
 
         return res
     }
 
-    async generateCard(member: GuildMember, guildProfile: GuildProfileDocument, globalProfile: ProfileDocument, avatarURL: string, isGlobal: boolean) {
+    async generateCard(member: GuildMember, guildProfile: GuildProfile, globalProfile: Profile, avatarURL: string, isGlobal: boolean) {
         const canvas = createCanvas(1200, 660);
         const ctx = canvas.getContext('2d');
         const profile = isGlobal ? globalProfile : guildProfile;
@@ -112,35 +119,41 @@ async function getRank(guildId: Snowflake, userId: Snowflake, xpType: 'text' | '
     return sortedProfiles.findIndex(x => x.userId === userId) + 1
 }
 
-async function createProfile(userId: Snowflake, guildId?: Snowflake) {
+async function createProfile(userId: Snowflake): Promise<Profile | null>;
+async function createProfile(userId: Snowflake, guildId: Snowflake): Promise<GuildProfile | null>;
+async function createProfile(userId: Snowflake, guildId?: Snowflake): Promise<Profile | GuildProfile | null>;
+async function createProfile(userId: Snowflake, guildId?: Snowflake): Promise<Profile | GuildProfile | null> {
     const isGlobal = !Boolean(guildId)
     const profile = isGlobal ? await ProfileModel.create({ userId }).catch(logger.error) : await GuildProfileModel.create({ userId, guildId }).catch(logger.error)
     if(!profile) return null
     delete profile._id
     delete profile.__v
-    'guildId' in profile ? await redis.guildProfiles.setEx(`${guildId}-${userId}`, 60 * 30, JSON.stringify(profile))
-        : await redis.profiles.setEx(userId, 60 * 30, JSON.stringify(profile))
-    return profile
+
+    // 'guildId' in profile ? await redis.guildProfiles.setEx(`${guildId}-${userId}`, 60 * 30, JSON.stringify(profile))
+    //     : await redis.profiles.setEx(userId, 60 * 30, JSON.stringify(profile))
+    'guildId' in profile ? cache.guildProfiles.set<GuildProfile>(`${guildId}-${userId}`, profile.toObject())
+        : cache.profiles.set<Profile>(userId, profile.toObject())
+
+    return profile.toObject()
 }
 
 async function saveProfiles(global: boolean) {
     const bulk = global ? ProfileModel.collection.initializeOrderedBulkOp() : GuildProfileModel.collection.initializeOrderedBulkOp()
     if(global) {
-        const scan = await redis.profiles.scan(0)
-        for await (const key of scan.keys) {
-            const json = await redis.profiles.get(key)
-            const profile = JSON.parse(json || "")
+        const profileKeys = cache.profiles.keys()
+        for await (const key of profileKeys) {
+            const profile = cache.profiles.get<Profile>(key)
             if(!profile) continue
 
             bulk.find({ userId: profile.userId }).replaceOne(profile)
         }
         return bulk.execute().catch(logger.error)
     }
-    const scan = await redis.guildProfiles.scan(0)
-    for await (const key of scan.keys) {
-        const json = await redis.guildProfiles.get(key)
-        const profile = JSON.parse(json || "")
+    const guildProfileKeys = cache.guildProfiles.keys()
+    for await (const key of guildProfileKeys) {
+        const profile = cache.guildProfiles.get<GuildProfile>(key)
         if(!profile) continue
+
         bulk.find({ guildId: profile.guildId, userId: profile.userId }).replaceOne(profile)
     }
     return bulk.execute().catch(logger.error)
@@ -161,7 +174,7 @@ async function drawAvatar(ctx: CanvasRenderingContext2D, avatarURL: string) {
     ctx.restore();
 }
 
-async function drawBackground(ctx: CanvasRenderingContext2D, globalProfile: ProfileDocument) {
+async function drawBackground(ctx: CanvasRenderingContext2D, globalProfile: Profile) {
     const customBackground = globalProfile.cardAppearance.customBackground
     const backgroundImage = customBackground ? await loadImage(customBackground) : await loadImage(join(__dirname, 'assets', 'backgrounds', `${globalProfile.cardAppearance.background}.svg`))
 
@@ -178,7 +191,7 @@ async function drawNickname(ctx: CanvasRenderingContext2D, member: GuildMember) 
     ctx.fillText(member.user.tag, 536+(368/2), 6+(124/2));
 }
 
-async function drawTextXPData(ctx: CanvasRenderingContext2D, profile: GuildProfileDocument | ProfileDocument, isGlobal: boolean) {
+async function drawTextXPData(ctx: CanvasRenderingContext2D, profile: GuildProfile | Profile, isGlobal: boolean) {
     ctx.fillStyle = '#FFF';
     ctx.font = `30px Roboto`;
     ctx.textAlign = 'center';
@@ -195,7 +208,7 @@ async function drawTextXPData(ctx: CanvasRenderingContext2D, profile: GuildProfi
     ctx.fillText(`#${rank}`, 76 + 71, 348 + 30, 140);
 }
 
-async function drawVoiceXPData(ctx: CanvasRenderingContext2D, profile: GuildProfileDocument | ProfileDocument, isGlobal: boolean) {
+async function drawVoiceXPData(ctx: CanvasRenderingContext2D, profile: GuildProfile | Profile, isGlobal: boolean) {
     ctx.fillStyle = '#FFF';
     ctx.font = `30px Roboto`;
     ctx.textAlign = 'center';
@@ -212,7 +225,7 @@ async function drawVoiceXPData(ctx: CanvasRenderingContext2D, profile: GuildProf
     ctx.fillText(`#${rank}`, 76 + 71, 506 + 30, 140);
 }
 
-async function drawXpBars(ctx: CanvasRenderingContext2D, profile: GuildProfileDocument | ProfileDocument) {
+async function drawXpBars(ctx: CanvasRenderingContext2D, profile: GuildProfile | Profile) {
     const barImage = await loadImage(join(__dirname, 'assets', 'elements', 'XPBar.svg'));
 
     const xpText = profile.statistics.text.xp;
@@ -235,7 +248,7 @@ async function drawXpBars(ctx: CanvasRenderingContext2D, profile: GuildProfileDo
     ctx.drawImage(barEndImage, 338 + xVoicePercentage - 36, 507, 40, 58);
 }
 
-async function drawLevelRings(ctx: CanvasRenderingContext2D, profile: GuildProfileDocument | ProfileDocument) {
+async function drawLevelRings(ctx: CanvasRenderingContext2D, profile: GuildProfile | Profile) {
 
     const xpText = profile.statistics.text.xp;
     const neededXpText = neededXp(profile.statistics.text.level);

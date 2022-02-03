@@ -7,12 +7,12 @@ import type { AutoRole } from "types";
 
 class AutoRoleModule extends BaseModule {
     constructor() {
-      super('AutoRole', true);
+        super('AutoRole', true);
     }
 
     async run() {
-    logger.info(this.getName())
-      await checkAutoRoles()
+        logger.info(this.getName())
+        await checkAutoRoles()
     }
 
     async give(member: GuildMember) {
@@ -50,36 +50,45 @@ class AutoRoleModule extends BaseModule {
         };
     }
 
-    async get(guildId: Snowflake) {
-        const json = await redis.autoRoles.getEx(guildId, { EX: 60 * 10 })
-        if(json) return JSON.parse(json) as AutoRole
+    async get(guildId: Snowflake): Promise<AutoRole | null> {
+        // const json = await redis.autoRoles.getEx(guildId, { EX: 60 * 10 })
+        // if(json) return JSON.parse(json) as AutoRole
+
+        const cachedConfig = cache.autoRoles.get<AutoRole>(guildId)
+        if(cachedConfig) return cachedConfig
         
         const configDocument = await AutoRoleModel.findOne({ guildId }, '-_id -__v').catch(logger.error)
         if(!configDocument) return this.create(guildId)
 
-        await redis.autoRoles.setEx(guildId, 60 * 10, JSON.stringify(configDocument.toObject()))
+        // await redis.autoRoles.setEx(guildId, 60 * 10, JSON.stringify(configDocument.toObject()))
+        cache.autoRoles.set(guildId, configDocument.toObject())
 
         return configDocument.toObject() as AutoRole
     }
 
-    async set(autoRole: AutoRole) {
+    async set(autoRole: AutoRole): Promise<AutoRole | null> {
         const document = await AutoRoleModel.findOneAndUpdate({ guildId: autoRole.guildId }, autoRole, { new: true, upsert: true, runValidators: true }).catch(logger.error)
-        if(!document) return
+        if(!document) return null
+
         const config = document.toObject()
         delete config._id
         delete config.__v
-        const res = await redis.autoRoles.setEx(autoRole.guildId, 60 * 10, JSON.stringify(config))
-        return res
+        
+        // const res = await redis.autoRoles.setEx(autoRole.guildId, 60 * 10, JSON.stringify(config))
+        cache.autoRoles.set(autoRole.guildId, config)
+        return config
     }
 
-    async create(guildId: Snowflake): Promise<AutoRole | undefined> {
+    async create(guildId: Snowflake): Promise<AutoRole | null> {
         const document = await AutoRoleModel.create({ guildId }).catch(logger.error)
-        if(!document) return
+        if(!document) return null
 
         const config = document.toObject()
         delete config._id
         delete config.__v
-        await redis.autoRoles.setEx(guildId, 60 * 10, JSON.stringify(config))
+
+        // await redis.autoRoles.setEx(guildId, 60 * 10, JSON.stringify(config))
+        cache.autoRoles.set(guildId, config)
         return config as AutoRole
     }
 }

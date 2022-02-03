@@ -4,7 +4,7 @@ import BaseModule from "../../utils/structures/BaseModule";
 import { GuildProfileModel } from "../../database/schemas/GuildProfile";
 import { ProfileModel } from "../../database/schemas/Profile";
 import { LevelConfigModel } from "../../database/schemas/LevelConfig";
-import type { LevelConfig, LevelReward, LevelUpMessage } from "types";
+import type { LevelConfig, LevelReward, LevelRewards, LevelUpMessage } from "types";
 
 import { handleTextXp } from "./text";
 import { handleVoiceXp } from "./voice";
@@ -16,88 +16,100 @@ class LevelsModule extends BaseModule {
 
     async run() {}
 
-    async get(guildId: Snowflake): Promise<LevelConfig | undefined> {
-        const json = await redis.levelConfigs.getEx(guildId, { EX: 60 * 5 })
-        if(json) return JSON.parse(json) as LevelConfig
+    async get(guildId: Snowflake): Promise<LevelConfig | null> {
+        // const json = await redis.levelConfigs.getEx(guildId, { EX: 60 * 5 })
+        // if(json) return JSON.parse(json) as LevelConfig
+
+        const cachedConfig = cache.levelConfigs.get<LevelConfig>(guildId)
+        if(cachedConfig) return cachedConfig
 
         const document = await LevelConfigModel.findOne({ guildId }, '-_id, -__v').catch(logger.error)
         if(!document) return this.create(guildId)
 
         const config = document.toObject()
-        await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(config))
+        // await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(config))
+        cache.levelConfigs.set<LevelConfig>(guildId, config)
         return config
     }
 
-    async create(guildId: Snowflake): Promise<LevelConfig | undefined> {
+    async create(guildId: Snowflake): Promise<LevelConfig | null> {
         const document = await LevelConfigModel.create({ guildId }).catch(logger.error)
-        if(!document) return
+        if(!document) return null
+
         const config = document.toObject()
         delete config._id
         delete config.__v
-        await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(config))
+        
+        // await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(config))
+        cache.levelConfigs.set<LevelConfig>(guildId, config)
         return config
     }
 
-    async setLevelUpMessage(guildId: Snowflake, format?: string | null): Promise<LevelConfig | undefined> {
+    async setLevelUpMessage(guildId: Snowflake, format?: string | null): Promise<LevelConfig | null> {
         const document = await LevelConfigModel.findOneAndUpdate({ guildId }, {
             levelUpMessage: {
                 messageFormat: format
             }
         }, { upsert: true, new: true, runValidators: true }).catch(logger.error)
-        if(!document) return
+        if(!document) return null
 
         const newConfig = document.toObject()
         delete newConfig._id
         delete newConfig.__v
 
-        await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        // await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        cache.levelConfigs.set<LevelConfig>(guildId, newConfig)
         return newConfig
     }
 
-    async setLevelUpChannel(guildId: Snowflake, mode: LevelUpMessage['mode'], channelId?: Snowflake): Promise<LevelConfig | undefined> {
+    async setLevelUpChannel(guildId: Snowflake, mode: LevelUpMessage['mode'], channelId?: Snowflake): Promise<LevelConfig | null> {
         const document = await LevelConfigModel.findOneAndUpdate({ guildId }, {
             levelUpMessage: {
                 mode, channelId
             }
         }, { upsert: true, new: true, runValidators: true }).catch(logger.error)
-        if(!document) return
+        if(!document) return null
         
         const newConfig = document.toObject()
         delete newConfig._id
         delete newConfig.__v
 
-        await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        // await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        cache.levelConfigs.set<LevelConfig>(guildId, newConfig)
         return newConfig
     }
 
-    async setMultiplier(guildId: Snowflake, multiplier: number): Promise<LevelConfig | undefined> {
+    async setMultiplier(guildId: Snowflake, multiplier: number): Promise<LevelConfig | null> {
         const document = await LevelConfigModel.findOneAndUpdate({ guildId }, {
             multiplier
         }, { upsert: true, new: true, runValidators: true }).catch(logger.error)
-        if(!document) return
+        if(!document) return null
 
         const newConfig = document.toObject()
         delete newConfig._id
         delete newConfig.__v
 
-        await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        // await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        cache.levelConfigs.set<LevelConfig>(guildId, newConfig)
         return newConfig
     }
 
     async addReward(guildId: Snowflake, reward: LevelReward, scope: 'text' | 'voice') {
         const config = await this.get(guildId)
-        if(!config) return
+        if(!config) return null
         if(config.rewards[scope].length >= 20) return { error: 'rewardsLimit' }
+
         const document = await LevelConfigModel.findOneAndUpdate({ guildId }, {
             $push: { [`rewards.${scope}`]: reward }
         }, { upsert: true, new: true, runValidators: true }).catch(logger.error)
-        if(!document) return
+        if(!document) return null
 
         const newConfig = document.toObject()
         delete newConfig._id
         delete newConfig.__v
 
-        await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        // await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        cache.levelConfigs.set<LevelConfig>(guildId, newConfig)
         return newConfig
     }
 
@@ -111,13 +123,17 @@ class LevelsModule extends BaseModule {
         delete newConfig._id
         delete newConfig.__v
 
-        await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        // await redis.levelConfigs.setEx(guildId, 60 * 5, JSON.stringify(newConfig))
+        cache.levelConfigs.set<LevelConfig>(guildId, newConfig)
         return newConfig
     }
 
-    async rewardList(guildId: Snowflake, scope?: 'text' | 'voice') {
+    async rewardList(guildId: Snowflake): Promise<LevelRewards | null>;
+    async rewardList(guildId: Snowflake, scope: 'text' | 'voice'): Promise<LevelReward[] | null>;
+    async rewardList(guildId: Snowflake, scope?: 'text' | 'voice'): Promise<LevelRewards | LevelReward[] | null>;
+    async rewardList(guildId: Snowflake, scope?: 'text' | 'voice'): Promise<LevelRewards | LevelReward[] | null> {
         const config = await this.get(guildId)
-        if(!config) return
+        if(!config) return null
         if(scope === 'text') return config.rewards.text
         if(scope === 'voice') return config.rewards.voice
 
@@ -141,8 +157,10 @@ class LevelsModule extends BaseModule {
             'statistics.text.dailyXp': 0,
             'statistics.voice.dailyXp': 0,
         }).catch(logger.error)
-        await redis.profiles.flushAll()
-        await redis.guildProfiles.flushAll()
+        cache.profiles.flushAll()
+        cache.guildProfiles.flushAll()
+        // await redis.profiles.flushAll()
+        // await redis.guildProfiles.flushAll()
     }
 }
 

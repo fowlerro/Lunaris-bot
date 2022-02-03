@@ -21,6 +21,7 @@ class WelcomeMessageModule extends BaseModule {
 
         const welcomeConfig = await this.get(guild.id)
         if(!welcomeConfig) return
+
         const { status, channels, formats} = welcomeConfig
         if(!status || !channels[action]) return
 
@@ -36,31 +37,35 @@ class WelcomeMessageModule extends BaseModule {
         return channel.send({ content: formattedWelcomeMessage }).catch(logger.error)
     }
 
-    async get(guildId: Snowflake) {
-        if(!guildId) return
-        const json = await redis.welcomeMessages.getEx(guildId, { EX: 60 * 10 })
-        if(json) return JSON.parse(json) as WelcomeMessage
+    async get(guildId: Snowflake): Promise<WelcomeMessage | null> {
+        if(!guildId) return null
+        // const json = await redis.welcomeMessages.getEx(guildId, { EX: 60 * 10 })
+
+        const config = await cache.welcomeMessages.get<WelcomeMessage>(guildId)
+        if(config) return config
 
         const document = await WelcomeMessageModel.findOne({ guildId }).catch(logger.error)
         if(!document) return this.create(guildId)
 
         await this.setCache(document)
-        return document.toObject() as WelcomeMessage
+        return document.toObject()
     }
 
-    async add(guildId: Snowflake, format: WelcomeMessageFormat) {
-        if(!guildId) return
+    async add(guildId: Snowflake, format: WelcomeMessageFormat): Promise<WelcomeMessage | null> {
+        if(!guildId) return null
+
         const config = await WelcomeMessageModel.findOneAndUpdate({ guildId }, {
             $push: { formats: format }
         }, { upsert: true, new: true, runValidators: true }).catch(logger.error)
-        if(!config) return
+        if(!config) return null
 
         await this.setCache(config)
-        return config
+        return config.toObject()
     }
 
-    async delete(guildId: Snowflake, format: WelcomeMessageFormat) {
-        if(!guildId) return
+    async delete(guildId: Snowflake, format: WelcomeMessageFormat): Promise<WelcomeMessage | null> {
+        if(!guildId) return null
+
         const config = await WelcomeMessageModel.findOneAndUpdate({ guildId, 'formats.message': format.message, 'formats.action': format.action }, {
             $pull: {
                 formats: {
@@ -69,20 +74,23 @@ class WelcomeMessageModule extends BaseModule {
                 }
             }
         }, { new: true }).catch(logger.error)
-        if(!config) return
+        if(!config) return null
+
         await this.setCache(config)
-        return config
+        return config.toObject()
     }
 
-    async set(guildId: Snowflake, action: WelcomeMessageAction, textChannelId?: Snowflake) {
-        if(!guildId) return
+    async set(guildId: Snowflake, action: WelcomeMessageAction, textChannelId?: Snowflake): Promise<WelcomeMessage | null> {
+        if(!guildId) return null
         const channel = `channels.${action}`
+        
         const config = await WelcomeMessageModel.findOneAndUpdate({ guildId }, {
             [channel]: textChannelId || null
         }, { upsert: true, new: true, runValidators: true }).catch(logger.error)
-        if(!config) return
+        if(!config) return null
+
         await this.setCache(config)
-        return config
+        return config.toObject()
     }
 
     async setCache(document: WelcomeMessageDocument) {
@@ -90,11 +98,12 @@ class WelcomeMessageModule extends BaseModule {
         delete config._id
         delete config.__v
 
-        return redis.welcomeMessages.setEx(config.guildId, 60 * 10, JSON.stringify(config))
+        // return redis.welcomeMessages.setEx(config.guildId, 60 * 10, JSON.stringify(config))
+        return cache.welcomeMessages.set<WelcomeMessage>(config.guildId, config)
     }
 
-    async list(guildId: Snowflake, action?: WelcomeMessageAction | null): Promise<WelcomeMessageFormat[] | GroupedWelcomeMessageFormats | undefined> {
-        if(!guildId) return
+    async list(guildId: Snowflake, action?: WelcomeMessageAction | null): Promise<WelcomeMessageFormat[] | GroupedWelcomeMessageFormats | null> {
+        if(!guildId) return null
         const config = await this.get(guildId)
         if(!config) return action ? [] as WelcomeMessageFormat[] : {} as GroupedWelcomeMessageFormats
         if(action) return config.formats.filter(format => format.action === action)
@@ -106,12 +115,12 @@ class WelcomeMessageModule extends BaseModule {
         }, {} as GroupedWelcomeMessageFormats)
     }
 
-    async create(guildId: Snowflake) {
+    async create(guildId: Snowflake): Promise<WelcomeMessage | null> {
         const document = await WelcomeMessageModel.create({ guildId }).catch(logger.error)
-        if(!document) return
+        if(!document) return null
 
         await this.setCache(document)
-        return document.toObject() as WelcomeMessage
+        return document.toObject()
     }
 }
 

@@ -25,12 +25,14 @@ interface ProfileCard {
     accent: string;
 }
 
-export interface ProfileDocument extends Document {
+export interface Profile {
     userId: Snowflake;
     coins: number;
     statistics: ProfileStatistics;
     cardAppearance: ProfileCard;
 }
+
+export interface ProfileDocument extends Profile, Document {}
 
 const ProfileSchema = new Schema({
     userId: {
@@ -99,4 +101,4 @@ const ProfileSchema = new Schema({
     }
 })
 
-export const ProfileModel = mongoose.model<ProfileDocument>('Profiles', ProfileSchema);
+export const ProfileModel = model<ProfileDocument>('Profiles', ProfileSchema);

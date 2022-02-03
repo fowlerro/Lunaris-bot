@@ -1,12 +1,13 @@
-import { GuildProfileDocument } from "../../database/schemas/GuildProfile";
+import { GuildProfile } from "../../database/schemas/GuildProfile";
 import { getLocale } from "../../utils/utils";
 
 import xpSystem from './index'
 
-export default async (profile: GuildProfileDocument, isText: boolean) => {
+export default async (profile: GuildProfile, isText: boolean) => {
     const scope = isText ? 'text' : 'voice'
     const levelConfig = await xpSystem.get(profile.guildId)
     if(!levelConfig) return
+    
     const profileLevel = profile.statistics[scope].level
     const rewards = levelConfig.rewards[scope]
     if(!rewards.length) return
