@@ -1,8 +1,6 @@
 import { Message, Snowflake } from "discord.js";
 
 import Profiles from "../Profiles";
-import { ProfileDocument } from "../../database/schemas/Profile";
-import { GuildProfileDocument } from "../../database/schemas/GuildProfile";
 
 import xpSystem from "./index";
 import { textLevelUp } from "./levelUp";
@@ -25,7 +23,9 @@ export async function handleTextXp(message: Message) {
     }
 
 async function addGuildTextXp(guildId: Snowflake, channelId: Snowflake, userId: Snowflake, xpToAdd: number, multiplier: number) {
-    const guildProfile = await Profiles.get(userId, guildId) as GuildProfileDocument;
+    const guildProfile = await Profiles.get(userId, guildId)
+    if(!guildProfile) return
+
     const { level, xp } = guildProfile.statistics.text;
     if(cooldowns.get(`${guildId}-${userId}`)) return;
     cooldowns.set(`${guildId}-${userId}`, true)
@@ -41,13 +41,15 @@ async function addGuildTextXp(guildId: Snowflake, channelId: Snowflake, userId: 
     guildProfile.statistics.text.totalXp += xpToAdd * multiplier
     guildProfile.statistics.text.dailyXp += xpToAdd * multiplier
 
-    await Profiles.set(guildProfile)
+    Profiles.set(guildProfile)
 
     return guildProfile
 }
 
 async function addGlobalTextXp(userId: Snowflake, xpToAdd: number) {
-    const globalProfile = await Profiles.get(userId) as ProfileDocument;
+    const globalProfile = await Profiles.get(userId)
+    if(!globalProfile) return
+
     const { level, xp } = globalProfile.statistics.text;
     if(cooldowns.get(userId)) return;
     cooldowns.set(userId, true)
@@ -63,7 +65,7 @@ async function addGlobalTextXp(userId: Snowflake, xpToAdd: number) {
     globalProfile.statistics.text.totalXp += xpToAdd
     globalProfile.statistics.text.dailyXp += xpToAdd
 
-    await Profiles.set(globalProfile)
+    Profiles.set(globalProfile)
 
     return globalProfile;
 }

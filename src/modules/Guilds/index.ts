@@ -15,38 +15,38 @@ class GuildsModule extends BaseModule {
     }
 
     config = {
-        get: async (guildId: Snowflake): Promise<GuildConfig | undefined> => {
-            const json = await redis.guildConfigs.getEx(guildId, { EX: 60 * 5 })
-            if(json) return JSON.parse(json) as GuildConfig
+        get: async (guildId: Snowflake): Promise<GuildConfig | null> => {
+            const cachedConfig = cache.guildConfigs.get<GuildConfig>(guildId)
+            if(cachedConfig) return cachedConfig
 
             const document = await GuildConfigModel.findOne({ guildId }).select('-_id -__v').catch(logger.error)
             if(!document) return this.config.create(guildId)
 
             const config = document.toObject()
-            await redis.guildConfigs.setEx(guildId, 60 * 5, JSON.stringify(config))
+            cache.guildConfigs.set(guildId, config)
             return config
         },
-        set: async (guildId: Snowflake, toSet: any): Promise<GuildConfig | undefined> => {
-            const document = await GuildConfigModel.findOneAndUpdate({ guildId }, toSet, { new: true, upsert: true }).select('-_id -__v').catch(logger.error)
-            if(!document) return
+        set: async (guildId: Snowflake, toSet: any): Promise<GuildConfig | null> => {
+            const document = await GuildConfigModel.findOneAndUpdate({ guildId }, toSet, { new: true, upsert: true, runValidators: true }).select('-_id -__v').catch(logger.error)
+            if(!document) return null
             
             const config = document.toObject()
-            await redis.guildConfigs.setEx(guildId, 60 * 5, JSON.stringify(config))
+            cache.guildConfigs.set(guildId, config)
             return config
         },        
-        create: async (guildId: Snowflake): Promise<GuildConfig | undefined> => {
+        create: async (guildId: Snowflake): Promise<GuildConfig | null> => {
             const document = await GuildConfigModel.create({ guildId }).catch(logger.error)
-            if(!document) return
+            if(!document) return null
 
             const config = document.toObject()
             delete config._id
             delete config.__v
-            await redis.guildConfigs.setEx(guildId, 60 * 5, JSON.stringify(config))
+            cache.guildConfigs.set(guildId, config)
 
             return config
         },
         delete: async (guildId: Snowflake) => {
-            await redis.guildConfigs.del(guildId)
+            cache.guildConfigs.del(guildId)
             await GuildConfigModel.deleteOne({ guildId }).catch(logger.error)
         }
     }

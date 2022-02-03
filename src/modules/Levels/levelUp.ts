@@ -1,15 +1,15 @@
 import { MessageEmbed, Snowflake, TextChannel } from "discord.js";
 
 import Profiles from "../Profiles";
-import { GuildProfileDocument } from "../../database/schemas/GuildProfile";
-import { ProfileDocument } from "../../database/schemas/Profile";
+import { GuildProfile } from "../../database/schemas/GuildProfile";
+import { Profile } from "../../database/schemas/Profile";
 import TextFormatter from "../../utils/Formatters/Formatter";
 import { getLocale, palette } from "../../utils/utils";
 
 import xpSystem from "./index";
 import levelRewards from "./levelRewards";
 
-export async function textLevelUp(profile: GuildProfileDocument | ProfileDocument, channelId: Snowflake | null, xp: number, xpToAdd: number, xpNeeded: number) {
+export async function textLevelUp(profile: GuildProfile | Profile, channelId: Snowflake | null, xp: number, xpToAdd: number, xpNeeded: number) {
     const rest = (xp + xpToAdd) - xpNeeded
 
     profile.statistics.text.level += 1
@@ -21,13 +21,13 @@ export async function textLevelUp(profile: GuildProfileDocument | ProfileDocumen
     'coins' in profile && (profile.coins += profile.statistics.text.level * (10 + profile.statistics.text.level * 2))
     'guildId' in profile && channelId && sendLevelUpMessage(profile, channelId)
 
-    await Profiles.set(profile)
+    Profiles.set(profile)
     if('guildId' in profile) await levelRewards(profile, true)
 
     return profile
 }
 
-export async function voiceLevelUp(profile: GuildProfileDocument | ProfileDocument, xp: number, xpToAdd: number, xpNeeded: number) {
+export async function voiceLevelUp(profile: GuildProfile | Profile, xp: number, xpToAdd: number, xpNeeded: number) {
     const rest = (xp + xpToAdd) - xpNeeded;
 
     profile.statistics.voice.level += 1;
@@ -38,13 +38,13 @@ export async function voiceLevelUp(profile: GuildProfileDocument | ProfileDocume
 
     'coins' in profile && (profile.coins += profile.statistics.voice.level * (10 + profile.statistics.voice.level * 2))
 
-    await Profiles.set(profile)
+    Profiles.set(profile)
     if('guildId' in profile) await levelRewards(profile, false)
 
     return profile
 }
 
-export async function sendLevelUpMessage(profile: GuildProfileDocument, channelId: Snowflake) {
+export async function sendLevelUpMessage(profile: GuildProfile, channelId: Snowflake) {
     const levelConfig = await xpSystem.get(profile.guildId)
     if(!levelConfig) return
     const messageMode = levelConfig.levelUpMessage.mode

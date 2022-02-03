@@ -1,21 +1,23 @@
 import { Snowflake } from "discord.js";
-import { Document, model, Schema } from "mongoose";
+import { Document, model, Types, Schema } from "mongoose";
 
 import type { ProfileStatistics } from "./Profile";
 
 export interface GuildProfileWarn {
-    _id: string
+    _id: Types.ObjectId;
     executorId: Snowflake;
     reason: string | null;
     date: number;
 }
 
-export interface GuildProfileDocument extends Document {
+export interface GuildProfile {
     guildId: Snowflake;
     userId: Snowflake;
     statistics: ProfileStatistics;
     warns: GuildProfileWarn[];
 }
+
+export interface GuildProfileDocument extends GuildProfile, Document {}
 
 const GuildProfileSchema = new Schema({
     guildId: {
