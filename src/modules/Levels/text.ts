@@ -35,11 +35,11 @@ async function addGuildTextXp(guildId: Snowflake, channelId: Snowflake, userId: 
         cooldowns.set(`${guildId}-${userId}`, false)
     }, 60000);
 
-    if(xp + (xpToAdd * multiplier) >= xpNeeded) return textLevelUp(guildProfile, channelId, xp, (xpToAdd * multiplier), xpNeeded);
+    if(xp + Math.floor(xpToAdd * multiplier) >= xpNeeded) return textLevelUp(guildProfile, channelId, xp, Math.floor(xpToAdd * multiplier), xpNeeded);
 
-    guildProfile.statistics.text.xp += xpToAdd * multiplier
-    guildProfile.statistics.text.totalXp += xpToAdd * multiplier
-    guildProfile.statistics.text.dailyXp += xpToAdd * multiplier
+    guildProfile.statistics.text.xp += Math.floor(xpToAdd * multiplier)
+    guildProfile.statistics.text.totalXp += Math.floor(xpToAdd * multiplier)
+    guildProfile.statistics.text.dailyXp += Math.floor(xpToAdd * multiplier)
 
     Profiles.set(guildProfile)
 
@@ -53,7 +53,7 @@ async function addGlobalTextXp(userId: Snowflake, xpToAdd: number) {
     const { level, xp } = globalProfile.statistics.text;
     if(cooldowns.get(userId)) return;
     cooldowns.set(userId, true)
-    const xpNeeded = Profiles.neededXp(level);
+    const xpNeeded = Profiles.neededXp(level)
 
     setTimeout(() => {
         cooldowns.set(userId, false)

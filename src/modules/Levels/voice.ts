@@ -126,7 +126,7 @@ async function startXp(guildId: Snowflake, memberId: Snowflake) {
             const multiplier = levelConfig.multiplier || 1;
             const xpToAdd = Math.floor(Math.random() * (35 - 20) + 20);
 
-            addXp(guildProfile, (xpToAdd * multiplier))
+            addXp(guildProfile, Math.floor(xpToAdd * multiplier))
             addXp(globalProfile, xpToAdd)
         }, 60000);
     }
