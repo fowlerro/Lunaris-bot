@@ -20,8 +20,7 @@ export default class FormatterCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
-        if(!interaction.guildId) return
-        const language = getLocale(interaction.guildLocale)
+        const language = getLocale(interaction.guildLocale || interaction.locale)
 
         const formatters = supportedFormatters.reduce((prev, curr, index) => {
             if(!prev[curr.category]) prev[curr.category] = []

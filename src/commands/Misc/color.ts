@@ -67,8 +67,7 @@ export default class ColorCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
-        if(!interaction.guildId || !interaction.member) return
-        const language = getLocale(interaction.guildLocale)
+        const language = getLocale(interaction.guildLocale || interaction.locale)
         
         const subcommand = interaction.options.getSubcommand(true)
 

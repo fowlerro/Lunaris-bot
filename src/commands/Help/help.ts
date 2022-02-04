@@ -31,8 +31,7 @@ export default class HelpCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
-        if(!interaction.guildId) return
-        const language = getLocale(interaction.guildLocale)
+        const language = getLocale(interaction.guildLocale || interaction.locale)
 
         const command = interaction.options.getString('command')
 

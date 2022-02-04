@@ -27,8 +27,7 @@ export default class IdeaCommand extends BaseCommand {
     }
 
     async run(interaction: CommandInteraction) {
-        if(!interaction.guildId) return
-        const language = getLocale(interaction.guildLocale)
+        const language = getLocale(interaction.guildLocale || interaction.locale)
         const description = interaction.options.getString('description', true)
 
         const newIdea = await IdeaModel.create({ description }).catch(logger.error)
