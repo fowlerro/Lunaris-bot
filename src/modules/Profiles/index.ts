@@ -131,7 +131,6 @@ async function createProfile(userId: Snowflake, guildId?: Snowflake): Promise<Pr
 
 async function saveProfiles(global: boolean) {
     const profileKeys = global ? cache.profiles.keys() : cache.guildProfiles.keys()
-    logger.info('profileKeys', profileKeys)
     if(!profileKeys.length) return
     const bulk = global ? ProfileModel.collection.initializeOrderedBulkOp() : GuildProfileModel.collection.initializeOrderedBulkOp()
     if(global) {
@@ -141,7 +140,7 @@ async function saveProfiles(global: boolean) {
 
             bulk.find({ userId: profile.userId }).replaceOne(profile)
         }
-        logger.info('bulk', bulk.batches)
+        if(!bulk.batches.length) return
         return bulk.execute().catch(logger.error)
     }
     for await (const key of profileKeys) {
@@ -150,7 +149,7 @@ async function saveProfiles(global: boolean) {
 
         bulk.find({ guildId: profile.guildId, userId: profile.userId }).replaceOne(profile)
     }
-    logger.info('bulk', bulk.batches)
+    if(!bulk.batches.length) return
     return bulk.execute().catch(logger.error)
 }
 
