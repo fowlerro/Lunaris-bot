@@ -113,6 +113,7 @@
             "add": "✅ Emotka **{{emojiName}}** została pomyślnie dodana",
             "delete": "✅ Emotka **{{emojiName}}** została pomyślnie usunięta",
             "error": "❌ Coś poszło nie tak, sprawdź czy link jest poprawny",
+            "length": "❌ Nazwa emotki musi mieć od 2 do 32 znaków!",
             "notDeletable": "❌ Nie mogę usunąć tej emotki"
         },
         "warn": {

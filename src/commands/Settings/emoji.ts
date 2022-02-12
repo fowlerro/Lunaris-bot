@@ -67,6 +67,7 @@ export default class EmojiCommand extends BaseCommand {
         if(subcommand === 'add') {
             const url = interaction.options.getString('url', true)
             const name = interaction.options.getString('name', true)
+            if(name.length < 2 || name.length > 32) return handleCommandError(interaction, 'command.emoji.length')
 
             const newEmoji = await interaction.guild.emojis.create(url, name).catch(logger.error)
             if(!newEmoji) return handleCommandError(interaction, 'general.error')

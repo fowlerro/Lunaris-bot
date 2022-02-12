@@ -114,6 +114,7 @@
             "add": "✅ The emoji **{{emojiName}}** has been successfully added",
             "delete": "✅ The emoji **{{emojiName}}** has been successfully deleted",
             "error": "❌ Something went wrong :/ Check the URL and try again",
+            "length": "❌ Emoji name must be between 2 and 32 characters!",
             "notDeletable": "❌ The emoji cannot be deleted"
         },
         "warn": {
