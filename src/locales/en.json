@@ -195,7 +195,7 @@
                 },
 
                 "currentChannel": "Message will be showing on channel where user leveled up",
-                "specificChannel": "Message will be showing in {{channel}}",
+                "specificChannel": "Message will be showing in {{{channel}}}",
                 "disabled": "Level up message is disabled",
 
                 "wrongMode": "❌ Wrong mode, please select one from the options",
