@@ -194,7 +194,7 @@
                 },
 
                 "currentChannel": "Wiadomość ustawiona jest na kanale, w którym użytkownik zdobędzie level",
-                "specificChannel": "Wiadomość ustawiona jest na kanale {{channel}}",
+                "specificChannel": "Wiadomość ustawiona jest na kanale {{{channel}}}",
                 "disabled": "Wiadomość zdobycia levela jest wyłączona",
 
                 "wrongMode": "❌ Niepoprawny tryb, wybierz prawidłowy z opcji komendy",
