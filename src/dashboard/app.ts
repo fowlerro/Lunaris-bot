@@ -44,6 +44,7 @@ export default async () => {
     app.use(passport.initialize());
     app.use(passport.session());
 
+    app.get('/', (req, res) => res.send(200))
     app.use('/api', routes);
 
     app.listen(PORT, () => logger.info(`Running on Port ${PORT}`));
