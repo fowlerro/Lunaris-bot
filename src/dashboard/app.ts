@@ -28,6 +28,8 @@ export default async () => {
         credentials: true,
     }))
 
+    app.enable('trust proxy')
+
     app.use(session({
         secret: process.env.SESSION_SECRET!,
         cookie: {
