@@ -25,19 +25,19 @@ export default async () => {
 
     app.use(cors({
         origin: ['http://localhost:3000'],
-
         credentials: true,
     }))
-
-    app.enable('trust proxy')
 
     app.use(session({
         secret: process.env.SESSION_SECRET!,
         cookie: {
-            maxAge: 60000 * 60 * 24 * 7
+            maxAge: 60000 * 60 * 24 * 7,
+            sameSite: 'none',
+            secure: true
         },
         resave: false,
         saveUninitialized: false,
+        proxy: true,
         store: MongoStore.create({
             // @ts-ignore
             client: mongoose.connection.getClient()
