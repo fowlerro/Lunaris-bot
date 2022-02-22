@@ -25,8 +25,11 @@ export default async () => {
 
     app.use(cors({
         origin: ['http://localhost:3000'],
+
         credentials: true,
     }))
+
+    app.enable('trust proxy')
 
     app.use(session({
         secret: process.env.SESSION_SECRET!,
