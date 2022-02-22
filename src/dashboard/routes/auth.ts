@@ -11,7 +11,7 @@ router.get('/logout', (req, res) => {
 })
 
 router.get('/discord/redirect', passport.authenticate('discord'), (req, res) => {
-    res.redirect('http://localhost:3000/servers');
+    res.redirect('http://localhost:3000/dashboard');
 });
 
 router.get('/', (req, res) => {
