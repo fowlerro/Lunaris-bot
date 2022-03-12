@@ -10,15 +10,15 @@ import { Guild } from 'types'
 
 const API = 'https://discord.com/api/v9';
 
-export async function getBotGuilds(): Promise<Guild[]> {
-    const response = await fetch(`${API}/users/@me/guilds`, {
-        method: 'GET',
-        headers: {
-            Authorization: `Bot ${process.env.DISCORD_CLIENT_TOKEN}`
-        }
-    });
-    return response.json() as Promise<Guild[]>
-};
+// export async function getBotGuilds(): Promise<Guild[]> {
+//     const response = await fetch(`${API}/users/@me/guilds`, {
+//         method: 'GET',
+//         headers: {
+//             Authorization: `Bot ${process.env.DISCORD_CLIENT_TOKEN}`
+//         }
+//     });
+//     return response.json() as Promise<Guild[]>
+// };
 
 export async function getUserGuilds(discordId: Snowflake): Promise<Guild[]> {
     const credentials = await OAuth2CredentialsModel.findOne({ discordId }).catch(logger.error)

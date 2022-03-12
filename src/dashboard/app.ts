@@ -1,5 +1,5 @@
 import './strategies/discord'
-import express from 'express'
+import express, { Express } from 'express'
 import session from 'express-session'
 import cors from 'cors'
 import mongoose from 'mongoose'
@@ -7,22 +7,22 @@ import MongoStore from 'connect-mongo'
 import passport from 'passport'
 
 import routes from './routes'
-import { UserDocument } from '../database/schemas/User'
+import { User as UserType } from '../database/schemas/User'
 
 declare global {
     namespace Express {
-        interface User extends UserDocument {}
+        interface User extends UserType {}
     }
 }
 
-
-const app = express();
 const PORT = process.env.PORT || 3002;
 
-export default async () => {
+function createApp(): Express {
+    const app = express();
+
     app.use(express.json());
     app.use(express.urlencoded({extended: false}));
-
+    
     app.use(cors({
         origin: ['http://localhost:3000'],
         credentials: true,
@@ -46,6 +46,12 @@ export default async () => {
 
     app.get('/', (req, res) => res.sendStatus(200))
     app.use('/api', routes);
+
+    return app 
+}
+
+export default async () => {
+    const app = createApp()
 
     app.listen(PORT, () => logger.info(`Running on Port ${PORT}`));
 }

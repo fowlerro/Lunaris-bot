@@ -1,10 +1,15 @@
-import express from 'express'
-import auth from './auth'
-import discord from './discord'
+import express from "express";
+import auth from "./auth";
+import guilds from "./guilds";
+import profile from "./profile";
+// import discord from './discord'
 
-const router = express.Router()
+const router = express.Router();
 
-router.use('/auth', auth);
-router.use('/discord', discord);
+router.use("/auth", auth);
+router.use("/guilds", guilds);
+router.use("/profile", profile);
 
-export default router
+// router.use('/discord', discord);
+
+export default router;
