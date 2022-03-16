@@ -1,14 +1,7 @@
 import { Snowflake } from 'discord.js';
 import { Document, model, Types, Schema } from 'mongoose';
 
-import type { ProfileStatistics } from 'types';
-
-export interface GuildProfileWarn {
-	_id: Types.ObjectId;
-	executorId: Snowflake;
-	reason: string | null;
-	date: number;
-}
+import type { ProfileStatistics, GuildProfileWarn } from 'types';
 
 export interface GuildProfile {
 	guildId: Snowflake;
