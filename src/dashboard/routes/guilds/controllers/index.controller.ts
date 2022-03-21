@@ -7,8 +7,9 @@ import {
 	getGuildStatisticsService,
 	getGuildWarnsService,
 	getMutualGuildsService,
+	getRolesService,
 	getUserGuildsService,
-} from './index.service';
+} from '../services/index.service';
 
 export async function getGuildsController(req: Request, res: Response) {
 	try {
@@ -47,6 +48,18 @@ export async function getGuildStatisticsController(req: Request, res: Response) 
 		const { guildId } = req.params;
 		if (!guildId) return res.sendStatus(500);
 		const data = await getGuildStatisticsService(guildId);
+		return res.send(data);
+	} catch (err) {
+		logger.error(err);
+		res.sendStatus(500);
+	}
+}
+
+export async function getRolesController(req: Request, res: Response) {
+	try {
+		const { guildId } = req.params;
+		if (!guildId) return res.sendStatus(500);
+		const data = await getRolesService(guildId);
 		return res.send(data);
 	} catch (err) {
 		logger.error(err);

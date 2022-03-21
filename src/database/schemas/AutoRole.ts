@@ -1,26 +1,31 @@
-import { Document, model, Schema } from "mongoose";
+import { model, Schema } from 'mongoose';
 
-import type { AutoRole } from 'types'
+import type { AutoRoleConfig } from 'types';
 
-export interface AutoRoleDocument extends AutoRole, Document {}
+const AutoRoleSchema = new Schema<AutoRoleConfig>({
+	guildId: {
+		type: String,
+		required: true,
+		unique: true,
+	},
+	roles: {
+		type: [
+			{
+				roleId: {
+					type: String,
+					required: true,
+					unique: true,
+					sparse: true,
+				},
+				time: {
+					type: Number,
+				},
+			},
+		],
+		default: [],
+	},
+});
 
-const AutoRoleSchema = new Schema({
-    guildId: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    roles: [{
-        roleId: {
-            type: String,
-            required: true
-        },
-        time: {
-            type: Number
-        }
-    }]
-})
+AutoRoleSchema.index({ guildId: 1 });
 
-AutoRoleSchema.index({ guildId: 1 })
-
-export const AutoRoleModel = model<AutoRoleDocument>('AutoRole', AutoRoleSchema);
+export const AutoRoleModel = model('AutoRole', AutoRoleSchema);

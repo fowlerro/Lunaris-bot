@@ -2,13 +2,13 @@ import { OAuth2Guild, Snowflake } from 'discord.js';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
 
-import { GuildBanModel } from '../../../database/schemas/GuildBans';
-import { GuildProfileModel } from '../../../database/schemas/GuildProfile';
+import { GuildBanModel } from '../../../../database/schemas/GuildBans';
+import { GuildProfileModel } from '../../../../database/schemas/GuildProfile';
 
-import { DISCORD_API_URL } from '../../utils/constants';
-import { decrypt } from '../../utils/utils';
+import { DISCORD_API_URL } from '../../../utils/constants';
+import { decrypt } from '../../../utils/utils';
 
-import type { GuildStats, Ban, APIBan, WarnedUser } from 'types';
+import { GuildStats, Ban, APIBan, WarnedUser, Role } from 'types';
 
 export async function getBotGuildsService() {
 	return client.guilds.fetch();
@@ -62,6 +62,16 @@ export async function getGuildStatisticsService(guildId: Snowflake): Promise<Gui
 			voiceChannels: voiceChannelCount,
 		},
 	};
+
+	return data;
+}
+
+export async function getRolesService(guildId: Snowflake): Promise<Role[]> {
+	const { data } = await axios.get<Role[]>(`${DISCORD_API_URL}/guilds/${guildId}/roles`, {
+		headers: {
+			Authorization: `Bot ${process.env.DISCORD_CLIENT_TOKEN}`,
+		},
+	});
 
 	return data;
 }
