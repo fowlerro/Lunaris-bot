@@ -2,6 +2,7 @@ import { OAuth2Guild } from 'discord.js';
 import { Request, Response } from 'express';
 import {
 	getBotGuildsService,
+	getChannelsService,
 	getGuildBansService,
 	getGuildPermissionsService,
 	getGuildStatisticsService,
@@ -60,6 +61,18 @@ export async function getRolesController(req: Request, res: Response) {
 		const { guildId } = req.params;
 		if (!guildId) return res.sendStatus(500);
 		const data = await getRolesService(guildId);
+		return res.send(data);
+	} catch (err) {
+		logger.error(err);
+		res.sendStatus(500);
+	}
+}
+
+export async function getChannelsController(req: Request, res: Response) {
+	try {
+		const { guildId } = req.params;
+		if (!guildId) return res.sendStatus(500);
+		const data = await getChannelsService(guildId);
 		return res.send(data);
 	} catch (err) {
 		logger.error(err);

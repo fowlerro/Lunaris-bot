@@ -1,4 +1,4 @@
-import { OAuth2Guild, Snowflake } from 'discord.js';
+import { CategoryChannel, OAuth2Guild, Snowflake, TextChannel } from 'discord.js';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
 
@@ -8,7 +8,7 @@ import { GuildProfileModel } from '../../../../database/schemas/GuildProfile';
 import { DISCORD_API_URL } from '../../../utils/constants';
 import { decrypt } from '../../../utils/utils';
 
-import { GuildStats, Ban, APIBan, WarnedUser, Role } from 'types';
+import { GuildStats, Ban, APIBan, WarnedUser, Role, GuildChannels } from 'types';
 
 export async function getBotGuildsService() {
 	return client.guilds.fetch();
@@ -74,6 +74,20 @@ export async function getRolesService(guildId: Snowflake): Promise<Role[]> {
 	});
 
 	return data;
+}
+
+export async function getChannelsService(guildId: Snowflake): Promise<GuildChannels> {
+	const guild = await client.guilds.fetch(guildId);
+	const guildChannels = await guild.channels.fetch();
+	const guildTextChannels = guildChannels.filter(guild => guild.isText()).toJSON() as TextChannel[];
+	const guildCategoryChannels = guildChannels
+		.filter(guild => guild.type === 'GUILD_CATEGORY')
+		.toJSON() as CategoryChannel[];
+
+	return {
+		text: guildTextChannels,
+		category: guildCategoryChannels,
+	};
 }
 
 export async function getGuildBansService(guildId: Snowflake): Promise<Ban[]> {

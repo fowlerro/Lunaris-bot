@@ -3,7 +3,7 @@ import { model, Schema, Document } from 'mongoose';
 import { palette } from '../../utils/utils';
 import type { Profile } from 'types';
 
-export interface ProfileDocument extends Profile, Document {}
+// export interface ProfileDocument extends Profile, Document {}
 
 const ProfileSchema = new Schema<Profile>({
 	userId: {

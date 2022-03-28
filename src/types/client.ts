@@ -1,13 +1,8 @@
-import { ActivityOptions, Client, ClientOptions, Collection, Snowflake } from 'discord.js';
+import { ActivityOptions, Client, ClientOptions, Collection } from 'discord.js';
 
 import BaseEvent from '../utils/structures/BaseEvent';
 import BaseModule from '../utils/structures/BaseModule';
 import BaseCommand from '../utils/structures/BaseCommand';
-
-import { GuildConfigDocument } from '../database/schemas/GuildConfig';
-import { GuildProfileDocument } from '../database/schemas/GuildProfile';
-
-import type { Profile } from 'types';
 
 export default class DiscordClient extends Client {
 	public isOnline = false;
@@ -18,9 +13,6 @@ export default class DiscordClient extends Client {
 	private _commands = new Collection<string, BaseCommand>();
 	private _events = new Collection<string, BaseEvent>();
 	private _modules = new Collection<string, BaseModule>();
-	private _guildConfigs = new Collection<Snowflake, GuildConfigDocument>();
-	private _profiles = new Collection<Snowflake, Profile>();
-	private _guildMembers = new Collection<string, GuildProfileDocument>();
 
 	constructor(options: ClientOptions) {
 		super(options);
@@ -34,14 +26,5 @@ export default class DiscordClient extends Client {
 	}
 	get modules(): Collection<string, BaseModule> {
 		return this._modules;
-	}
-	get guildConfigs(): Collection<Snowflake, GuildConfigDocument> {
-		return this._guildConfigs;
-	}
-	get profiles(): Collection<Snowflake, Profile> {
-		return this._profiles;
-	}
-	get guildMembers(): Collection<string, GuildProfileDocument> {
-		return this._guildMembers;
 	}
 }

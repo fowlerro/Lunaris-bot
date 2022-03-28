@@ -55,7 +55,7 @@ export const Warn = {
 	): Promise<{
 		action?: 'all' | 'targetAll';
 		error?: 'warnNotFound' | 'targetNotFound' | 'guildNotFound' | 'targetWithoutWarns' | 'error';
-		result?: GuildProfileDocument;
+		result?: GuildProfile;
 	}> => {
 		const guild = await client.guilds.fetch(guildId).catch(logger.error);
 		if (!guild) return { error: 'guildNotFound' };
@@ -95,7 +95,9 @@ export const Warn = {
 			if (!profile.warns.length) return { error: 'targetWithoutWarns' };
 
 			profile.warns = [];
-			const res = await GuildProfileModel.findOneAndReplace({ guildId, userid: targetId }, profile).catch(logger.error);
+			const res = await GuildProfileModel.findOneAndReplace({ guildId, userid: targetId }, profile)
+				.exec()
+				.catch(logger.error);
 			if (!res) return { error: 'error' };
 
 			Profiles.set(profile);
@@ -117,7 +119,7 @@ export const Warn = {
 		const target = await guild.members.fetch(targetId).catch(logger.error);
 		if (!target) return { error: 'targetNotFound' };
 
-		const document = await GuildProfileModel.findOne({ guildId, 'warns._id': warnId }).catch(logger.error);
+		const document = await GuildProfileModel.findOne({ guildId, 'warns._id': warnId }).exec().catch(logger.error);
 		if (!document) return { error: 'warnNotFound' };
 
 		const cachedProfile = cache.guildProfiles.get<GuildProfile>(`${guildId}-${document.userId}`);
@@ -128,9 +130,7 @@ export const Warn = {
 			if (!res) return { error: 'error' };
 		}
 
-		const profile = document.toObject();
-		delete profile._id;
-		delete profile.__v;
+		const { _id, __v, ...profile } = document.toObject();
 
 		Profiles.set(profile);
 		await Logs.log('members', 'unwarn', guildId, {
@@ -167,6 +167,7 @@ async function list(
 
 	let warns = await GuildProfileModel.find({ guildId })
 		.select(['-muted', '-_id', '-guildId', '-__v'])
+		.exec()
 		.catch(logger.error);
 	if (!warns) return { error: 'profileNotFound', warns: [] };
 	warns = warns.filter(v => v.warns.length > 0);

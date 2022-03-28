@@ -2,18 +2,19 @@ import { CommandInteraction, Formatters, MessageEmbed, Snowflake } from 'discord
 
 import BaseCommand from '../../../utils/structures/BaseCommand';
 import Profiles from '../../../modules/Profiles';
-import { GuildProfileDocument, GuildProfileModel } from '../../../database/schemas/GuildProfile';
-import { ProfileDocument, ProfileModel } from '../../../database/schemas/Profile';
+import { GuildProfile, GuildProfileModel } from '../../../database/schemas/GuildProfile';
+import { ProfileModel } from '../../../database/schemas/Profile';
 import { getLocale, palette } from '../../../utils/utils';
 import { handleCommandError } from '../../errors';
+
 import type { Profile } from 'types';
 
 type SortType = 'xp' | 'level' | 'coins';
 
 type SortedProfiles = {
-	text?: ProfileDocument[] | GuildProfileDocument[];
-	voice?: ProfileDocument[] | GuildProfileDocument[];
-	coins?: ProfileDocument[] | Profile[];
+	text?: Profile[] | GuildProfile[];
+	voice?: Profile[] | GuildProfile[];
+	coins?: Profile[] | Profile[];
 };
 
 export default class RankingCommand extends BaseCommand {
@@ -65,10 +66,10 @@ export default class RankingCommand extends BaseCommand {
 
 		const executorProfile =
 			isGlobal || sortType === 'coins'
-				? ((await Profiles.get(interaction.user.id)) as ProfileDocument)
-				: ((await Profiles.get(interaction.user.id, interaction.guildId)) as GuildProfileDocument);
+				? await Profiles.get(interaction.user.id)
+				: await Profiles.get(interaction.user.id, interaction.guildId);
 		const result = await fetchData(sortType, isGlobal, interaction.guildId);
-		if (!result) return handleCommandError(interaction, 'general.error');
+		if (!result || !executorProfile) return handleCommandError(interaction, 'general.error');
 		const formattedData = await formatList(sortType, isGlobal, executorProfile, result);
 
 		const embed = new MessageEmbed()
@@ -93,40 +94,38 @@ export default class RankingCommand extends BaseCommand {
 async function fetchData(sortType: string, isGlobal: boolean, guildId: Snowflake): Promise<SortedProfiles | null> {
 	if (sortType === 'coins') {
 		const results = isGlobal
-			? await ProfileModel.find().catch(logger.error)
+			? await ProfileModel.find().exec().catch(logger.error)
 			: ((await GuildProfileModel.aggregate([
 					{ $match: { guildId } },
 					{ $lookup: { from: 'profiles', localField: 'userId', foreignField: 'userId', as: 'id' } },
 					{ $unwind: '$id' },
 					{ $replaceRoot: { newRoot: '$id' } },
-			  ]).catch(logger.error)) as ProfileDocument[] | void);
+			  ]).catch(logger.error)) as Profile[] | void);
 		if (!results) return null;
 
 		return { coins: results.sort((a, b) => b.coins - a.coins) };
 	}
 
 	const results = isGlobal
-		? ((await ProfileModel.find().catch(logger.error)) as ProfileDocument[] | void)
-		: ((await GuildProfileModel.find({ guildId }).catch(logger.error)) as GuildProfileDocument[] | void);
+		? ((await ProfileModel.find().lean().exec().catch(logger.error)) as Profile[] | void)
+		: ((await GuildProfileModel.find({ guildId }).lean().exec().catch(logger.error)) as GuildProfile[] | void);
 	if (!results) return null;
 	const sortBy = sortType === 'xp' ? 'totalXp' : 'level';
 
 	return {
 		text: Array.prototype.slice.call(results).sort((a, b) => b.statistics.text[sortBy] - a.statistics.text[sortBy]) as
-			| ProfileDocument[]
-			| GuildProfileDocument[],
+			| Profile[]
+			| GuildProfile[],
 		voice: Array.prototype.slice
 			.call(results)
-			.sort((a, b) => b.statistics.voice[sortBy] - a.statistics.voice[sortBy]) as
-			| ProfileDocument[]
-			| GuildProfileDocument[],
+			.sort((a, b) => b.statistics.voice[sortBy] - a.statistics.voice[sortBy]) as Profile[] | GuildProfile[],
 	};
 }
 
 async function formatList(
 	sortType: string,
 	isGlobal: boolean,
-	executorProfile: ProfileDocument | GuildProfileDocument,
+	executorProfile: Profile | GuildProfile,
 	profiles: SortedProfiles
 ) {
 	const collection: { coins: string[]; text: string[]; voice: string[] } = { coins: [], text: [], voice: [] };

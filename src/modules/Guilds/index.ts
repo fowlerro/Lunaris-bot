@@ -45,9 +45,7 @@ class GuildsModule extends BaseModule {
 			const document = await GuildConfigModel.create({ guildId }).catch(logger.error);
 			if (!document) return null;
 
-			const config = document.toObject();
-			delete config._id;
-			delete config.__v;
+			const { _id, __v, ...config } = document.toObject();
 			cache.guildConfigs.set(guildId, config);
 
 			return config;
@@ -62,7 +60,7 @@ class GuildsModule extends BaseModule {
 async function createNewGuildConfigs() {
 	const allGuilds = await client.guilds.fetch().catch(logger.error);
 	if (!allGuilds) return;
-	const allConfigs = await GuildConfigModel.find({}, 'guildId').catch(logger.error);
+	const allConfigs = await GuildConfigModel.find({}, 'guildId').exec().catch(logger.error);
 	if (!allConfigs) return;
 	if (allGuilds.size <= allConfigs.length) return;
 	logger.warn(JSON.stringify({ allGuilds, allConfigs }));

@@ -1,5 +1,5 @@
 import { Snowflake } from 'discord.js';
-import { Document, model, Types, Schema } from 'mongoose';
+import { Document, model, Schema } from 'mongoose';
 
 import type { ProfileStatistics, GuildProfileWarn } from 'types';
 
@@ -12,7 +12,7 @@ export interface GuildProfile {
 
 export interface GuildProfileDocument extends GuildProfile, Document {}
 
-const GuildProfileSchema = new Schema({
+const GuildProfileSchema = new Schema<GuildProfileDocument>({
 	guildId: {
 		type: String,
 		required: true,

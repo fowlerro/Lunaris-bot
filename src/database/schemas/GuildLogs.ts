@@ -1,138 +1,122 @@
-import { Snowflake } from "discord.js";
-import { Document, model, Schema } from "mongoose";
+import { model, Schema } from 'mongoose';
 
-interface LogCategory {
-    channelId?: Snowflake,
-    logs?: { [log: string]: boolean }
-}
+import type { GuildLogs } from 'types';
 
-export type GuildLogs = {
-    guildId: Snowflake
-    messages?: LogCategory
-    emojis?: LogCategory
-    roles?: LogCategory
-    channels?: LogCategory
-    threads?: LogCategory
-    invites?: LogCategory
-    members?: LogCategory
-    server?: LogCategory
-}
+const GuildLogsSchema = new Schema<GuildLogs>({
+	guildId: {
+		type: String,
+		required: true,
+		unique: true,
+		minlength: 18,
+		maxlength: 18,
+	},
+	logs: {
+		messages: {
+			channelId: {
+				type: String,
+				minlength: 18,
+				maxlength: 18,
+			},
+			logs: {
+				edit: { type: Boolean, default: false },
+				delete: { type: Boolean, default: false },
+				purge: { type: Boolean, default: false },
+				pin: { type: Boolean, default: false },
+				unpin: { type: Boolean, default: false },
+			},
+		},
+		emojis: {
+			channelId: {
+				type: String,
+				minlength: 18,
+				maxlength: 18,
+			},
+			logs: {
+				create: { type: Boolean, default: false },
+				delete: { type: Boolean, default: false },
+				edit: { type: Boolean, default: false },
+			},
+		},
+		roles: {
+			channelId: {
+				type: String,
+				minlength: 18,
+				maxlength: 18,
+			},
+			logs: {
+				create: { type: Boolean, default: false },
+				delete: { type: Boolean, default: false },
+				edit: { type: Boolean, default: false },
+				add: { type: Boolean, default: false },
+				remove: { type: Boolean, default: false },
+			},
+		},
+		channels: {
+			channelId: {
+				type: String,
+				minlength: 18,
+				maxlength: 18,
+			},
+			logs: {
+				create: { type: Boolean, default: false },
+				delete: { type: Boolean, default: false },
+				edit: { type: Boolean, default: false },
+			},
+		},
+		threads: {
+			channelId: {
+				type: String,
+				minlength: 18,
+				maxlength: 18,
+			},
+			logs: {
+				create: { type: Boolean, default: false },
+				delete: { type: Boolean, default: false },
+				edit: { type: Boolean, default: false },
+			},
+		},
+		invites: {
+			channelId: {
+				type: String,
+				minlength: 18,
+				maxlength: 18,
+			},
+			logs: {
+				create: { type: Boolean, default: false },
+				delete: { type: Boolean, default: false },
+			},
+		},
+		members: {
+			channelId: {
+				type: String,
+				minlength: 18,
+				maxlength: 18,
+			},
+			logs: {
+				join: { type: Boolean, default: false },
+				leave: { type: Boolean, default: false },
+				nicknameChange: { type: Boolean, default: false },
+				warn: { type: Boolean, default: false },
+				unwarn: { type: Boolean, default: false },
+				unwarnAll: { type: Boolean, default: false },
+				kick: { type: Boolean, default: false },
+				timeout: { type: Boolean, default: false },
+				timeoutRemove: { type: Boolean, default: false },
+				ban: { type: Boolean, default: false },
+				unban: { type: Boolean, default: false },
+			},
+		},
+		server: {
+			channelId: {
+				type: String,
+				minlength: 18,
+				maxlength: 18,
+			},
+			logs: {
+				unwarnAll: { type: Boolean, default: false },
+			},
+		},
+	},
+});
 
-export interface GuildLogsDocument extends GuildLogs, Document {}
-
-const GuildLogsSchema = new Schema({
-    guildId: {
-        type: String,
-        required: true,
-        unique: true,
-        minlength: 18,
-        maxlength: 18
-    },
-    messages: {
-        channelId: {
-            type: String,
-            minlength: 18,
-            maxlength: 18
-        },
-        logs: {
-            edit: Boolean,
-            delete: Boolean,
-            purge: Boolean,
-            pin: Boolean,
-            unpin: Boolean,
-        }
-    },
-    emojis: {
-        channelId: {
-            type: String,
-            minlength: 18,
-            maxlength: 18
-        },
-        logs: {
-            create: Boolean,
-            delete: Boolean,
-            edit: Boolean,
-        }
-    },
-    roles: {
-        channelId: {
-            type: String,
-            minlength: 18,
-            maxlength: 18
-        },
-        logs: {
-            create: Boolean,
-            delete: Boolean,
-            edit: Boolean,
-            add: Boolean,
-            remove: Boolean,
-        }
-    },
-    channels: {
-        channelId: {
-            type: String,
-            minlength: 18,
-            maxlength: 18
-        },
-        logs: {
-            created: Boolean,
-            delete: Boolean,
-            edit: Boolean,
-        }
-    },
-    threads: {
-        channelId: {
-            type: String,
-            minlength: 18,
-            maxlength: 18
-        },
-        logs: {
-            create: Boolean,
-            delete: Boolean,
-            edit: Boolean,
-        }
-    },
-    invites: {
-        channelId: {
-            type: String,
-            minlength: 18,
-            maxlength: 18
-        },
-        logs: {
-            create: Boolean,
-            delete: Boolean,
-        }
-    },
-    members: {
-        channelId: {
-            type: String,
-            minlength: 18,
-            maxlength: 18
-        },
-        logs: {
-            join: Boolean,
-            leave: Boolean,
-            nicknameChange: Boolean,
-            warn: Boolean,
-            unwarn: Boolean,
-            unwarnAll: Boolean,
-            kick: Boolean,
-            timeout: Boolean,
-            timeoutRemove: Boolean,
-            ban: Boolean,
-            unban: Boolean,
-        }
-    },
-    server: {
-        channelId: {
-            type: String,
-            minlength: 18,
-            maxlength: 18
-        },
-        logs: {
-            unwarnAl: Boolean,
-        }
-    }
-})
-
-export const GuildLogsModel = model<GuildLogsDocument>('GuildLogs', GuildLogsSchema)
+export const GuildLogsModel = model('GuildLogs', GuildLogsSchema);

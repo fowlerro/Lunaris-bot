@@ -2,7 +2,6 @@ import { CommandInteraction } from 'discord.js';
 
 import BaseCommand from '../../../utils/structures/BaseCommand';
 import Profiles from '../../../modules/Profiles';
-import { GuildProfileDocument } from '../../../database/schemas/GuildProfile';
 import { handleCommandError } from '../../errors';
 import type { Profile } from 'types';
 
@@ -37,9 +36,9 @@ export default class ProfileCommand extends BaseCommand {
 		if (!member || !('id' in member) || member.user.bot) return handleCommandError(interaction, 'general.error');
 		const isGlobal = interaction.options.getBoolean('global') || false;
 
-		const profile = (await Profiles.get(member.id, interaction.guildId)) as GuildProfileDocument;
+		const profile = await Profiles.get(member.id, interaction.guildId);
 		if (!profile) return handleCommandError(interaction, 'general.error');
-		const globalProfile = (await Profiles.get(member.id)) as Profile;
+		const globalProfile = await Profiles.get(member.id);
 		if (!globalProfile) return handleCommandError(interaction, 'general.error');
 
 		const profileCardBuffer = await Profiles.generateCard(

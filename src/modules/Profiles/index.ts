@@ -42,15 +42,15 @@ class ProfileModule extends BaseModule {
 		if (profile) return profile;
 
 		const dbProfile = isGlobal
-			? await ProfileModel.findOne({ userId }, '-_id -__v').catch(logger.error)
-			: await GuildProfileModel.findOne({ guildId, userId }, '-_id -__v').catch(logger.error);
+			? await ProfileModel.findOne({ userId }, '-_id -__v').lean().exec().catch(logger.error)
+			: await GuildProfileModel.findOne({ guildId, userId }, '-_id -__v').lean().exec().catch(logger.error);
 		if (!dbProfile) return createProfile(userId, guildId);
 
 		'guildId' in dbProfile
-			? cache.guildProfiles.set<GuildProfile>(`${guildId}-${userId}`, dbProfile.toObject())
-			: cache.profiles.set<Profile>(userId, dbProfile.toObject());
+			? cache.guildProfiles.set<GuildProfile>(`${guildId}-${userId}`, dbProfile)
+			: cache.profiles.set<Profile>(userId, dbProfile);
 
-		return dbProfile.toObject();
+		return dbProfile;
 	}
 
 	set(profile: Profile | GuildProfile): boolean {
@@ -137,18 +137,17 @@ async function createProfile(userId: Snowflake, guildId: Snowflake): Promise<Gui
 async function createProfile(userId: Snowflake, guildId?: Snowflake): Promise<Profile | GuildProfile | null>;
 async function createProfile(userId: Snowflake, guildId?: Snowflake): Promise<Profile | GuildProfile | null> {
 	const isGlobal = !Boolean(guildId);
-	const profile = isGlobal
+	const profileDocument = isGlobal
 		? await ProfileModel.create({ userId }).catch(logger.error)
 		: await GuildProfileModel.create({ userId, guildId }).catch(logger.error);
-	if (!profile) return null;
-	delete profile._id;
-	delete profile.__v;
+	if (!profileDocument) return null;
+	const { _id, __v, ...profile } = profileDocument.toObject();
 
 	'guildId' in profile
-		? cache.guildProfiles.set<GuildProfile>(`${guildId}-${userId}`, profile.toObject())
-		: cache.profiles.set<Profile>(userId, profile.toObject());
+		? cache.guildProfiles.set<GuildProfile>(`${guildId}-${userId}`, profile)
+		: cache.profiles.set<Profile>(userId, profile);
 
-	return profile.toObject();
+	return profile;
 }
 
 async function saveProfiles(global: boolean) {
