@@ -8,6 +8,18 @@ import type { Language } from "types";
 
 export const botOwners = ["313346190995619841"];
 
+export const EMBED_LIMITS = {
+	title: 256,
+	author: 256,
+	description: 4096,
+	field: {
+		amount: 25,
+		name: 256,
+		value: 1024,
+	},
+	footer: 2048,
+};
+
 export interface IPalette {
     primary: `#${string}`
     secondary: `#${string}`

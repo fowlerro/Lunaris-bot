@@ -12,6 +12,13 @@ import { getAutoRolesController, setAutoRolesController } from './controllers/au
 import { getServerLogsController, setServerLogsController } from './controllers/serverLogs.controller';
 import { getLevelConfigController, setLevelConfigController } from './controllers/levels.controller';
 
+import {
+	deleteEmbedMessageController,
+	getEmbedMessagesController,
+	saveEmbedMessageController,
+} from './controllers/embeds.controller';
+import { saveEmbedMessagesValidator, deleteEmbedMessageValidator } from './validators/embeds.validators';
+
 import { isAuthenticated, isAuthorizedInGuild } from '../../utils/middlewares';
 
 const router = express.Router();
@@ -33,5 +40,21 @@ router.put('/:guildId/server-logs', isAuthenticated, isAuthorizedInGuild, setSer
 
 router.get('/:guildId/levels', isAuthenticated, isAuthorizedInGuild, getLevelConfigController);
 router.put('/:guildId/levels', isAuthenticated, isAuthorizedInGuild, setLevelConfigController);
+
+router.get('/:guildId/embeds', isAuthenticated, isAuthorizedInGuild, getEmbedMessagesController);
+router.put(
+	'/:guildId/embeds',
+	isAuthenticated,
+	isAuthorizedInGuild,
+	saveEmbedMessagesValidator,
+	saveEmbedMessageController
+);
+router.delete(
+	'/:guildId/embeds',
+	isAuthenticated,
+	isAuthorizedInGuild,
+	deleteEmbedMessageValidator,
+	deleteEmbedMessageController
+);
 
 export default router;
