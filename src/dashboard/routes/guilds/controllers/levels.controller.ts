@@ -21,8 +21,6 @@ export async function setLevelConfigController(req: Request, res: Response) {
 		const { guildId } = req.params;
 		const payload: LevelConfigPageData = req.body;
 		if (!guildId) return res.sendStatus(400);
-		if (!payload) return res.status(400).send('Payload not found');
-		if (typeof payload.status !== 'boolean') return res.status(400).send('Invalid status');
 
 		const data = await setLevelConfigService(guildId, payload);
 

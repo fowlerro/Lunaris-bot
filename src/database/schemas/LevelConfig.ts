@@ -2,7 +2,7 @@ import { Document, model, Schema } from 'mongoose';
 
 import { optionalSnowflake } from '../mongoose';
 
-import type { LevelConfig } from 'types';
+import type { LevelConfig, LevelReward } from 'types';
 
 export interface LevelConfigDocument extends LevelConfig, Document {}
 
@@ -39,42 +39,54 @@ const LevelConfigSchema = new Schema({
 		},
 	},
 	rewards: {
-		text: [
-			{
-				roleId: {
-					type: String,
-					minlength: 18,
-					maxlength: 18,
+		text: {
+			type: [
+				{
+					roleId: {
+						type: String,
+						minlength: 18,
+						maxlength: 18,
+					},
+					level: {
+						type: Number,
+						min: 1,
+						max: 200,
+						required: true,
+					},
+					takePreviousRole: {
+						type: Boolean,
+						default: true,
+					},
 				},
-				level: {
-					type: Number,
-					min: 1,
-					required: true,
-				},
-				takePreviousRole: {
-					type: Boolean,
-					default: true,
-				},
+			],
+			validate: {
+				validator: (value: LevelReward[]) => value.length < 20,
 			},
-		],
-		voice: [
-			{
-				roleId: {
-					type: String,
-					minlength: 18,
-					maxlength: 18,
+		},
+		voice: {
+			type: [
+				{
+					roleId: {
+						type: String,
+						minlength: 18,
+						maxlength: 18,
+					},
+					level: {
+						type: Number,
+						min: 1,
+						max: 200,
+						required: true,
+					},
+					takePreviousRole: {
+						type: Boolean,
+						default: true,
+					},
 				},
-				level: {
-					type: Number,
-					min: 1,
-					required: true,
-				},
-				takePreviousRole: {
-					type: Boolean,
-					default: true,
-				},
+			],
+			validate: {
+				validator: (value: LevelReward[]) => value.length < 20,
 			},
-		],
+		},
 	},
 });
 

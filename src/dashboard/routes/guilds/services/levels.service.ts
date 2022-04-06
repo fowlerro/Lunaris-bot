@@ -3,7 +3,7 @@ import { Snowflake } from 'discord.js';
 import Guilds from '../../../../modules/Guilds';
 import Levels from '../../../../modules/Levels';
 
-import type { LevelConfigPageData } from 'types';
+import type { LevelConfig, LevelConfigPageData } from 'types';
 
 export async function getLevelConfigService(guildId: Snowflake): Promise<LevelConfigPageData> {
 	const guildConfig = await Guilds.config.get(guildId);
@@ -31,7 +31,31 @@ export async function setLevelConfigService(
 		if (!updatedGuildConfig) throw new Error("Couldn't update guild config");
 	}
 
-	const updatedConfig = await Levels.set(guildId, levelConfig);
+	const levelConfigToUpdate: LevelConfig = {
+		guildId,
+		multiplier: Math.round((levelConfig.multiplier + Number.EPSILON) * 100) / 100,
+		levelUpMessage: {
+			channelId: levelConfig.levelUpMessage.channelId,
+			mode: levelConfig.levelUpMessage.mode,
+			messageFormat: levelConfig.levelUpMessage.messageFormat,
+		},
+		rewards: {
+			text: levelConfig.rewards.text.map(reward => ({
+				_id: reward._id,
+				level: reward.level,
+				roleId: reward.roleId,
+				takePreviousRole: reward.takePreviousRole,
+			})),
+			voice: levelConfig.rewards.voice.map(reward => ({
+				_id: reward._id,
+				level: reward.level,
+				roleId: reward.roleId,
+				takePreviousRole: reward.takePreviousRole,
+			})),
+		},
+	};
+
+	const updatedConfig = await Levels.set(guildId, levelConfigToUpdate);
 
 	return {
 		status,

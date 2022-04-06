@@ -17,8 +17,9 @@ import {
 	saveEmbedMessageController,
 } from './controllers/embeds.controller';
 
-import { saveEmbedMessagesValidator, deleteEmbedMessageValidator } from './validators/embeds.validators';
 import { saveServerLogsValidator } from './validators/serverLogs.validators';
+import { setLevelConfigValidator } from './validators/levels.validators';
+import { saveEmbedMessagesValidator, deleteEmbedMessageValidator } from './validators/embeds.validators';
 
 import { isAuthenticated, isAuthorizedInGuild } from '../../utils/middlewares';
 
@@ -46,7 +47,7 @@ router.get('/:guildId/server-logs', isAuthenticated, isAuthorizedInGuild, getSer
 router.put('/:guildId/server-logs', isAuthenticated, isAuthorizedInGuild, setServerLogsController);
 
 router.get('/:guildId/levels', isAuthenticated, isAuthorizedInGuild, getLevelConfigController);
-router.put('/:guildId/levels', isAuthenticated, isAuthorizedInGuild, setLevelConfigController);
+router.put('/:guildId/levels', isAuthenticated, isAuthorizedInGuild, setLevelConfigValidator, setLevelConfigController);
 
 router.get('/:guildId/embeds', isAuthenticated, isAuthorizedInGuild, getEmbedMessagesController);
 router.put(
