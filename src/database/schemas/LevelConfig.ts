@@ -1,5 +1,7 @@
 import { Document, model, Schema } from 'mongoose';
 
+import { optionalSnowflake } from '../mongoose';
+
 import type { LevelConfig } from 'types';
 
 export interface LevelConfigDocument extends LevelConfig, Document {}
@@ -32,7 +34,7 @@ const LevelConfigSchema = new Schema({
 			type: String,
 			maxlength: 18,
 			validate: {
-				validator: (val: string) => val.length === 18 || val.length === 0,
+				validator: optionalSnowflake,
 			},
 		},
 	},

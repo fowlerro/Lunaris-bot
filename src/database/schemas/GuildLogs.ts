@@ -1,6 +1,7 @@
 import { model, Schema } from 'mongoose';
 
 import type { GuildLogs } from 'types';
+import { optionalSnowflake } from '../mongoose';
 
 const GuildLogsSchema = new Schema<GuildLogs>({
 	guildId: {
@@ -14,8 +15,10 @@ const GuildLogsSchema = new Schema<GuildLogs>({
 		messages: {
 			channelId: {
 				type: String,
-				minlength: 18,
 				maxlength: 18,
+				validate: {
+					validator: optionalSnowflake,
+				},
 			},
 			logs: {
 				edit: { type: Boolean, default: false },
@@ -28,8 +31,10 @@ const GuildLogsSchema = new Schema<GuildLogs>({
 		emojis: {
 			channelId: {
 				type: String,
-				minlength: 18,
 				maxlength: 18,
+				validate: {
+					validator: optionalSnowflake,
+				},
 			},
 			logs: {
 				create: { type: Boolean, default: false },
@@ -40,8 +45,10 @@ const GuildLogsSchema = new Schema<GuildLogs>({
 		roles: {
 			channelId: {
 				type: String,
-				minlength: 18,
 				maxlength: 18,
+				validate: {
+					validator: optionalSnowflake,
+				},
 			},
 			logs: {
 				create: { type: Boolean, default: false },
@@ -54,8 +61,10 @@ const GuildLogsSchema = new Schema<GuildLogs>({
 		channels: {
 			channelId: {
 				type: String,
-				minlength: 18,
 				maxlength: 18,
+				validate: {
+					validator: optionalSnowflake,
+				},
 			},
 			logs: {
 				create: { type: Boolean, default: false },
@@ -66,8 +75,10 @@ const GuildLogsSchema = new Schema<GuildLogs>({
 		threads: {
 			channelId: {
 				type: String,
-				minlength: 18,
 				maxlength: 18,
+				validate: {
+					validator: optionalSnowflake,
+				},
 			},
 			logs: {
 				create: { type: Boolean, default: false },
@@ -78,8 +89,10 @@ const GuildLogsSchema = new Schema<GuildLogs>({
 		invites: {
 			channelId: {
 				type: String,
-				minlength: 18,
 				maxlength: 18,
+				validate: {
+					validator: optionalSnowflake,
+				},
 			},
 			logs: {
 				create: { type: Boolean, default: false },
@@ -89,8 +102,10 @@ const GuildLogsSchema = new Schema<GuildLogs>({
 		members: {
 			channelId: {
 				type: String,
-				minlength: 18,
 				maxlength: 18,
+				validate: {
+					validator: optionalSnowflake,
+				},
 			},
 			logs: {
 				join: { type: Boolean, default: false },
@@ -109,8 +124,10 @@ const GuildLogsSchema = new Schema<GuildLogs>({
 		server: {
 			channelId: {
 				type: String,
-				minlength: 18,
 				maxlength: 18,
+				validate: {
+					validator: optionalSnowflake,
+				},
 			},
 			logs: {
 				unwarnAll: { type: Boolean, default: false },
