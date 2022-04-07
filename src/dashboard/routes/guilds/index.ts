@@ -17,6 +17,7 @@ import {
 	saveEmbedMessageController,
 } from './controllers/embeds.controller';
 
+import { setAutoRolesValidator } from './validators/autoRoles.validators';
 import { saveServerLogsValidator } from './validators/serverLogs.validators';
 import { setLevelConfigValidator } from './validators/levels.validators';
 import { saveEmbedMessagesValidator, deleteEmbedMessageValidator } from './validators/embeds.validators';
@@ -35,16 +36,16 @@ router.get('/:guildId/bans', isAuthenticated, isAuthorizedInGuild, getGuildBansC
 router.get('/:guildId/warns', isAuthenticated, isAuthorizedInGuild, getGuildWarnsController);
 
 router.get('/:guildId/auto-roles', isAuthenticated, isAuthorizedInGuild, getAutoRolesController);
+router.put('/:guildId/auto-roles', isAuthenticated, isAuthorizedInGuild, setAutoRolesValidator, setAutoRolesController);
+
+router.get('/:guildId/server-logs', isAuthenticated, isAuthorizedInGuild, getServerLogsController);
 router.put(
-	'/:guildId/auto-roles',
+	'/:guildId/server-logs',
 	isAuthenticated,
 	isAuthorizedInGuild,
 	saveServerLogsValidator,
-	setAutoRolesController
+	setServerLogsController
 );
-
-router.get('/:guildId/server-logs', isAuthenticated, isAuthorizedInGuild, getServerLogsController);
-router.put('/:guildId/server-logs', isAuthenticated, isAuthorizedInGuild, setServerLogsController);
 
 router.get('/:guildId/levels', isAuthenticated, isAuthorizedInGuild, getLevelConfigController);
 router.put('/:guildId/levels', isAuthenticated, isAuthorizedInGuild, setLevelConfigValidator, setLevelConfigController);

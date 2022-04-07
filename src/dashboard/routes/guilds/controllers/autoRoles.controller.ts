@@ -20,9 +20,6 @@ export async function setAutoRolesController(req: Request, res: Response) {
 		const payload: AutoRolePageData = req.body;
 		if (!guildId) return res.sendStatus(400);
 		if (!payload) return res.status(400).send('Payload not found');
-		if (typeof payload.status !== 'boolean') return res.status(400).send('Invalid status');
-		if (!Array.isArray(payload.autoRoles) || payload.autoRoles.length > 5)
-			return res.status(400).send('Invalid auto roles');
 		const roleIds = new Set();
 		const hasDuplicates = payload.autoRoles.some(autoRole => roleIds.size === roleIds.add(autoRole.roleId).size);
 		if (hasDuplicates) return res.status(400).send('Duplicate roles are not allowed');

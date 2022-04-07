@@ -35,7 +35,7 @@ export async function setAutoRolesService(guildId: Snowflake, payload: AutoRoleP
 
 	const autoRolesConfig: AutoRoleConfig = {
 		guildId,
-		roles: autoRoles,
+		roles: autoRoles.map(autoRole => ({ roleId: autoRole.roleId, time: autoRole.time })),
 	};
 
 	const updatedAutoRoles = await autoRole.set(autoRolesConfig);

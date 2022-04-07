@@ -23,6 +23,9 @@ const AutoRoleSchema = new Schema<AutoRoleConfig>({
 			},
 		],
 		default: [],
+		validate: {
+			validator: (roles: AutoRoleConfig['roles']) => roles.length <= 5,
+		},
 	},
 });
 

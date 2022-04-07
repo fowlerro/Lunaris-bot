@@ -60,7 +60,7 @@ const LevelConfigSchema = new Schema({
 				},
 			],
 			validate: {
-				validator: (value: LevelReward[]) => value.length < 20,
+				validator: (value: LevelReward[]) => value.length <= 20,
 			},
 		},
 		voice: {
@@ -84,7 +84,7 @@ const LevelConfigSchema = new Schema({
 				},
 			],
 			validate: {
-				validator: (value: LevelReward[]) => value.length < 20,
+				validator: (value: LevelReward[]) => value.length <= 20,
 			},
 		},
 	},
