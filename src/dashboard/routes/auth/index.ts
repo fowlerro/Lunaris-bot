@@ -8,12 +8,12 @@ const router = express.Router();
 router.get('/discord', passport.authenticate('discord'), (req, res) => res.sendStatus(200));
 
 router.get('/discord/redirect', passport.authenticate('discord'), (req, res) => {
-	res.redirect('http://localhost:3000/dashboard');
+	res.redirect(`${process.env.FRONTEND_DOMAIN}/dashboard`);
 });
 
 router.get('/logout', (req, res) => {
 	req.logout();
-	res.redirect('http://localhost:3000/');
+	res.redirect(process.env.FRONTEND_DOMAIN!);
 });
 
 router.get('/', isAuthenticated, getAuthController);
