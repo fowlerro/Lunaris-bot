@@ -1,4 +1,4 @@
-import { CategoryChannel, OAuth2Guild, Snowflake, TextChannel } from 'discord.js';
+import { CategoryChannel, GuildPreview, OAuth2Guild, Snowflake, TextChannel } from 'discord.js';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
 
@@ -8,7 +8,7 @@ import { GuildProfileModel } from '../../../../database/schemas/GuildProfile';
 import { DISCORD_API_URL } from '../../../utils/constants';
 import { decrypt } from '../../../utils/utils';
 
-import { GuildStats, Ban, APIBan, WarnedUser, Role, GuildChannels } from 'types';
+import type { GuildStats, Ban, APIBan, WarnedUser, Role, GuildChannels, GuildInfo } from 'types';
 
 export async function getBotGuildsService() {
 	return client.guilds.fetch();
@@ -32,6 +32,23 @@ export async function getMutualGuildsService(botGuilds: OAuth2Guild[], userGuild
 	});
 
 	return { excluded, included };
+}
+
+export async function getGuildService(guildId: Snowflake): Promise<GuildInfo | null> {
+	const guild = await client.guilds.fetch(guildId);
+	if (!guild.available) return null;
+
+	return {
+		id: guild.id,
+		name: guild.name,
+		description: guild.description,
+		acronym: guild.nameAcronym,
+		icon: guild.icon,
+		banner: guild.banner,
+		createdAt: guild.createdAt,
+		createdTimestamp: guild.createdTimestamp,
+		ownerId: guild.ownerId,
+	};
 }
 
 export async function getGuildPermissionsService(userId: Snowflake, guildId: Snowflake) {
@@ -73,7 +90,7 @@ export async function getRolesService(guildId: Snowflake): Promise<Role[]> {
 		},
 	});
 
-	return data;
+	return data.filter(role => role.name !== '@everyone' && !role.tags?.bot_id);
 }
 
 export async function getChannelsService(guildId: Snowflake): Promise<GuildChannels> {

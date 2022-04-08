@@ -5,6 +5,7 @@ import {
 	getChannelsService,
 	getGuildBansService,
 	getGuildPermissionsService,
+	getGuildService,
 	getGuildStatisticsService,
 	getGuildWarnsService,
 	getMutualGuildsService,
@@ -27,7 +28,19 @@ export async function getGuildsController(req: Request, res: Response) {
 		res.send(mutualGuilds);
 	} catch (err) {
 		logger.error(err);
-		res.sendStatus(400);
+		res.sendStatus(500);
+	}
+}
+
+export async function getGuildController(req: Request, res: Response) {
+	try {
+		const { guildId } = req.params;
+		const guildPreview = await getGuildService(guildId);
+		if (!guildPreview) return res.status(403).send({ message: 'Guild is not available' });
+		res.send(guildPreview);
+	} catch (err) {
+		logger.error(err);
+		res.sendStatus(500);
 	}
 }
 

@@ -2,6 +2,7 @@ import express from 'express';
 import {
 	getChannelsController,
 	getGuildBansController,
+	getGuildController,
 	getGuildPermissionsController,
 	getGuildsController,
 	getGuildStatisticsController,
@@ -28,6 +29,7 @@ const router = express.Router();
 
 router.get('/', isAuthenticated, getGuildsController);
 
+router.get('/:guildId/', isAuthenticated, isAuthorizedInGuild, getGuildController);
 router.get('/:guildId/permissions', isAuthenticated, getGuildPermissionsController);
 router.get('/:guildId/stats', isAuthenticated, isAuthorizedInGuild, getGuildStatisticsController);
 router.get('/:guildId/roles', isAuthenticated, isAuthorizedInGuild, getRolesController);
