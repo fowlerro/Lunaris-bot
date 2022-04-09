@@ -32,6 +32,13 @@ function createApp(): Express {
 		})
 	);
 
+	app.use((req, res, next) => {
+		res.header('Access-Control-Allow-Origin', process.env.FRONTEND_DOMAIN!);
+		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+		res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+		next();
+	});
+
 	app.use(
 		session({
 			secret: process.env.SESSION_SECRET!,
