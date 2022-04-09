@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
-import { User } from 'types';
+
 import { getAuthService } from './index.service';
+
+import { User } from 'types';
 
 export async function getAuthController(req: Request, res: Response) {
 	try {
@@ -9,6 +11,7 @@ export async function getAuthController(req: Request, res: Response) {
 			discordId: data.id,
 			discordTag: `${data.username}#${data.discriminator as unknown as number}`,
 			avatar: data.avatar,
+			banner: data.banner ?? null,
 		};
 		user ? res.send(user) : res.status(401).send('Unauthorized');
 	} catch (err) {

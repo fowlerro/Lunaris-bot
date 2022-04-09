@@ -1,38 +1,36 @@
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction } from 'discord.js';
 
-import BaseCommand from "../../utils/structures/BaseCommand";
+import BaseCommand from '../../utils/structures/BaseCommand';
 
 export default class TestCommand extends BaseCommand {
-    constructor() {
-        super(
-            'test',
-            'CHAT_INPUT',
-            {
-                en: 'Testing command',
-                pl: 'Komenda testowa'
-            },
-            [
-                {
-                    name: 'log',
-                    description: 'action',
-                    type: 'STRING',
-                    required: true
-                }
-            ],
-            true,
-            true
-        );
-    }
+	constructor() {
+		super(
+			'test',
+			'CHAT_INPUT',
+			{
+				en: 'Testing command',
+				pl: 'Komenda testowa',
+			},
+			[
+				{
+					name: 'log',
+					description: 'action',
+					type: 'STRING',
+					required: true,
+				},
+			],
+			true,
+			true
+		);
+	}
 
-    async run(interaction: CommandInteraction) {
-        if(!interaction.guildId) return
-        if(!interaction.member || !('guild' in interaction.member)) return
+	async run(interaction: CommandInteraction) {
+		if (!interaction.guildId) return;
+		if (!interaction.member || !('guild' in interaction.member)) return;
 
-        const chuj = await client.guilds.fetch('sadadas').catch(logger.error)
-        
-        interaction.reply({
-            content: 'ok', 
-            ephemeral: true
-        })
-    }
+		interaction.reply({
+			content: 'ok',
+			ephemeral: true,
+		});
+	}
 }

@@ -1,6 +1,8 @@
 import { Snowflake } from 'discord.js';
-import { ProfileWithRank } from 'types';
+
 import Profiles from '../../../modules/Profiles';
+
+import type { ProfileWithRank } from 'types';
 
 export async function getProfileService(discordId: Snowflake): Promise<ProfileWithRank | null> {
 	const profile = await Profiles.get(discordId);
