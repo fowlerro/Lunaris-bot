@@ -45,6 +45,8 @@ function createApp(): Express {
 			cookie: {
 				maxAge: 60000 * 60 * 24 * 7,
 				domain: `.${process.env.FRONTEND_DOMAIN!}`,
+				sameSite: process.env.DEVELOPMENT === 'DEV' ? 'lax' : 'none',
+				secure: process.env.DEVELOPMENT !== 'DEV',
 			},
 			resave: false,
 			saveUninitialized: false,
