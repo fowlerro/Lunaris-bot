@@ -11,7 +11,7 @@ class GuildsModule extends BaseModule {
 
 	async run() {
 		logger.info(this.getName());
-		await createNewGuildConfigs();
+		// await createNewGuildConfigs();
 	}
 
 	config = {
@@ -57,18 +57,18 @@ class GuildsModule extends BaseModule {
 	};
 }
 
-async function createNewGuildConfigs() {
-	const allGuilds = await client.guilds.fetch().catch(logger.error);
-	if (!allGuilds) return;
-	const allConfigs = await GuildConfigModel.find({}, 'guildId').exec().catch(logger.error);
-	if (!allConfigs) return;
-	if (allGuilds.size <= allConfigs.length) return;
-	logger.warn(JSON.stringify({ allGuilds, allConfigs }));
+// async function createNewGuildConfigs() {
+// 	const allGuilds = await client.guilds.fetch().catch(logger.error);
+// 	if (!allGuilds) return;
+// 	// const allConfigs = await GuildConfigModel.find({}, 'guildId').exec().catch(logger.error);
+// 	const allConfigs = await GuildConfigModel.countDocuments().exec().catch(logger.error);
+// 	if (!allConfigs) return;
+// 	if (allGuilds.size <= allConfigs) return;
 
-	allGuilds.forEach(async guild => {
-		if (allConfigs.some(g => g.guildId !== guild.id))
-			await GuildConfigModel.create({ guildId: guild.id }).catch(logger.error); // TODO Remove guild from allGuilds after creating config for it
-	});
-}
+// 	allGuilds.forEach(async guild => {
+// 		if (allConfigs.some(g => g.guildId !== guild.id))
+// 			await GuildConfigModel.create({ guildId: guild.id }).catch(logger.error); // TODO Remove guild from allGuilds after creating config for it
+// 	});
+// }
 
 export default new GuildsModule();
