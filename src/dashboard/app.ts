@@ -23,8 +23,6 @@ function createApp(): Express {
 	app.use(express.json());
 	app.use(express.urlencoded({ extended: false }));
 
-	app.set('trust proxy', 1);
-
 	app.use(
 		cors({
 			origin: [process.env.FRONTEND_DOMAIN!],
@@ -32,21 +30,11 @@ function createApp(): Express {
 		})
 	);
 
-	app.use((req, res, next) => {
-		res.header('Access-Control-Allow-Origin', process.env.FRONTEND_DOMAIN!);
-		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-		res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-		next();
-	});
-
 	app.use(
 		session({
 			secret: process.env.SESSION_SECRET!,
 			cookie: {
 				maxAge: 60000 * 60 * 24 * 7,
-				domain: `.${process.env.FRONTEND_DOMAIN!}`,
-				sameSite: process.env.DEVELOPMENT === 'DEV' ? 'lax' : 'none',
-				secure: process.env.DEVELOPMENT !== 'DEV',
 			},
 			resave: false,
 			saveUninitialized: false,
