@@ -30,7 +30,11 @@ function createApp(): Express {
 		})
 	);
 
-	app.set('trust proxy', 1);
+	app.enable('trust proxy');
+	app.use((req, res, next) => {
+		if (process.env.DEVELOPMENT !== 'DEV' && !req.secure) return res.redirect(`https://${req.headers.host}${req.url}`);
+		next();
+	});
 
 	app.use(
 		session({
