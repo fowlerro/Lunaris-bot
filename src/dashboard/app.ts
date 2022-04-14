@@ -41,7 +41,7 @@ function createApp(): Express {
 			secret: process.env.SESSION_SECRET!,
 			cookie: {
 				maxAge: 60000 * 60 * 24 * 7,
-				domain: 'lunaris.pro',
+				domain: process.env.DEVELOPMENT === 'DEV' ? undefined : 'lunaris.pro',
 			},
 			resave: false,
 			saveUninitialized: false,

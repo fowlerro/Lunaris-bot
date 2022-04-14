@@ -1,38 +1,86 @@
-import { Document, model, Schema } from "mongoose";
+import { Snowflake } from 'discord.js';
+import { model, Schema } from 'mongoose';
 
-import type { ReactionRole } from 'types'
+import {
+	ReactionRoleAction,
+	ReactionRoleType,
+	REACTION_ROLE_ACTIONS,
+	REACTION_ROLE_TYPES,
+} from '@modules/reactionRoles';
 
-export interface ReactionRoleDocument extends Omit<ReactionRole, '_id'>, Document {}
+export interface ReactionRoleItem {
+	label?: string;
+	icon?: string;
+	roleId: Snowflake;
+	action: ReactionRoleAction;
+}
 
-const ReactionRoleSchema = new Schema({
-    guildId: {
-        type: String,
-        required: true
-    },
-    channelId: {
-        type: String,
-        required: true
-    },
-    messageId: {
-        type: String,
-        required: true
-    },
-    reactions: [{
-        reaction: {
-            type: String,
-            required: true
-        },
-        roleId: {
-            type: String,
-            required: true
-        },
-        mode: {
-            type: String,
-            required: true
-        }
-    }]
-})
+export interface ReactionRole {
+	guildId: Snowflake;
+	channelId: Snowflake;
+	messageId: Snowflake;
+	type: ReactionRoleType;
+	reactions: ReactionRoleItem[];
+}
 
-ReactionRoleSchema.index({ guildId: 1, channelId: 1, messageId: 1 }, { unique: true })
+const ReactionRoleSchema = new Schema<ReactionRole>({
+	guildId: {
+		type: String,
+		required: true,
+	},
+	channelId: {
+		type: String,
+		required: true,
+	},
+	messageId: {
+		type: String,
+		required: true,
+	},
+	type: {
+		type: String,
+		enum: REACTION_ROLE_TYPES,
+		required: true,
+	},
+	reactions: {
+		type: [
+			{
+				label: {
+					type: String,
+					maxlength: 80,
+					validate: {
+						validator: function (value: string) {
+							return ((this as ReactionRole).type === 'reactions' && value.length >= 1) || true;
+						},
+					},
+				},
+				icon: {
+					type: String,
+					maxlength: 80,
+					validate: {
+						validator: function (value: string) {
+							return (this as ReactionRole).type !== 'reactions';
+						},
+					},
+				},
+				roleId: {
+					type: String,
+					maxlength: 18,
+					minlength: 18,
+					required: true,
+				},
+				action: {
+					type: String,
+					enum: REACTION_ROLE_ACTIONS,
+					required: true,
+				},
+			},
+		],
+		validate: {
+			validator: (value: ReactionRoleItem[]) => value.length <= 25,
+		},
+	},
+});
 
-export const ReactionRoleModel = model<ReactionRoleDocument>('ReactionRole', ReactionRoleSchema)
+ReactionRoleSchema.index({ guildId: 1, channelId: 1, messageId: 1 }, { unique: true });
+
+export const ReactionRoleModel = model<ReactionRole>('ReactionRole', ReactionRoleSchema);
