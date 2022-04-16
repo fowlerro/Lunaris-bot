@@ -245,6 +245,15 @@
             "converted": "✅ **{{inputFormat}}:** `{{inputColor}}` => **{{outputFormat}}:** `{{outputColor}}`",
             "incorrectFormat": "❌ Incorrect format, select corrent one from command option!",
             "invalidColor": "❌ Invalid color!"
+        },
+        "roles": {
+            "create": {
+                "begin": "Creating role...",
+                "message": "Select message for Interactive Roles",
+                "roles": "Setup Roles",
+                "finish": "Finish!",
+                "canceled": "❌ Canceled!"
+            }
         }
     },
     "modules": {

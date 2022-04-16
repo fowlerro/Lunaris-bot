@@ -17,6 +17,7 @@ import {
 	getEmbedMessagesController,
 	saveEmbedMessageController,
 } from './controllers/embeds.controller';
+import { getInteractiveRolesController } from './controllers/interactiveRoles.controller';
 
 import { setAutoRolesValidator } from './validators/autoRoles.validators';
 import { saveServerLogsValidator } from './validators/serverLogs.validators';
@@ -67,5 +68,7 @@ router.delete(
 	deleteEmbedMessageValidator,
 	deleteEmbedMessageController
 );
+
+router.get('/:guildId/interactive-roles', isAuthenticated, isAuthorizedInGuild, getInteractiveRolesController);
 
 export default router;
