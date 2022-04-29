@@ -1,10 +1,15 @@
-import { model, Schema, HydratedDocument } from 'mongoose';
+import { model, Schema, HydratedDocument, Types } from 'mongoose';
 
 import { INTERACTIVE_ROLE_ACTIONS, INTERACTIVE_ROLE_STYLES, INTERACTIVE_ROLE_TYPES } from '@modules/InteractiveRoles';
 
 import type { InteractiveRoleItem, InteractiveRolesType } from 'types';
 
 const InteractiveRolesSchema = new Schema<InteractiveRolesType>({
+	name: {
+		type: String,
+		required: true,
+		maxlength: 32,
+	},
 	guildId: {
 		type: String,
 		required: true,
@@ -16,6 +21,9 @@ const InteractiveRolesSchema = new Schema<InteractiveRolesType>({
 	messageId: {
 		type: String,
 		required: true,
+	},
+	embedId: {
+		type: Types.ObjectId,
 	},
 	type: {
 		type: String,
@@ -54,6 +62,7 @@ const InteractiveRolesSchema = new Schema<InteractiveRolesType>({
 				action: {
 					type: String,
 					enum: INTERACTIVE_ROLE_ACTIONS,
+					default: 'toggle',
 				},
 			},
 		],
@@ -66,8 +75,6 @@ const InteractiveRolesSchema = new Schema<InteractiveRolesType>({
 InteractiveRolesSchema.index({ guildId: 1, channelId: 1, messageId: 1 }, { unique: true });
 InteractiveRolesSchema.post<HydratedDocument<InteractiveRolesType>>('validate', function (next) {
 	if (this.type !== 'buttons') {
-		if (!this.roles.every(item => item.label))
-			this.invalidate('roles.i.label', 'Item label is required for reactions and selects type');
 		if (this.roles.some(item => item.style))
 			this.invalidate('roles.i.style', 'Item style can be set only for buttons type');
 	}
@@ -81,6 +88,10 @@ InteractiveRolesSchema.post<HydratedDocument<InteractiveRolesType>>('validate', 
 	if (this.type === 'reactions') {
 		if (this.roles.some(item => item.icon))
 			this.invalidate('roles.i.icon', 'Item icon cannot be set for reactions type');
+	}
+	if (this.type === 'select') {
+		if (this.roles.some(item => !item.label))
+			this.invalidate('roles.i.label', 'Item label is required for selects type');
 	}
 });
 

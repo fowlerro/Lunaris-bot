@@ -4,10 +4,10 @@ import type { InteractiveRolesType } from 'types';
 
 export default async function createReactionCollector(interactiveRoles: InteractiveRolesType, message: Message) {
 	const filter = (reaction: MessageReaction, user: User) =>
-		interactiveRoles.roles.some(role => reaction.emoji.toString() === role.label && !user.bot);
+		interactiveRoles.roles.some(role => reaction.emoji.toString() === role.icon && !user.bot);
 
 	interactiveRoles.roles.forEach(async role => {
-		await message.react(role.label!).catch(logger.error);
+		await message.react(role.icon!).catch(logger.error);
 	});
 
 	const emojiCollector = message.createReactionCollector({ filter, dispose: true });
@@ -17,7 +17,7 @@ export default async function createReactionCollector(interactiveRoles: Interact
 
 async function handleReactionAdd(messageReaction: MessageReaction, user: User, interactiveRoles: InteractiveRolesType) {
 	if (!client.isOnline) return;
-	const role = interactiveRoles.roles.find(role => role.label === messageReaction.emoji.toString());
+	const role = interactiveRoles.roles.find(role => role.icon === messageReaction.emoji.toString());
 	if (!role) return;
 	const roleId = role.roleId;
 	const member = await messageReaction.message.guild?.members.fetch(user.id).catch(logger.error);
@@ -36,7 +36,7 @@ async function handleReactionRemove(
 	interactiveRoles: InteractiveRolesType
 ) {
 	if (!client.isOnline) return;
-	const role = interactiveRoles.roles.find(role => role.label === messageReaction.emoji.toString());
+	const role = interactiveRoles.roles.find(role => role.icon === messageReaction.emoji.toString());
 	if (!role) return;
 	if (role.action !== 'toggle') return;
 	const roleId = role.roleId;

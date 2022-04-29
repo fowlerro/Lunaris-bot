@@ -3,6 +3,7 @@ import {
 	getChannelsController,
 	getGuildBansController,
 	getGuildController,
+	getGuildEmojisController,
 	getGuildPermissionsController,
 	getGuildsController,
 	getGuildStatisticsController,
@@ -17,12 +18,20 @@ import {
 	getEmbedMessagesController,
 	saveEmbedMessageController,
 } from './controllers/embeds.controller';
-import { getInteractiveRolesController } from './controllers/interactiveRoles.controller';
+import {
+	deleteInteractiveRoleController,
+	getInteractiveRolesController,
+	saveInteractiveRolesController,
+} from './controllers/interactiveRoles.controller';
 
 import { setAutoRolesValidator } from './validators/autoRoles.validators';
 import { saveServerLogsValidator } from './validators/serverLogs.validators';
 import { setLevelConfigValidator } from './validators/levels.validators';
 import { saveEmbedMessagesValidator, deleteEmbedMessageValidator } from './validators/embeds.validators';
+import {
+	deleteInteractiveRoleValidator,
+	saveInteractiveRolesValidator,
+} from './validators/interactiveRoles.validators';
 
 import { isAuthenticated, isAuthorizedInGuild } from '../../utils/middlewares';
 
@@ -33,6 +42,7 @@ router.get('/', isAuthenticated, getGuildsController);
 router.get('/:guildId/', isAuthenticated, isAuthorizedInGuild, getGuildController);
 router.get('/:guildId/permissions', isAuthenticated, getGuildPermissionsController);
 router.get('/:guildId/stats', isAuthenticated, isAuthorizedInGuild, getGuildStatisticsController);
+router.get('/:guildId/emojis', isAuthenticated, isAuthorizedInGuild, getGuildEmojisController);
 router.get('/:guildId/roles', isAuthenticated, isAuthorizedInGuild, getRolesController);
 router.get('/:guildId/channels', isAuthenticated, isAuthorizedInGuild, getChannelsController);
 router.get('/:guildId/bans', isAuthenticated, isAuthorizedInGuild, getGuildBansController);
@@ -70,5 +80,19 @@ router.delete(
 );
 
 router.get('/:guildId/interactive-roles', isAuthenticated, isAuthorizedInGuild, getInteractiveRolesController);
+router.put(
+	'/:guildId/interactive-roles',
+	isAuthenticated,
+	isAuthorizedInGuild,
+	saveInteractiveRolesValidator,
+	saveInteractiveRolesController
+);
+router.delete(
+	'/:guildId/interactive-roles',
+	isAuthenticated,
+	isAuthorizedInGuild,
+	deleteInteractiveRoleValidator,
+	deleteInteractiveRoleController
+);
 
 export default router;

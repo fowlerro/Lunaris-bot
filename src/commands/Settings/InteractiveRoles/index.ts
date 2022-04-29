@@ -21,7 +21,7 @@ export default class ReactionRolesCommand extends BaseCommand {
 					type: 'SUB_COMMAND_GROUP',
 				},
 			],
-			true,
+			false,
 			true
 		);
 	}

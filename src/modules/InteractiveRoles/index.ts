@@ -24,7 +24,6 @@ class InteractiveRolesModule extends BaseModule {
 	}
 
 	async fetchMessages() {
-		console.time('InteractiveRoles fetchMessages');
 		const messages = await InteractiveRolesModel.find().catch(logger.error);
 		if (!messages) return;
 		for (const msg of messages) {
@@ -37,19 +36,22 @@ class InteractiveRolesModule extends BaseModule {
 
 			if (msg.type === 'reactions') createReactionCollector(msg, message);
 		}
-		console.timeEnd('InteractiveRoles fetchMessages');
 	}
 
 	async get(interactiveRoleId: string) {
-		return InteractiveRolesModel.findById(interactiveRoleId).lean().exec();
+		return InteractiveRolesModel.findById(interactiveRoleId).lean().select('-__v').exec();
 	}
 
 	async list(guildId: Snowflake) {
-		return InteractiveRolesModel.find({ guildId }).lean().exec();
+		return InteractiveRolesModel.find({ guildId }).select('-__v').lean().exec();
+	}
+
+	async delete(guildId: Snowflake, interactiveRoleId: string) {
+		return InteractiveRolesModel.deleteOne({ _id: interactiveRoleId, guildId }).exec();
 	}
 
 	async create(interactiveRole: InteractiveRolesType) {
-		const { guildId, channelId, messageId, type, placeholder, roles } = interactiveRole;
+		const { _id, name, guildId, channelId, messageId, embedId, type, placeholder, roles } = interactiveRole;
 		const guild = await client.guilds.fetch(guildId);
 		const channel = await guild.channels.fetch(channelId);
 		if (!channel || channel.type !== 'GUILD_TEXT') throw new Error('Channel must be a text channel');
@@ -60,30 +62,25 @@ class InteractiveRolesModule extends BaseModule {
 		const interactiveRolesCount = await InteractiveRolesModel.countDocuments({ guildId });
 		if (interactiveRolesCount >= 10) throw new Error('Interactive Roles limit reached');
 
-		const createdInteractiveRoles = await InteractiveRolesModel.create({
-			guildId,
-			channelId,
-			messageId,
-			type,
-			placeholder,
-			roles,
-		}).catch(logger.error);
+		const createdInteractiveRoles = await InteractiveRolesModel.findOneAndUpdate(
+			{ _id, guildId, channelId, messageId, embedId },
+			{
+				name,
+				guildId,
+				channelId,
+				messageId,
+				embedId,
+				type,
+				placeholder,
+				roles,
+			},
+			{ new: true, upsert: true, runValidators: true, fields: '-__v', lean: true }
+		).catch(logger.error);
 		if (!createdInteractiveRoles) throw new Error('Failed to create Interactive Roles');
 
 		if (type === 'reactions') createReactionCollector(createdInteractiveRoles, message);
 		if (type === 'buttons') createInteractiveRoleButtons(createdInteractiveRoles, message);
 		if (type === 'select') createInteractiveRoleSelect(createdInteractiveRoles, message);
-	}
-
-	async edit(id: string, interactiveRole: InteractiveRolesType) {
-		const res = await InteractiveRolesModel.findByIdAndUpdate(id, interactiveRole, {
-			new: true,
-			runValidators: true,
-			lean: true,
-		})
-			.exec()
-			.catch(logger.error);
-		if (!res) throw new Error('Failed to edit Interactive Roles');
 	}
 
 	async handleButtons(interaction: ButtonInteraction) {

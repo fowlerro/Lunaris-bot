@@ -56,8 +56,5 @@
     "tsconfig-paths": "^3.14.1",
     "types": "github:fowlerro/Lunaris-types",
     "typescript": "^4.5.4"
-  },
-  "engines": {
-    "node": "17.6.0"
   }
 }

@@ -85,7 +85,7 @@
 		"executorWithoutPermission": "❌ Nie posiadasz uprawnień, aby to zrobić!",
 		"help": {
 			"title": "Pomoc",
-			"cmdTitle": "Informacje o {{commandName}}",
+			"cmdTitle": "Informacje o {{{commandName}}}",
 			"footer": "Aby zobaczyć więcej informacji na temat komendy, wpisz /help <cmd>",
 			"selectMenuPlaceholder": "Wybierz kategorię"
 		},
