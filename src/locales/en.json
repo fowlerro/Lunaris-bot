@@ -1,513 +1,521 @@
 {
-    "name": "English",
-    "general": {
-        "name": "Name",
-        "description": "Description",
-        "slowMode": "Slow mode",
-        "on": "Enabled",
-        "off": "Disabled",
-        "reason": "Reason",
-        "role": "Role",
-        "roles": "Roles",
-        "by": "By",
-        "createdAt": "Account created at",
-        "joinedAt": "Account joined at",
-        "channel": "Channel",
-        "thread": "Thread",
-        "content": "Content",
-        "before": "Before",
-        "after": "After",
-        "code": "Code",
-        "old": {
-            "a": "Old",
-            "b": "Old"
-        },
-        "new": {
-            "a": "New",
-            "b": "New"
-        },
-        "color": "Color",
-        "none": "None",
-        "forTime": "For",
-        "aliases": "Aliases",
-        "syntax": "Syntax",
-        "example": "Example",
-        "user": "User",
-        "date": "Date",
-        "error": "❌ Something went wrong :/ Try again!",
-        "yes": "yes",
-        "no": "no",
-        "never": "Never",
-        "message": "Message",
-        "emoji": "Emoji",
-        "unknown": "Unknown",
-        "until": "Until"
-    },
-    "help": {
-        "help": {
-            "updateTitle": "Updates",
-            "updateList": "• Welcome Messages! More info on modules page!\n• Level Rewards! Check `/level rewards`",
+	"name": "English",
+	"general": {
+		"name": "Name",
+		"description": "Description",
+		"slowMode": "Slow mode",
+		"on": "Enabled",
+		"off": "Disabled",
+		"reason": "Reason",
+		"role": "Role",
+		"roles": "Roles",
+		"by": "By",
+		"createdAt": "Account created at",
+		"joinedAt": "Account joined at",
+		"channel": "Channel",
+		"thread": "Thread",
+		"content": "Content",
+		"before": "Before",
+		"after": "After",
+		"code": "Code",
+		"old": {
+			"a": "Old",
+			"b": "Old"
+		},
+		"new": {
+			"a": "New",
+			"b": "New"
+		},
+		"color": "Color",
+		"none": "None",
+		"forTime": "For",
+		"aliases": "Aliases",
+		"syntax": "Syntax",
+		"example": "Example",
+		"user": "User",
+		"date": "Date",
+		"error": "❌ Something went wrong :/ Try again!",
+		"yes": "yes",
+		"no": "no",
+		"never": "Never",
+		"message": "Message",
+		"emoji": "Emoji",
+		"unknown": "Unknown",
+		"until": "Until"
+	},
+	"help": {
+		"help": {
+			"updateTitle": "Updates",
+			"updateList": "• Welcome Messages! More info on modules page!\n• Level Rewards! Check `/level rewards`",
 
-            "comingSoonTitle": "Coming soon",
-            "comingSoonList": "• Website dashboard (In progress, but idk when I finish it xD)\n• Statistic channels - Display various stats within a name of a channel",
+			"comingSoonTitle": "Coming soon",
+			"comingSoonList": "• Website dashboard (In progress, but idk when I finish it xD)\n• Statistic channels - Display various stats within a name of a channel",
 
-            "statTitle": "Bot stats",
-            "statList": "Commands: {{commandCount}}\n Servers: {{guildCount}}/75\n Profiles: {{profileCount}}"
-        },
-        "module": {
-            "title": "Modules",
-            "autoRole": {
-                "name": "Auto Roles",
-                "value": "Its for automatic adding roles to users when they join to server, you can choose role and even time, in which role should be automatically taken from user\n__Cannot manage through commands yet__"
-            },
-            "reactionRoles": {
-                "name": "Reaction Roles",
-                "value": "You can set up message with reactions or buttons, which will add or remove roles from user, you can also specify the type of role (add/remove or verify - which will allow only to add role and not remove)\n __Cannot manage through commands yet__"
-            },
-            "xpSystem": {
-                "name": "Levels System",
-                "value": "Levels System works both in text and voice channels. You gain coins from leveling up. You can add Level Rewards, which are just roles, which will be added to the user, when he hit specific level, check `/level rewards`"
-            },
-            "embedMessages": {
-                "name": "Embed Messages",
-                "value": "You can create custom embed messages\n Its hard to make with commands to work, so will be only available on web dashboard"
-            },
-            "welcomeMessages": {
-                "name": "Welcome Messages",
-                "value": "Automated messages that are sent when a user joins/leaves a server!\nYou can use many variables such as `username` or `serverName` to make your own custom and dynamic messages\nUse `/welcome add <action> <format>` to add Welcome Message\nYou can choose one of 2 actions: **join** - triggers when user join a server, or **leave** - triggers when user leave a server\nExample format: `Welcome {\u200b{username}} to server {\u200b{serverName}}!`, variables inside `{\u200b{ }}` are replaces with data related to your server and user who join/leave\nFor full list of available formats check `/formatters` (Inside messages use can also use emojis as well as mentions (@user, #channel)"
-            }
-        }
-    },
-    "command": {
-        "globalStatus": "Command is temporary turned off",
-        "languageListMessage": "Supported languages",
-        "wrongId": "❌ Wrong id",
-        "executorWithoutPermission": "❌ You don't have permissions to do that!",
-        "help": {
-            "title": "Help",
-            "cmdTitle": "Help for {{commandName}}",
-            "footer": "Type /help <cmd> for more information about command",
-            "selectMenuPlaceholder": "Select category"
-        },
-        "ranking": {
-            "text": "Text",
-            "voice": "Voice",
-            "coins": "Coins",
-            "lastUpdate": "last update"
-        },
-        "userInfo": {
-            "title": "{{memberTag}}'s informations",
-            "createdAt": "Created at",
-            "joinedAt": "Joined at",
-            "avatar": "Avatar URL"
-        },
-        "purge": {
-            "wrongChannel": "❌ Please provide a text channel",
-            "success": {
-                "default": "✅ Successfully purged {{deletedCount}} messages",
-                "user": "✅ Successfully purged {{deletedCount}} <@{{userId}}>'s messages",
-                "channel": "✅ Successfully purged {{deletedCount}} messages in <#{{channelId}}>",
-                "user-channel": "✅ Successfully purged {{deletedCount}} <@{{userId}}>'s messages in <#{{channelId}}>"
-            }
-        },
-        "emoji": {
-            "add": "✅ The emoji **{{emojiName}}** has been successfully added",
-            "delete": "✅ The emoji **{{emojiName}}** has been successfully deleted",
-            "error": "❌ Something went wrong :/ Check the URL and try again",
-            "length": "❌ Emoji name must be between 2 and 32 characters!",
-            "notDeletable": "❌ The emoji cannot be deleted"
-        },
-        "warn": {
-            "add": "✅ {{{member}}} has been warned by {{{executor}}}",
-            "remove": "✅ {{{executor}}} removed warn from user {{{member}}}",
-            "removeMemberAll": "✅ {{{executor}}} removed all {{{member}}}'s warns",
-            "removeAll": "✅ {{{executor}}} removed all server warns",
-            "list": "{{userTag}}'s warn list",
-            "guildList": "Warns:",
-            "error": "❌ Something went wrong! Warn couldn't be removed",
-            "notFound": "❌ Warn not found!",
-            "targetNotFound": "❌ Member not found!",
-            "targetWithoutWarns": "❌ {{{member}}} doesn't have any warns!",
-            "optionAll": "Delete all warns from this member!"
-        },
-        "mute": {
-            "addMute": "✅ {{{member}}} has been timed out by {{{executor}}}",
-            "removeMute":"✅ {{{executor}}} removed timeout from {{{member}}}",
-            "notModeratable": "❌ You can't moderate this member!",
-            "notTimedOut": "❌ Member is not timed out!",
-            "alreadyTimedOut": "❌ Member is already timed out!",
-            "incorectTime": "❌ Incorect time!"
-        },
-        "ban": {
-            "add": "✅ {{{member}}} has been banned by {{{executor}}}",
-            "remove": "✅ {{{member}}} has been unbanned by {{{executor}}}",
-            "removeReason": "Timed ban ended\nBan reason: {{reason}}",
-            "list": "🗒️ Bans",
-            "notBanned": "❌ Member is not banned",
-            "notFound": "❌ User not found",
-            "notManageable": "❌ I cannot manage this member!",
-            "missingPermissions": "❌ I don't have permissions to ban member!"
-        },
-        "idea": {
-            "submitted": "An idea has been submitted"
-        },
-        "welcome": {
-            "add": "New Welcome Message has been added!",
-            "delete": "Welcome Message has been deleted!",
-            "set": "Channel for Welcome Messages has been set",
-            "disabled": "Welcome Message action has been disabled",
+			"statTitle": "Bot stats",
+			"statList": "Commands: {{commandCount}}\n Servers: {{guildCount}}/75\n Profiles: {{profileCount}}"
+		},
+		"module": {
+			"title": "Modules",
+			"autoRole": {
+				"name": "Auto Roles",
+				"value": "Its for automatic adding roles to users when they join to server, you can choose role and even time, in which role should be automatically taken from user\n__Cannot manage through commands yet__"
+			},
+			"reactionRoles": {
+				"name": "Reaction Roles",
+				"value": "You can set up message with reactions or buttons, which will add or remove roles from user, you can also specify the type of role (add/remove or verify - which will allow only to add role and not remove)\n __Cannot manage through commands yet__"
+			},
+			"xpSystem": {
+				"name": "Levels System",
+				"value": "Levels System works both in text and voice channels. You gain coins from leveling up. You can add Level Rewards, which are just roles, which will be added to the user, when he hit specific level, check `/level rewards`"
+			},
+			"embedMessages": {
+				"name": "Embed Messages",
+				"value": "You can create custom embed messages\n Its hard to make with commands to work, so will be only available on web dashboard"
+			},
+			"welcomeMessages": {
+				"name": "Welcome Messages",
+				"value": "Automated messages that are sent when a user joins/leaves a server!\nYou can use many variables such as `username` or `serverName` to make your own custom and dynamic messages\nUse `/welcome add <action> <format>` to add Welcome Message\nYou can choose one of 2 actions: **join** - triggers when user join a server, or **leave** - triggers when user leave a server\nExample format: `Welcome {\u200b{username}} to server {\u200b{serverName}}!`, variables inside `{\u200b{ }}` are replaces with data related to your server and user who join/leave\nFor full list of available formats check `/formatters` (Inside messages use can also use emojis as well as mentions (@user, #channel)"
+			}
+		}
+	},
+	"command": {
+		"globalStatus": "Command is temporary turned off",
+		"languageListMessage": "Supported languages",
+		"wrongId": "❌ Wrong id",
+		"executorWithoutPermission": "❌ You don't have permissions to do that!",
+		"help": {
+			"title": "Help",
+			"cmdTitle": "Help for {{{commandName}}}",
+			"footer": "Type /help <cmd> for more information about command",
+			"selectMenuPlaceholder": "Select category"
+		},
+		"ranking": {
+			"text": "Text",
+			"voice": "Voice",
+			"coins": "Coins",
+			"lastUpdate": "last update"
+		},
+		"userInfo": {
+			"title": "{{memberTag}}'s informations",
+			"createdAt": "Created at",
+			"joinedAt": "Joined at",
+			"avatar": "Avatar URL"
+		},
+		"purge": {
+			"wrongChannel": "❌ Please provide a text channel",
+			"success": {
+				"default": "✅ Successfully purged {{deletedCount}} messages",
+				"user": "✅ Successfully purged {{deletedCount}} <@{{userId}}>'s messages",
+				"channel": "✅ Successfully purged {{deletedCount}} messages in <#{{channelId}}>",
+				"user-channel": "✅ Successfully purged {{deletedCount}} <@{{userId}}>'s messages in <#{{channelId}}>"
+			}
+		},
+		"emoji": {
+			"add": "✅ The emoji **{{emojiName}}** has been successfully added",
+			"delete": "✅ The emoji **{{emojiName}}** has been successfully deleted",
+			"error": "❌ Something went wrong :/ Check the URL and try again",
+			"length": "❌ Emoji name must be between 2 and 32 characters!",
+			"notDeletable": "❌ The emoji cannot be deleted"
+		},
+		"warn": {
+			"add": "✅ {{{member}}} has been warned by {{{executor}}}",
+			"remove": "✅ {{{executor}}} removed warn from user {{{member}}}",
+			"removeMemberAll": "✅ {{{executor}}} removed all {{{member}}}'s warns",
+			"removeAll": "✅ {{{executor}}} removed all server warns",
+			"list": "{{userTag}}'s warn list",
+			"guildList": "Warns:",
+			"error": "❌ Something went wrong! Warn couldn't be removed",
+			"notFound": "❌ Warn not found!",
+			"targetNotFound": "❌ Member not found!",
+			"targetWithoutWarns": "❌ {{{member}}} doesn't have any warns!",
+			"optionAll": "Delete all warns from this member!"
+		},
+		"mute": {
+			"addMute": "✅ {{{member}}} has been timed out by {{{executor}}}",
+			"removeMute": "✅ {{{executor}}} removed timeout from {{{member}}}",
+			"notModeratable": "❌ You can't moderate this member!",
+			"notTimedOut": "❌ Member is not timed out!",
+			"alreadyTimedOut": "❌ Member is already timed out!",
+			"incorectTime": "❌ Incorect time!"
+		},
+		"ban": {
+			"add": "✅ {{{member}}} has been banned by {{{executor}}}",
+			"remove": "✅ {{{member}}} has been unbanned by {{{executor}}}",
+			"removeReason": "Timed ban ended\nBan reason: {{reason}}",
+			"list": "🗒️ Bans",
+			"notBanned": "❌ Member is not banned",
+			"notFound": "❌ User not found",
+			"notManageable": "❌ I cannot manage this member!",
+			"missingPermissions": "❌ I don't have permissions to ban member!"
+		},
+		"idea": {
+			"submitted": "An idea has been submitted"
+		},
+		"welcome": {
+			"add": "New Welcome Message has been added!",
+			"delete": "Welcome Message has been deleted!",
+			"set": "Channel for Welcome Messages has been set",
+			"disabled": "Welcome Message action has been disabled",
 
-            "status": {
-                "alreadyEnabled": "Module is already enabled!",
-                "alreadyDisabled": "Module is already disabled!",
+			"status": {
+				"alreadyEnabled": "Module is already enabled!",
+				"alreadyDisabled": "Module is already disabled!",
 
-                "enabled": "Module has been successfully enabled!",
-                "disabled": "Module has been successfully disabled!"
-            },
+				"enabled": "Module has been successfully enabled!",
+				"disabled": "Module has been successfully disabled!"
+			},
 
-            "info": {
-                "title": "Welcome Messages",
-                "joinChannel": "Join Messages",
-                "leaveChannel": "Leave Messages"
-            },
-            "list": {
-                "join": "List of join messages",
-                "leave": "List of leave messages"
-            },
+			"info": {
+				"title": "Welcome Messages",
+				"joinChannel": "Join Messages",
+				"leaveChannel": "Leave Messages"
+			},
+			"list": {
+				"join": "List of join messages",
+				"leave": "List of leave messages"
+			},
 
-            "listEmpty": "List is empty\nAdd Welcome Message with `/welcome add`"
-        },
-        "formatters": {
-            "title": "{{category}} formatters"
-        },
-        "level": {
-            "levelUpMessage": {
-                "formatTooLong": "❌ Format message can be up to 256 characters!",
+			"listEmpty": "List is empty\nAdd Welcome Message with `/welcome add`"
+		},
+		"formatters": {
+			"title": "{{category}} formatters"
+		},
+		"level": {
+			"levelUpMessage": {
+				"formatTooLong": "❌ Format message can be up to 256 characters!",
 
-                "set": "✅ Custom Level Up message has been set successfully!",
-                "unset": "✅ Custom Level Up message has been unset successfully!"
-            },
-            "levelUpChannel": {
-                "set": {
-                    "off": "✅ Level up message has been successfully disabled!",
-                    "currentChannel": "✅ Level up message has been successfully set as `currentChannel`!",
-                    "specificChannel": "✅ Level up message channel has been set successfully!"
-                },
+				"set": "✅ Custom Level Up message has been set successfully!",
+				"unset": "✅ Custom Level Up message has been unset successfully!"
+			},
+			"levelUpChannel": {
+				"set": {
+					"off": "✅ Level up message has been successfully disabled!",
+					"currentChannel": "✅ Level up message has been successfully set as `currentChannel`!",
+					"specificChannel": "✅ Level up message channel has been set successfully!"
+				},
 
-                "currentChannel": "Message will be showing on channel where user leveled up",
-                "specificChannel": "Message will be showing in {{{channel}}}",
-                "disabled": "Level up message is disabled",
+				"currentChannel": "Message will be showing on channel where user leveled up",
+				"specificChannel": "Message will be showing in {{{channel}}}",
+				"disabled": "Level up message is disabled",
 
-                "wrongMode": "❌ Wrong mode, please select one from the options",
-                "notSpecifiedChannel": "❌ Channel not specified, select one from the options!"
-            },
-            "multiplier": {
-                "set": "✅ XP multiplier has been set successfully!",
-                "display": "Multiplier is set to `{{multiplier}}`"
-            },
-            "rewards": {
-                "add": "✅ Level Rewards has been added successfully!",
-                "remove": "✅ Level Rewards has been removed successfully!",
+				"wrongMode": "❌ Wrong mode, please select one from the options",
+				"notSpecifiedChannel": "❌ Channel not specified, select one from the options!"
+			},
+			"multiplier": {
+				"set": "✅ XP multiplier has been set successfully!",
+				"display": "Multiplier is set to `{{multiplier}}`"
+			},
+			"rewards": {
+				"add": "✅ Level Rewards has been added successfully!",
+				"remove": "✅ Level Rewards has been removed successfully!",
 
-                "listTitle": "Level Rewards",
-                "textListTitle": "Text Level Rewards",
-                "voiceListTitle": "Voice Level Rewards",
-                "text": "Text rewards",
-                "voice": "Voice rewards",
+				"listTitle": "Level Rewards",
+				"textListTitle": "Text Level Rewards",
+				"voiceListTitle": "Voice Level Rewards",
+				"text": "Text rewards",
+				"voice": "Voice rewards",
 
-                "takePreviousRole": "Remove previous reward",
+				"takePreviousRole": "Remove previous reward",
 
-                "limitError": "❌ You can add only up to 20 rewards for each scope (text and voice)!",
-                "rewardNotSelected": "❌ Wrong reward, please select a reward from the list!"
-            }
-        },
-        "logs": {
-            "set": "✅ Logs channel has been set successfully!",
-            "enabled": "✅ Log has been successfully enabled!",
-            "disabled": "✅ Log has been successfully disabled!",
-            "status": "🗒️ Server Logs",
-            "alreadyEnabled": "Log is already enabled",
-            "alreadyDisabled": "Log is already disabled",
-            "wrongCategory": "❌ Wrong logs category! Select correct from command option!",
-            "invalidLog": "❌ Invalid log! Select correct from command option",
-            "categories": {
-                "messages": "Messages",
-                "members": "Members",
-                "roles": "Roles",
-                "channels": "Channels",
-                "threads": "Threads",
-                "invites": "Invites",
-                "emojis": "Emojis",
-                "server": "Server"
-            }
-        },
-        "color": {
-            "converted": "✅ **{{inputFormat}}:** `{{inputColor}}` => **{{outputFormat}}:** `{{outputColor}}`",
-            "incorrectFormat": "❌ Incorrect format, select corrent one from command option!",
-            "invalidColor": "❌ Invalid color!"
-        }
-    },
-    "modules": {
-        "level": {
-            "rewardRoleAddReason": "Level reward role",
-            "rewardRoleRemoveReason": "Remove previous reward role"            
-        }
-    },
-    "logs": {
-        "general": {
-            "moderator": "Moderator",
-            "member": "Member",
-            "messageAuthor": "Message author",
-            "jumpToMessage": "Jump to message"
-        },
-        "messages": {
-            "edit": {
-                "title": "Message edited!",
-                "sendedAt": "Message sended at",
-                "deleteMessage": "Delete message!"
-            },
-            "delete": {
-                "title": "Message deleted!",
-                "by": "Deleted by",
-                "inChannel": "In channel"
-            },
-            "purge": {
-                "title": "Many messages purged!",
-                "count": "Message count"
-            },
-            "pin": {
-                "title": "Message pinned"
-            },
-            "unpin": {
-                "title": "Message unpinned!"
-            }
-        },
-        "members": {
-            "join": {
-                "title": "Member joined!",
-                "createdAt": "Account created at"
-            },
-            "leave": {
-                "title": "Member left!",
-                "joinedAt": "In server since",
-                "roles": "Roles"
-            },
+				"limitError": "❌ You can add only up to 20 rewards for each scope (text and voice)!",
+				"rewardNotSelected": "❌ Wrong reward, please select a reward from the list!"
+			}
+		},
+		"logs": {
+			"set": "✅ Logs channel has been set successfully!",
+			"enabled": "✅ Log has been successfully enabled!",
+			"disabled": "✅ Log has been successfully disabled!",
+			"status": "🗒️ Server Logs",
+			"alreadyEnabled": "Log is already enabled",
+			"alreadyDisabled": "Log is already disabled",
+			"wrongCategory": "❌ Wrong logs category! Select correct from command option!",
+			"invalidLog": "❌ Invalid log! Select correct from command option",
+			"categories": {
+				"messages": "Messages",
+				"members": "Members",
+				"roles": "Roles",
+				"channels": "Channels",
+				"threads": "Threads",
+				"invites": "Invites",
+				"emojis": "Emojis",
+				"server": "Server"
+			}
+		},
+		"color": {
+			"converted": "✅ **{{inputFormat}}:** `{{inputColor}}` => **{{outputFormat}}:** `{{outputColor}}`",
+			"incorrectFormat": "❌ Incorrect format, select corrent one from command option!",
+			"invalidColor": "❌ Invalid color!"
+		},
+		"roles": {
+			"create": {
+				"begin": "Creating role...",
+				"message": "Select message for Interactive Roles",
+				"roles": "Setup Roles",
+				"finish": "Finish!",
+				"canceled": "❌ Canceled!"
+			}
+		}
+	},
+	"modules": {
+		"level": {
+			"rewardRoleAddReason": "Level reward role",
+			"rewardRoleRemoveReason": "Remove previous reward role"
+		}
+	},
+	"logs": {
+		"general": {
+			"moderator": "Moderator",
+			"member": "Member",
+			"messageAuthor": "Message author",
+			"jumpToMessage": "Jump to message"
+		},
+		"messages": {
+			"edit": {
+				"title": "Message edited!",
+				"sendedAt": "Message sended at",
+				"deleteMessage": "Delete message!"
+			},
+			"delete": {
+				"title": "Message deleted!",
+				"by": "Deleted by",
+				"inChannel": "In channel"
+			},
+			"purge": {
+				"title": "Many messages purged!",
+				"count": "Message count"
+			},
+			"pin": {
+				"title": "Message pinned"
+			},
+			"unpin": {
+				"title": "Message unpinned!"
+			}
+		},
+		"members": {
+			"join": {
+				"title": "Member joined!",
+				"createdAt": "Account created at"
+			},
+			"leave": {
+				"title": "Member left!",
+				"joinedAt": "In server since",
+				"roles": "Roles"
+			},
 
-            "nickname": {
-                "title": "Member nickname changed!",
-                "editor": "Changed by",
-                "oldNickname": "Old nickname",
-                "newNickname": "New nickname"
-            },
+			"nickname": {
+				"title": "Member nickname changed!",
+				"editor": "Changed by",
+				"oldNickname": "Old nickname",
+				"newNickname": "New nickname"
+			},
 
-            "warn": {
-                "title": "Member warned!",
-                "warnCount": "Warn count"
-            },
-            "unwarn": {
-                "title": "Member unwarned!"
-            },
-            "unwarnAll": {
-                "title": "Removed all warns from member",
-                "warnCount": "Deleted warn count"
-            },
+			"warn": {
+				"title": "Member warned!",
+				"warnCount": "Warn count"
+			},
+			"unwarn": {
+				"title": "Member unwarned!"
+			},
+			"unwarnAll": {
+				"title": "Removed all warns from member",
+				"warnCount": "Deleted warn count"
+			},
 
-            "kick": {
-                "title": "Member kicked!"
-            },
+			"kick": {
+				"title": "Member kicked!"
+			},
 
-            "timeout": {
-                "title": "Member timed out!",
-                "timeoutEnd": "Timeout ends at"
-            },
-            "timeoutRemove": {
-                "title": "Member timeout removed!"
+			"timeout": {
+				"title": "Member timed out!",
+				"timeoutEnd": "Timeout ends at"
+			},
+			"timeoutRemove": {
+				"title": "Member timeout removed!"
+			},
 
-            },
+			"ban": {
+				"title": "Member banned!",
+				"bannedAt": "Banned",
+				"unbanAt": "Unban"
+			},
+			"unban": {
+				"title": "Member unbanned!"
+			}
+		},
+		"roles": {
+			"create": {
+				"title": "Role created!"
+			},
+			"delete": {
+				"title": "Role deleted!",
+				"createdAt": "Role created at"
+			},
+			"edit": {
+				"title": "Role edited!",
+				"edits": "Edits",
+				"changes": {
+					"color": "Color",
+					"name": "Name",
+					"hoist": "Hoist",
+					"mentionable": "Mentionable",
+					"allowPermissions": "Allowed perms",
+					"denyPermissions": "Denied perms"
+				}
+			},
+			"add": {
+				"title": "Role given!"
+			},
+			"remove": {
+				"title": "Role taken!"
+			}
+		},
+		"channels": {
+			"create": {
+				"title": "Channel created!"
+			},
+			"delete": {
+				"title": "Channel deleted!",
+				"createdAt": "Channel created at"
+			},
+			"edit": {
+				"title": "Channel edited!",
+				"edits": "Edits",
+				"allowed": "Allowed",
+				"denied": "Denied",
+				"default": "Default",
+				"changes": {
+					"topic": "Topic",
+					"slowmode": "Slowmode",
+					"nsfw": "NSFW",
+					"announcement": "Announcement Channel",
+					"archive": "Archive after inactivity"
+				}
+			}
+		},
+		"threads": {
+			"create": {
+				"title": "Thread created!",
+				"owner": "Thread owner",
+				"inChannel": "Created in",
+				"autoArchiveDuration": "Auto archive duration"
+			},
+			"delete": {
+				"title": "Thread deleted!",
+				"createdAt": "Thread created at",
+				"memberCount": "Member count",
+				"messageCount": "Message count"
+			},
+			"edit": {
+				"title": "Thread edited!",
+				"editor": "Edited by",
+				"edits": "Edits",
+				"changes": {
+					"locked": "Locked"
+				}
+			}
+		},
+		"invites": {
+			"create": {
+				"title": "Invite created!",
+				"createdBy": "Created by",
+				"forChannel": "For channel",
+				"code": "Invite code",
+				"expiresAt": "Expires at",
+				"maxUses": "Max uses"
+			},
+			"delete": {
+				"title": "Invite deleted!",
+				"deletedBy": "Deleted by",
+				"createdAt": "Invite created at",
+				"uses": "Uses"
+			}
+		},
+		"emojis": {
+			"create": {
+				"title": "Emoji added!",
+				"emojiName": "Emoji name"
+			},
+			"delete": {
+				"title": "Emoji deleted!",
+				"emojiAuthor": "Emoji added by",
+				"createdAt": "Emoji created at"
+			},
+			"edit": {
+				"title": "Emoji edited!",
+				"oldName": "Old name",
+				"newName": "New name"
+			}
+		},
+		"server": {
+			"unwarnAll": {
+				"title": "Unwarned whole server!"
+			}
+		}
+	},
+	"xp": {
+		"levelUpMessage": "You've just leveled up to **{{level}} lvl** {{{user}}}!"
+	},
+	"dashboard": {
+		"embeds": {
+			"newEmbed": "New Embed"
+		}
+	},
+	"permissions": {
+		"missingPermission": "Missing permission",
 
-            "ban": {
-                "title": "Member banned!",
-                "bannedAt": "Banned",
-                "unbanAt": "Unban"
-            },
-            "unban": {
-                "title": "Member unbanned!"
-            }
-        },
-        "roles": {
-            "create": {
-                "title": "Role created!"
-            },
-            "delete": {
-                "title": "Role deleted!",
-                "createdAt": "Role created at"
-            },
-            "edit": {
-                "title": "Role edited!",
-                "edits": "Edits",
-                "changes": {
-                    "color": "Color",
-                    "name": "Name",
-                    "hoist": "Hoist",
-                    "mentionable": "Mentionable",
-                    "allowPermissions": "Allowed perms",
-                    "denyPermissions": "Denied perms"
-                }
-            },
-            "add": {
-                "title": "Role given!"
-            },
-            "remove": {
-                "title": "Role taken!"
-            }
-        },
-        "channels": {
-            "create": {
-                "title": "Channel created!"
-            },
-            "delete": {
-                "title": "Channel deleted!",
-                "createdAt": "Channel created at"
-            },
-            "edit": {
-                "title": "Channel edited!",
-                "edits": "Edits",
-                "allowed": "Allowed",
-                "denied": "Denied",
-                "default": "Default",
-                "changes": {
-                    "topic": "Topic",
-                    "slowmode": "Slowmode",
-                    "nsfw": "NSFW",
-                    "announcement": "Announcement Channel",
-                    "archive": "Archive after inactivity"
-                }
-            }
-        },
-        "threads": {
-            "create": {
-                "title": "Thread created!",
-                "owner": "Thread owner",
-                "inChannel": "Created in",
-                "autoArchiveDuration": "Auto archive duration"
-            },
-            "delete": {
-                "title": "Thread deleted!",
-                "createdAt": "Thread created at",
-                "memberCount": "Member count",
-                "messageCount": "Message count"
-            },
-            "edit": {
-                "title": "Thread edited!",
-                "editor": "Edited by",
-                "edits": "Edits",
-                "changes": {
-                    "locked": "Locked"
-                }
-            }
-        },
-        "invites": {
-            "create": {
-                "title": "Invite created!",
-                "createdBy": "Created by",
-                "forChannel": "For channel",
-                "code": "Invite code",
-                "expiresAt": "Expires at",
-                "maxUses": "Max uses"
-            },
-            "delete": {
-                "title": "Invite deleted!",
-                "deletedBy": "Deleted by",
-                "createdAt": "Invite created at",
-                "uses": "Uses"
-            }
-        },
-        "emojis": {
-            "create": {
-                "title": "Emoji added!",
-                "emojiName": "Emoji name"
-            },
-            "delete": {
-                "title": "Emoji deleted!",
-                "emojiAuthor": "Emoji added by",
-                "createdAt": "Emoji created at"
-            },
-            "edit": {
-                "title": "Emoji edited!",
-                "oldName": "Old name",
-                "newName": "New name"
-            }
-        },
-        "server": {
-            "unwarnAll": {
-                "title": "Unwarned whole server!"
-            }
-        }
-    },
-    "xp": {
-        "levelUpMessage": "You've just leveled up to **{{level}} lvl** {{{user}}}!"
-    },
-    "dashboard": {
-        "embeds": {
-            "newEmbed": "New Embed"
-        }
-    },
-    "permissions": {
-        "missingPermission": "Missing permission",
+		"CREATE_INSTANT_INVITE": "Create Invite",
+		"KICK_MEMBERS": "Kick Members",
+		"BAN_MEMBERS": "Ban Members",
+		"MODERATE_MEMBERS": "Timeout Members",
+		"ADMINISTRATOR": "Administrator",
+		"MANAGE_CHANNELS": "Manage Channels",
+		"MANAGE_GUILD": "Manage Server",
+		"ADD_REACTIONS": "Add Reactions",
+		"VIEW_AUDIT_LOG": "View Audit Log",
+		"PRIORITY_SPEAKER": "Priority Speaker",
+		"STREAM": "Video",
+		"VIEW_CHANNEL": "Read Messages",
+		"SEND_MESSAGES": "Send Messages",
+		"SEND_TTS_MESSAGES": "Send TTS Messages",
+		"MANAGE_MESSAGES": "Manage Messages",
+		"EMBED_LINKS": "Embed Links",
+		"ATTACH_FILES": "Attach Files",
+		"READ_MESSAGE_HISTORY": "Read Message History",
+		"MENTION_EVERYONE": "Mention @everyone, @here",
+		"USE_EXTERNAL_EMOJIS": "Use External Emojis",
+		"VIEW_GUILD_INSIGHTS": "View Server Insights",
+		"CONNECT": "Connect",
+		"SPEAK": "Speak",
+		"MUTE_MEMBERS": "Mute Members",
+		"DEAFEN_MEMBERS": "Deafen Members",
+		"MOVE_MEMBERS": "Move Members",
+		"USE_VAD": "Use Voice Activity",
+		"CHANGE_NICKNAME": "Change Nickname",
+		"MANAGE_NICKNAMES": "Manage Nicknames",
+		"MANAGE_ROLES": "Manage Roles",
+		"MANAGE_WEBHOOKS": "Manage Webhooks",
 
-        "CREATE_INSTANT_INVITE": "Create Invite",
-        "KICK_MEMBERS": "Kick Members",
-        "BAN_MEMBERS": "Ban Members",
-        "MODERATE_MEMBERS": "Timeout Members",
-        "ADMINISTRATOR": "Administrator",
-        "MANAGE_CHANNELS": "Manage Channels",
-        "MANAGE_GUILD": "Manage Server",
-        "ADD_REACTIONS": "Add Reactions",
-        "VIEW_AUDIT_LOG": "View Audit Log",
-        "PRIORITY_SPEAKER": "Priority Speaker",
-        "STREAM": "Video",
-        "VIEW_CHANNEL": "Read Messages",
-        "SEND_MESSAGES": "Send Messages",
-        "SEND_TTS_MESSAGES": "Send TTS Messages",
-        "MANAGE_MESSAGES": "Manage Messages",
-        "EMBED_LINKS": "Embed Links",
-        "ATTACH_FILES": "Attach Files",
-        "READ_MESSAGE_HISTORY": "Read Message History",
-        "MENTION_EVERYONE": "Mention @everyone, @here",
-        "USE_EXTERNAL_EMOJIS": "Use External Emojis",
-        "VIEW_GUILD_INSIGHTS": "View Server Insights",
-        "CONNECT": "Connect",
-        "SPEAK": "Speak",
-        "MUTE_MEMBERS": "Mute Members",
-        "DEAFEN_MEMBERS": "Deafen Members",
-        "MOVE_MEMBERS": "Move Members",
-        "USE_VAD": "Use Voice Activity",
-        "CHANGE_NICKNAME": "Change Nickname",
-        "MANAGE_NICKNAMES": "Manage Nicknames",
-        "MANAGE_ROLES": "Manage Roles",
-        "MANAGE_WEBHOOKS": "Manage Webhooks",
-
-        "START_EMBEDDED_ACTIVITIES": "Start Activities",
-        "USE_APPLICATION_COMMANDS": "Use Application Commands",
-        "SEND_MESSAGES_IN_THREADS": "Send Messages in Threads",
-        "USE_PUBLIC_THREADS": "Use Public Threads",
-        "USE_PRIVATE_THREADS": "Use Private Threads",
-        "CREATE_PUBLIC_THREADS": "Create Public Threads",
-        "CREATE_PRIVATE_THREADS": "Create Private Threads",
-        "MANAGE_THREADS": "Manage Threads",
-        "REQUEST_TO_SPEAK": "Request to Speak",
-        "MANAGE_EVENTS": "Manage Events",
-        "MANAGE_EMOJIS_AND_STICKERS": "Manage Emojis and Stickers"
-    },
-    "date": {
-        "days": {
-            "monday": "Monday",
-            "tuesday": "Tuesday",
-            "wednesday": "Wednesday",
-            "thursday": "Thursday",
-            "friday": "Friday",
-            "saturday": "Saturday",
-            "sunday": "Sunday"
-        }
-    }
+		"START_EMBEDDED_ACTIVITIES": "Start Activities",
+		"USE_APPLICATION_COMMANDS": "Use Application Commands",
+		"SEND_MESSAGES_IN_THREADS": "Send Messages in Threads",
+		"USE_PUBLIC_THREADS": "Use Public Threads",
+		"USE_PRIVATE_THREADS": "Use Private Threads",
+		"CREATE_PUBLIC_THREADS": "Create Public Threads",
+		"CREATE_PRIVATE_THREADS": "Create Private Threads",
+		"MANAGE_THREADS": "Manage Threads",
+		"REQUEST_TO_SPEAK": "Request to Speak",
+		"MANAGE_EVENTS": "Manage Events",
+		"MANAGE_EMOJIS_AND_STICKERS": "Manage Emojis and Stickers"
+	},
+	"date": {
+		"days": {
+			"monday": "Monday",
+			"tuesday": "Tuesday",
+			"wednesday": "Wednesday",
+			"thursday": "Thursday",
+			"friday": "Friday",
+			"saturday": "Saturday",
+			"sunday": "Sunday"
+		}
+	}
 }

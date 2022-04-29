@@ -8,7 +8,7 @@ import { GuildProfileModel } from '../../../../database/schemas/GuildProfile';
 import { DISCORD_API_URL } from '../../../utils/constants';
 import { decrypt } from '../../../utils/utils';
 
-import type { GuildStats, Ban, APIBan, WarnedUser, Role, GuildChannels, GuildInfo } from 'types';
+import type { GuildStats, Ban, APIBan, WarnedUser, Role, GuildChannels, GuildInfo, GuildEmojis } from 'types';
 
 export async function getBotGuildsService() {
 	return client.guilds.fetch();
@@ -81,6 +81,23 @@ export async function getGuildStatisticsService(guildId: Snowflake): Promise<Gui
 	};
 
 	return data;
+}
+
+export async function getGuildEmojisService(guildId: Snowflake): Promise<GuildEmojis> {
+	const guild = await client.guilds.fetch(guildId);
+	const emojis = await guild.emojis.fetch();
+
+	return {
+		name: guild.name,
+		iconURL: guild.iconURL({ dynamic: true }) ?? undefined,
+		emojis: emojis
+			.filter(emoji => Boolean(emoji.name))
+			.map(emoji => ({
+				id: emoji.id,
+				name: emoji.name!,
+				animated: emoji.animated ?? false,
+			})),
+	};
 }
 
 export async function getRolesService(guildId: Snowflake): Promise<Role[]> {

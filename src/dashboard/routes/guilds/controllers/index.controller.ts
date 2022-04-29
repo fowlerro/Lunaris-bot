@@ -4,6 +4,7 @@ import {
 	getBotGuildsService,
 	getChannelsService,
 	getGuildBansService,
+	getGuildEmojisService,
 	getGuildPermissionsService,
 	getGuildService,
 	getGuildStatisticsService,
@@ -63,6 +64,18 @@ export async function getGuildStatisticsController(req: Request, res: Response) 
 		if (!guildId) return res.sendStatus(500);
 		const data = await getGuildStatisticsService(guildId);
 		return res.send(data);
+	} catch (err) {
+		logger.error(err);
+		res.sendStatus(500);
+	}
+}
+
+export async function getGuildEmojisController(req: Request, res: Response) {
+	try {
+		const { guildId } = req.params;
+		if (!guildId) return res.sendStatus(500);
+		const emojis = await getGuildEmojisService(guildId);
+		return res.send(emojis);
 	} catch (err) {
 		logger.error(err);
 		res.sendStatus(500);
