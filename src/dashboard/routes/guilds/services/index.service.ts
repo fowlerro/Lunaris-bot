@@ -1,14 +1,30 @@
-import { CategoryChannel, GuildPreview, OAuth2Guild, Snowflake, TextChannel } from 'discord.js';
+import { CategoryChannel, OAuth2Guild, Snowflake, TextChannel } from 'discord.js';
 import axios from 'axios';
 import CryptoJS from 'crypto-js';
 
-import { GuildBanModel } from '../../../../database/schemas/GuildBans';
-import { GuildProfileModel } from '../../../../database/schemas/GuildProfile';
+import Guilds from '@modules/Guilds';
+import autoRole from '@modules/autoRole';
+import Levels from '@modules/Levels';
+
+import { GuildBanModel } from '@schemas/GuildBans';
+import { GuildProfileModel } from '@schemas/GuildProfile';
+import { InteractiveRolesModel } from '@schemas/InteractiveRoles';
+import { EmbedModel } from '@schemas/Embed';
 
 import { DISCORD_API_URL } from '../../../utils/constants';
 import { decrypt } from '../../../utils/utils';
 
-import type { GuildStats, Ban, APIBan, WarnedUser, Role, GuildChannels, GuildInfo, GuildEmojis } from 'types';
+import type {
+	GuildStats,
+	Ban,
+	APIBan,
+	WarnedUser,
+	Role,
+	GuildChannels,
+	GuildInfo,
+	GuildEmojis,
+	GuildOverviewModules,
+} from 'types';
 
 export async function getBotGuildsService() {
 	return client.guilds.fetch();
@@ -63,24 +79,66 @@ export async function getGuildStatisticsService(guildId: Snowflake): Promise<Gui
 	const members = await guild.members.fetch();
 	const botCount = members.filter(member => member.user.bot).size;
 	const memberCount = guild.memberCount - botCount;
+	const bans = await guild.bans.fetch();
+	const banCount = bans.size;
 	const channels = await guild.channels.fetch();
 	const textChannelCount = channels.filter(channel => channel.isText()).size;
 	const voiceChannelCount = channels.filter(channel => channel.isVoice()).size;
+	const roles = await guild.roles.fetch();
+	const roleCount = roles.size;
+	const emojis = await guild.emojis.fetch();
+	const emojiCount = emojis.size;
 	const data = {
-		name: guild.name,
-		icon: {
-			hash: guild.icon,
-			acronym: guild.nameAcronym,
-		},
-		stats: {
-			members: memberCount,
-			bots: botCount,
-			channels: textChannelCount,
-			voiceChannels: voiceChannelCount,
-		},
+		members: memberCount,
+		bots: botCount,
+		bans: banCount,
+		channels: textChannelCount,
+		voiceChannels: voiceChannelCount,
+		roles: roleCount,
+		emojis: emojiCount,
 	};
 
 	return data;
+}
+
+export async function getGuildModulesService(guildId: Snowflake): Promise<GuildOverviewModules> {
+	const guildConfig = await Guilds.config.get(guildId);
+	if (!guildConfig) throw new Error('Guild Config not found');
+
+	const autoRoles = await autoRole.get(guildId);
+	const autoRoleCount = autoRoles?.roles?.length ?? 0;
+
+	const levelConfig = await Levels.get(guildId);
+	const levelText = levelConfig?.rewards?.text?.length ?? 0;
+	const levelVoice = levelConfig?.rewards?.voice?.length ?? 0;
+
+	const interactiveRolesCount = await InteractiveRolesModel.countDocuments({ guildId });
+	const embedCount = await EmbedModel.countDocuments({ guildId });
+
+	return {
+		autoRoles: {
+			status: guildConfig.modules.autoRole,
+			amount: autoRoleCount,
+		},
+		levels: {
+			status: guildConfig.modules.levels,
+			text: {
+				amount: levelText,
+			},
+			voice: {
+				amount: levelVoice,
+			},
+		},
+		interactiveRoles: {
+			amount: interactiveRolesCount,
+		},
+		embeds: {
+			amount: embedCount,
+		},
+		serverLogs: {
+			status: guildConfig.modules.serverLogs,
+		},
+	};
 }
 
 export async function getGuildEmojisService(guildId: Snowflake): Promise<GuildEmojis> {

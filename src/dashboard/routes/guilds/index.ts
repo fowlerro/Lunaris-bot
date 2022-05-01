@@ -4,6 +4,7 @@ import {
 	getGuildBansController,
 	getGuildController,
 	getGuildEmojisController,
+	getGuildModulesController,
 	getGuildPermissionsController,
 	getGuildsController,
 	getGuildStatisticsController,
@@ -42,6 +43,7 @@ router.get('/', isAuthenticated, getGuildsController);
 router.get('/:guildId/', isAuthenticated, isAuthorizedInGuild, getGuildController);
 router.get('/:guildId/permissions', isAuthenticated, getGuildPermissionsController);
 router.get('/:guildId/stats', isAuthenticated, isAuthorizedInGuild, getGuildStatisticsController);
+router.get('/:guildId/modules', isAuthenticated, isAuthorizedInGuild, getGuildModulesController);
 router.get('/:guildId/emojis', isAuthenticated, isAuthorizedInGuild, getGuildEmojisController);
 router.get('/:guildId/roles', isAuthenticated, isAuthorizedInGuild, getRolesController);
 router.get('/:guildId/channels', isAuthenticated, isAuthorizedInGuild, getChannelsController);
