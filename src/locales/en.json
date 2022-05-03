@@ -41,9 +41,24 @@
 		"message": "Message",
 		"emoji": "Emoji",
 		"unknown": "Unknown",
-		"until": "Until"
+		"until": "Until",
+		"help": "Help"
 	},
 	"help": {
+		"description": "Lunaris is the best!",
+		"support": "Have problem or question? Check out support server: {{{link}}}",
+		"commands": {
+			"title": "Commands",
+			"description": "[Full list of commands](https://lunaris.pro/commands)"
+		},
+		"modules": {
+			"title": "Modules",
+			"description": "[All modules listed here](https://lunaris.pro/modules)"
+		},
+		"dashboard": {
+			"title": "Dashboard Panel",
+			"description": "[Web Dashboard](https://lunaris.pro/dashboard)"
+		},
 		"help": {
 			"updateTitle": "Updates",
 			"updateList": "• Welcome Messages! More info on modules page!\n• Level Rewards! Check `/level rewards`",

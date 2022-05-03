@@ -166,6 +166,21 @@ export function convertColor(inputFormat: colorFormatsType, outputFormat: colorF
 	return color;
 }
 
+export function matchColorFormat(color: string): colorFormatsType | false {
+	const hex = color.match(colorRegex.HEX);
+	if (hex) return 'HEX';
+	const rgb = color.match(colorRegex.RGB);
+	if (rgb) return 'RGB';
+	const hsl = color.match(colorRegex.HSL);
+	if (hsl) return 'HSL';
+	const hsv = color.match(colorRegex.HSV);
+	if (hsv) return 'HSV';
+	const cmyk = color.match(colorRegex.CMYK);
+	if (cmyk) return 'CMYK';
+
+	return false;
+}
+
 export function getLocale(guildLocale: string | null): Language {
 	return guildLocale === 'pl' ? 'pl' : 'en';
 }

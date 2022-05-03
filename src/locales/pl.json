@@ -41,9 +41,24 @@
 		"message": "Wiadomość",
 		"emoji": "Emotka",
 		"unknown": "Nieznany",
-		"until": "Do"
+		"until": "Do",
+		"help": "Pomoc"
 	},
 	"help": {
+		"description": "Lunaris jest najlepszy!",
+		"support": "Masz jakiś problem albo pytanie? Sprawdź serwer wsparcia: {{{link}}}",
+		"commands": {
+			"title": "Komendy",
+			"description": "[Pełna lista komend](https://lunaris.pro/commands)"
+		},
+		"modules": {
+			"title": "Moduły",
+			"description": "[Wszystkie moduły tutaj](https://lunaris.pro/modules)"
+		},
+		"dashboard": {
+			"title": "Panel zarządzania",
+			"description": "[Web Dashboard](https://lunaris.pro/dashboard)"
+		},
 		"help": {
 			"updateTitle": "Aktualizacje",
 			"updateList": "• Slash komendy\n • Menedżer emotek (/emoji) - Można dodać emotkę na serwer przez link",

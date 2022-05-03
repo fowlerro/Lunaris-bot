@@ -1,5 +1,6 @@
-import BaseEvent from "../../utils/structures/BaseEvent";
-import { registerPresence } from "../../utils/registry";
+import BaseEvent from '../../utils/structures/BaseEvent';
+import { registerModules, registerPresence } from '../../utils/registry';
+import { testGuildId } from 'src/bot';
 
 export default class ReadyEvent extends BaseEvent {
 	constructor() {
@@ -9,5 +10,13 @@ export default class ReadyEvent extends BaseEvent {
 	async run() {
 		logger.info(client.user?.tag + ' has logged in.');
 		await registerPresence();
+		await registerModules('../modules');
+		client.isOnline = true;
+
+		// const guild = await client.guilds.fetch(testGuildId);
+		// const commands = await guild.commands.fetch();
+		// commands?.forEach(command => {
+		// 	command.delete();
+		// });
 	}
 }

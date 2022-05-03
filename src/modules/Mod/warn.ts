@@ -95,7 +95,7 @@ export const Warn = {
 			if (!profile.warns.length) return { error: 'targetWithoutWarns' };
 
 			profile.warns = [];
-			const res = await GuildProfileModel.findOneAndReplace({ guildId, userid: targetId }, profile)
+			const res = await GuildProfileModel.findOneAndReplace({ guildId, userId: targetId }, profile)
 				.exec()
 				.catch(logger.error);
 			if (!res) return { error: 'error' };
