@@ -1,6 +1,7 @@
 import { Message, Snowflake } from "discord.js";
 
-import Profiles from "../Profiles";
+import Guilds from '@modules/Guilds';
+import Profiles from "@modules/Profiles";
 
 import xpSystem from "./index";
 import { textLevelUp } from "./levelUp";
@@ -10,6 +11,9 @@ const cooldowns = new Map<string, boolean>()
 export async function handleTextXp(message: Message) {
         const guildId = message.guild?.id;
         if(!guildId) return
+        const guildConfig = await Guilds.config.get(guildId);
+        if(!guildConfig || !guildConfig.modules.levels) return;
+
         const channelId = message.channel.id
         const userId = message.author.id;
 

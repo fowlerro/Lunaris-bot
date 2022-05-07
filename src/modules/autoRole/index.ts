@@ -3,6 +3,7 @@ import { GuildMember, Snowflake } from 'discord.js';
 import BaseModule from '../../utils/structures/BaseModule';
 import { AutoRoleModel } from '../../database/schemas/AutoRole';
 import { AutoRoleTimeModel } from '../../database/schemas/AutoRoleTime';
+import Guilds from '@modules/Guilds';
 
 import type { AutoRoleConfig } from 'types';
 
@@ -17,6 +18,8 @@ class AutoRoleModule extends BaseModule {
 	}
 
 	async give(member: GuildMember) {
+		const guildConfig = await Guilds.config.get(member.guild.id);
+		if (!guildConfig || !guildConfig.modules.autoRole) return;
 		const config = await this.get(member.guild.id);
 		if (!config) return;
 		for (const role of config.roles) {

@@ -11,6 +11,7 @@ import type { Language, GuildLogs, GuildLogTypes } from 'types';
 import Embeds from '../Embeds';
 import actions from './actions';
 import templates from './templates';
+import Guilds from '@modules/Guilds';
 
 class LogsModule extends BaseModule {
 	constructor() {
@@ -87,6 +88,8 @@ class LogsModule extends BaseModule {
 		guildId: Snowflake,
 		vars: any
 	) {
+		const guildConfig = await Guilds.config.get(guildId);
+		if (!guildConfig || !guildConfig.modules.serverLogs) return;
 		const config = await this.get(guildId);
 		if (!config) return;
 		const channelId = config?.logs?.[category]?.channelId;

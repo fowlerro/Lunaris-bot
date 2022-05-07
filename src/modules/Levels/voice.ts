@@ -1,17 +1,22 @@
 import { VoiceState, GuildMember, Collection, Snowflake } from 'discord.js';
 import { GuildProfile } from '../../database/schemas/GuildProfile';
 
-import Profiles from '../Profiles';
-import type { Profile } from 'types';
+import Guilds from '@modules/Guilds';
+import Profiles from '@modules/Profiles';
 
 import xpSystem from './index';
 import { voiceLevelUp } from './levelUp';
+
+import type { Profile } from 'types';
 
 const membersInterval: {
 	[x: string]: NodeJS.Timer;
 } = {};
 
 export async function handleVoiceXp(oldState: VoiceState, newState: VoiceState) {
+	const guildConfig = await Guilds.config.get(newState.guild.id);
+	if (!guildConfig || !guildConfig.modules.levels) return;
+
 	const newChannelId = newState.channelId;
 	const oldChannelId = oldState.channelId;
 
