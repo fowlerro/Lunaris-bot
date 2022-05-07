@@ -16,7 +16,7 @@ export default async function (interaction: AutocompleteInteraction, language: L
 	if (!warns.length || error) return;
 
 	const options = (warns as GuildProfileWarn[])
-		.filter(warn => warn.reason?.includes(input) || false)
+		.filter(warn => warn.reason?.toLowerCase()?.includes(input.toLowerCase()) || false)
 		.map(warn => ({
 			name: `${warn.reason} | ${new Date(warn.date).toLocaleString()}`,
 			value: warn._id.toString(),

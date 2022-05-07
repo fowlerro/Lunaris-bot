@@ -12,7 +12,7 @@ export default async function (interaction: AutocompleteInteraction, language: L
 			name: `${ban.user.tag} (${ban.user.id})`,
 			value: ban.user.id,
 		}))
-		.filter(option => option.name.includes(input));
+		.filter(option => option.name.toLowerCase().includes(input.toLowerCase()));
 
 	return interaction.respond(options?.splice(0, 25) || []).catch(logger.error);
 }
