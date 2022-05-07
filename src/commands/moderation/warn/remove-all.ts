@@ -9,6 +9,7 @@ import type { Language } from 'types';
 export default async function (interaction: CommandInteraction, language: Language) {
 	if (!interaction.guildId) return;
 	const res = await Mod.warn.remove(interaction.guildId, 'all', interaction.user.id);
+	console.log(res.error);
 	if (!res.action) return handleCommandError(interaction, 'general.error');
 
 	const embed = new MessageEmbed()

@@ -44,7 +44,7 @@ export async function getMutualGuildsService(botGuilds: OAuth2Guild[], userGuild
 	const excluded = validGuilds.filter(userGuild => {
 		const findGuild = botGuilds.find(botGuild => botGuild.id === userGuild.id);
 		if (!findGuild) return userGuild;
-		included.push(findGuild);
+		included.push(userGuild);
 	});
 
 	return { excluded, included };

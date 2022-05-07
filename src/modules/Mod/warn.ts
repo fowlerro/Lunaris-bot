@@ -67,12 +67,12 @@ export const Warn = {
 			warns.forEach(async document => {
 				const cachedProfile = cache.guildProfiles.get<GuildProfile>(`${guildId}-${document.userId}`);
 				if (!cachedProfile) {
-					await document.updateOne({ $set: { warns: [] } }).catch(logger.error);
+					document.warns = [];
+					await document.save().catch(logger.error);
 					return;
 				}
-
 				cachedProfile.warns = [];
-				const res = await document.replaceOne(cachedProfile).catch(logger.error);
+				const res = await document.replaceOne(cachedProfile).exec().catch(logger.error);
 				if (res) Profiles.set(cachedProfile);
 			});
 
@@ -165,10 +165,7 @@ async function list(
 		return { warns: result.warns };
 	}
 
-	let warns = await GuildProfileModel.find({ guildId })
-		.select(['-muted', '-_id', '-guildId', '-__v'])
-		.exec()
-		.catch(logger.error);
+	let warns = await GuildProfileModel.find({ guildId }).select(['-muted', '-__v']).exec().catch(logger.error);
 	if (!warns) return { error: 'profileNotFound', warns: [] };
 	warns = warns.filter(v => v.warns.length > 0);
 	if (!warns.map(v => v.warns.length).reduce((a, b) => a + b, 0)) return { warns: [] };
