@@ -1,9 +1,9 @@
 import { Snowflake } from 'discord.js';
-import mongoose from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 
 import Logs from '../Logs';
 import Profiles from '../Profiles';
-import { GuildProfile, GuildProfileDocument, GuildProfileModel } from '../../database/schemas/GuildProfile';
+import { GuildProfile, GuildProfileModel } from '../../database/schemas/GuildProfile';
 import { getLocale } from '../../utils/utils';
 
 import type { GuildProfileWarn } from 'types';
@@ -28,12 +28,14 @@ export const Warn = {
 		const document = await GuildProfileModel.findOneAndReplace({ guildId, userId: targetId }, guildProfile, {
 			new: true,
 			runValidators: true,
+			lean: true,
+			fields: '-_id -__v',
 		})
 			.select('-_id -__v')
 			.catch(logger.error);
 		if (!document) return;
 
-		Profiles.set(document.toObject());
+		Profiles.set(document);
 		await Logs.log('members', 'warn', guildId, {
 			member: target,
 			customs: {
@@ -130,6 +132,7 @@ export const Warn = {
 			if (!res) return { error: 'error' };
 		}
 
+		// @ts-ignore
 		const { _id, __v, ...profile } = document.toObject();
 
 		Profiles.set(profile);
@@ -148,16 +151,16 @@ export const Warn = {
 	list,
 };
 
-async function list(guildId: Snowflake): Promise<{ warns: GuildProfileDocument[]; error?: string }>;
+async function list(guildId: Snowflake): Promise<{ warns: HydratedDocument<GuildProfile>[]; error?: string }>;
 async function list(guildId: Snowflake, targetId: Snowflake): Promise<{ warns: GuildProfileWarn[]; error?: string }>;
 async function list(
 	guildId: Snowflake,
 	targetId?: Snowflake
-): Promise<{ warns: GuildProfileWarn[] | GuildProfileDocument[]; error?: string }>;
+): Promise<{ warns: GuildProfileWarn[] | HydratedDocument<GuildProfile>[]; error?: string }>;
 async function list(
 	guildId: Snowflake,
 	targetId?: Snowflake
-): Promise<{ warns: GuildProfileWarn[] | GuildProfileDocument[]; error?: string }> {
+): Promise<{ warns: GuildProfileWarn[] | HydratedDocument<GuildProfile>[]; error?: string }> {
 	if (targetId) {
 		const result = await GuildProfileModel.findOne({ guildId, userId: targetId }).catch(logger.error);
 		if (!result) return { error: 'profileNotFound', warns: [] };

@@ -141,10 +141,13 @@ async function createProfile(userId: Snowflake, guildId?: Snowflake): Promise<Pr
 		? await ProfileModel.create({ userId }).catch(logger.error)
 		: await GuildProfileModel.create({ userId, guildId }).catch(logger.error);
 	if (!profileDocument) return null;
+
+	// @ts-ignore
 	const { _id, __v, ...profile } = profileDocument.toObject();
 
 	'guildId' in profile
-		? cache.guildProfiles.set<GuildProfile>(`${guildId}-${userId}`, profile)
+		? // @ts-ignore
+		  cache.guildProfiles.set<GuildProfile>(`${guildId}-${userId}`, profile)
 		: cache.profiles.set<Profile>(userId, profile);
 
 	return profile;

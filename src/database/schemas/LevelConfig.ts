@@ -1,12 +1,10 @@
-import { Document, model, Schema } from 'mongoose';
+import { model, Schema } from 'mongoose';
 
 import { optionalSnowflake } from '../mongoose';
 
 import type { LevelConfig, LevelReward } from 'types';
 
-export interface LevelConfigDocument extends LevelConfig, Document {}
-
-const LevelConfigSchema = new Schema({
+const LevelConfigSchema = new Schema<LevelConfig>({
 	guildId: {
 		type: String,
 		required: true,
@@ -90,4 +88,4 @@ const LevelConfigSchema = new Schema({
 	},
 });
 
-export const LevelConfigModel = model<LevelConfigDocument>('LevelConfig', LevelConfigSchema);
+export const LevelConfigModel = model<LevelConfig>('LevelConfig', LevelConfigSchema);

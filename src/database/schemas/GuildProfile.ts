@@ -1,5 +1,5 @@
 import { Snowflake } from 'discord.js';
-import { Document, model, Schema } from 'mongoose';
+import { model, Schema } from 'mongoose';
 
 import type { ProfileStatistics, GuildProfileWarn } from 'types';
 
@@ -10,9 +10,9 @@ export interface GuildProfile {
 	warns: GuildProfileWarn[];
 }
 
-export interface GuildProfileDocument extends GuildProfile, Document {}
+// export interface GuildProfileDocument extends GuildProfile, Document {}
 
-const GuildProfileSchema = new Schema<GuildProfileDocument>({
+const GuildProfileSchema = new Schema<GuildProfile>({
 	guildId: {
 		type: String,
 		required: true,
@@ -83,4 +83,4 @@ const GuildProfileSchema = new Schema<GuildProfileDocument>({
 
 GuildProfileSchema.index({ guildId: 1, userId: 1 }, { unique: true });
 
-export const GuildProfileModel = model<GuildProfileDocument>('GuildProfile', GuildProfileSchema);
+export const GuildProfileModel = model<GuildProfile>('GuildProfile', GuildProfileSchema);

@@ -31,7 +31,8 @@
 		"paths": {
 			"@modules/*": ["src/modules/*"],
 			"@schemas/*": ["src/database/schemas/*"],
-			"@typings/*": ["src/types/*"],
+			"@typings/*": ["src/typings/*"],
+			"types": ["src/types/index.d.ts"],
 			"@utils/*": ["src/utils/*"],
 			"@commands/*": ["src/commands/*"]
 		} /* Specify a set of entries that re-map imports to additional lookup locations. */,
@@ -103,5 +104,6 @@
 		// "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
 		"skipLibCheck": true /* Skip type checking all .d.ts files. */
 	},
-	"include": ["src/**/*.ts"]
+	"include": ["src/**/*.ts"],
+	"exclude": ["src/types/index.ts"]
 }

@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionTypes, ApplicationCommandTypes } from 'discord.js/typings/enums';
 
-import type { Command } from '@typings/command';
+import type { Command } from 'src/typings/command';
 import { Permissions } from 'discord.js';
 
 export default {

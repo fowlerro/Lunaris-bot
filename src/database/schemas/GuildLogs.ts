@@ -136,4 +136,4 @@ const GuildLogsSchema = new Schema<GuildLogs>({
 	},
 });
 
-export const GuildLogsModel = model('GuildLogs', GuildLogsSchema);
+export const GuildLogsModel = model<GuildLogs>('GuildLogs', GuildLogsSchema);

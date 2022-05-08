@@ -2,8 +2,6 @@ import { model, Schema } from 'mongoose';
 
 import type { GuildConfig } from 'types';
 
-// export interface GuildConfigDocument extends GuildConfig, Document {}
-
 const GuildConfigSchema = new Schema<GuildConfig>({
 	guildId: {
 		type: String,
@@ -32,4 +30,4 @@ const GuildConfigSchema = new Schema<GuildConfig>({
 
 GuildConfigSchema.index({ guildId: 1 });
 
-export const GuildConfigModel = model('GuildConfig', GuildConfigSchema);
+export const GuildConfigModel = model<GuildConfig>('GuildConfig', GuildConfigSchema);

@@ -1,4 +1,4 @@
-import { Command } from '@typings/command';
+import { Command } from 'src/typings/command';
 import { MessageEmbed } from 'discord.js';
 import { ApplicationCommandTypes } from 'discord.js/typings/enums';
 

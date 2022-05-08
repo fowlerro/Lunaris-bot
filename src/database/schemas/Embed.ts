@@ -1,11 +1,9 @@
-import { Document, model, Schema } from 'mongoose';
+import { model, Schema } from 'mongoose';
 
 import { EMBED_LIMITS, palette } from '../../utils/utils';
 import type { EmbedMessage } from 'types';
 
-export interface EmbedDocument extends Omit<EmbedMessage, '_id'>, Document {}
-
-const EmbedSchema = new Schema({
+const EmbedSchema = new Schema<EmbedMessage>({
 	name: {
 		type: String,
 		required: true,
@@ -132,4 +130,4 @@ const EmbedSchema = new Schema({
 	},
 });
 
-export const EmbedModel = model<EmbedDocument>('Embed', EmbedSchema);
+export const EmbedModel = model<EmbedMessage>('Embed', EmbedSchema);

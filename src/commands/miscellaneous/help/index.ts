@@ -1,7 +1,7 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { ApplicationCommandTypes } from 'discord.js/typings/enums';
 
-import type { Command } from '@typings/command';
+import type { Command } from 'src/typings/command';
 
 export default {
 	type: ApplicationCommandTypes.CHAT_INPUT,

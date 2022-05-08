@@ -4,7 +4,7 @@ import { ApplicationCommandTypes } from 'discord.js/typings/enums';
 import { handleCommandError } from '@commands/errors';
 import { palette } from '@utils/utils';
 
-import type { Command } from '@typings/command';
+import type { Command } from 'src/typings/command';
 
 export default {
 	type: ApplicationCommandTypes.USER,

@@ -4,7 +4,7 @@ import { GuildProfile, GuildProfileModel } from '@schemas/GuildProfile';
 import Profiles from '@modules/Profiles';
 import { handleCommandError } from '@commands/errors';
 
-import type { Command } from '@typings/command';
+import type { Command } from 'src/typings/command';
 import type { Profile } from 'types';
 import { Formatters, MessageEmbed, Snowflake } from 'discord.js';
 import { palette } from '@utils/utils';

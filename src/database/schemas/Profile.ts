@@ -1,9 +1,7 @@
-import { model, Schema, Document } from 'mongoose';
+import { model, Schema } from 'mongoose';
 
 import { palette } from '../../utils/utils';
 import type { Profile } from 'types';
-
-// export interface ProfileDocument extends Profile, Document {}
 
 const ProfileSchema = new Schema<Profile>({
 	userId: {
@@ -72,4 +70,4 @@ const ProfileSchema = new Schema<Profile>({
 	},
 });
 
-export const ProfileModel = model('Profiles', ProfileSchema);
+export const ProfileModel = model<Profile>('Profiles', ProfileSchema);

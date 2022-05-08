@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionTypes, ApplicationCommandTypes, ChannelTypes } from 'discord.js/typings/enums';
 
-import type { Command } from '@typings/command';
+import type { Command } from 'src/typings/command';
 import { MessageEmbed, Permissions, TextChannel } from 'discord.js';
 import { handleCommandError } from '@commands/errors';
 import { palette } from '@utils/utils';

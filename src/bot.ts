@@ -5,7 +5,7 @@ dotenv.config();
 import { Intents } from 'discord.js';
 import i18n from 'i18n';
 
-import DiscordClient from './types/client';
+import DiscordClient from './typings/client';
 import { connectDatabase } from './database/mongoose';
 import { registerEvents } from './utils/registry';
 import dashboard from './dashboard/app';

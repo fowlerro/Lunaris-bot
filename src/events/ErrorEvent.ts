@@ -1,5 +1,5 @@
 // https://discord.js.org/#/docs/main/stable/class/Client?scrollTo=e-error
-import DiscordClient from "../types/client";
+import DiscordClient from "../typings/client";
 
 import BaseEvent from "../utils/structures/BaseEvent";
 export default class ErrorEvent extends BaseEvent {

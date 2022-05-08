@@ -98,6 +98,7 @@ class AutoRoleModule extends BaseModule {
 		const document = await AutoRoleModel.create({ guildId }).catch(logger.error);
 		if (!document) return null;
 
+		// @ts-ignore
 		const { _id, __v, ...config } = document.toObject();
 
 		cache.autoRoles.set(guildId, config);

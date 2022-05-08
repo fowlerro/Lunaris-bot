@@ -45,6 +45,7 @@ class GuildsModule extends BaseModule {
 			const document = await GuildConfigModel.create({ guildId }).catch(logger.error);
 			if (!document) return null;
 
+			// @ts-ignore
 			const { _id, __v, ...config } = document.toObject();
 			cache.guildConfigs.set(guildId, config);
 

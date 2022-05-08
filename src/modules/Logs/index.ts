@@ -5,7 +5,7 @@ import TextFormatter from '../../utils/Formatters/Formatter';
 import BaseModule from '../../utils/structures/BaseModule';
 import { getLocale } from '../../utils/utils';
 
-import type { LocalePhrase } from '../../types/locales';
+import type { LocalePhrase } from '../../typings/locales';
 import type { Language, GuildLogs, GuildLogTypes } from 'types';
 
 import Embeds from '../Embeds';
@@ -77,6 +77,7 @@ class LogsModule extends BaseModule {
 		const document = await GuildLogsModel.create({ guildId }).catch(logger.error);
 		if (!document) return null;
 
+		// @ts-ignore
 		const { _id, __v, ...config } = document.toObject();
 		cache.logConfigs.set<GuildLogs>(guildId, config);
 		return config;

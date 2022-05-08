@@ -58,7 +58,9 @@ class LevelsModule extends BaseModule {
 		if (!document) return null;
 
 		const config = document.toObject();
+		// @ts-ignore
 		delete config._id;
+		// @ts-ignore
 		delete config.__v;
 
 		cache.levelConfigs.set<LevelConfig>(guildId, config);
@@ -73,16 +75,12 @@ class LevelsModule extends BaseModule {
 					messageFormat: format,
 				},
 			},
-			{ upsert: true, new: true, runValidators: true }
+			{ upsert: true, new: true, runValidators: true, lean: true, fields: '-_id -__v' }
 		).catch(logger.error);
 		if (!document) return null;
 
-		const newConfig = document.toObject();
-		delete newConfig._id;
-		delete newConfig.__v;
-
-		cache.levelConfigs.set<LevelConfig>(guildId, newConfig);
-		return newConfig;
+		cache.levelConfigs.set<LevelConfig>(guildId, document);
+		return document;
 	}
 
 	async setLevelUpChannel(
@@ -98,16 +96,12 @@ class LevelsModule extends BaseModule {
 					channelId,
 				},
 			},
-			{ upsert: true, new: true, runValidators: true }
+			{ upsert: true, new: true, runValidators: true, lean: true, fields: '-_id -__v' }
 		).catch(logger.error);
 		if (!document) return null;
 
-		const newConfig = document.toObject();
-		delete newConfig._id;
-		delete newConfig.__v;
-
-		cache.levelConfigs.set<LevelConfig>(guildId, newConfig);
-		return newConfig;
+		cache.levelConfigs.set<LevelConfig>(guildId, document);
+		return document;
 	}
 
 	async setMultiplier(guildId: Snowflake, multiplier: number): Promise<LevelConfig | null> {
@@ -116,16 +110,12 @@ class LevelsModule extends BaseModule {
 			{
 				multiplier,
 			},
-			{ upsert: true, new: true, runValidators: true }
+			{ upsert: true, new: true, runValidators: true, lean: true, fields: '-_id -__v' }
 		).catch(logger.error);
 		if (!document) return null;
 
-		const newConfig = document.toObject();
-		delete newConfig._id;
-		delete newConfig.__v;
-
-		cache.levelConfigs.set<LevelConfig>(guildId, newConfig);
-		return newConfig;
+		cache.levelConfigs.set<LevelConfig>(guildId, document);
+		return document;
 	}
 
 	async addReward(guildId: Snowflake, reward: LevelReward, scope: 'text' | 'voice') {
@@ -138,16 +128,12 @@ class LevelsModule extends BaseModule {
 			{
 				$push: { [`rewards.${scope}`]: reward },
 			},
-			{ upsert: true, new: true, runValidators: true }
+			{ upsert: true, new: true, runValidators: true, lean: true, fields: '-_id -__v' }
 		).catch(logger.error);
 		if (!document) return null;
 
-		const newConfig = document.toObject();
-		delete newConfig._id;
-		delete newConfig.__v;
-
-		cache.levelConfigs.set<LevelConfig>(guildId, newConfig);
-		return newConfig;
+		cache.levelConfigs.set<LevelConfig>(guildId, document);
+		return document;
 	}
 
 	async removeReward(guildId: Snowflake, rewardId: string, scope: 'text' | 'voice') {
@@ -156,16 +142,12 @@ class LevelsModule extends BaseModule {
 			{
 				$pull: { [`rewards.${scope}`]: { _id: rewardId } },
 			},
-			{ new: true, upsert: true, runValidators: true }
+			{ new: true, upsert: true, runValidators: true, lean: true, fields: '-_id -__v' }
 		).catch(logger.error);
 		if (!document) return;
 
-		const newConfig = document.toObject();
-		delete newConfig._id;
-		delete newConfig.__v;
-
-		cache.levelConfigs.set<LevelConfig>(guildId, newConfig);
-		return newConfig;
+		cache.levelConfigs.set<LevelConfig>(guildId, document);
+		return document;
 	}
 
 	async rewardList(guildId: Snowflake): Promise<LevelRewards | null>;
