@@ -7,6 +7,7 @@ import convert from 'color-convert';
 import type { Language } from 'types';
 
 export const botOwners = ['313346190995619841'];
+export const testGuildId = '533385524434698260';
 
 export const EMBED_LIMITS = {
 	title: 256,

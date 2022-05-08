@@ -15,6 +15,13 @@
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
+	"_moduleAliases": {
+		"@modules": "dist/modules",
+		"@schemas": "dist/database/schemas",
+		"@typings": "dist/types",
+		"@utils": "dist/utils",
+		"@commands": "dist/commands"
+	},
 	"dependencies": {
 		"@discordjs/builders": "^0.13.0",
 		"@discordjs/rest": "^0.4.1",
@@ -31,6 +38,7 @@
 		"express-session": "^1.17.2",
 		"express-validator": "^6.14.0",
 		"i18n": "^0.13.4",
+		"module-alias": "^2.2.2",
 		"mongoose": "^6.0.0",
 		"node-cache": "^5.1.2",
 		"node-cron": "^3.0.0",

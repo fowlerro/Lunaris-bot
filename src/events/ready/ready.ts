@@ -1,6 +1,6 @@
 import BaseEvent from '../../utils/structures/BaseEvent';
 import { registerModules, registerPresence } from '../../utils/registry';
-import { testGuildId } from 'src/bot';
+import { testGuildId } from '@utils/utils';
 
 export default class ReadyEvent extends BaseEvent {
 	constructor() {

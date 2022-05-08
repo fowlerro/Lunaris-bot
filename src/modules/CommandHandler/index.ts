@@ -5,7 +5,7 @@ import path from 'node:path';
 import fsp from 'node:fs/promises';
 
 import BaseModule from '../../utils/structures/BaseModule';
-import { testGuildId } from 'src/bot';
+import { testGuildId } from '@utils/utils';
 import type { Command, CommandOption } from '@typings/command';
 import { botOwners, getLocale } from '@utils/utils';
 import { handleCommandError } from '@commands/errors';

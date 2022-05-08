@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -11,8 +12,6 @@ import dashboard from './dashboard/app';
 import i18nconfig, { translate } from './utils/i18n';
 import cache, { Cache } from './utils/cache';
 import Logger from './utils/Logger';
-
-export const testGuildId = '533385524434698260';
 
 const client = new DiscordClient({
 	intents: [

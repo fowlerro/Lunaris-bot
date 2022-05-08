@@ -1,4 +1,4 @@
-import { testGuildId } from 'src/bot';
+import { testGuildId } from '@utils/utils';
 
 import type { GuildEmojis } from 'types';
 
