@@ -23,7 +23,6 @@
 		"@commands": "dist/commands"
 	},
 	"dependencies": {
-		"@discordjs/builders": "^0.13.0",
 		"@discordjs/rest": "^0.4.1",
 		"@discordjs/voice": "^0.7.5",
 		"axios": "^0.26.1",
