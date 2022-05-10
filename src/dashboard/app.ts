@@ -25,7 +25,7 @@ function createApp(): Express {
 
 	app.use(
 		cors({
-			origin: [process.env.FRONTEND_DOMAIN!],
+			origin: process.env.NODE_ENV === 'production' ? 'https://www.lunaris.pro' : 'http://192.168.0.103:3000',
 			credentials: true,
 		})
 	);
