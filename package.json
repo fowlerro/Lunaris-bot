@@ -15,13 +15,6 @@
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
-	"_moduleAliases": {
-		"@modules": "dist/modules",
-		"@schemas": "dist/database/schemas",
-		"@typings": "dist/types",
-		"@utils": "dist/utils",
-		"@commands": "dist/commands"
-	},
 	"dependencies": {
 		"@discordjs/rest": "^0.4.1",
 		"@discordjs/voice": "^0.7.5",
@@ -63,6 +56,7 @@
 		"nodemon": "^2.0.15",
 		"ts-jest": "^27.1.3",
 		"ts-node": "^10.4.0",
+		"types": "file:src/types",
 		"typescript": "^4.5.4"
 	}
 }

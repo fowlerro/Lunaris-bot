@@ -8,6 +8,7 @@ import createInteractiveRoleButtons from './buttons';
 import createInteractiveRoleSelect from './selects';
 
 import type { InteractiveRolesType } from 'types';
+import { Types } from 'mongoose';
 
 export const INTERACTIVE_ROLE_TYPES = ['reactions', 'buttons', 'select'] as const;
 export const INTERACTIVE_ROLE_ACTIONS = ['add', 'remove', 'toggle'] as const;
@@ -63,13 +64,19 @@ class InteractiveRolesModule extends BaseModule {
 		if (interactiveRolesCount >= 10) throw new Error('Interactive Roles limit reached');
 
 		const createdInteractiveRoles = await InteractiveRolesModel.findOneAndUpdate(
-			{ _id, guildId, channelId, messageId, embedId },
+			{
+				...(_id?.length && { _id }),
+				guildId,
+				channelId,
+				messageId,
+				embedId: embedId?.length ? embedId : undefined,
+			},
 			{
 				name,
 				guildId,
 				channelId,
 				messageId,
-				embedId,
+				embedId: embedId?.length ? embedId : undefined,
 				type,
 				placeholder,
 				roles,

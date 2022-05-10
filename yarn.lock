@@ -1662,12 +1662,12 @@ discord-api-types@^0.29.0:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.29.0.tgz#8346352b623ddd8d8eed386b6eb758e2d82d6005"
   integrity sha512-Ekq1ICNpOTVajXKZguNFrsDeTmam+ZeA38txsNLZnANdXUjU6QBPIZLUQTC6MzigFGb0Tt8vk4xLnXmzv0shNg==
 
-discord-api-types@^0.32.0:
+discord-api-types@^0.32.0, discord-api-types@^0.32.1:
   version "0.32.1"
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.32.1.tgz#c468ec31a1ac2565673619ba1e0d35f01d339a65"
   integrity sha512-/ewl0CPYT5xjOC+SJ7wADJKjtpZfiiUaYXOP/Ns54lnBcv4Xqa4iKSqRF/w1fjiUvWTYN9W8UuOiyCHtmu5fJw==
 
-discord.js@^13.6.0:
+discord.js@^13.5.1, discord.js@^13.6.0:
   version "13.6.0"
   resolved "https://registry.yarnpkg.com/discord.js/-/discord.js-13.6.0.tgz#d8a8a591dbf25cbcf9c783d5ddf22c4694860475"
   integrity sha512-tXNR8zgsEPxPBvGk3AQjJ9ljIIC6/LOPjzKwpwz8Y1Q2X66Vi3ZqFgRHYwnHKC0jC0F+l4LzxlhmOJsBZDNg9g==
@@ -4162,6 +4162,12 @@ typedarray-to-buffer@^3.1.5:
   integrity sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==
   dependencies:
     is-typedarray "^1.0.0"
+
+"types@file:src/types":
+  version "1.0.0"
+  dependencies:
+    discord-api-types "^0.32.1"
+    discord.js "^13.5.1"
 
 typescript@^4.5.4:
   version "4.6.4"

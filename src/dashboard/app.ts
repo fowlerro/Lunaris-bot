@@ -32,7 +32,8 @@ function createApp(): Express {
 
 	app.enable('trust proxy');
 	app.use((req, res, next) => {
-		if (process.env.DEVELOPMENT !== 'DEV' && !req.secure) return res.redirect(`https://${req.headers.host}${req.url}`);
+		if (process.env.NODE_ENV === 'production' && !req.secure)
+			return res.redirect(`https://${req.headers.host}${req.url}`);
 		next();
 	});
 
@@ -41,7 +42,7 @@ function createApp(): Express {
 			secret: process.env.SESSION_SECRET!,
 			cookie: {
 				maxAge: 60000 * 60 * 24 * 7,
-				domain: process.env.DEVELOPMENT === 'DEV' ? undefined : 'lunaris.pro',
+				domain: process.env.NODE_ENV === 'production' ? 'lunaris.pro' : undefined,
 			},
 			resave: false,
 			saveUninitialized: false,

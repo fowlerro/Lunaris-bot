@@ -56,6 +56,8 @@ export async function sendLevelUpMessage(profile: GuildProfile, channelId: Snowf
 	if (messageMode === 'off') return;
 	const guild = await client.guilds.fetch(profile.guildId).catch(logger.error);
 	if (!guild) return;
+	const member = await guild.members.fetch(profile.userId).catch(logger.error);
+	if (!member) return;
 	const configChannelId = levelConfig.levelUpMessage.channelId;
 	const channel =
 		messageMode === 'currentChannel'
@@ -65,7 +67,11 @@ export async function sendLevelUpMessage(profile: GuildProfile, channelId: Snowf
 	const language = getLocale(guild.preferredLocale);
 
 	const description = levelConfig.levelUpMessage?.messageFormat
-		? TextFormatter(levelConfig.levelUpMessage.messageFormat, { profile, guild })
+		? TextFormatter(levelConfig.levelUpMessage.messageFormat, {
+				member,
+				guild,
+				customs: { level: profile.statistics.text.level },
+		  })
 		: t('xp.levelUpMessage', language, {
 				level: profile.statistics.text.level.toString(),
 				user: `<@${profile.userId}>`,

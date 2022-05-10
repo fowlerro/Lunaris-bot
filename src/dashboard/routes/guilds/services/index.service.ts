@@ -20,6 +20,7 @@ import type {
 	APIBan,
 	WarnedUser,
 	Role,
+	discordjsRole,
 	GuildChannels,
 	GuildInfo,
 	GuildEmojis,
@@ -158,14 +159,11 @@ export async function getGuildEmojisService(guildId: Snowflake): Promise<GuildEm
 	};
 }
 
-export async function getRolesService(guildId: Snowflake): Promise<Role[]> {
-	const { data } = await axios.get<Role[]>(`${DISCORD_API_URL}/guilds/${guildId}/roles`, {
-		headers: {
-			Authorization: `Bot ${process.env.DISCORD_CLIENT_TOKEN}`,
-		},
-	});
+export async function getRolesService(guildId: Snowflake): Promise<discordjsRole[]> {
+	const guild = await client.guilds.fetch(guildId);
+	const data = await guild.roles.fetch();
 
-	return data.filter(role => role.name !== '@everyone' && !role.tags?.bot_id);
+	return data.filter(role => role.name !== '@everyone' && !role.tags?.botId && role.editable).toJSON();
 }
 
 export async function getChannelsService(guildId: Snowflake): Promise<GuildChannels> {

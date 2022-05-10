@@ -10,7 +10,7 @@ import type { Command, CommandOption } from 'src/typings/command';
 import { botOwners, getLocale } from '@utils/utils';
 import { handleCommandError } from '@commands/errors';
 
-const fileExtension = process.env.DEVELOPMENT === 'DEV' ? 'ts' : 'js';
+const fileExtension = process.env.NODE_ENV === 'production' ? 'js' : 'ts';
 
 class CommandsModule extends BaseModule {
 	constructor() {

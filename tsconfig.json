@@ -32,7 +32,6 @@
 			"@modules/*": ["src/modules/*"],
 			"@schemas/*": ["src/database/schemas/*"],
 			"@typings/*": ["src/typings/*"],
-			"types": ["src/types/index.d.ts"],
 			"@utils/*": ["src/utils/*"],
 			"@commands/*": ["src/commands/*"]
 		} /* Specify a set of entries that re-map imports to additional lookup locations. */,

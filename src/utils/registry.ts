@@ -11,7 +11,7 @@ export async function registerEvents(dir = '') {
 	for (const file of files) {
 		const stat = await fs.lstat(path.join(filePath, file));
 		if (stat.isDirectory()) registerEvents(path.join(dir, file));
-		if (process.env.DEVELOPMENT === 'DEV' ? file.endsWith('.ts') : file.endsWith('.js')) {
+		if (process.env.NODE_ENV === 'production' ? file.endsWith('.js') : file.endsWith('.ts')) {
 			const { default: Event } = await import(path.join(dir, file));
 			if (Event.prototype instanceof BaseEvent) {
 				const event = new Event();
@@ -28,7 +28,7 @@ export async function registerModules(dir = '') {
 	for (const file of files) {
 		const stat = await fs.lstat(path.join(filePath, file));
 		if (stat.isDirectory()) registerModules(path.join(dir, file));
-		if (file === (process.env.DEVELOPMENT === 'DEV' ? 'index.ts' : 'index.js')) {
+		if (file === (process.env.NODE_ENV === 'production' ? 'index.js' : 'index.ts')) {
 			const { default: Module } = await import(path.join(filePath, file));
 			if (Module instanceof BaseModule) Module.run();
 		}
