@@ -41,6 +41,7 @@ export default {
 	],
 	run: async interaction => {
 		if (!interaction.guildId) return;
+		await interaction.deferReply();
 
 		const member = interaction.options.getMember('user') || interaction.member;
 		if (!member || !('id' in member) || member.user.bot) return handleCommandError(interaction, 'general.error');
