@@ -9,7 +9,7 @@
 		"test": "jest --watch --verbose --testPathPattern=src/test --maxWorkers=1",
 		"test:coverage": "jest --coverage --verbose --testPathPattern=src/test --maxWorkers=1",
 		"ci": "jest --ci --verbose --testPathPattern='src/test'",
-		"build": "tsc && npm run copyassets",
+		"build": "npx tsc && npm run copyassets",
 		"copyassets": "cp -r ./src/modules/Profiles/assets/ ./dist/modules/Profiles/assets/"
 	},
 	"keywords": [],
