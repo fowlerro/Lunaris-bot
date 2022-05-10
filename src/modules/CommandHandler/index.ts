@@ -89,7 +89,7 @@ class CommandsModule extends BaseModule {
 				}),
 		};
 
-		if (command.test)
+		if (process.env.NODE_ENV !== 'production' || command.test)
 			return client.REST.post(Routes.applicationGuildCommands(client.application?.id!, testGuildId), {
 				body: parsedCommand,
 			});

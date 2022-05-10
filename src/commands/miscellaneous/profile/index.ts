@@ -61,7 +61,7 @@ export default {
 		);
 
 		return interaction
-			.reply({
+			.editReply({
 				files: [profileCardBuffer],
 			})
 			.catch(logger.error);
