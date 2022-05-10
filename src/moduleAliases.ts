@@ -1,4 +1,4 @@
-const moduleAlias = require('module-alias');
+import moduleAlias from 'module-alias';
 
 moduleAlias.addAliases({
 	'@modules': `${__dirname}/modules`,

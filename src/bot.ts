@@ -1,4 +1,4 @@
-import './moduleAliases.js';
+import './moduleAliases';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
