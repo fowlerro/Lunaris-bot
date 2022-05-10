@@ -1,9 +1,9 @@
-import { testGuildId } from '@utils/utils';
+import { supportGuildId } from '@utils/utils';
 
 import type { GuildEmojis } from 'types';
 
 export async function getGlobalEmojisService(): Promise<GuildEmojis> {
-	const guild = await client.guilds.fetch(testGuildId);
+	const guild = await client.guilds.fetch(supportGuildId);
 	const emojis = await guild.emojis.fetch();
 
 	return {
